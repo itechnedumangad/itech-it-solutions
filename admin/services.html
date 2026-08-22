@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Services | iTech Admin</title>
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+
+<style>
+.service-form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.service-form-grid .full{
+    grid-column:1/-1;
+}
+
+.service-options{
+    display:flex;
+    gap:25px;
+    align-items:center;
+    padding:12px 0;
+}
+
+.service-options label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+}
+
+.gst-box{
+    display:none;
+}
+
+.service-table-wrap{
+    overflow-x:auto;
+}
+
+.action-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.btn-small{
+    border:0;
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.btn-edit{
+    background:#eef5ff;
+    color:#12345b;
+}
+
+.btn-delete{
+    background:#fff0f0;
+    color:#b42318;
+}
+
+.btn-status{
+    background:#f5f5f5;
+    color:#333;
+}
+
+.service-price{
+    font-weight:800;
+    color:#b66a00;
+}
+
+.active-badge,
+.inactive-badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.active-badge{
+    background:#e8f8ef;
+    color:#087443;
+}
+
+.inactive-badge{
+    background:#f3f3f3;
+    color:#777;
+}
+
+.empty-state{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+@media(max-width:800px){
+    .service-form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .service-form-grid .full{
+        grid-column:auto;
+    }
+}
+</style>
+<link rel="stylesheet" href="../css/unified-dashboard.css"></head>
+
+<body>
+
+<header class="dash-header">
+
+<a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
+
+<a class="btn secondary" href="../pages/login.html" data-logout>
+    Logout
+</a>
+
+</header>
+
+
+<div class="dash-layout">
+
+<aside class="sidebar">
+<nav>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a>
+
+</nav>
+</aside>
+
+
+<main class="dash-main">
+
+<div class="toolbar">
+
+<div>
+<p class="eyebrow">SERVICE MANAGEMENT</p>
+<h1>Services</h1>
+<p>Manage your shop services and service charges.</p>
+</div>
+
+<button class="btn primary" id="newService">
++ Add Service
+</button>
+
+</div>
+
+
+<!-- SERVICE FORM -->
+
+<section class="panel form" id="serviceFormPanel">
+
+<h2 id="formTitle">Add New Service</h2>
+
+<div class="service-form-grid">
+
+<label class="field">
+Service Name
+<input
+id="serviceName"
+type="text"
+placeholder="Example: Computer Service"
+required>
+</label>
+
+
+<label class="field">
+Category
+
+<select id="category">
+
+<option value="">Select category</option>
+<option>Computer</option>
+<option>Laptop</option>
+<option>Printer</option>
+<option>Networking</option>
+<option>CCTV</option>
+<option>Software</option>
+<option>Online Service</option>
+<option>Printing</option>
+<option>Scanning</option>
+<option>Other</option>
+
+</select>
+
+</label>
+
+
+<label class="field full">
+Description
+
+<input
+id="description"
+type="text"
+placeholder="Service description / details">
+
+</label>
+
+
+<label class="field">
+Service Price
+
+<input
+id="price"
+type="number"
+min="0"
+step="0.01"
+placeholder="0.00">
+
+</label>
+
+
+<div class="field">
+
+<label>GST</label>
+
+<div class="service-options">
+
+<label>
+<input
+type="radio"
+name="gst"
+value="no"
+checked>
+No GST
+</label>
+
+<label>
+<input
+type="radio"
+name="gst"
+value="yes">
+GST
+</label>
+
+</div>
+
+</div>
+
+
+<div class="field gst-box" id="gstBox">
+
+<label>
+GST Percentage
+</label>
+
+<select id="gstPercent">
+
+<option value="5">5%</option>
+<option value="12">12%</option>
+<option value="18" selected>18%</option>
+<option value="28">28%</option>
+
+</select>
+
+</div>
+
+
+<div class="field full">
+
+<label>Status</label>
+
+<select id="status">
+
+<option value="active">Active</option>
+<option value="inactive">Inactive</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div style="display:flex;gap:10px;margin-top:20px">
+
+<button
+class="btn primary"
+id="saveService"
+type="button">
+Save Service
+</button>
+
+<button
+class="btn secondary"
+id="cancelEdit"
+type="button">
+Cancel
+</button>
+
+</div>
+
+<div data-status class="status"></div>
+
+</section>
+
+
+
+<!-- SERVICES LIST -->
+
+<section class="panel" style="margin-top:20px">
+
+<div class="toolbar" style="margin-bottom:15px">
+
+<div>
+<h2>Service List</h2>
+</div>
+
+<div>
+
+<input
+id="search"
+type="search"
+placeholder="Search service..."
+style="padding:11px 14px;border:1px solid #d5dfed;border-radius:9px;">
+
+</div>
+
+</div>
+
+
+<div class="table-scroll service-table-wrap">
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+
+<th>Service</th>
+<th>Category</th>
+<th>Price</th>
+<th>GST</th>
+<th>Status</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="serviceRows">
+
+<tr>
+<td colspan="6" class="empty-state">
+Loading services...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
+
+<script>
+
+(async()=>{
+
+const ok = await requireAdmin();
+
+if(!ok) return;
+
+
+const nameEl = document.getElementById("serviceName");
+const categoryEl = document.getElementById("category");
+const descriptionEl = document.getElementById("description");
+const priceEl = document.getElementById("price");
+const statusEl = document.getElementById("status");
+const gstBox = document.getElementById("gstBox");
+const gstPercentEl = document.getElementById("gstPercent");
+const rowsEl = document.getElementById("serviceRows");
+const searchEl = document.getElementById("search");
+
+let services = [];
+let editingId = null;
+
+
+function money(value){
+
+return "₹" + Number(value || 0).toLocaleString(
+"en-IN",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+function gstEnabled(){
+
+return document.querySelector(
+'input[name="gst"]:checked'
+).value === "yes";
+
+}
+
+
+document.querySelectorAll(
+'input[name="gst"]'
+).forEach(radio=>{
+
+radio.addEventListener("change",()=>{
+
+gstBox.style.display =
+gstEnabled() ? "block" : "none";
+
+});
+
+});
+
+
+function resetForm(){
+
+editingId = null;
+
+document.getElementById("formTitle").textContent =
+"Add New Service";
+
+nameEl.value = "";
+categoryEl.value = "";
+descriptionEl.value = "";
+priceEl.value = "";
+statusEl.value = "active";
+
+document.querySelector(
+'input[name="gst"][value="no"]'
+).checked = true;
+
+gstBox.style.display = "none";
+
+document.getElementById("cancelEdit").style.display =
+"none";
+
+}
+
+
+function showStatus(message,error=false){
+
+const box = document.querySelector("[data-status]");
+
+box.textContent = message;
+
+box.className =
+"status " + (error ? "error" : "success");
+
+}
+
+
+async function loadServices(){
+
+const {data,error} = await sb
+.from("services")
+.select("*")
+.order("service_name");
+
+if(error){
+
+showStatus(error.message,true);
+return;
+
+}
+
+services = data || [];
+
+renderServices();
+
+}
+
+
+function renderServices(){
+
+const term =
+searchEl.value.trim().toLowerCase();
+
+const filtered = services.filter(s=>{
+
+return (
+
+(s.service_name || "")
+.toLowerCase()
+.includes(term)
+
+||
+
+(s.category || "")
+.toLowerCase()
+.includes(term)
+
+);
+
+});
+
+
+if(!filtered.length){
+
+rowsEl.innerHTML = `
+<tr>
+<td colspan="6" class="empty-state">
+No services found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+rowsEl.innerHTML = filtered.map(s=>{
+
+const gstText =
+s.gst_enabled
+? `${Number(s.gst_percent)}%`
+: "No GST";
+
+const statusBadge =
+s.status === "active"
+? `<span class="active-badge">Active</span>`
+: `<span class="inactive-badge">Inactive</span>`;
+
+return `
+
+<tr>
+
+<td>
+
+<strong>${escapeHtml(s.service_name)}</strong>
+
+${s.description
+? `<div style="font-size:12px;color:#777;margin-top:4px">
+${escapeHtml(s.description)}
+</div>`
+: ""}
+
+</td>
+
+<td>${escapeHtml(s.category || "—")}</td>
+
+<td class="service-price">
+${money(s.price)}
+</td>
+
+<td>${gstText}</td>
+
+<td>${statusBadge}</td>
+
+<td>
+
+<div class="action-buttons">
+
+<button
+class="btn-small btn-edit"
+data-edit="${s.id}">
+Edit
+</button>
+
+<button
+class="btn-small btn-status"
+data-status-id="${s.id}">
+${s.status === "active" ? "Disable" : "Enable"}
+</button>
+
+<button
+class="btn-small btn-delete"
+data-delete="${s.id}">
+Delete
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`;
+
+}).join("");
+
+
+document.querySelectorAll("[data-edit]")
+.forEach(btn=>{
+
+btn.onclick = ()=>editService(btn.dataset.edit);
+
+});
+
+
+document.querySelectorAll("[data-status-id]")
+.forEach(btn=>{
+
+btn.onclick = ()=>toggleStatus(btn.dataset.statusId);
+
+});
+
+
+document.querySelectorAll("[data-delete]")
+.forEach(btn=>{
+
+btn.onclick = ()=>deleteService(btn.dataset.delete);
+
+});
+
+}
+
+
+function escapeHtml(value){
+
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+function editService(id){
+
+const service =
+services.find(s=>s.id === id);
+
+if(!service) return;
+
+editingId = id;
+
+document.getElementById("formTitle").textContent =
+"Edit Service";
+
+nameEl.value = service.service_name || "";
+categoryEl.value = service.category || "";
+descriptionEl.value = service.description || "";
+priceEl.value = service.price ?? "";
+statusEl.value = service.status || "active";
+
+if(service.gst_enabled){
+
+document.querySelector(
+'input[name="gst"][value="yes"]'
+).checked = true;
+
+gstBox.style.display = "block";
+
+gstPercentEl.value =
+String(service.gst_percent || 18);
+
+}else{
+
+document.querySelector(
+'input[name="gst"][value="no"]'
+).checked = true;
+
+gstBox.style.display = "none";
+
+}
+
+document.getElementById("cancelEdit").style.display =
+"inline-block";
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+document.getElementById("saveService").onclick =
+async()=>{
+
+const serviceName =
+nameEl.value.trim();
+
+const price =
+Number(priceEl.value || 0);
+
+if(!serviceName){
+
+showStatus("Enter service name.",true);
+return;
+
+}
+
+if(price < 0){
+
+showStatus("Enter a valid price.",true);
+return;
+
+}
+
+
+const payload = {
+
+service_name:serviceName,
+
+category:
+categoryEl.value || null,
+
+description:
+descriptionEl.value.trim() || null,
+
+price:price,
+
+gst_enabled:
+gstEnabled(),
+
+gst_percent:
+gstEnabled()
+? Number(gstPercentEl.value)
+: 0,
+
+status:
+statusEl.value,
+
+updated_at:
+new Date().toISOString()
+
+};
+
+
+let error;
+
+
+if(editingId){
+
+const result = await sb
+.from("services")
+.update(payload)
+.eq("id",editingId);
+
+error = result.error;
+
+}else{
+
+const result = await sb
+.from("services")
+.insert(payload);
+
+error = result.error;
+
+}
+
+
+if(error){
+
+showStatus(error.message,true);
+return;
+
+}
+
+
+showStatus(
+editingId
+? "Service updated successfully."
+: "Service added successfully."
+);
+
+
+resetForm();
+
+await loadServices();
+
+};
+
+
+async function toggleStatus(id){
+
+const service =
+services.find(s=>s.id === id);
+
+if(!service) return;
+
+const newStatus =
+service.status === "active"
+? "inactive"
+: "active";
+
+
+const {error} = await sb
+.from("services")
+.update({
+status:newStatus,
+updated_at:new Date().toISOString()
+})
+.eq("id",id);
+
+
+if(error){
+
+showStatus(error.message,true);
+return;
+
+}
+
+
+await loadServices();
+
+showStatus(
+newStatus === "active"
+? "Service enabled."
+: "Service disabled."
+);
+
+}
+
+
+async function deleteService(id){
+
+const service =
+services.find(s=>s.id === id);
+
+if(!service) return;
+
+
+const confirmed =
+confirm(
+`Delete "${service.service_name}"?`
+);
+
+if(!confirmed) return;
+
+
+const {error} = await sb
+.from("services")
+.delete()
+.eq("id",id);
+
+
+if(error){
+
+showStatus(error.message,true);
+return;
+
+}
+
+
+showStatus("Service deleted.");
+
+await loadServices();
+
+}
+
+
+document.getElementById("newService")
+.onclick = ()=>{
+
+resetForm();
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+};
+
+
+document.getElementById("cancelEdit")
+.onclick = ()=>{
+
+resetForm();
+
+};
+
+
+searchEl.addEventListener(
+"input",
+renderServices
+);
+
+
+resetForm();
+
+await loadServices();
+
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Customer Dashboard | iTech Customer</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><style>.customer-card{background:#fff;border:1px solid #e3ebf5;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07)}.customer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.customer-stat{background:#f8fbff;border:1px solid #e0e9f4;border-radius:14px;padding:17px}.customer-stat small{display:block;color:#71819b;font-weight:700}.customer-stat strong{display:block;font-size:25px;margin-top:8px;color:#10284b}@media(max-width:900px){.customer-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.customer-grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+</head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a><a href="products.html">My Products</a><a href="services.html">My Services</a><a href="payments.html">Payments</a><a href="register-product.html">Register Product</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>Customer Dashboard</h1></div></div><div class="customer-grid"><div class="customer-stat"><small>Current Balance</small><strong id="balance">₹0.00</strong></div><div class="customer-stat"><small>Total Work</small><strong id="work">₹0.00</strong></div><div class="customer-stat"><small>Total Paid</small><strong id="paid">₹0.00</strong></div><div class="customer-stat"><small>Products</small><strong id="products">0</strong></div></div><section class="customer-card" style="margin-top:18px"><h2>Account Summary</h2><p id="welcome" class="muted">Loading...</p><div id="recent" style="margin-top:15px"></div></section><div data-status class="status"></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const a=await requireCustomer();if(!a)return;const c=await sb.from("customers").select("*").eq("auth_user_id",a.session.user.id).single();if(c.error||!c.data)return showStatus("Customer profile not found.",true);const id=c.data.id;const [b,p,w,pr]=await Promise.all([sb.from("customer_balances").select("*").eq("id",id).single(),sb.from("payments").select("amount").eq("customer_id",id),sb.from("today_work_report").select("total_amount").eq("customer_id",id),sb.from("product_approvals").select("id",{count:"exact",head:true}).eq("customer_id",id)]);const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});document.getElementById("balance").textContent=money(b.data?.current_balance);document.getElementById("work").textContent=money(b.data?.total_work);document.getElementById("paid").textContent=money(b.data?.total_paid);document.getElementById("products").textContent=pr.count||0;document.getElementById("welcome").textContent=`Welcome ${c.data.full_name||a.profile.full_name||"Customer"}. Your account is connected to iTech IT Solutions.`})()</script>
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+</body></html>

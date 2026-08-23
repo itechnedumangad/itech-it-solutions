@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Products | iTech Customer</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><style>.customer-card{background:#fff;border:1px solid #e3ebf5;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07)}.customer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.customer-stat{background:#f8fbff;border:1px solid #e0e9f4;border-radius:14px;padding:17px}.customer-stat small{display:block;color:#71819b;font-weight:700}.customer-stat strong{display:block;font-size:25px;margin-top:8px;color:#10284b}@media(max-width:900px){.customer-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.customer-grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+</head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a><a href="products.html">My Products</a><a href="services.html">My Services</a><a href="payments.html">Payments</a><a href="register-product.html">Register Product</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>My Products</h1></div></div><section class="customer-card"><div id="cards" class="grid"><p class="muted">Loading...</p></div></section><div data-status class="status"></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const a=await requireCustomer();if(!a)return;const c=await sb.from("customers").select("id").eq("auth_user_id",a.session.user.id).single();if(c.error)return showStatus(c.error.message,true);const r=await sb.from("product_approvals").select("*").eq("customer_id",c.data.id).order("created_at",{ascending:false});if(r.error)return showStatus(r.error.message,true);const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");document.getElementById("cards").innerHTML=(r.data||[]).length?(r.data||[]).map(x=>`<article class="card"><div class="icon">🖥️</div><h3>${esc(x.product_name||x.name||"Product")}</h3><p class="muted">Serial: ${esc(x.serial_number||"—")}</p><p><span class="tag">${esc(x.status||"Pending")}</span></p><small>${esc(x.notes||"")}</small></article>`).join(""):`<p class="muted">No registered products yet.</p>`})()</script>
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+</body></html>

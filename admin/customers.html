@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customers | iTech Admin</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+</head><body>
+<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><div class="header-actions"><span class="user-chip" data-admin-name>Admin</span><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></div></header>
+<div class="dash-layout"><aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a>
+<a href="services.html">Services</a><a href="products.html">Products</a><a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a><a href="offers.html">Offers</a><a href="works.html">Our Works</a><a href="messages.html">Messages</a>
+</nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER MANAGEMENT</p><h1>Customers</h1></div><a class="btn primary" href="add-customer.html">+ Add Customer</a></div>
+<section class="panel"><div class="search-row"><input id="search" placeholder="Search by customer name or mobile…"><span id="count" class="muted"></span></div>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>Customer</th><th>Mobile</th><th>Opening</th><th>Total Work</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></section>
+<div data-status class="status"></div></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+<script>
+(async()=>{
+ const ok=await requireStaff(); if(!ok)return;
+ const {data,error}=await sb.from("customer_balances").select("*").order("full_name");
+ if(error)return showStatus(error.message,true);
+ const rows=document.getElementById("rows"), search=document.getElementById("search");
+ const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});
+ function render(){
+  const q=search.value.toLowerCase();
+  const list=data.filter(c=>(c.full_name||"").toLowerCase().includes(q)||(c.mobile||"").includes(q));
+  document.getElementById("count").textContent=list.length+" customers";
+  rows.innerHTML=list.map(c=>`<tr><td><b>${c.full_name}</b><small>${c.customer_code||""}</small></td><td>${c.mobile}</td><td>${money(c.opening_balance)}</td><td>${money(c.total_work)}</td><td>${money(c.total_paid)}</td><td><b>${money(c.current_balance)}</b></td><td><a class="btn primary" href="customer-profile.html?id=${c.id}">View</a></td></tr>`).join("")||'<tr><td colspan="7">No customers found.</td></tr>';
+ }
+ search.addEventListener("input",render); render();
+})();
+</script>
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+</body></html>

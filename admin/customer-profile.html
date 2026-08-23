@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Customer Profile | iTech Admin</title>
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+
+<style>
+.product-status{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.product-status.pending{
+  background:#fff3df;
+  color:#b96500;
+}
+
+.product-status.approved{
+  background:#e8f8ee;
+  color:#16804a;
+}
+
+.product-status.rejected{
+  background:#fdeaea;
+  color:#c62828;
+}
+
+.product-name{
+  font-weight:700;
+}
+
+.product-note{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  color:#718096;
+}
+</style>
+<link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+</head>
+
+<body>
+
+<header class="dash-header">
+  <a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
+
+  <a class="btn secondary" href="../pages/login.html" data-logout>
+    Logout
+  </a>
+</header>
+
+<div class="dash-layout">
+
+<aside class="sidebar">
+<nav>
+<a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a>
+</nav>
+</aside>
+
+<main class="dash-main">
+
+<div class="toolbar">
+
+<div>
+<p class="eyebrow">CUSTOMER PROFILE</p>
+<h1 id="name">Loading…</h1>
+<p id="contact" class="muted"></p>
+</div>
+
+<button id="message" class="btn primary">
+WhatsApp Balance
+</button>
+
+</div>
+
+
+<!-- KPI -->
+
+<div class="kpis">
+
+<div class="kpi">
+<b>Current Balance</b>
+<div id="balance" class="value">₹0</div>
+</div>
+
+<div class="kpi">
+<b>Today's Work</b>
+<div id="todayWork" class="value">₹0</div>
+</div>
+
+<div class="kpi">
+<b>Total Paid</b>
+<div id="paid" class="value">₹0</div>
+</div>
+
+<div class="kpi">
+<b>Total Work</b>
+<div id="work" class="value">₹0</div>
+</div>
+
+</div>
+
+
+<!-- LEDGER -->
+
+<section class="panel" style="margin-top:20px">
+
+<h2>Ledger</h2>
+
+<div class="table-scroll">
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Type</th>
+<th>Description</th>
+<th>Debit</th>
+<th>Credit</th>
+</tr>
+</thead>
+
+<tbody id="ledger">
+<tr>
+<td colspan="6">Loading…</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- SERVICE DETAILS -->
+
+<section class="panel" style="margin-top:20px">
+
+<h2>Service Details</h2>
+
+<p class="muted">
+Individual services recorded for this customer.
+</p>
+
+<div class="table-scroll">
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Service</th>
+<th>Base</th>
+<th>GST</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody id="serviceLedger">
+<tr>
+<td colspan="6">Loading…</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section class="panel" style="margin-top:20px">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;">
+
+<div>
+<h2 style="margin-bottom:5px;">Products & Approvals</h2>
+
+<p class="muted">
+Products registered for this customer.
+</p>
+</div>
+
+<a href="products.html" class="btn primary">
++ Add Product
+</a>
+
+</div>
+
+
+<div class="table-scroll" style="margin-top:15px;">
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Product</th>
+<th>Serial Number</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+
+</thead>
+
+<tbody id="productLedger">
+
+<tr>
+<td colspan="5">Loading…</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<div data-status class="status"></div>
+
+</main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
+
+<script>
+
+(async()=>{
+
+  const ok = await requireStaff();
+
+  if(!ok) return;
+
+
+  const id =
+    new URLSearchParams(location.search).get("id");
+
+
+  if(!id){
+
+    return showStatus(
+      "Customer ID missing.",
+      true
+    );
+
+  }
+
+
+  const money = n =>
+    "₹" +
+    Number(n || 0).toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits:2
+      }
+    );
+
+
+  /*
+   * Load customer information,
+   * balance,
+   * ledger,
+   * today's work,
+   * service details,
+   * products
+   */
+
+  const [
+    c,
+    b,
+    l,
+    w,
+    sl,
+    products
+  ] = await Promise.all([
+
+    sb
+      .from("customers")
+      .select("*")
+      .eq("id",id)
+      .single(),
+
+    sb
+      .from("customer_balances")
+      .select("*")
+      .eq("id",id)
+      .single(),
+
+    sb
+      .from("customer_ledger")
+      .select("*")
+      .eq("customer_id",id)
+      .order(
+        "transaction_time",
+        {ascending:false}
+      ),
+
+    sb
+      .from("today_work_report")
+      .select("total_amount")
+      .eq("customer_id",id),
+
+    sb
+      .from("daily_work_entry_services")
+      .select(
+        "service_name,base_amount,gst_percent,gst_amount,total_amount,created_at"
+      )
+      .eq("customer_id",id)
+      .order(
+        "created_at",
+        {ascending:false}
+      ),
+
+    sb
+      .from("product_approvals")
+      .select(
+        "id,product_name,serial_number,status,notes,created_at"
+      )
+      .eq("customer_id",id)
+      .order(
+        "created_at",
+        {ascending:false}
+      )
+
+  ]);
+
+
+  /*
+   * Customer / balance error
+   */
+
+  if(c.error || b.error){
+
+    return showStatus(
+      (c.error || b.error).message,
+      true
+    );
+
+  }
+
+
+  /*
+   * CUSTOMER HEADER
+   */
+
+  document.getElementById("name").textContent =
+    c.data.full_name;
+
+  document.getElementById("contact").textContent =
+    [
+      c.data.mobile,
+      c.data.whatsapp,
+      c.data.email
+    ]
+    .filter(Boolean)
+    .join(" · ");
+
+
+  /*
+   * KPI
+   */
+
+  document.getElementById("balance").textContent =
+    money(b.data.current_balance);
+
+  document.getElementById("todayWork").textContent =
+    money(
+      (w.data || [])
+      .reduce(
+        (s,r)=>
+          s + Number(r.total_amount || 0),
+        0
+      )
+    );
+
+  document.getElementById("paid").textContent =
+    money(b.data.total_paid);
+
+  document.getElementById("work").textContent =
+    money(b.data.total_work);
+
+
+  /*
+   * LEDGER
+   */
+
+  document.getElementById("ledger").innerHTML =
+    (l.data || [])
+    .map(x => `
+
+      <tr>
+
+        <td>
+          ${x.transaction_date}
+        </td>
+
+        <td>
+          ${
+            new Date(x.transaction_time)
+            .toLocaleTimeString(
+              "en-IN",
+              {
+                hour:"2-digit",
+                minute:"2-digit"
+              }
+            )
+          }
+        </td>
+
+        <td>
+          ${x.transaction_type}
+        </td>
+
+        <td>
+          ${x.description || ""}
+        </td>
+
+        <td>
+          ${
+            x.debit
+              ? money(x.debit)
+              : "—"
+          }
+        </td>
+
+        <td>
+          ${
+            x.credit
+              ? money(x.credit)
+              : "—"
+          }
+        </td>
+
+      </tr>
+
+    `)
+    .join("")
+
+    ||
+
+    '<tr><td colspan="6">No ledger entries.</td></tr>';
+
+
+  /*
+   * SERVICE DETAILS
+   */
+
+  const serviceRows =
+    document.getElementById(
+      "serviceLedger"
+    );
+
+
+  if(sl.error){
+
+    serviceRows.innerHTML =
+      `<tr>
+        <td colspan="6">
+          ${sl.error.message}
+        </td>
+      </tr>`;
+
+  }else{
+
+    serviceRows.innerHTML =
+      (sl.data || [])
+      .map(s => `
+
+        <tr>
+
+          <td>
+            ${
+              new Date(s.created_at)
+              .toLocaleDateString("en-IN")
+            }
+          </td>
+
+          <td>
+            ${
+              new Date(s.created_at)
+              .toLocaleTimeString(
+                "en-IN",
+                {
+                  hour:"2-digit",
+                  minute:"2-digit"
+                }
+              )
+            }
+          </td>
+
+          <td>
+
+            <b>
+              ${s.service_name}
+            </b>
+
+            <small>
+              ${
+                Number(s.gst_percent || 0) > 0
+                ? Number(s.gst_percent) + "% GST"
+                : "No GST"
+              }
+            </small>
+
+          </td>
+
+          <td>
+            ${money(s.base_amount)}
+          </td>
+
+          <td>
+            ${
+              Number(s.gst_amount || 0)
+              ? money(s.gst_amount)
+              : "—"
+            }
+          </td>
+
+          <td>
+            <b>
+              ${money(s.total_amount)}
+            </b>
+          </td>
+
+        </tr>
+
+      `)
+      .join("")
+
+      ||
+
+      '<tr><td colspan="6">No service details.</td></tr>';
+
+  }
+
+
+  /*
+   * PRODUCTS
+   */
+
+  const productRows =
+    document.getElementById(
+      "productLedger"
+    );
+
+
+  if(products.error){
+
+    productRows.innerHTML =
+      `<tr>
+        <td colspan="5">
+          ${products.error.message}
+        </td>
+      </tr>`;
+
+  }else{
+
+    productRows.innerHTML =
+      (products.data || [])
+      .map(p => {
+
+        const status =
+          String(
+            p.status || "Pending"
+          ).toLowerCase();
+
+        let statusClass = "pending";
+
+        if(status === "approved"){
+          statusClass = "approved";
+        }
+
+        if(status === "rejected"){
+          statusClass = "rejected";
+        }
+
+        return `
+
+          <tr>
+
+            <td>
+              ${
+                p.created_at
+                ? new Date(p.created_at)
+                    .toLocaleDateString(
+                      "en-IN"
+                    )
+                : "—"
+              }
+            </td>
+
+            <td>
+              <span class="product-name">
+                ${p.product_name || "—"}
+              </span>
+            </td>
+
+            <td>
+              ${p.serial_number || "—"}
+            </td>
+
+            <td>
+
+              <span class="product-status ${statusClass}">
+                ${p.status || "Pending"}
+              </span>
+
+            </td>
+
+            <td>
+              ${
+                p.notes
+                ? `<span class="product-note">
+                    ${p.notes}
+                   </span>`
+                : "—"
+              }
+            </td>
+
+          </tr>
+
+        `;
+
+      })
+      .join("")
+
+      ||
+
+      '<tr><td colspan="5">No products registered for this customer.</td></tr>';
+
+  }
+
+
+  /*
+   * WHATSAPP BALANCE
+   */
+
+  document.getElementById(
+    "message"
+  ).onclick = () => {
+
+    const number =
+      (
+        c.data.whatsapp ||
+        c.data.mobile ||
+        ""
+      )
+      .replace(/\D/g,"");
+
+
+    const text =
+      `Hi ${c.data.full_name},%0A%0A` +
+      `Your current balance with ` +
+      `iTech IT Solutions is ` +
+      `₹${Number(
+        b.data.current_balance || 0
+      ).toFixed(2)}.%0A%0A` +
+      `Regards,%0A` +
+      `iTech IT Solutions`;
+
+
+    window.open(
+      `https://wa.me/${number}?text=${text}`,
+      "_blank"
+    );
+
+  };
+
+
+})();
+
+</script>
+
+
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+</body>
+</html>

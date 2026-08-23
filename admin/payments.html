@@ -8,6 +8,46 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/dashboard.css">
 <link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+
+<style id="whatsapp-payment-tools">
+  .wa-panel{
+    margin-top:20px;
+    padding:20px;
+    border:1px solid #dfe8f4;
+    border-radius:18px;
+    background:linear-gradient(180deg,#fff,#f9fcff);
+    box-shadow:0 10px 30px rgba(17,50,91,.07);
+  }
+  .wa-panel-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .wa-panel h2{margin:0 0 5px;color:#10284b;font-size:20px}
+  .wa-panel p{margin:0;color:#71819b;font-size:13px}
+  .wa-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .wa-btn{
+    border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;
+    background:#16a05d;color:#fff;
+  }
+  .wa-btn.secondary{background:#eaf3ff;color:#1769e0;border:1px solid #cfe0f8}
+  .wa-btn:disabled{opacity:.5;cursor:not-allowed}
+  .wa-groups{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .wa-group{border:1px solid #dfe8f4;border-radius:14px;overflow:hidden;background:#fff}
+  .wa-group-head{padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .wa-group.daily .wa-group-head{background:#eef8f2}
+  .wa-group.week .wa-group-head{background:#fff5e8}
+  .wa-group-title{font-weight:850;color:#10284b}
+  .wa-group-sub{font-size:11px;color:#71819b;margin-top:3px}
+  .wa-list{max-height:360px;overflow:auto}
+  .wa-row{display:flex;align-items:center;gap:10px;padding:11px 13px;border-top:1px solid #edf1f6}
+  .wa-row input{width:17px;height:17px;accent-color:#16a05d}
+  .wa-info{min-width:0;flex:1}
+  .wa-name{font-weight:750;color:#183252;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wa-meta{font-size:11px;color:#71819b;margin-top:3px}
+  .wa-send{border:0;background:#16a05d;color:#fff;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+  .wa-empty{padding:18px;color:#71819b;font-size:13px;text-align:center}
+  .wa-status{margin-top:12px;padding:10px 12px;border-radius:10px;background:#eef8f2;color:#087a42;font-size:12px;display:none}
+  .wa-status.show{display:block}
+  @media(max-width:800px){.wa-groups{grid-template-columns:1fr}}
+</style>
+
 </head>
 
 <body>
@@ -136,6 +176,47 @@
 
     </section>
 
+
+
+<!-- WHATSAPP CUSTOMER MESSAGING -->
+<section class="panel wa-panel" id="whatsappMessaging">
+  <div class="wa-panel-head">
+    <div>
+      <h2>💬 WhatsApp Customer Messages</h2>
+      <p>Daily customers and customers with no payment/update for more than 7 days.</p>
+    </div>
+    <div class="wa-actions">
+      <button type="button" class="wa-btn secondary" id="waRefresh">↻ Refresh</button>
+      <button type="button" class="wa-btn" id="waSendSelected" disabled>💬 Send Selected</button>
+    </div>
+  </div>
+
+  <div class="wa-groups">
+    <div class="wa-group daily">
+      <div class="wa-group-head">
+        <div>
+          <div class="wa-group-title">📅 Daily Customers</div>
+          <div class="wa-group-sub">Customers with work/payment activity today</div>
+        </div>
+        <button type="button" class="wa-btn secondary" id="waSelectDaily">Select All</button>
+      </div>
+      <div class="wa-list" id="waDailyList"><div class="wa-empty">Loading…</div></div>
+    </div>
+
+    <div class="wa-group week">
+      <div class="wa-group-head">
+        <div>
+          <div class="wa-group-title">⏰ 7+ Days</div>
+          <div class="wa-group-sub">No payment/update for more than 7 days</div>
+        </div>
+        <button type="button" class="wa-btn secondary" id="waSelectWeek">Select All</button>
+      </div>
+      <div class="wa-list" id="waWeekList"><div class="wa-empty">Loading…</div></div>
+    </div>
+  </div>
+
+  <div class="wa-status" id="waStatus"></div>
+</section>
 
     <!-- RECENT PAYMENTS -->
     <section
@@ -622,6 +703,229 @@
 
 </script>
 
+
+<script id="payment-whatsapp-tools">
+(async function(){
+  "use strict";
+
+  const dailyList = document.getElementById("waDailyList");
+  const weekList = document.getElementById("waWeekList");
+  const sendSelected = document.getElementById("waSendSelected");
+  const statusEl = document.getElementById("waStatus");
+  const today = new Date();
+  const todayISO = today.toISOString().slice(0,10);
+  let waCustomers = [];
+  let selectedIds = new Set();
+
+  const money = n => "₹" + Number(n || 0).toLocaleString("en-IN", {
+    minimumFractionDigits:2, maximumFractionDigits:2
+  });
+
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+
+  function normalizePhone(phone){
+    let p = String(phone || "").replace(/\D/g,"");
+    if(!p) return "";
+    if(p.length === 10) p = "91" + p;
+    return p;
+  }
+
+  function whatsappMessage(c){
+    return [
+      "iTech IT Solutions",
+      "Payment / Account Reminder",
+      "",
+      "Customer: " + (c.full_name || "Customer"),
+      "Date: " + today.toLocaleDateString("en-IN"),
+      "",
+      "Old Balance: " + money(c.old_balance),
+      "Today's Work: " + money(c.today_work),
+      "Paid Today: " + money(c.today_paid),
+      "Total Balance: " + money(c.balance),
+      "",
+      "Please contact us for any clarification.",
+      "Your Trust Our Service"
+    ].join("\n");
+  }
+
+  function sendWhatsApp(c){
+    const phone = normalizePhone(c.mobile);
+    if(!phone){
+      showWaStatus("WhatsApp/mobile number is not available for " + (c.full_name || "this customer") + ".", true);
+      return;
+    }
+    const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMessage(c));
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function showWaStatus(msg, error=false){
+    statusEl.textContent = msg;
+    statusEl.style.background = error ? "#fff0f0" : "#eef8f2";
+    statusEl.style.color = error ? "#b42318" : "#087a42";
+    statusEl.classList.add("show");
+  }
+
+  function renderList(listEl, items, group){
+    if(!items.length){
+      listEl.innerHTML = '<div class="wa-empty">No customers found.</div>';
+      return;
+    }
+    listEl.innerHTML = items.map(c => `
+      <div class="wa-row">
+        <input type="checkbox" class="wa-check" data-id="${esc(c.id)}" ${selectedIds.has(String(c.id)) ? "checked":""}>
+        <div class="wa-info">
+          <div class="wa-name">${esc(c.full_name || "Customer")}</div>
+          <div class="wa-meta">${esc(c.mobile || "No mobile")} · Balance ${money(c.balance)}</div>
+        </div>
+        <button type="button" class="wa-send" data-wa-id="${esc(c.id)}">WhatsApp</button>
+      </div>
+    `).join("");
+
+    listEl.querySelectorAll(".wa-check").forEach(ch => {
+      ch.addEventListener("change", () => {
+        const id = String(ch.dataset.id);
+        if(ch.checked) selectedIds.add(id); else selectedIds.delete(id);
+        updateSelectedButton();
+      });
+    });
+
+    listEl.querySelectorAll("[data-wa-id]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const c = waCustomers.find(x => String(x.id) === String(btn.dataset.waId));
+        if(c) sendWhatsApp(c);
+      });
+    });
+  }
+
+  function updateSelectedButton(){
+    sendSelected.disabled = selectedIds.size === 0;
+    sendSelected.textContent = selectedIds.size
+      ? "💬 Send Selected (" + selectedIds.size + ")"
+      : "💬 Send Selected";
+  }
+
+  async function loadWhatsAppCustomers(){
+    dailyList.innerHTML = '<div class="wa-empty">Loading…</div>';
+    weekList.innerHTML = '<div class="wa-empty">Loading…</div>';
+
+    const {data: customers, error: ce} = await sb
+      .from("customers")
+      .select("id,full_name,mobile")
+      .eq("status","active")
+      .order("full_name");
+
+    if(ce){
+      showWaStatus("Unable to load customers: " + ce.message, true);
+      return;
+    }
+
+    const ids = (customers || []).map(c => c.id);
+    if(!ids.length){
+      renderList(dailyList, [], "daily");
+      renderList(weekList, [], "week");
+      return;
+    }
+
+    const [works, payments, balances] = await Promise.all([
+      sb.from("today_work_report")
+        .select("customer_id,total_amount")
+        .in("customer_id", ids),
+      sb.from("payments")
+        .select("customer_id,amount,payment_date")
+        .in("customer_id", ids)
+        .order("payment_date",{ascending:false}),
+      sb.from("customer_balances")
+        .select("id,current_balance")
+        .in("id", ids)
+    ]);
+
+    const workMap = {};
+    (works.data || []).forEach(r => {
+      workMap[r.customer_id] = (workMap[r.customer_id] || 0) + Number(r.total_amount || 0);
+    });
+
+    const payMap = {};
+    const lastActivity = {};
+    (payments.data || []).forEach(r => {
+      const id = r.customer_id;
+      payMap[id] = (payMap[id] || 0) + (r.payment_date === todayISO ? Number(r.amount || 0) : 0);
+      const d = r.payment_date;
+      if(d && (!lastActivity[id] || d > lastActivity[id])) lastActivity[id] = d;
+    });
+
+    const balMap = {};
+    (balances.data || []).forEach(r => balMap[r.id] = Number(r.current_balance || 0));
+
+    waCustomers = (customers || []).map(c => {
+      const id = c.id;
+      return {
+        ...c,
+        today_work: workMap[id] || 0,
+        today_paid: payMap[id] || 0,
+        balance: balMap[id] || 0,
+        old_balance: (balMap[id] || 0) + (payMap[id] || 0),
+        last_activity: lastActivity[id] || null
+      };
+    });
+
+    const daily = waCustomers.filter(c => Number(c.today_work) > 0 || Number(c.today_paid) > 0);
+
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 7);
+    const cutoffISO = cutoff.toISOString().slice(0,10);
+
+    const weekPlus = waCustomers.filter(c => {
+      if(Number(c.today_work) > 0 || Number(c.today_paid) > 0) return false;
+      if(!c.last_activity) return Number(c.balance) > 0;
+      return c.last_activity < cutoffISO && Number(c.balance) > 0;
+    });
+
+    renderList(dailyList, daily, "daily");
+    renderList(weekList, weekPlus, "week");
+    updateSelectedButton();
+
+    showWaStatus("Updated: " + daily.length + " daily customer(s), " + weekPlus.length + " customer(s) with 7+ days pending.");
+  }
+
+  document.getElementById("waRefresh").addEventListener("click", loadWhatsAppCustomers);
+
+  document.getElementById("waSelectDaily").addEventListener("click", () => {
+    document.querySelectorAll("#waDailyList .wa-check").forEach(ch => {
+      ch.checked = true;
+      selectedIds.add(String(ch.dataset.id));
+    });
+    updateSelectedButton();
+  });
+
+  document.getElementById("waSelectWeek").addEventListener("click", () => {
+    document.querySelectorAll("#waWeekList .wa-check").forEach(ch => {
+      ch.checked = true;
+      selectedIds.add(String(ch.dataset.id));
+    });
+    updateSelectedButton();
+  });
+
+  sendSelected.addEventListener("click", () => {
+    const selected = waCustomers.filter(c => selectedIds.has(String(c.id)));
+    if(!selected.length) return;
+
+    let opened = 0;
+    selected.forEach((c, i) => {
+      const phone = normalizePhone(c.mobile);
+      if(!phone) return;
+      const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(whatsappMessage(c));
+      setTimeout(() => window.open(url, "_blank", "noopener,noreferrer"), i * 500);
+      opened++;
+    });
+
+    showWaStatus(opened + " WhatsApp message(s) prepared. Your browser may ask permission to open multiple tabs.");
+  });
+
+  await loadWhatsAppCustomers();
+})();
+</script>
 
 <footer class="unified-site-footer">
   <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">

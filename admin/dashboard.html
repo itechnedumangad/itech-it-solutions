@@ -3,3784 +3,1361 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Admin Dashboard | iTech IT Solutions</title>
-
+<title>Dashboard | iTech Admin</title>
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/dashboard.css">
-<link rel="stylesheet" href="../css/unified-dashboard.css">
-<link rel="stylesheet" href="../css/dashboard-shell.css">
-
 <style>
-
-/* =========================================================
-   BASE
-========================================================= */
-
-*{
-  box-sizing:border-box;
+/* ===== iTech Dashboard Redesign ===== */
+:root{
+  --navy:#071d3d;
+  --navy2:#0d2c58;
+  --blue:#1769e0;
+  --blue2:#3459ff;
+  --orange:#ff8a16;
+  --green:#16a05d;
+  --purple:#7148e8;
+  --ink:#10284b;
+  --muted:#71819b;
+  --line:#dfe8f4;
+  --bg:#f4f8fd;
+  --white:#fff;
+  --shadow:0 10px 30px rgba(17,50,91,.08);
 }
-
+*{box-sizing:border-box}
 body{
   margin:0;
-  background:#f3f7fc;
-  color:#10284b;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-button,
-input,
-select,
-textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-
-/* =========================================================
-   DASHBOARD MAIN
-========================================================= */
-
-.dash-main{
-  min-width:0;
-}
-
-.dashboard-container{
-  width:100%;
-  max-width:1180px;
-  margin:0 auto;
-}
-
-.section-card{
-  background:#fff;
-  border:1px solid #e0e9f4;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 28px rgba(17,50,91,.07);
-  margin-top:18px;
-}
-
-.section-title{
-  margin:0;
-  color:#10284b;
-  font-size:22px;
-  font-weight:800;
-}
-
-.section-subtitle{
-  margin:7px 0 0;
-  color:#71819b;
-  font-size:13px;
-}
-
-
-/* =========================================================
-   STAT CARDS
-========================================================= */
-
-.admin-stats{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:15px;
-  margin-top:18px;
-}
-
-.admin-stat{
-  background:#fff;
-  border:1px solid #e0e9f4;
-  border-radius:16px;
-  padding:18px;
-  box-shadow:0 8px 22px rgba(17,50,91,.05);
-}
-
-.admin-stat small{
-  display:block;
-  color:#71819b;
-  font-weight:700;
-  font-size:12px;
-}
-
-.admin-stat strong{
-  display:block;
-  margin-top:8px;
-  color:#10284b;
-  font-size:25px;
-}
-
-
-/* =========================================================
-   WHATSAPP PAYMENT REMINDER
-========================================================= */
-
-.payment-reminder{
-  position:relative;
-  overflow:hidden;
-}
-
-.payment-reminder:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:4px;
-  background:#18a957;
-}
-
-.reminder-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:16px;
-  margin-top:16px;
-}
-
-.customer-reminder-list{
-  display:grid;
-  gap:10px;
-}
-
-.reminder-customer{
-  border:1px solid #e1eaf4;
-  background:#f9fbfe;
-  border-radius:13px;
-  padding:13px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.reminder-customer-info{
-  min-width:0;
-}
-
-.reminder-customer-info b{
-  display:block;
-  font-size:13px;
-  color:#10284b;
-}
-
-.reminder-customer-info small{
-  display:block;
-  margin-top:4px;
-  color:#71819b;
-}
-
-.reminder-balance{
-  margin-top:4px;
-  color:#df7b00;
-  font-weight:800;
-  font-size:12px;
-}
-
-.whatsapp-btn{
-  border:0;
-  border-radius:9px;
-  padding:9px 12px;
-  background:#18a957;
-  color:#fff;
-  font-weight:800;
-  font-size:11px;
-  white-space:nowrap;
-}
-
-.whatsapp-btn:hover{
-  filter:brightness(.95);
-}
-
-
-/* =========================================================
-   INFO
-========================================================= */
-
-.info-box{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:10px;
-  background:#eef7ff;
-  border:1px solid #d7e8f9;
-  color:#52708f;
-  font-size:11px;
-}
-
-
-/* =========================================================
-   QUICK DAILY WORK
-========================================================= */
-
-.quick-work{
-  position:relative;
-  overflow:visible;
-}
-
-.quick-work:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:4px;
-  background:#ff9d00;
-  border-radius:18px 0 0 18px;
-}
-
-.work-top-grid{
-  display:grid;
-  grid-template-columns:1.25fr 1fr;
-  gap:14px;
-  margin-top:16px;
-}
-
-.field{
-  min-width:0;
-}
-
-.field label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  color:#10284b;
-  margin-bottom:7px;
-}
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  border:1px solid #d9e4f0;
-  border-radius:11px;
-  padding:11px 12px;
-  outline:none;
-  background:#fff;
-  color:#10284b;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:#3d73ff;
-  box-shadow:0 0 0 3px rgba(61,115,255,.08);
-}
-
-.customer-search-wrap{
-  position:relative;
-}
-
-.customer-suggestions{
-  position:absolute;
-  z-index:100;
-  left:0;
-  right:0;
-  top:100%;
-  margin-top:5px;
-  background:#fff;
-  border:1px solid #dce6f1;
-  border-radius:12px;
-  box-shadow:0 12px 30px rgba(15,45,80,.15);
-  overflow:hidden;
-}
-
-.customer-suggestions[hidden]{
-  display:none;
-}
-
-.customer-suggestion{
-  width:100%;
-  border:0;
-  background:#fff;
-  text-align:left;
-  padding:11px 13px;
-  display:block;
-}
-
-.customer-suggestion:hover{
-  background:#f2f7ff;
-}
-
-.customer-suggestion b{
-  display:block;
-  color:#10284b;
-  font-size:12px;
-}
-
-.customer-suggestion span{
-  display:block;
-  color:#71819b;
-  font-size:11px;
-  margin-top:3px;
-}
-
-.work-small-grid{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:8px;
-  margin-top:14px;
-}
-
-.work-small input{
-  font-size:12px;
-  padding:9px;
-}
-
-.service-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  border:1px solid #dce6f1;
-  background:#fbfdff;
-  border-radius:11px;
-  padding:11px;
-  margin-top:14px;
-}
-
-.service-row input{
-  width:18px;
-  height:18px;
-}
-
-.service-row b{
-  font-size:12px;
-}
-
-.service-price{
-  margin-left:auto;
-  font-weight:800;
-  font-size:12px;
-}
-
-.work-description{
-  margin-top:14px;
-}
-
-.work-bottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-top:14px;
-}
-
-.work-summary{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  flex:1;
-}
-
-.summary-box{
-  background:#f5f9ff;
-  border:1px solid #dce7f4;
-  border-radius:11px;
-  padding:10px;
-}
-
-.summary-box small{
-  display:block;
-  color:#71819b;
-  font-size:9px;
-  font-weight:800;
-}
-
-.summary-box strong{
-  display:block;
-  margin-top:5px;
-  font-size:15px;
-}
-
-.work-actions{
-  display:flex;
-  gap:8px;
-}
-
-.primary-btn,
-.secondary-btn{
-  border:0;
-  border-radius:10px;
-  padding:11px 16px;
-  font-weight:800;
-  font-size:12px;
-}
-
-.primary-btn{
-  background:linear-gradient(135deg,#1468e8,#4057f5);
-  color:#fff;
-}
-
-.secondary-btn{
-  background:#fff;
-  color:#10284b;
-  border:1px solid #d7e2ee;
-}
-
-.status-message{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:9px;
-  font-size:11px;
-  display:none;
-}
-
-.status-message.show{
-  display:block;
-}
-
-.status-message.success{
-  background:#eaf9f0;
-  color:#16834b;
-}
-
-.status-message.error{
-  background:#fff0f0;
-  color:#c62828;
-}
-
-
-/* =========================================================
-   VEHICLE INSURANCE
-========================================================= */
-
-.insurance-card{
-  position:relative;
-  overflow:visible;
-}
-
-.insurance-card:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:4px;
-  background:#ff9400;
-  border-radius:18px 0 0 18px;
-}
-
-.insurance-form{
-  display:grid;
-  grid-template-columns:1.1fr 1.1fr 1.1fr 1fr;
-  gap:10px;
-  margin-top:16px;
-}
-
-.insurance-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.insurance-badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:10px;
-}
-
-.insurance-badge{
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:10px;
-  font-weight:900;
-}
-
-.badge-total{
-  background:#edf5ff;
-  color:#2462a4;
-}
-
-.badge-expired{
-  background:#ffeaea;
-  color:#c62828;
-}
-
-.badge-seven{
-  background:#fff0d8;
-  color:#c86b00;
-}
-
-.badge-thirty{
-  background:#ddf8e9;
-  color:#16834b;
-}
-
-.insurance-table-wrap{
-  margin-top:14px;
-  border:1px solid #dce6f1;
-  border-radius:12px;
-  overflow:auto;
-}
-
-.insurance-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:760px;
-}
-
-.insurance-table th{
-  background:#f7faff;
-  color:#71819b;
-  font-size:9px;
-  text-align:left;
-  padding:10px;
-  white-space:nowrap;
-}
-
-.insurance-table td{
-  border-top:1px solid #edf2f7;
-  padding:10px;
-  font-size:11px;
-  color:#10284b;
-}
-
-.insurance-table td b{
-  font-size:11px;
-}
-
-.insurance-status{
-  font-size:10px;
-  font-weight:900;
-  white-space:nowrap;
-}
-
-.insurance-active{
-  color:#16834b;
-}
-
-.insurance-near{
-  color:#c56a00;
-}
-
-.insurance-expired{
-  color:#c62828;
-}
-
-.insurance-wa{
-  border:0;
-  background:#18a957;
-  color:#fff;
-  border-radius:8px;
-  padding:7px 9px;
-  font-size:10px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.insurance-loading{
-  text-align:center;
+  background:linear-gradient(135deg,#f6f9fd 0%,#eef4fb 100%);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.dash-header{
+  height:76px!important;
+  background:linear-gradient(100deg,#071c3b,#0d2d5a)!important;
+  box-shadow:0 5px 18px rgba(5,27,57,.18);
+  position:sticky;top:0;z-index:50;
+}
+.dash-header .brand{font-size:19px;font-weight:800}
+.dash-header .logo{
+  width:44px!important;height:44px!important;border-radius:13px!important;
+  display:inline-flex!important;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#ffb04b,#ff8410)!important;
+  box-shadow:0 6px 15px rgba(255,138,22,.25);
+}
+.header-actions{display:flex;align-items:center;gap:10px}
+.user-chip{
+  background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.12);
+  padding:10px 14px;border-radius:22px;font-size:12px;font-weight:700
+}
+.dash-layout{min-height:calc(100vh - 76px)}
+.sidebar{
+  width:246px!important;
+  background:linear-gradient(180deg,#071c3b,#09264d)!important;
+  border:0!important;color:#fff!important;
   padding:18px!important;
-  color:#71819b!important;
+  box-shadow:8px 0 25px rgba(6,29,59,.08);
+}
+.sidebar nav{display:flex;flex-direction:column;gap:4px}
+.sidebar nav a{
+  color:#dce7f8!important;text-decoration:none!important;
+  border-radius:11px!important;padding:12px 14px!important;
+  font-weight:600;font-size:14px;transition:.2s ease;
+}
+.sidebar nav a:hover,.sidebar nav a.active{
+  background:linear-gradient(90deg,#1769e0,#3459ff)!important;
+  color:#fff!important;transform:translateX(2px);
+  box-shadow:0 7px 18px rgba(31,102,224,.25);
+}
+.sidebar nav a:nth-child(4){margin-top:3px}
+.dash-main{
+  max-width:none!important;
+  padding:22px 28px 34px!important;
+}
+.toolbar{
+  margin-bottom:18px;
+}
+.toolbar h1{font-size:30px;margin:0 0 4px}
+.eyebrow{color:var(--orange)!important;font-weight:800;letter-spacing:2px}
+.kpis{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+.kpi{
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #e3ebf5!important;
+  border-radius:18px!important;
+  padding:20px!important;
+  min-height:148px;
+  box-shadow:var(--shadow)!important;
+  transition:.28s ease;
+}
+.kpi:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(17,50,91,.13)!important}
+.kpi:after{
+  content:"";position:absolute;right:-25px;top:-35px;width:100px;height:100px;
+  border-radius:50%;background:rgba(255,138,22,.09);
+}
+.kpi:nth-child(2):after{background:rgba(22,160,93,.09)}
+.kpi:nth-child(3):after{background:rgba(255,138,22,.09)}
+.kpi:nth-child(4):after{background:rgba(113,72,232,.10)}
+.kpi b{font-size:14px}
+.kpi .value{font-size:28px!important;margin-top:10px;font-weight:850!important}
+.kpi small{display:block;margin-top:7px}
+.dashboard-card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.quick-entry{
+  margin-top:18px;padding:24px;
+  position:relative;overflow:hidden;
+}
+.quick-entry:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(#ff9b25,#ff7d00);
+}
+.quick-title{display:flex;align-items:center;gap:10px}
+.quick-title .bolt{font-size:27px}
+.quick-title h2{margin:0;font-size:23px}
+.quick-sub{margin:5px 0 20px;color:var(--muted)}
+.entry-layout{
+  display:grid;grid-template-columns:minmax(0,1fr) 355px;gap:18px
+}
+.entry-main{
+  border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff
+}
+.customer-paid{
+  display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px
+}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px;color:#39506f}
+.field input,.field select,.field textarea{
+  width:100%;height:45px;border:1px solid #d8e2ef;border-radius:10px;
+  padding:0 12px;background:#fff;color:var(--ink);outline:none;
+  transition:.2s;
+}
+.field textarea{height:70px;padding-top:11px;resize:vertical}
+.customer-picker{position:relative}
+.customer-input-wrap{position:relative}
+.customer-input-wrap input{padding-right:42px}
+.customer-clear{
+  position:absolute;right:7px;top:4px;width:36px;height:36px;border:0;
+  border-radius:8px;background:transparent;color:#8392a8;font-size:22px;
+  cursor:pointer;display:none
+}
+.customer-clear:hover{background:#f1f5fa;color:#17345b}
+.customer-suggestions{
+  position:absolute;z-index:30;left:0;right:0;top:76px;
+  background:#fff;border:1px solid #d9e4f1;border-radius:12px;
+  box-shadow:0 16px 35px rgba(16,40,75,.14);overflow:hidden;display:none;
+  max-height:250px;overflow-y:auto
+}
+.customer-suggestions.show{display:block}
+.customer-option{
+  width:100%;border:0;background:#fff;text-align:left;padding:11px 13px;
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;color:#142e52
+}
+.customer-option:hover,.customer-option.active{background:#eef5ff}
+.customer-option .customer-main{font-weight:750}
+.customer-option .customer-mobile{font-size:12px;color:#7a8aa0;white-space:nowrap}
+.customer-option .customer-balance{font-size:11px;color:#d97706;font-weight:750}
+.customer-empty{padding:13px;color:#7889a2;font-size:13px}
+
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#4d83e7;box-shadow:0 0 0 3px rgba(23,105,224,.09)
+}
+.amount-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px
+}
+.amount-box{
+  border:1px solid #dce5f0;border-radius:11px;padding:9px 10px;background:#fbfdff
+}
+.amount-box label{display:block;font-size:11px;font-weight:700;color:#60728c;margin-bottom:5px}
+.amount-box input{
+  width:100%;border:0;outline:0;background:transparent;font-size:14px;
+  color:var(--ink);height:28px;padding:0
+}
+.amount-box input::placeholder{color:#a1aec0}
+.service-label{font-size:12px;font-weight:800;margin:18px 0 8px}
+.service-list{display:flex;flex-direction:column;gap:8px}
+.service-row{
+  border:1px solid #dce5f0;border-radius:10px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:#fbfdff
+}
+.service-row label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:650}
+.service-row input[type=checkbox]{width:18px;height:18px;accent-color:#1769e0}
+.service-price{font-weight:800;color:#0b376e;font-size:13px}
+.summary{
+  border:1px solid #dfe7f2;border-radius:15px;padding:14px;
+  background:linear-gradient(180deg,#fff,#fbfdff)
+}
+.summary h3{margin:0 0 12px;font-size:16px}
+.sum-card{
+  border-radius:12px;padding:13px;margin-bottom:9px;border:1px solid #e2e9f2
+}
+.sum-card .label{font-size:12px;font-weight:650;margin-bottom:5px}
+.sum-card .num{font-size:22px;font-weight:850}
+.sum-old{background:#fff8ef;border-color:#ffe2c4}.sum-old .num{color:#e56f00}
+.sum-work{background:#eef6ff;border-color:#d7e8ff}.sum-work .num{color:#0862dc}
+.sum-paid{background:#effbf5;border-color:#d7f0e2}.sum-paid .num{color:#0a9652}
+.sum-new{background:#f4f0ff;border-color:#e4d9ff}.sum-new .num{color:#6840d5}
+.formula{font-size:11px;color:#536781;margin-top:10px}
+.bottom-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:10px;margin-top:12px
+}
+.total-strip{
+  display:grid;grid-template-columns:1fr 35px 1fr 35px 1fr;align-items:center;
+  background:#f5f9ff;border:1px solid #dce8f7;border-radius:12px;padding:13px 16px
+}
+.total-strip .cap{font-size:10px;font-weight:800;color:#60718a}
+.total-strip .num{font-size:20px;font-weight:850;margin-top:4px}
+.work-color{color:#0758c9}.paid-color{color:#079653}.balance-color{color:#e56f00}
+.action-row{display:flex;gap:9px}
+.btn-save{
+  flex:1;border:0;border-radius:11px;color:#fff;font-size:15px;font-weight:800;
+  background:linear-gradient(100deg,#1769e0,#b53be0);cursor:pointer;
+  box-shadow:0 9px 20px rgba(55,73,215,.22);transition:.2s
+}
+.btn-save:hover{transform:translateY(-2px)}
+.btn-clear{
+  width:115px;border:1px solid #d6dfeb;border-radius:11px;background:#fff;
+  color:#183252;font-weight:750;cursor:pointer
+}
+.status-box{
+  margin-top:14px;border-radius:11px;padding:12px 14px;font-size:13px;
+  display:none
+}
+.status-box.show{display:block}.status-box.error{background:#fff0f0;color:#b42318}
+.status-box.ok{background:#effbf4;color:#087a42}
+.info-bar{
+  margin-top:16px;background:#eaf3ff;border:1px solid #d8e8ff;border-radius:12px;
+  padding:13px 16px;color:#1760b7;font-size:13px
+}
+@media(max-width:1100px){
+  .entry-layout{grid-template-columns:1fr}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .summary h3,.formula{grid-column:1/-1}
+  .sum-card{margin:0}
+  .bottom-row{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  .sidebar{width:210px!important}
+  .kpis{grid-template-columns:repeat(2,1fr)!important}
+  .amount-grid{grid-template-columns:repeat(2,1fr)}
+  .customer-paid{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .dash-main{padding:15px!important}
+  .sidebar{display:none}
+  .kpis{grid-template-columns:1fr!important}
+  .amount-grid{grid-template-columns:1fr 1fr}
+  .summary{grid-template-columns:1fr}
+  .total-strip{grid-template-columns:1fr;text-align:center;gap:7px}
+  .total-strip .eq{display:none}
+  .action-row{flex-direction:column}
+  .btn-clear{width:100%;height:45px}
 }
 
-.insurance-error{
-  color:#c62828!important;
-  font-weight:800;
+/* ===== WhatsApp Payment Reminder ===== */
+.wa-reminder-section{margin-top:18px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.wa-reminder-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.wa-reminder-title{display:flex;align-items:center;gap:10px}
+.wa-reminder-title .wa-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#eafaf0;font-size:22px}
+.wa-reminder-title h2{margin:0;font-size:20px}.wa-reminder-title p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.wa-actions{display:flex;gap:8px;flex-wrap:wrap}.wa-btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;font-size:12px}
+.wa-btn.green{background:#16a05d;color:#fff}.wa-btn.light{background:#eef5ff;color:#164b8f;border:1px solid #d9e7f8}
+.wa-reminder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wa-list-card{border:1px solid #e0e8f2;border-radius:14px;overflow:hidden;background:#fbfdff}
+.wa-list-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e3ebf4;background:#f7faff}
+.wa-list-head strong{font-size:13px}.wa-badge{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:850}
+.wa-badge.today{background:#1769e0}.wa-badge.overdue{background:#ef4444}.wa-list-body{max-height:330px;overflow:auto}
+.wa-customer{padding:12px 14px;border-bottom:1px solid #edf1f6;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wa-customer:last-child{border-bottom:0}.wa-customer-main{min-width:0}
+.wa-customer-name{font-weight:800;color:#10284b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-meta{margin-top:3px;color:#71819b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-balance{margin-top:4px;font-size:11px;font-weight:800;color:#d97706}
+.wa-send{flex:0 0 auto;border:0;border-radius:9px;padding:8px 10px;background:#16a05d;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.wa-empty{padding:22px 14px;text-align:center;color:#71819b;font-size:12px}
+.wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
+@media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
+
+/* ===== Vehicle Insurance Quick Entry ===== */
+.insurance-reminder-section{
+  margin-top:18px;padding:22px;background:#fff;border:1px solid var(--line);
+  border-radius:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;
 }
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-/* =========================================================
-   FOOTER - FULL WIDTH / COMPACT
-========================================================= */
-
-.unified-site-footer{
-  width:100%;
-  margin-top:30px;
-  background:#031a39;
-  border-top:3px solid #ff8c00;
-  padding:28px 15px 25px;
-  text-align:center;
-  color:#fff;
+.insurance-reminder-section:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(#ff9b25,#ff7d00);
 }
-
-.footer-inner{
-  width:100%;
-  max-width:1180px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+.insurance-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+.insurance-title{display:flex;align-items:center;gap:10px}
+.insurance-title .car-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#fff5e9;font-size:22px}
+.insurance-title h2{margin:0;font-size:20px}
+.insurance-title p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.insurance-actions{display:flex;gap:8px;flex-wrap:wrap}
+.insurance-btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;font-size:12px}
+.insurance-btn.primary{background:linear-gradient(100deg,#1769e0,#3459ff);color:#fff}
+.insurance-btn.light{background:#eef5ff;color:#164b8f;border:1px solid #d9e7f8}
+.insurance-form{
+  border:1px solid var(--line);border-radius:15px;padding:15px;background:#fbfdff;
 }
-
-.footer-logo{
-  width:160px;
-  max-width:75%;
-  height:auto;
-  object-fit:contain;
-  margin:0 0 10px;
+.insurance-fields{
+  display:grid;grid-template-columns:1.25fr 1fr 1.1fr 1fr;gap:12px;
 }
-
-.footer-address,
-.footer-contact,
-.footer-email,
-.footer-social,
-.footer-tagline{
-  margin:2px 0;
-  padding:0;
-  line-height:1.35;
+.insurance-form .field input{
+  height:45px;
 }
-
-.footer-address{
-  font-size:12px;
-  color:#dce7f8;
+.insurance-search-wrap{position:relative}
+.insurance-search-wrap input{padding-right:42px}
+.insurance-suggestions{
+  position:absolute;z-index:40;left:0;right:0;top:76px;background:#fff;
+  border:1px solid #d9e4f1;border-radius:12px;box-shadow:0 16px 35px rgba(16,40,75,.14);
+  overflow:hidden;display:none;max-height:230px;overflow-y:auto;
 }
-
-.footer-contact{
-  font-size:12px;
-  font-weight:800;
-  color:#fff;
+.insurance-suggestions.show{display:block}
+.insurance-option{
+  width:100%;border:0;background:#fff;text-align:left;padding:11px 13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
 }
-
-.footer-email{
-  font-size:12px;
-  color:#dce7f8;
+.insurance-option:hover{background:#eef5ff}
+.insurance-option b{color:#142e52}
+.insurance-option small{color:#7a8aa0}
+.insurance-table-wrap{
+  margin-top:14px;border:1px solid #e0e8f2;border-radius:14px;overflow:auto;background:#fff;
 }
-
-.footer-social{
-  font-size:12px;
-  font-weight:800;
-  color:#ff8c00;
+.insurance-table{width:100%;border-collapse:collapse;min-width:720px}
+.insurance-table th{
+  background:#f7faff;color:#60728c;font-size:10px;text-transform:uppercase;
+  letter-spacing:.4px;text-align:left;padding:11px 12px;border-bottom:1px solid #e3ebf4;
 }
-
-.footer-tagline{
-  margin-top:5px;
-  font-size:12px;
-  font-weight:800;
-  color:#fff;
+.insurance-table td{padding:11px 12px;border-bottom:1px solid #edf1f6;font-size:12px;vertical-align:middle}
+.insurance-table tr:last-child td{border-bottom:0}
+.insurance-customer{font-weight:800;color:#10284b}
+.insurance-mobile{font-size:10px;color:#71819b;margin-top:3px}
+.insurance-status{
+  display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;
+  font-size:10px;font-weight:850;white-space:nowrap;
 }
-
-@media(max-width:600px){
-
-  .unified-site-footer{
-    margin-top:22px;
-    padding:25px 12px 22px;
-  }
-
-  .footer-logo{
-    width:140px;
-    margin-bottom:8px;
-  }
-
-  .footer-address,
-  .footer-contact,
-  .footer-email,
-  .footer-social,
-  .footer-tagline{
-    font-size:11px;
-    line-height:1.3;
-    margin:2px 0;
-  }
-
+.insurance-status.active{background:#eafaf0;color:#16834b}
+.insurance-status.near{background:#fff4df;color:#b86100}
+.insurance-status.expired{background:#ffecec;color:#c62828}
+.insurance-wa{
+  border:0;border-radius:8px;padding:7px 9px;background:#16a05d;color:#fff;
+  font-weight:800;font-size:10px;cursor:pointer;white-space:nowrap;
 }
-
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
+.insurance-counts{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.insurance-count{
+  padding:6px 9px;border-radius:999px;font-size:10px;font-weight:850;
+  background:#edf5ff;color:#1760b7;
+}
+.insurance-count.expired{background:#ffecec;color:#c62828}
+.insurance-count.seven{background:#fff0dc;color:#a85a00}
+.insurance-count.thirty{background:#e9fbf1;color:#087a42}
+.insurance-note{
+  margin-top:11px;padding:10px 12px;border-radius:10px;background:#eef7ff;
+  border:1px solid #dcecff;color:#41627f;font-size:11px;
+}
+.insurance-status-box{margin-top:11px}
+.insurance-empty{padding:22px;text-align:center;color:#71819b;font-size:12px}
 @media(max-width:1000px){
-
-  .admin-stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .reminder-grid{
-    grid-template-columns:1fr;
-  }
-
-  .insurance-form{
-    grid-template-columns:repeat(2,1fr);
-  }
-
+  .insurance-fields{grid-template-columns:repeat(2,1fr)}
 }
-
-@media(max-width:700px){
-
-  .dashboard-container{
-    width:100%;
-  }
-
-  .section-card{
-    padding:15px;
-    border-radius:15px;
-  }
-
-  .admin-stats{
-    grid-template-columns:1fr 1fr;
-    gap:9px;
-  }
-
-  .admin-stat{
-    padding:13px;
-  }
-
-  .admin-stat strong{
-    font-size:20px;
-  }
-
-  .work-top-grid{
-    grid-template-columns:1fr;
-  }
-
-  .work-small-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .work-bottom{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .work-summary{
-    width:100%;
-  }
-
-  .work-actions{
-    width:100%;
-  }
-
-  .work-actions button{
-    flex:1;
-  }
-
-  .insurance-form{
-    grid-template-columns:1fr;
-  }
-
-  .insurance-actions{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  }
-
-  .insurance-actions .primary-btn{
-    grid-column:span 2;
-  }
-
-  .reminder-customer{
-    align-items:flex-start;
-  }
-
-}
-
-@media(max-width:480px){
-
-  .section-title{
-    font-size:18px;
-  }
-
-  .section-subtitle{
-    font-size:11px;
-  }
-
-  .admin-stats{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .admin-stat small{
-    font-size:10px;
-  }
-
-  .admin-stat strong{
-    font-size:18px;
-  }
-
-  .work-small-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .work-summary{
-    grid-template-columns:1fr;
-  }
-
-  .reminder-customer{
-    flex-direction:column;
-  }
-
-  .whatsapp-btn{
-    width:100%;
-  }
-
-  .insurance-actions{
-    grid-template-columns:1fr;
-  }
-
-  .insurance-actions .primary-btn{
-    grid-column:auto;
-  }
-
-  .footer-logo{
-    width:145px;
-  }
-
-  .footer-address,
-  .footer-contact,
-  .footer-email,
-  .footer-social,
-  .footer-tagline{
-    font-size:11px;
-  }
-
+@media(max-width:620px){
+  .insurance-reminder-section{padding:14px}
+  .insurance-head{align-items:flex-start;flex-direction:column}
+  .insurance-actions{width:100%}
+  .insurance-actions .insurance-btn{flex:1}
+  .insurance-fields{grid-template-columns:1fr}
 }
 
 </style>
-
-<style id="footer-final-fix">
-html, body {
-  width:100%;
-  min-width:0;
-  margin:0;
-  padding:0;
+<link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+<style>
+/* ===== Unified iTech Footer - full width compact ===== */
+.unified-site-footer{
+  width:100%!important;
+  max-width:none!important;
+  margin:32px 0 0!important;
+  padding:22px 20px 20px!important;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a)!important;
+  color:#fff;
+  border-radius:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  clear:both;
 }
-
-.unified-site-footer {
-  display:block !important;
-  position:relative !important;
-  box-sizing:border-box !important;
-  width:100vw !important;
-  max-width:none !important;
-  min-width:0 !important;
-  margin:30px 0 0 !important;
-  padding:26px 15px 22px !important;
-  background:#031a39 !important;
-  border-top:3px solid #ff8c00 !important;
-  border-left:0 !important;
-  border-right:0 !important;
-  border-bottom:0 !important;
-  border-radius:0 !important;
-  overflow:hidden !important;
+.unified-site-footer .footer-logo{
+  width:66px!important;height:66px!important;object-fit:contain;display:block;
+  margin:0 auto 5px!important;
 }
-
-.unified-site-footer .footer-inner {
-  width:100% !important;
-  max-width:1180px !important;
-  margin:0 auto !important;
-  padding:0 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:0 !important;
+.unified-site-footer p{
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
 }
-
-.unified-site-footer .footer-logo {
-  display:block !important;
-  width:155px !important;
-  max-width:75% !important;
-  height:auto !important;
-  margin:0 auto 8px !important;
+.unified-site-footer .footer-address{font-size:12px;font-weight:600;color:#dce7f8}
+.unified-site-footer .footer-contact{font-size:13px;font-weight:800;color:#fff}
+.unified-site-footer .footer-email{font-size:12px;color:#dce7f8}
+.unified-site-footer .footer-social{font-size:12px;font-weight:800;color:#ff9a25}
+.unified-site-footer .footer-tagline{
+  margin:6px 0 0!important;
+  padding:0!important;
+  width:auto!important;
+  border:0!important;
+  font-size:12px;font-weight:800;letter-spacing:.4px;color:#ff9a25;
 }
-
-.unified-site-footer p {
-  display:block !important;
-  width:auto !important;
-  margin:2px 0 !important;
-  padding:0 !important;
-  border:0 !important;
-  line-height:1.25 !important;
-}
-
-.unified-site-footer .footer-tagline {
-  margin-top:4px !important;
-  padding-top:0 !important;
-  border-top:0 !important;
-}
-
-@media (max-width:600px) {
-  .unified-site-footer {
-    width:100vw !important;
-    margin-top:22px !important;
-    padding:23px 10px 20px !important;
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px!important;
+    padding:20px 14px 18px!important;
   }
-  .unified-site-footer .footer-logo {
-    width:135px !important;
-    margin-bottom:7px !important;
-  }
-  .unified-site-footer p {
-    font-size:11px !important;
-    line-height:1.22 !important;
-    margin:2px 0 !important;
-  }
+  .unified-site-footer .footer-logo{width:58px!important;height:58px!important}
 }
 </style>
-
 </head>
-
-
 <body>
 
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header class="dash-header">
-
-  <a class="brand" href="dashboard.html">
-
-    <img
-      class="brand-logo"
-      src="../assets/itech-logo.png"
-      alt="iTech IT Solutions"
-    >
-
-  </a>
-
-  <a
-    class="btn secondary"
-    href="../pages/login.html"
-    data-logout
-  >
-    Logout
-  </a>
-
+  <a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
+  <div class="header-actions">
+    <span class="user-chip" data-admin-name>Admin</span>
+    <a class="btn secondary" href="../pages/login.html" data-logout>Logout</a>
+  </div>
 </header>
 
-
 <div class="dash-layout">
-
-
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
-
-<aside class="sidebar">
-
-  <nav>
-
-    <a href="dashboard.html">
-      Dashboard
-    </a>
-
-    <a href="customers.html">
-      Customers
-    </a>
-
-    <a href="add-customer.html">
-      + Add Customer
-    </a>
-
-    <a href="#quick-work">
-      Daily Work
-    </a>
-
-    <a href="payments.html">
-      Payments
-    </a>
-
-    <a href="reports.html">
-      Reports
-    </a>
-
-    <a href="services.html">
-      Services
-    </a>
-
-    <a href="products.html">
-      Products
-    </a>
-
-    <a href="enquiries.html">
-      Enquiries
-    </a>
-
-    <a href="amc.html">
-      AMC
-    </a>
-
-    <a href="offers.html">
-      Offers
-    </a>
-
-    <a href="our-works.html">
-      Our Works
-    </a>
-
-    <a href="messages.html">
-      Messages
-    </a>
-
-  </nav>
-
-</aside>
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
+<aside class="sidebar"><nav>
+<a class="active" href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a>
+</nav></aside>
 
 <main class="dash-main">
 
-<div class="dashboard-container">
-
-
-<!-- =====================================================
-     TITLE
-===================================================== -->
-
 <div class="toolbar">
-
   <div>
-
-    <p class="eyebrow">
-      ADMIN CONTROL PANEL
-    </p>
-
-    <h1>
-      Dashboard
-    </h1>
-
-    <p class="muted">
-      Manage customers, payments, daily work and vehicle insurance.
-    </p>
-
+    <p class="eyebrow">CONTROL CENTER</p>
+    <h1>Dashboard</h1>
+    <p class="muted">Daily shop activity at a glance.</p>
   </div>
+</div>
 
+<div class="kpis">
+  <div class="kpi"><b>Today's Work</b><div id="todayWork" class="value">₹0.00</div><small id="todayEntries" class="muted">0 entries</small></div>
+  <div class="kpi"><b>Today's Payments</b><div id="todayPayments" class="value">₹0.00</div><small class="muted">Collected today</small></div>
+  <div class="kpi"><b>Total Outstanding</b><div id="outstanding" class="value">₹0.00</div><small class="muted">All customers</small></div>
+  <div class="kpi"><b>New Enquiries</b><div id="enquiries" class="value">0</div><small class="muted">Pending / new</small></div>
 </div>
 
 
-<!-- =====================================================
-     STATS
-===================================================== -->
-
-<div class="admin-stats">
-
-  <div class="admin-stat">
-    <small>Total Customers</small>
-    <strong id="totalCustomers">0</strong>
-  </div>
-
-  <div class="admin-stat">
-    <small>Total Outstanding</small>
-    <strong id="totalOutstanding">₹0.00</strong>
-  </div>
-
-  <div class="admin-stat">
-    <small>Today's Work</small>
-    <strong id="todayWork">₹0.00</strong>
-  </div>
-
-  <div class="admin-stat">
-    <small>Insurance Policies</small>
-    <strong id="totalInsurance">0</strong>
-  </div>
-
-</div>
 
 
-<!-- =====================================================
-     WHATSAPP PAYMENT REMINDER
-===================================================== -->
+<section class="dashboard-card quick-entry">
+  <div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
+  <p class="quick-sub">Work + payment can be entered from this screen.</p>
 
-<section class="section-card payment-reminder">
-
-  <h2 class="section-title">
-    📱 WhatsApp Payment Reminder
-  </h2>
-
-  <p class="section-subtitle">
-    Customers with outstanding balance can be contacted directly through WhatsApp.
-  </p>
-
-
-  <div class="reminder-grid">
-
-    <div>
-
-      <h3 style="margin:0;font-size:14px">
-        Outstanding Customers
-      </h3>
-
-      <div
-        id="paymentReminderList"
-        class="customer-reminder-list"
-        style="margin-top:12px"
-      >
-
-        <div class="info-box">
-          Loading customers...
+  <div class="entry-layout">
+    <div class="entry-main">
+      <div class="customer-paid">
+        <div class="field customer-picker">
+          <label>Customer <span style="color:#e33">*</span></label>
+          <div class="customer-input-wrap">
+            <input id="customerSearch" type="text" autocomplete="off"
+                   placeholder="Type customer name or mobile…" aria-label="Search customer">
+            <button type="button" id="customerClear" class="customer-clear" aria-label="Clear customer">×</button>
+          </div>
+          <div id="customerSuggestions" class="customer-suggestions" role="listbox" aria-label="Customer suggestions"></div>
+          <input id="customer" type="hidden" value="">
         </div>
-
+        <div class="field">
+          <label>Paid Amount Today</label>
+          <input id="paidAmount" type="number" min="0" step="0.01" placeholder="Enter amount">
+        </div>
       </div>
 
-    </div>
-
-
-    <div>
-
-      <h3 style="margin:0;font-size:14px">
-        Reminder Information
-      </h3>
-
-      <div class="info-box" style="margin-top:12px">
-
-        WhatsApp opens with the message already prepared.
-        Review it and press Send.
-
+      <div class="amount-grid">
+        <div class="amount-box"><label>E-Filing</label><input id="e_filing" type="number" min="0" step="0.01" placeholder="₹ Amount"></div>
+        <div class="amount-box"><label>E-Payment</label><input id="e_payment" type="number" min="0" step="0.01" placeholder="₹ Amount"></div>
+        <div class="amount-box"><label>Print</label><input id="print_amount" type="number" min="0" step="0.01" placeholder="₹ Amount"></div>
+        <div class="amount-box"><label>Scanning</label><input id="scanning" type="number" min="0" step="0.01" placeholder="₹ Amount"></div>
+        <div class="amount-box"><label>Other Works</label><input id="other_works" type="number" min="0" step="0.01" placeholder="₹ Amount"></div>
       </div>
 
-      <div
-        id="paymentReminderStatus"
-        class="status-message"
-      ></div>
+      <div class="service-label">Services</div>
+      <div id="serviceList" class="service-list"><div class="muted">Loading services…</div></div>
 
+      <div class="field" style="margin-top:14px">
+        <label>Description <span style="font-weight:500;color:#7a8ba2">(Optional)</span></label>
+        <textarea id="description" placeholder="Optional note / work description"></textarea>
+      </div>
     </div>
 
+    <aside class="summary">
+      <h3>👤 Customer Summary</h3>
+      <div class="sum-card sum-old"><div class="label">Old Balance (Before Today)</div><div id="oldBalance" class="num">₹0.00</div></div>
+      <div class="sum-card sum-work"><div class="label">Today's Work Total</div><div id="customerTodayWork" class="num">₹0.00</div></div>
+      <div class="sum-card sum-paid"><div class="label">Today's Paid</div><div id="customerTodayPaid" class="num">₹0.00</div></div>
+      <div class="sum-card sum-new"><div class="label">New Balance (After Transaction)</div><div id="newBalance" class="num">₹0.00</div></div>
+      <div class="formula">New Balance = Old Balance + Work − Paid</div>
+    </aside>
   </div>
 
+  <div class="bottom-row">
+    <div class="total-strip">
+      <div><div class="cap">WORK TOTAL</div><div id="workTotal" class="num work-color">₹0.00</div></div>
+      <div class="eq">−</div>
+      <div><div class="cap">PAID TODAY</div><div id="paidTotal" class="num paid-color">₹0.00</div></div>
+      <div class="eq">=</div>
+      <div><div class="cap">BALANCE ADDED</div><div id="balanceAdded" class="num balance-color">₹0.00</div></div>
+    </div>
+    <div class="action-row">
+      <button id="saveBtn" class="btn-save">💾 Save Work & Payment</button>
+      <button id="clearBtn" class="btn-clear">↻ Clear</button>
+    </div>
+  </div>
+  <div id="statusBox" class="status-box"></div>
+</section>
+
+<section class="wa-reminder-section">
+  <div class="wa-reminder-head">
+    <div class="wa-reminder-title">
+      <span class="wa-icon">📲</span>
+      <div>
+        <h2>WhatsApp Payment Reminders</h2>
+        <p>Today's customers and customers with 7+ days outstanding.</p>
+      </div>
+    </div>
+    <div class="wa-actions">
+      <button type="button" id="waSendTodayAll" class="wa-btn green">📲 Send Today's All</button>
+      <button type="button" id="waSendOverdueAll" class="wa-btn light">📲 Send 7+ Days All</button>
+      <button type="button" id="waRefresh" class="wa-btn light">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="wa-reminder-grid">
+    <div class="wa-list-card">
+      <div class="wa-list-head"><strong>Today's Customers</strong><span id="waTodayCount" class="wa-badge today">0</span></div>
+      <div id="waTodayList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
+    </div>
+    <div class="wa-list-card">
+      <div class="wa-list-head"><strong>7+ Days Outstanding</strong><span id="waOverdueCount" class="wa-badge overdue">0</span></div>
+      <div id="waOverdueList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
+    </div>
+  </div>
+  <div class="wa-note">ℹ️ WhatsApp opens with the message already prepared. Review it and press Send.</div>
 </section>
 
 
-<!-- =====================================================
-     QUICK DAILY WORK
-===================================================== -->
-
-<section
-  id="quick-work"
-  class="section-card quick-work"
->
-
-  <h2 class="section-title">
-    ⚡ Quick Daily Work Entry
-  </h2>
-
-  <p class="section-subtitle">
-    Work and payment can be entered quickly from this screen.
-  </p>
-
-
-  <div class="work-top-grid">
-
-
-    <!-- CUSTOMER -->
-
-    <div class="field">
-
-      <label>
-        Customer *
-      </label>
-
-      <div class="customer-search-wrap">
-
-        <input
-          id="workCustomer"
-          type="text"
-          autocomplete="off"
-          placeholder="Search customer name or mobile"
-        >
-
-        <div
-          id="workCustomerSuggestions"
-          class="customer-suggestions"
-          hidden
-        ></div>
-
+<section class="insurance-reminder-section">
+  <div class="insurance-head">
+    <div class="insurance-title">
+      <span class="car-icon">🚗</span>
+      <div>
+        <h2>Vehicle Insurance Reminder – Quick Entry</h2>
+        <p>Customer Name, Mobile Number, Vehicle Number and Expiry Date are mandatory.</p>
       </div>
-
-      <input
-        id="workCustomerId"
-        type="hidden"
-      >
-
     </div>
-
-
-    <!-- PAID -->
-
-    <div class="field">
-
-      <label>
-        Paid Amount Today
-      </label>
-
-      <input
-        id="workPaid"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
+    <div class="insurance-actions">
+      <button type="button" id="insuranceManage" class="insurance-btn light">Manage All</button>
+      <button type="button" id="insuranceRefresh" class="insurance-btn light">↻ Refresh</button>
     </div>
-
   </div>
-
-
-  <!-- SMALL WORK TYPES -->
-
-  <div class="work-small-grid">
-
-
-    <div class="field work-small">
-
-      <label>
-        E-Filing
-      </label>
-
-      <input
-        id="workEFiling"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
-    </div>
-
-
-    <div class="field work-small">
-
-      <label>
-        E-Payment
-      </label>
-
-      <input
-        id="workEPayment"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
-    </div>
-
-
-    <div class="field work-small">
-
-      <label>
-        Print
-      </label>
-
-      <input
-        id="workPrint"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
-    </div>
-
-
-    <div class="field work-small">
-
-      <label>
-        Scanning
-      </label>
-
-      <input
-        id="workScanning"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
-    </div>
-
-
-    <div class="field work-small">
-
-      <label>
-        Other Works
-      </label>
-
-      <input
-        id="workOther"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        placeholder="₹ Amount"
-      >
-
-    </div>
-
-  </div>
-
-
-  <!-- SERVICE -->
-
-  <div class="service-row">
-
-    <input
-      id="workServiceCheck"
-      type="checkbox"
-    >
-
-    <div>
-
-      <b>
-        Computer Service
-      </b>
-
-      <span
-        style="
-          color:#71819b;
-          font-size:11px;
-        "
-      >
-        - Computer
-      </span>
-
-    </div>
-
-    <span
-      id="workServicePrice"
-      class="service-price"
-    >
-      ₹300.00
-    </span>
-
-  </div>
-
-
-  <!-- DESCRIPTION -->
-
-  <div class="field work-description">
-
-    <label>
-      Description
-    </label>
-
-    <textarea
-      id="workDescription"
-      rows="3"
-      placeholder="Optional note / work description"
-    ></textarea>
-
-  </div>
-
-
-  <!-- SUMMARY -->
-
-  <div class="work-bottom">
-
-    <div class="work-summary">
-
-      <div class="summary-box">
-
-        <small>
-          WORK TOTAL
-        </small>
-
-        <strong
-          id="workTotal"
-          style="color:#1263d6"
-        >
-          ₹0.00
-        </strong>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <small>
-          PAID TODAY
-        </small>
-
-        <strong
-          id="workPaidSummary"
-          style="color:#16834b"
-        >
-          ₹0.00
-        </strong>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <small>
-          BALANCE ADDED
-        </small>
-
-        <strong
-          id="workBalanceAdded"
-          style="color:#df7b00"
-        >
-          ₹0.00
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="work-actions">
-
-      <button
-        id="saveWork"
-        class="primary-btn"
-        type="button"
-      >
-        💾 Save Work & Payment
-      </button>
-
-      <button
-        id="clearWork"
-        class="secondary-btn"
-        type="button"
-      >
-        ↻ Clear
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="workStatus"
-    class="status-message"
-  ></div>
-
-</section>
-
-
-<!-- =====================================================
-     VEHICLE INSURANCE QUICK ENTRY
-===================================================== -->
-
-<section
-  id="vehicle-insurance"
-  class="section-card insurance-card"
->
-
-  <h2 class="section-title">
-    🚗 Vehicle Insurance Reminder – Quick Entry
-  </h2>
-
-  <p class="section-subtitle">
-    Customer Name, Mobile Number, Vehicle Number and Expiry Date are mandatory.
-  </p>
-
-
-  <!-- FORM -->
 
   <div class="insurance-form">
-
-
-    <!-- CUSTOMER -->
-
-    <div class="field">
-
-      <label>
-        Customer Name *
-      </label>
-
-      <div class="customer-search-wrap">
-
-        <input
-          id="viCustomer"
-          type="text"
-          autocomplete="off"
-          placeholder="Search Add Customer"
-        >
-
-        <div
-          id="viSuggestions"
-          class="customer-suggestions"
-          hidden
-        ></div>
-
+    <div class="insurance-fields">
+      <div class="field insurance-search-wrap">
+        <label>Customer Name <span style="color:#e33">*</span></label>
+        <input id="insuranceCustomerSearch" type="text" autocomplete="off"
+               placeholder="Search Add Customer" aria-label="Search insurance customer">
+        <div id="insuranceCustomerSuggestions" class="insurance-suggestions"></div>
+        <input id="insuranceCustomerId" type="hidden">
       </div>
 
-      <input
-        id="viCustomerId"
-        type="hidden"
-      >
+      <div class="field">
+        <label>Mobile Number <span style="color:#e33">*</span></label>
+        <input id="insuranceMobile" type="tel" inputmode="numeric" readonly placeholder="Mobile Number">
+      </div>
 
+      <div class="field">
+        <label>Vehicle Number <span style="color:#e33">*</span></label>
+        <input id="insuranceVehicle" type="text" maxlength="20" placeholder="KL01AB1234">
+      </div>
+
+      <div class="field">
+        <label>Insurance Expiry Date <span style="color:#e33">*</span></label>
+        <input id="insuranceExpiry" type="date">
+      </div>
     </div>
 
-
-    <!-- MOBILE -->
-
-    <div class="field">
-
-      <label>
-        Mobile Number *
-      </label>
-
-      <input
-        id="viMobile"
-        type="tel"
-        placeholder="Mobile Number"
-      >
-
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:13px">
+      <button type="button" id="insuranceSave" class="insurance-btn primary">💾 Save Insurance</button>
+      <button type="button" id="insuranceClear" class="insurance-btn light">↻ Clear</button>
     </div>
 
-
-    <!-- VEHICLE -->
-
-    <div class="field">
-
-      <label>
-        Vehicle Number *
-      </label>
-
-      <input
-        id="viVehicle"
-        type="text"
-        placeholder="KL01AB1234"
-      >
-
+    <div class="insurance-counts">
+      <span class="insurance-count">Policies: <b id="insuranceCount">0</b></span>
+      <span class="insurance-count expired">Expired: <b id="insuranceExpired">0</b></span>
+      <span class="insurance-count seven">7 Days: <b id="insuranceSeven">0</b></span>
+      <span class="insurance-count thirty">30 Days: <b id="insuranceThirty">0</b></span>
     </div>
 
-
-    <!-- EXPIRY -->
-
-    <div class="field">
-
-      <label>
-        Insurance Expiry Date *
-      </label>
-
-      <input
-        id="viExpiry"
-        type="date"
-      >
-
+    <div class="insurance-note">
+      ℹ️ WhatsApp reminder uses the selected Add Customer profile mobile number. Insurance-only profiles are not shown in this Quick Entry.
     </div>
 
+    <div id="insuranceStatus" class="status-box insurance-status-box"></div>
+
+    <div class="insurance-table-wrap">
+      <table class="insurance-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Vehicle</th>
+            <th>Expiry</th>
+            <th>Status</th>
+            <th>WhatsApp</th>
+          </tr>
+        </thead>
+        <tbody id="insuranceRows">
+          <tr><td colspan="5"><div class="insurance-empty">Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-
-  <!-- BUTTONS -->
-
-  <div class="insurance-actions">
-
-    <button
-      id="viSave"
-      class="primary-btn"
-      type="button"
-    >
-      💾 Save Insurance
-    </button>
-
-    <button
-      id="viClear"
-      class="secondary-btn"
-      type="button"
-    >
-      Clear
-    </button>
-
-    <a
-      href="vehicle-insurance.html"
-      class="secondary-btn"
-      style="
-        text-decoration:none;
-        text-align:center;
-      "
-    >
-      Manage All
-    </a>
-
-    <button
-      id="viRefresh"
-      class="secondary-btn"
-      type="button"
-    >
-      ↻ Refresh
-    </button>
-
-  </div>
-
-
-  <!-- BADGES -->
-
-  <div class="insurance-badges">
-
-    <span
-      id="viqTotal"
-      class="insurance-badge badge-total"
-    >
-      Policies: 0
-    </span>
-
-    <span
-      id="viqExpired"
-      class="insurance-badge badge-expired"
-    >
-      Expired: 0
-    </span>
-
-    <span
-      id="viq7"
-      class="insurance-badge badge-seven"
-    >
-      7 Days: 0
-    </span>
-
-    <span
-      id="viq30"
-      class="insurance-badge badge-thirty"
-    >
-      30 Days: 0
-    </span>
-
-  </div>
-
-
-  <!-- INFO -->
-
-  <div class="info-box">
-
-    ℹ️ WhatsApp reminder uses the selected Add Customer profile mobile number.
-    Insurance-only profiles are not shown in Quick Daily Work.
-
-  </div>
-
-
-  <!-- TABLE -->
-
-  <div class="insurance-table-wrap">
-
-    <table class="insurance-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            CUSTOMER
-          </th>
-
-          <th>
-            VEHICLE
-          </th>
-
-          <th>
-            EXPIRY
-          </th>
-
-          <th>
-            STATUS
-          </th>
-
-          <th>
-            WHATSAPP
-          </th>
-
-        </tr>
-
-      </thead>
-
-      <tbody id="viqRows">
-
-        <tr>
-
-          <td
-            colspan="5"
-            class="insurance-loading"
-          >
-            Loading insurance records...
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-
-  <div
-    id="viStatus"
-    class="status-message"
-  ></div>
-
 </section>
 
 
-</div>
+<div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 
-
-
-
-
-</main>
-</div>
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer class="unified-site-footer">
-
-  <div class="footer-inner">
-
-    <img
-      class="footer-logo"
-      src="../assets/itech-logo.png"
-      alt="iTech IT Solutions"
-    >
-
-    <p class="footer-address">
-      Govt. Sub Treasury Road, Nedumangad
-    </p>
-
-    <p class="footer-contact">
-      7736929233 · 8943165951
-    </p>
-
-    <p class="footer-email">
-      itnedumangad@gmail.com
-    </p>
-
-    <p class="footer-social">
-      @itechndd
-    </p>
-
-    <p class="footer-tagline">
-      Your Trust Our Service
-    </p>
-
-  </div>
-
-</footer>
-
-
-<!-- =====================================================
-     SUPABASE
-===================================================== -->
+</main></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
 <script src="../js/auth.js"></script>
 
-
 <script>
+(async()=>{
+  const ok=await requireAdmin(); if(!ok)return;
 
-/* =========================================================
-   DASHBOARD APPLICATION
-========================================================= */
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const today=new Date().toISOString().slice(0,10);
+  const $=id=>document.getElementById(id);
 
-(async function(){
+  let customers=[];
+  let services=[];
+  let selectedBalance=0;
+  let selectedTodayWork=0;
+  let selectedTodayPaid=0;
 
-  "use strict";
-
-
-  /* =======================================================
-     AUTH
-  ======================================================= */
-
-  const auth =
-    await requireAdmin();
-
-  if(!auth){
-    return;
+  function status(msg,error=false){
+    const el=$("statusBox");
+    el.textContent=msg;
+    el.className="status-box show "+(error?"error":"ok");
+    setTimeout(()=>el.classList.remove("show"),5000);
   }
 
+  function amount(id){ return Math.max(Number($(id).value||0),0); }
 
-  /* =======================================================
-     GLOBAL DATA
-  ======================================================= */
-
-  let customers = [];
-
-  let insuranceRecords = [];
-
-
-  /* =======================================================
-     HELPERS
-  ======================================================= */
-
-  function money(value){
-
-    return "₹" +
-      Number(value || 0)
-      .toLocaleString(
-        "en-IN",
-        {
-          minimumFractionDigits:2,
-          maximumFractionDigits:2
-        }
-      );
-
+  function workTotal(){
+    const fields=["e_filing","e_payment","print_amount","scanning","other_works"];
+    return fields.reduce((s,id)=>s+amount(id),0)+
+      [...document.querySelectorAll(".service-check:checked")].reduce((s,x)=>s+Number(x.dataset.total||0),0);
   }
 
-
-  function esc(value){
-
-    return String(value ?? "")
-      .replace(
-        /[&<>"']/g,
-        function(char){
-
-          const map = {
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            '"':"&quot;",
-            "'":"&#39;"
-          };
-
-          return map[char];
-
-        }
-      );
-
+  function updateTotals(){
+    const work=workTotal(), paid=amount("paidAmount");
+    $("workTotal").textContent=money(work);
+    $("paidTotal").textContent=money(paid);
+    $("balanceAdded").textContent=money(work-paid);
+    $("customerTodayWork").textContent=money(selectedTodayWork+work);
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
+    $("newBalance").textContent=money(selectedBalance+work-paid);
   }
-
-
-  function showStatus(
-    id,
-    message,
-    type
-  ){
-
-    const element =
-      document.getElementById(id);
-
-    if(!element){
-      return;
-    }
-
-    element.textContent =
-      message;
-
-    element.className =
-      "status-message show " +
-      (type || "success");
-
-  }
-
-
-  function clearStatus(id){
-
-    const element =
-      document.getElementById(id);
-
-    if(!element){
-      return;
-    }
-
-    element.textContent = "";
-
-    element.className =
-      "status-message";
-
-  }
-
-
-  /* =======================================================
-     LOAD CUSTOMERS
-  ======================================================= */
 
   async function loadCustomers(){
-
-    let result =
-      await sb
-        .from("customers")
-        .select(
-          "id,full_name,mobile,whatsapp,created_from_insurance"
-        )
-        .order(
-          "full_name",
-          {
-            ascending:true
-          }
-        )
-        .limit(1000);
-
-
-    /*
-      If created_from_insurance column
-      doesn't exist, retry.
-    */
-
-    if(result.error){
-
-      result =
-        await sb
-          .from("customers")
-          .select(
-            "id,full_name,mobile,whatsapp"
-          )
-          .order(
-            "full_name",
-            {
-              ascending:true
-            }
-          )
-          .limit(1000);
-
-    }
-
-
-    if(result.error){
-
-      throw new Error(
-        "Customer loading failed: " +
-        result.error.message
-      );
-
-    }
-
-
-    customers =
-      result.data || [];
-
-
-    /*
-      Insurance-created profiles
-      must not appear in Quick Daily Work.
-    */
-
-    if(
-      customers.length &&
-      Object.prototype.hasOwnProperty.call(
-        customers[0],
-        "created_from_insurance"
-      )
-    ){
-
-      customers =
-        customers.filter(
-          customer =>
-            customer.created_from_insurance !== true
-        );
-
-    }
-
-
-    document.getElementById(
-      "totalCustomers"
-    ).textContent =
-      customers.length;
-
-
-    renderPaymentCustomers();
-
+    const r=await sb.from("customers").select("*").order("full_name");
+    if(r.error){status(r.error.message,true);return;}
+    customers=r.data||[];
+    $("customer").value="";
+    $("customerSearch").value="";
+    renderCustomerSuggestions("");
   }
 
 
-  /* =======================================================
-     PAYMENT REMINDER CUSTOMERS
-  ======================================================= */
+  let activeSuggestion = -1;
 
-  async function renderPaymentCustomers(){
+  function customerText(c){
+    return `${c.full_name||""} — ${c.mobile||c.whatsapp||""}`.trim();
+  }
 
-    const container =
-      document.getElementById(
-        "paymentReminderList"
-      );
+  function renderCustomerSuggestions(query){
+    const box=$("customerSuggestions");
+    const q=(query||"").trim().toLowerCase();
+    const matches=customers.filter(c=>{
+      const name=String(c.full_name||"").toLowerCase();
+      const mobile=String(c.mobile||"").toLowerCase();
+      const whatsapp=String(c.whatsapp||"").toLowerCase();
+      return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
+    }).slice(0,8);
 
-
-    if(!customers.length){
-
-      container.innerHTML =
-        `
-        <div class="info-box">
-          No customers found.
-        </div>
-        `;
-
+    if(!matches.length){
+      box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
+      box.classList.add("show");
       return;
-
     }
 
+    box.innerHTML=matches.map((c,i)=>`
+      <button type="button" class="customer-option ${i===activeSuggestion?"active":""}"
+              data-customer-id="${c.id}" role="option">
+        <span>
+          <span class="customer-main">${String(c.full_name||"Customer")}</span>
+          <span class="customer-mobile">${c.mobile||c.whatsapp||""}</span>
+        </span>
+        <span class="customer-balance">Select</span>
+      </button>`).join("");
 
-    const balances =
-      await sb
-        .from("customer_balances")
-        .select(
-          "id,current_balance"
-        );
+    box.classList.add("show");
 
+    box.querySelectorAll(".customer-option").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const c=customers.find(x=>String(x.id)===String(btn.dataset.customerId));
+        if(!c)return;
+        $("customer").value=c.id;
+        $("customerSearch").value=customerText(c);
+        $("customerSuggestions").classList.remove("show");
+        $("customerClear").style.display="block";
+        activeSuggestion=-1;
+        loadCustomerSummary(c.id);
+      });
+    });
+  }
 
-    if(balances.error){
+  $("customerSearch").addEventListener("input",e=>{
+    if($("customer").value){
+      $("customer").value="";
+      selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+      $("oldBalance").textContent=money(0);
+    }
+    $("customerClear").style.display=e.target.value.trim()?"block":"none";
+    activeSuggestion=-1;
+    renderCustomerSuggestions(e.target.value);
+    updateTotals();
+  });
 
-      container.innerHTML =
-        `
-        <div class="info-box">
-          Unable to load customer balances.
-        </div>
-        `;
+  $("customerSearch").addEventListener("focus",()=>{
+    renderCustomerSuggestions($("customerSearch").value);
+  });
 
+  $("customerSearch").addEventListener("keydown",e=>{
+    const options=[...document.querySelectorAll(".customer-option")];
+    if(!options.length)return;
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeSuggestion=Math.min(activeSuggestion+1,options.length-1);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeSuggestion=Math.max(activeSuggestion-1,0);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="Enter" && activeSuggestion>=0){
+      e.preventDefault();
+      options[activeSuggestion].click();
+    }else if(e.key==="Escape"){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  $("customerClear").addEventListener("click",()=>{
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+    $("customerSearch").focus();
+  });
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".customer-picker")){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  async function loadServices(){
+    // Services table uses service_name and active status.
+    const r=await sb.from("services")
+      .select("id,service_name,category,description,price,gst_enabled,gst_percent,status")
+      .eq("status","active")
+      .order("service_name");
+
+    if(r.error){
+      $("serviceList").innerHTML=`<div class="muted">Unable to load services: ${r.error.message}</div>`;
       return;
-
     }
 
+    services=r.data||[];
 
-    const balanceMap =
-      new Map(
-        (balances.data || [])
-          .map(
-            item =>
-              [
-                String(item.id),
-                Number(
-                  item.current_balance || 0
-                )
-              ]
-          )
-      );
+    $("serviceList").innerHTML=services.map(s=>{
+      const name=String(s.service_name||"Service");
+      const price=Number(s.price||0);
+      const gstEnabled=Boolean(s.gst_enabled);
+      const gst=Number(s.gst_percent||0);
+      const gstAmount=gstEnabled ? price*gst/100 : 0;
+      const total=price+gstAmount;
 
+      return `<div class="service-row">
+        <label>
+          <input class="service-check"
+            type="checkbox"
+            data-id="${s.id}"
+            data-name="${name.replace(/"/g,"&quot;")}"
+            data-base="${price}"
+            data-gst="${gst}"
+            data-gst-enabled="${gstEnabled ? "1" : "0"}"
+            data-total="${total}">
+          <span>${name}
+            <span style="color:#72829a;font-weight:500">· ${s.category||"Service"}</span>
+          </span>
+        </label>
+        <span class="service-price">${money(total)}</span>
+      </div>`;
+    }).join("") || '<div class="muted">No active services available. Add/activate services from Services page.</div>';
 
-    const outstanding =
-      customers
-        .map(customer => ({
-          customer,
-          balance:
-            balanceMap.get(
-              String(customer.id)
-            ) || 0
-        }))
-        .filter(
-          item =>
-            item.balance > 0
-        )
-        .sort(
-          (a,b) =>
-            b.balance - a.balance
-        )
-        .slice(0,7);
-
-
-    document.getElementById(
-      "totalOutstanding"
-    ).textContent =
-      money(
-        outstanding.reduce(
-          (sum,item) =>
-            sum + item.balance,
-          0
-        )
-      );
-
-
-    if(!outstanding.length){
-
-      container.innerHTML =
-        `
-        <div class="info-box">
-          No outstanding customers found.
-        </div>
-        `;
-
-      return;
-
-    }
-
-
-    container.innerHTML =
-      outstanding.map(
-        item => {
-
-          const customer =
-            item.customer;
-
-
-          return `
-            <div class="reminder-customer">
-
-              <div class="reminder-customer-info">
-
-                <b>
-                  ${esc(
-                    customer.full_name ||
-                    "Customer"
-                  )}
-                </b>
-
-                <small>
-                  ${esc(
-                    customer.mobile ||
-                    customer.whatsapp ||
-                    "No mobile"
-                  )}
-                </small>
-
-                <div class="reminder-balance">
-                  Balance: ${money(item.balance)}
-                </div>
-
-              </div>
-
-              <button
-                type="button"
-                class="whatsapp-btn"
-                onclick="sendPaymentWhatsApp(
-                  '${String(customer.id)}'
-                )"
-              >
-                WhatsApp
-              </button>
-
-            </div>
-          `;
-
-        }
-      ).join("");
-
+    document.querySelectorAll(".service-check").forEach(x=>{
+      x.addEventListener("change",updateTotals);
+    });
   }
 
+  async function loadCustomerSummary(id){
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
 
-  /* =======================================================
-     PAYMENT WHATSAPP
-  ======================================================= */
+    const [b,w,p]=await Promise.all([
+      sb.from("customer_balances").select("*").eq("id",id).single(),
+      sb.from("today_work_report").select("total_amount").eq("customer_id",id),
+      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",today)
+    ]);
+    if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
+    selectedTodayWork=(w.data||[]).reduce((s,r)=>s+Number(r.total_amount||0),0);
+    selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
 
-  window.sendPaymentWhatsApp =
-    function(customerId){
-
-      const customer =
-        customers.find(
-          c =>
-            String(c.id) ===
-            String(customerId)
-        );
-
-
-      if(!customer){
-
-        showStatus(
-          "paymentReminderStatus",
-          "Customer not found.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      let phone =
-        String(
-          customer.mobile ||
-          customer.whatsapp ||
-          ""
-        )
-        .replace(
-          /\D/g,
-          ""
-        );
-
-
-      if(phone.startsWith("0")){
-
-        phone =
-          phone.substring(1);
-
-      }
-
-
-      if(phone.length === 10){
-
-        phone =
-          "91" + phone;
-
-      }
-
-
-      if(!phone){
-
-        showStatus(
-          "paymentReminderStatus",
-          "Customer mobile number is not available.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const message =
-`iTech IT Solutions – Payment Reminder
-
-Dear ${customer.full_name || "Customer"},
-
-This is a friendly reminder regarding your pending payment.
-
-Please contact iTech IT Solutions for payment details.
-
-7736929233 · 8943165951
-
-Your Trust Our Service`;
-
-
-      window.open(
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(message),
-        "_blank"
-      );
-
-    };
-
-
-  /* =======================================================
-     CUSTOMER SEARCH - DAILY WORK
-  ======================================================= */
-
-  function renderWorkSuggestions(){
-
-    const input =
-      document.getElementById(
-        "workCustomer"
-      );
-
-
-    const box =
-      document.getElementById(
-        "workCustomerSuggestions"
-      );
-
-
-    const query =
-      input.value
-        .trim()
-        .toLowerCase();
-
-
-    const results =
-      (
-        query
-        ? customers.filter(
-            customer => {
-
-              const text =
-                (
-                  customer.full_name ||
-                  ""
-                ) +
-                " " +
-                (
-                  customer.mobile ||
-                  ""
-                );
-
-              return text
-                .toLowerCase()
-                .includes(query);
-
-            }
-          )
-        : customers
-      )
-      .slice(0,4);
-
-
-    if(!results.length){
-
-      box.innerHTML = "";
-
-      box.hidden = true;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      results.map(
-        customer => `
-
-          <button
-            type="button"
-            class="customer-suggestion"
-            data-work-customer-id="${esc(customer.id)}"
-          >
-
-            <b>
-              ${esc(
-                customer.full_name ||
-                "Customer"
-              )}
-            </b>
-
-            <span>
-              ${esc(
-                customer.mobile ||
-                customer.whatsapp ||
-                ""
-              )}
-            </span>
-
-          </button>
-
-        `
-      ).join("");
-
-
-    box.hidden = false;
-
+    $("oldBalance").textContent=money(selectedBalance);
+    $("customerTodayWork").textContent=money(selectedTodayWork+workTotal());
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+amount("paidAmount"));
+    $("newBalance").textContent=money(selectedBalance+workTotal()-amount("paidAmount"));
   }
 
+  $("customer").addEventListener("change",e=>loadCustomerSummary(e.target.value));
+  ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
+    $(id).addEventListener("input",updateTotals);
+  });
 
-  document.getElementById(
-    "workCustomer"
-  ).addEventListener(
-    "input",
-    renderWorkSuggestions
-  );
-
-
-  document.getElementById(
-    "workCustomer"
-  ).addEventListener(
-    "focus",
-    renderWorkSuggestions
-  );
-
-
-  document.getElementById(
-    "workCustomerSuggestions"
-  ).addEventListener(
-    "click",
-    function(event){
-
-      const button =
-        event.target.closest(
-          "[data-work-customer-id]"
-        );
-
-      if(!button){
-        return;
-      }
-
-
-      const customer =
-        customers.find(
-          c =>
-            String(c.id) ===
-            String(
-              button.dataset
-                .workCustomerId
-            )
-        );
-
-
-      if(!customer){
-        return;
-      }
-
-
-      document.getElementById(
-        "workCustomer"
-      ).value =
-        customer.full_name || "";
-
-
-      document.getElementById(
-        "workCustomerId"
-      ).value =
-        customer.id;
-
-
-      document.getElementById(
-        "workCustomerSuggestions"
-      ).hidden = true;
-
-    }
-  );
-
-
-  document.addEventListener(
-    "click",
-    function(event){
-
-      if(
-        !event.target.closest(
-          ".customer-search-wrap"
-        )
-      ){
-
-        document.querySelectorAll(
-          ".customer-suggestions"
-        ).forEach(
-          box =>
-            box.hidden = true
-        );
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     DAILY WORK CALCULATION
-  ======================================================= */
-
-  function calculateWork(){
-
-    const values = [
-      "workEFiling",
-      "workEPayment",
-      "workPrint",
-      "workScanning",
-      "workOther"
-    ];
-
-
-    let total = 0;
-
-
-    values.forEach(
-      id => {
-
-        total += Number(
-          document.getElementById(
-            id
-          ).value || 0
-        );
-
-      }
-    );
-
-
-    if(
-      document.getElementById(
-        "workServiceCheck"
-      ).checked
-    ){
-
-      total += 300;
-
-    }
-
-
-    const paid =
-      Number(
-        document.getElementById(
-          "workPaid"
-        ).value || 0
-      );
-
-
-    const balance =
-      Math.max(
-        0,
-        total - paid
-      );
-
-
-    document.getElementById(
-      "workTotal"
-    ).textContent =
-      money(total);
-
-
-    document.getElementById(
-      "workPaidSummary"
-    ).textContent =
-      money(paid);
-
-
-    document.getElementById(
-      "workBalanceAdded"
-    ).textContent =
-      money(balance);
-
-
-    return {
-      total,
-      paid,
-      balance
-    };
-
+  function clearForm(){
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
+    $("description").value="";
+    document.querySelectorAll(".service-check").forEach(x=>x.checked=false);
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
   }
-
-
-  [
-    "workEFiling",
-    "workEPayment",
-    "workPrint",
-    "workScanning",
-    "workOther",
-    "workPaid",
-    "workServiceCheck"
-  ].forEach(
-    id => {
-
-      document.getElementById(
-        id
-      ).addEventListener(
-        "input",
-        calculateWork
-      );
-
-      document.getElementById(
-        id
-      ).addEventListener(
-        "change",
-        calculateWork
-      );
-
-    }
-  );
-
-
-  /* =======================================================
-     CLEAR DAILY WORK
-  ======================================================= */
-
-  document.getElementById(
-    "clearWork"
-  ).addEventListener(
-    "click",
-    function(){
-
-      document.getElementById(
-        "workCustomer"
-      ).value = "";
-
-      document.getElementById(
-        "workCustomerId"
-      ).value = "";
-
-      [
-        "workEFiling",
-        "workEPayment",
-        "workPrint",
-        "workScanning",
-        "workOther",
-        "workPaid"
-      ].forEach(
-        id =>
-          document.getElementById(
-            id
-          ).value = 0
-      );
-
-
-      document.getElementById(
-        "workServiceCheck"
-      ).checked = false;
-
-
-      document.getElementById(
-        "workDescription"
-      ).value = "";
-
-
-      calculateWork();
-
-
-      clearStatus(
-        "workStatus"
-      );
-
-    }
-  );
-
-
-  /* =======================================================
-     SAVE DAILY WORK
-  ======================================================= */
-
-  document.getElementById(
-    "saveWork"
-  ).addEventListener(
-    "click",
-    async function(){
-
-      const customerId =
-        document.getElementById(
-          "workCustomerId"
-        ).value;
-
-
-      if(!customerId){
-
-        showStatus(
-          "workStatus",
-          "Please select a customer from Add Customer list.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const result =
-        calculateWork();
-
-
-      if(result.total <= 0){
-
-        showStatus(
-          "workStatus",
-          "Please enter work amount.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const payload = {
-
-        customer_id:
-          customerId,
-
-        work_date:
-          new Date()
-            .toISOString()
-            .slice(0,10),
-
-        e_filing:
-          Number(
-            document.getElementById(
-              "workEFiling"
-            ).value || 0
-          ),
-
-        e_payment:
-          Number(
-            document.getElementById(
-              "workEPayment"
-            ).value || 0
-          ),
-
-        print_amount:
-          Number(
-            document.getElementById(
-              "workPrint"
-            ).value || 0
-          ),
-
-        scanning:
-          Number(
-            document.getElementById(
-              "workScanning"
-            ).value || 0
-          ),
-
-        other_works:
-          Number(
-            document.getElementById(
-              "workOther"
-            ).value || 0
-          ),
-
-        total_amount:
-          result.total,
-
-        paid_amount:
-          result.paid,
-
-        description:
-          document.getElementById(
-            "workDescription"
-          ).value.trim()
-
-      };
-
-
-      showStatus(
-        "workStatus",
-        "Saving work entry...",
-        "success"
-      );
-
-
-      const insert =
-        await sb
-          .from("daily_work_entries")
-          .insert(payload);
-
-
-      if(insert.error){
-
-        /*
-          Important:
-          If your existing table does not have
-          total_amount, this will show exact
-          database error instead of leaving
-          the dashboard broken.
-        */
-
-        console.error(
-          "Daily Work Error:",
-          insert.error
-        );
-
-
-        showStatus(
-          "workStatus",
-          insert.error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      showStatus(
-        "workStatus",
-        "Daily work saved successfully.",
-        "success"
-      );
-
-
-      document.getElementById(
-        "clearWork"
-      ).click();
-
-
-      loadDashboardStats();
-
-    }
-  );
-
-
-  /* =======================================================
-     VEHICLE INSURANCE CUSTOMER SEARCH
-  ======================================================= */
-
-  function renderInsuranceSuggestions(){
-
-    const input =
-      document.getElementById(
-        "viCustomer"
-      );
-
-
-    const box =
-      document.getElementById(
-        "viSuggestions"
-      );
-
-
-    const query =
-      input.value
-        .trim()
-        .toLowerCase();
-
-
-    const results =
-      (
-        query
-        ? customers.filter(
-            customer => {
-
-              const text =
-                (
-                  customer.full_name ||
-                  ""
-                ) +
-                " " +
-                (
-                  customer.mobile ||
-                  ""
-                );
-
-              return text
-                .toLowerCase()
-                .includes(query);
-
-            }
-          )
-        : customers
-      )
-      .slice(0,4);
-
-
-    if(!results.length){
-
-      box.innerHTML = "";
-
-      box.hidden = true;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      results.map(
-        customer => `
-
-          <button
-            type="button"
-            class="customer-suggestion"
-            data-insurance-customer-id="${esc(customer.id)}"
-          >
-
-            <b>
-              ${esc(
-                customer.full_name ||
-                "Customer"
-              )}
-            </b>
-
-            <span>
-              ${esc(
-                customer.mobile ||
-                customer.whatsapp ||
-                ""
-              )}
-            </span>
-
-          </button>
-
-        `
-      ).join("");
-
-
-    box.hidden = false;
-
-  }
-
-
-  document.getElementById(
-    "viCustomer"
-  ).addEventListener(
-    "input",
-    renderInsuranceSuggestions
-  );
-
-
-  document.getElementById(
-    "viCustomer"
-  ).addEventListener(
-    "focus",
-    renderInsuranceSuggestions
-  );
-
-
-  document.getElementById(
-    "viSuggestions"
-  ).addEventListener(
-    "click",
-    function(event){
-
-      const button =
-        event.target.closest(
-          "[data-insurance-customer-id]"
-        );
-
-      if(!button){
-        return;
-      }
-
-
-      const customer =
-        customers.find(
-          c =>
-            String(c.id) ===
-            String(
-              button.dataset
-                .insuranceCustomerId
-            )
-        );
-
-
-      if(!customer){
-        return;
-      }
-
-
-      document.getElementById(
-        "viCustomer"
-      ).value =
-        customer.full_name || "";
-
-
-      document.getElementById(
-        "viCustomerId"
-      ).value =
-        customer.id;
-
-
-      document.getElementById(
-        "viMobile"
-      ).value =
-        customer.mobile ||
-        customer.whatsapp ||
-        "";
-
-
-      document.getElementById(
-        "viSuggestions"
-      ).hidden = true;
-
-    }
-  );
-
-
-  /* =======================================================
-     INSURANCE DATE STATUS
-  ======================================================= */
-
-  function insuranceDaysLeft(
-    date
-  ){
-
-    const today =
-      new Date();
-
-    today.setHours(
-      0,0,0,0
-    );
-
-
-    const expiry =
-      new Date(
-        date +
-        "T00:00:00"
-      );
-
-
-    return Math.ceil(
-      (
-        expiry -
-        today
-      ) /
-      86400000
-    );
-
-  }
-
-
-  function insuranceStatus(
-    date
-  ){
-
-    const days =
-      insuranceDaysLeft(
-        date
-      );
-
-
-    if(days < 0){
-
-      return {
-        text:"Expired",
-        className:"insurance-expired"
-      };
-
-    }
-
-
-    if(days === 0){
-
-      return {
-        text:"Due Today",
-        className:"insurance-near"
-      };
-
-    }
-
-
-    if(days <= 7){
-
-      return {
-        text:
-          days +
-          " Days Left",
-        className:"insurance-near"
-      };
-
-    }
-
-
-    if(days <= 30){
-
-      return {
-        text:
-          days +
-          " Days Left",
-        className:"insurance-near"
-      };
-
-    }
-
-
-    return {
-      text:"Active",
-      className:"insurance-active"
-    };
-
-  }
-
-
-  function formatInsuranceDate(
-    date
-  ){
-
-    if(!date){
-      return "—";
-    }
-
-
-    return new Date(
-      date +
-      "T00:00:00"
-    ).toLocaleDateString(
-      "en-IN"
-    );
-
-  }
-
-
-  /* =======================================================
-     LOAD INSURANCE
-  ======================================================= */
-
-  async function loadInsurance(){
-
-    const tbody =
-      document.getElementById(
-        "viqRows"
-      );
-
-
-    tbody.innerHTML =
-      `
-      <tr>
-        <td
-          colspan="5"
-          class="insurance-loading"
-        >
-          Loading insurance records...
-        </td>
-      </tr>
-      `;
-
-
-    const result =
-      await sb
-        .from("vehicle_insurance")
-        .select("*")
-        .order(
-          "expiry_date",
-          {
-            ascending:true
-          }
-        )
-        .limit(1000);
-
-
-    if(result.error){
-
-      console.error(
-        "Vehicle Insurance Error:",
-        result.error
-      );
-
-
-      tbody.innerHTML =
-        `
-        <tr>
-          <td
-            colspan="5"
-            class="insurance-loading insurance-error"
-          >
-            Unable to load insurance records.
-            <br>
-            <small>
-              ${esc(
-                result.error.message
-              )}
-            </small>
-          </td>
-        </tr>
-        `;
-
-
-      showStatus(
-        "viStatus",
-        result.error.message,
-        "error"
-      );
-
-
-      return;
-
-    }
-
-
-    insuranceRecords =
-      result.data || [];
-
-
-    renderInsurance();
-
-  }
-
-
-  /* =======================================================
-     RENDER INSURANCE
-  ======================================================= */
-
-  function renderInsurance(){
-
-    let expired = 0;
-
-    let seven = 0;
-
-    let thirty = 0;
-
-
-    insuranceRecords.forEach(
-      record => {
-
-        const days =
-          insuranceDaysLeft(
-            record.expiry_date
-          );
-
-
-        if(days < 0){
-
-          expired++;
-
-        }
-
-
-        if(
-          days >= 0 &&
-          days <= 7
-        ){
-
-          seven++;
-
-        }
-
-
-        if(
-          days >= 0 &&
-          days <= 30
-        ){
-
-          thirty++;
-
-        }
-
-      }
-    );
-
-
-    document.getElementById(
-      "viqTotal"
-    ).textContent =
-      "Policies: " +
-      insuranceRecords.length;
-
-
-    document.getElementById(
-      "viqExpired"
-    ).textContent =
-      "Expired: " +
-      expired;
-
-
-    document.getElementById(
-      "viq7"
-    ).textContent =
-      "7 Days: " +
-      seven;
-
-
-    document.getElementById(
-      "viq30"
-    ).textContent =
-      "30 Days: " +
-      thirty;
-
-
-    document.getElementById(
-      "totalInsurance"
-    ).textContent =
-      insuranceRecords.length;
-
-
-    const tbody =
-      document.getElementById(
-        "viqRows"
-      );
-
-
-    if(!insuranceRecords.length){
-
-      tbody.innerHTML =
-        `
-        <tr>
-          <td
-            colspan="5"
-            class="insurance-loading"
-          >
-            No insurance records found.
-          </td>
-        </tr>
-        `;
-
-      return;
-
-    }
-
-
-    tbody.innerHTML =
-      insuranceRecords
-        .slice(0,20)
-        .map(
-          record => {
-
-            const status =
-              insuranceStatus(
-                record.expiry_date
-              );
-
-
-            return `
-              <tr>
-
-                <td>
-
-                  <b>
-                    ${esc(
-                      record.customer_name ||
-                      "Customer"
-                    )}
-                  </b>
-
-                  <br>
-
-                  <small
-                    style="color:#71819b"
-                  >
-                    ${esc(
-                      record.mobile ||
-                      ""
-                    )}
-                  </small>
-
-                </td>
-
-
-                <td>
-                  ${esc(
-                    record.vehicle_number ||
-                    "—"
-                  )}
-                </td>
-
-
-                <td>
-                  ${formatInsuranceDate(
-                    record.expiry_date
-                  )}
-                </td>
-
-
-                <td
-                  class="insurance-status ${status.className}"
-                >
-                  ${status.text}
-                </td>
-
-
-                <td>
-
-                  <button
-                    type="button"
-                    class="insurance-wa"
-                    data-insurance-wa="${esc(record.id)}"
-                  >
-                    WhatsApp
-                  </button>
-
-                </td>
-
-              </tr>
-            `;
-
-          }
-        )
-        .join("");
-
-  }
-
-
-  /* =======================================================
-     INSURANCE WHATSAPP
-  ======================================================= */
-
-  document.getElementById(
-    "viqRows"
-  ).addEventListener(
-    "click",
-    function(event){
-
-      const button =
-        event.target.closest(
-          "[data-insurance-wa]"
-        );
-
-
-      if(!button){
-        return;
-      }
-
-
-      const record =
-        insuranceRecords.find(
-          item =>
-            String(item.id) ===
-            String(
-              button.dataset
-                .insuranceWa
-            )
-        );
-
-
-      if(!record){
-        return;
-      }
-
-
-      let phone =
-        String(
-          record.mobile ||
-          ""
-        ).replace(
-          /\D/g,
-          ""
-        );
-
-
-      if(phone.startsWith("0")){
-
-        phone =
-          phone.substring(1);
-
-      }
-
-
-      if(phone.length === 10){
-
-        phone =
-          "91" + phone;
-
-      }
-
-
-      if(!phone){
-
-        showStatus(
-          "viStatus",
-          "Mobile number is not available.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const message =
-`iTech IT Solutions – Vehicle Insurance Reminder
-
-Dear ${record.customer_name || "Customer"},
-
-Your vehicle insurance for ${record.vehicle_number || "your vehicle"} is expiring on ${formatInsuranceDate(record.expiry_date)}.
-
-Please contact us for renewal assistance.
-
-iTech IT Solutions
-7736929233 · 8943165951
-
-Your Trust Our Service`;
-
-
-      window.open(
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(
-          message
-        ),
-        "_blank"
-      );
-
-    }
-  );
-
-
-  /* =======================================================
-     CLEAR INSURANCE
-  ======================================================= */
-
-  document.getElementById(
-    "viClear"
-  ).addEventListener(
-    "click",
-    function(){
-
-      document.getElementById(
-        "viCustomer"
-      ).value = "";
-
-      document.getElementById(
-        "viCustomerId"
-      ).value = "";
-
-      document.getElementById(
-        "viMobile"
-      ).value = "";
-
-      document.getElementById(
-        "viVehicle"
-      ).value = "";
-
-      document.getElementById(
-        "viExpiry"
-      ).value = "";
-
-      document.getElementById(
-        "viSuggestions"
-      ).hidden = true;
-
-
-      clearStatus(
-        "viStatus"
-      );
-
-    }
-  );
-
-
-  /* =======================================================
-     REFRESH INSURANCE
-  ======================================================= */
-
-  document.getElementById(
-    "viRefresh"
-  ).addEventListener(
-    "click",
-    async function(){
-
-      await loadInsurance();
-
-    }
-  );
-
-
-  /* =======================================================
-     SAVE INSURANCE
-  ======================================================= */
-
-  document.getElementById(
-    "viSave"
-  ).addEventListener(
-    "click",
-    async function(){
-
-      const customerId =
-        document.getElementById(
-          "viCustomerId"
-        ).value;
-
-
-      const customerName =
-        document.getElementById(
-          "viCustomer"
-        ).value.trim();
-
-
-      const mobile =
-        document.getElementById(
-          "viMobile"
-        ).value.trim();
-
-
-      const vehicle =
-        document.getElementById(
-          "viVehicle"
-        ).value
-        .trim()
-        .toUpperCase();
-
-
-      const expiry =
-        document.getElementById(
-          "viExpiry"
-        ).value;
-
-
-      if(
-        !customerId ||
-        !customerName ||
-        !mobile ||
-        !vehicle ||
-        !expiry
-      ){
-
-        showStatus(
-          "viStatus",
-          "Please select a customer and fill all mandatory fields.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const customer =
-        customers.find(
-          c =>
-            String(c.id) ===
-            String(customerId)
-        );
-
-
-      if(!customer){
-
-        showStatus(
-          "viStatus",
-          "Please select a valid customer from Add Customer.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const payload = {
-
-        customer_id:
-          customer.id,
-
-        customer_name:
-          customer.full_name ||
-          customerName,
-
-        mobile:
-          customer.mobile ||
-          customer.whatsapp ||
-          mobile,
-
-        vehicle_number:
-          vehicle,
-
-        expiry_date:
-          expiry
-
-      };
-
-
-      showStatus(
-        "viStatus",
-        "Saving insurance...",
-        "success"
-      );
-
-
-      const result =
-        await sb
-          .from(
-            "vehicle_insurance"
-          )
-          .insert(
-            payload
-          );
-
-
-      if(result.error){
-
-        console.error(
-          "Save Insurance Error:",
-          result.error
-        );
-
-
-        showStatus(
-          "viStatus",
-          result.error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      showStatus(
-        "viStatus",
-        "Vehicle insurance saved successfully.",
-        "success"
-      );
-
-
-      document.getElementById(
-        "viClear"
-      ).click();
-
-
-      await loadInsurance();
-
-    }
-  );
-
-
-  /* =======================================================
-     DASHBOARD STATS
-  ======================================================= */
-
-  async function loadDashboardStats(){
+  $("clearBtn").addEventListener("click",clearForm);
+
+  /*
+    The save routine uses the same database structure used by the existing
+    Daily Work / Payment pages. If your existing save logic has extra fields,
+    keep those fields in the corresponding INSERT blocks below.
+  */
+  $("saveBtn").addEventListener("click",async()=>{
+    const customerId=$("customer").value;
+    const work=workTotal();
+    const paid=amount("paidAmount");
+    if(!customerId){status("Please select a customer.",true);return;}
+    if(work<=0 && paid<=0){status("Enter a work amount, select a service, or enter a payment.",true);return;}
+
+    $("saveBtn").disabled=true;
+    $("saveBtn").textContent="Saving…";
 
     try{
+      const desc=$("description").value.trim();
+      const selectedServices=[...document.querySelectorAll(".service-check:checked")];
 
-      const balance =
-        await sb
-          .from(
-            "customer_balances"
-          )
-          .select(
-            "current_balance"
-          );
+      /* Work entry: keep the same column names as the existing report view. */
+      if(work>0){
+        const payload={
+          customer_id:customerId,
+          e_filing:amount("e_filing"),
+          e_payment:amount("e_payment"),
+          print_amount:amount("print_amount"),
+          scanning:amount("scanning"),
+          other_works:amount("other_works"),
+          description:desc||null,
+          total_amount:work
+        };
 
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        if(ins.error) throw ins.error;
 
-      if(!balance.error){
-
-        const total =
-          (balance.data || [])
-            .reduce(
-              (
-                sum,
-                row
-              ) =>
-                sum +
-                Number(
-                  row.current_balance ||
-                  0
-                ),
-              0
-            );
-
-
-        document.getElementById(
-          "totalOutstanding"
-        ).textContent =
-          money(total);
-
+        if(selectedServices.length){
+          const rows=selectedServices.map(x=>({
+            daily_work_entry_id:ins.data.id,
+            customer_id:customerId,
+            service_id:x.dataset.id,
+            service_name:x.dataset.name,
+            base_amount:Number(x.dataset.base||0),
+            gst_percent:Number(x.dataset.gst||0),
+            gst_amount:Number(x.dataset.total||0)-Number(x.dataset.base||0),
+            total_amount:Number(x.dataset.total||0)
+          }));
+          const sr=await sb.from("daily_work_entry_services").insert(rows);
+          if(sr.error) throw sr.error;
+        }
       }
 
+      if(paid>0){
+        const pr=await sb.from("payments").insert({
+          customer_id:customerId,
+          amount:paid,
+          payment_date:today,
+          payment_method:"Cash",
+          reference_note:"Dashboard Quick Entry"
+        });
+        if(pr.error) throw pr.error;
+      }
 
-    }catch(error){
+      status("Transaction saved successfully.");
+      await refreshDashboard();
+      await loadWhatsAppReminders();
+      clearForm();
+    }catch(err){
+      status(err.message||"Unable to save transaction.",true);
+    }finally{
+      $("saveBtn").disabled=false;
+      $("saveBtn").textContent="💾 Save Work & Payment";
+    }
+  });
 
-      console.warn(
-        "Stats error:",
-        error
-      );
 
+  /* ===== WhatsApp Payment Reminders ===== */
+  function normalizePhone(value){
+    let p=String(value||"").replace(/\D/g,"");
+    if(p.startsWith("0")) p=p.slice(1);
+    if(p.length===10) p="91"+p;
+    return p;
+  }
+
+  function buildPaymentMessage(c){
+    return `Hello ${c.full_name||"Customer"},
+
+iTech IT Solutions — Payment Reminder
+
+Date: ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"})}
+Old Balance: ${money(c.oldBalance)}
+Today's Work: ${money(c.todayWork)}
+Paid Today: ${money(c.todayPaid)}
+Total Balance: ${money(c.totalBalance)}
+
+Please contact us for any clarification.
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
+  }
+
+  function openWhatsApp(c){
+    const phone=normalizePhone(c.mobile||c.whatsapp);
+    if(!phone){ status("No valid WhatsApp/mobile number for "+(c.full_name||"this customer"),true); return; }
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+  }
+
+  function renderWaList(el,rows,emptyText){
+    if(!rows.length){el.innerHTML=`<div class="wa-empty">${emptyText}</div>`;return;}
+    el.innerHTML=rows.map((c,i)=>`
+      <div class="wa-customer">
+        <div class="wa-customer-main">
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
+          <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
+        </div>
+        <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
+      </div>`).join("");
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+  }
+
+  async function loadWhatsAppReminders(){
+    const todayList=$("waTodayList"), overdueList=$("waOverdueList");
+    if(!todayList||!overdueList)return;
+    todayList.innerHTML='<div class="wa-empty">Loading…</div>';
+    overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+
+    try{
+      const [cu,ba,tw,tp,wh,ph]=await Promise.all([
+        sb.from("customers").select("id,full_name,mobile,whatsapp,status").eq("status","active").order("full_name"),
+        sb.from("customer_balances").select("id,current_balance"),
+        sb.from("today_work_report").select("customer_id,total_amount"),
+        sb.from("payments").select("customer_id,amount").eq("payment_date",today),
+        sb.from("today_work_report").select("customer_id,created_at"),
+        sb.from("payments").select("customer_id,payment_date")
+      ]);
+      for(const r of [cu,ba,tw,tp,wh,ph]) if(r.error) throw r.error;
+
+      const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
+      const works=new Map(), paid=new Map(), last=new Map();
+
+      (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
+      (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
+      (wh.data||[]).forEach(r=>{
+        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
+        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
+      });
+      (ph.data||[]).forEach(r=>{
+        const id=String(r.customer_id); if(!r.payment_date)return;
+        const d=new Date(String(r.payment_date)+"T23:59:59");
+        if(!last.has(id)||d>last.get(id))last.set(id,d);
+      });
+
+      const customersWithData=(cu.data||[]).map(c=>{
+        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+      });
+
+      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+
+      const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+        .sort((a,b)=>b.totalBalance-a.totalBalance);
+
+      $("waTodayCount").textContent=todayRows.length;
+      $("waOverdueCount").textContent=overdueRows.length;
+      renderWaList(todayList,todayRows,"No customer activity recorded today.");
+      renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
+
+      $("waSendTodayAll").onclick=()=>todayRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waRefresh").onclick=loadWhatsAppReminders;
+    }catch(err){
+      console.error("WhatsApp reminder error:",err);
+      todayList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+      overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+    }
+  }
+
+
+  /* ===== Vehicle Insurance Quick Entry ===== */
+  let insuranceCustomers=[];
+  let insuranceRows=[];
+
+  function insuranceStatusInfo(expiry){
+    const todayDate=new Date();
+    todayDate.setHours(0,0,0,0);
+    const d=new Date(String(expiry||"")+"T00:00:00");
+    const days=Math.ceil((d-todayDate)/86400000);
+    if(days<0) return {days,cls:"expired",label:"🔴 Expired"};
+    if(days===0) return {days,cls:"near",label:"🟠 Due Today"};
+    if(days<=7) return {days,cls:"near",label:`🟠 ${days} days left`};
+    if(days<=30) return {days,cls:"near",label:`🟠 ${days} days left`};
+    return {days,cls:"active",label:"🟢 Active"};
+  }
+
+  function insuranceDateText(value){
+    if(!value)return "—";
+    return new Date(String(value)+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
+  }
+
+  function escapeHtml(v){
+    return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  }
+
+  function insuranceStatus(msg,error=false){
+    const el=$("insuranceStatus");
+    if(!el)return;
+    el.textContent=msg;
+    el.className="status-box show insurance-status-box "+(error?"error":"ok");
+    setTimeout(()=>el.classList.remove("show"),5000);
+  }
+
+  async function loadInsuranceCustomers(){
+    const r=await sb.from("customers").select("id,full_name,mobile,whatsapp,status").order("full_name");
+    if(r.error){
+      insuranceStatus(r.error.message,true);
+      return;
+    }
+    insuranceCustomers=(r.data||[]).filter(c=>String(c.status||"active").toLowerCase()==="active");
+  }
+
+  function renderInsuranceCustomerSuggestions(query){
+    const box=$("insuranceCustomerSuggestions");
+    if(!box)return;
+    const q=String(query||"").trim().toLowerCase();
+    const matches=insuranceCustomers.filter(c=>{
+      const n=String(c.full_name||"").toLowerCase();
+      const m=String(c.mobile||"").toLowerCase();
+      const w=String(c.whatsapp||"").toLowerCase();
+      return !q||n.includes(q)||m.includes(q)||w.includes(q);
+    }).slice(0,8);
+
+    if(!matches.length){
+      box.innerHTML='<div class="customer-empty">No matching Add Customer found.</div>';
+      box.classList.add("show");
+      return;
     }
 
+    box.innerHTML=matches.map(c=>`
+      <button type="button" class="insurance-option" data-insurance-customer-id="${escapeHtml(c.id)}">
+        <span><b>${escapeHtml(c.full_name||"Customer")}</b><br><small>${escapeHtml(c.mobile||c.whatsapp||"No mobile")}</small></span>
+        <small>Select</small>
+      </button>`).join("");
+    box.classList.add("show");
+
+    box.querySelectorAll(".insurance-option").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const c=insuranceCustomers.find(x=>String(x.id)===String(btn.dataset.insuranceCustomerId));
+        if(!c)return;
+        $("insuranceCustomerId").value=c.id;
+        $("insuranceCustomerSearch").value=c.full_name||"Customer";
+        $("insuranceMobile").value=c.mobile||c.whatsapp||"";
+        box.classList.remove("show");
+      });
+    });
   }
 
+  $("insuranceCustomerSearch").addEventListener("input",e=>{
+    $("insuranceCustomerId").value="";
+    $("insuranceMobile").value="";
+    renderInsuranceCustomerSuggestions(e.target.value);
+  });
 
-  /* =======================================================
-     INITIAL LOAD
-  ======================================================= */
+  $("insuranceCustomerSearch").addEventListener("focus",()=>{
+    renderInsuranceCustomerSuggestions($("insuranceCustomerSearch").value);
+  });
 
-  try{
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".insurance-search-wrap")){
+      $("insuranceCustomerSuggestions")?.classList.remove("show");
+    }
+  });
 
-    await loadCustomers();
-
-    await loadInsurance();
-
-    await loadDashboardStats();
-
-    calculateWork();
-
-  }catch(error){
-
-    console.error(
-      "Dashboard initialization error:",
-      error
-    );
-
+  function clearInsuranceForm(){
+    $("insuranceCustomerId").value="";
+    $("insuranceCustomerSearch").value="";
+    $("insuranceMobile").value="";
+    $("insuranceVehicle").value="";
+    $("insuranceExpiry").value="";
+    $("insuranceCustomerSuggestions").classList.remove("show");
   }
 
+  $("insuranceClear").addEventListener("click",clearInsuranceForm);
+  $("insuranceManage").addEventListener("click",()=>location.href="vehicle-insurance.html");
+  $("insuranceRefresh").addEventListener("click",async()=>{
+    await loadInsuranceCustomers();
+    await loadInsuranceRows();
+  });
 
+  function insuranceWhatsApp(row){
+    const phone=normalizePhone(row.mobile||row.customer_mobile);
+    if(!phone){
+      insuranceStatus("No valid mobile number for "+(row.customer_name||"this customer"),true);
+      return;
+    }
+    const msg=`Dear ${row.customer_name||"Customer"},
+
+iTech IT Solutions – Vehicle Insurance Reminder
+
+Vehicle Number: ${row.vehicle_number||"—"}
+Insurance Expiry Date: ${insuranceDateText(row.expiry_date)}
+
+Your vehicle insurance is due for renewal. Please contact us for renewal assistance.
+
+7736929233 / 8943165951
+iTech IT Solutions
+Your Trust Our Service`;
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");
+  }
+
+  function renderInsuranceRows(){
+    const tbody=$("insuranceRows");
+    if(!insuranceRows.length){
+      tbody.innerHTML='<tr><td colspan="5"><div class="insurance-empty">No insurance records found.</div></td></tr>';
+      $("insuranceCount").textContent="0";
+      $("insuranceExpired").textContent="0";
+      $("insuranceSeven").textContent="0";
+      $("insuranceThirty").textContent="0";
+      return;
+    }
+
+    let expired=0,seven=0,thirty=0;
+    insuranceRows.forEach(r=>{
+      const s=insuranceStatusInfo(r.expiry_date);
+      if(s.days<0)expired++;
+      if(s.days>=0&&s.days<=7)seven++;
+      if(s.days>=0&&s.days<=30)thirty++;
+    });
+
+    $("insuranceCount").textContent=insuranceRows.length;
+    $("insuranceExpired").textContent=expired;
+    $("insuranceSeven").textContent=seven;
+    $("insuranceThirty").textContent=thirty;
+
+    tbody.innerHTML=insuranceRows.map((r,i)=>{
+      const s=insuranceStatusInfo(r.expiry_date);
+      return `<tr>
+        <td>
+          <div class="insurance-customer">${escapeHtml(r.customer_name||"Customer")}</div>
+          <div class="insurance-mobile">${escapeHtml(r.mobile||r.customer_mobile||"No mobile")}</div>
+        </td>
+        <td><b>${escapeHtml(r.vehicle_number||"—")}</b></td>
+        <td>${insuranceDateText(r.expiry_date)}</td>
+        <td><span class="insurance-status ${s.cls}">${s.label}</span></td>
+        <td><button type="button" class="insurance-wa" data-insurance-wa="${i}">WhatsApp</button></td>
+      </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll("[data-insurance-wa]").forEach(btn=>{
+      btn.addEventListener("click",()=>insuranceWhatsApp(insuranceRows[Number(btn.dataset.insuranceWa)]));
+    });
+  }
+
+  async function loadInsuranceRows(){
+    const tbody=$("insuranceRows");
+    if(tbody)tbody.innerHTML='<tr><td colspan="5"><div class="insurance-empty">Loading…</div></td></tr>';
+
+    const r=await sb.from("vehicle_insurance")
+      .select("id,customer_id,vehicle_number,vehicle_type,insurance_company,mobile,expiry_date")
+      .order("expiry_date",{ascending:true});
+
+    if(r.error){
+      if(tbody)tbody.innerHTML=`<tr><td colspan="5"><div class="insurance-empty">Unable to load insurance records: ${escapeHtml(r.error.message)}</div></td></tr>`;
+      insuranceStatus(r.error.message,true);
+      return;
+    }
+
+    const map=new Map(insuranceCustomers.map(c=>[String(c.id),c]));
+    insuranceRows=(r.data||[]).map(row=>{
+      const c=map.get(String(row.customer_id));
+      return {
+        ...row,
+        customer_name:c?.full_name||"Customer",
+        customer_mobile:c?.mobile||c?.whatsapp||"",
+        mobile:row.mobile||c?.mobile||c?.whatsapp||""
+      };
+    });
+    renderInsuranceRows();
+  }
+
+  $("insuranceSave").addEventListener("click",async()=>{
+    const customerId=$("insuranceCustomerId").value;
+    const vehicle=$("insuranceVehicle").value.trim().toUpperCase();
+    const expiry=$("insuranceExpiry").value;
+    const customer=insuranceCustomers.find(c=>String(c.id)===String(customerId));
+
+    if(!customerId||!customer){
+      insuranceStatus("Please select a customer from Add Customer list.",true);
+      return;
+    }
+    if(!customer.mobile&&!customer.whatsapp){
+      insuranceStatus("Selected customer does not have a mobile number.",true);
+      return;
+    }
+    if(!vehicle||!expiry){
+      insuranceStatus("Vehicle Number and Insurance Expiry Date are mandatory.",true);
+      return;
+    }
+
+    const btn=$("insuranceSave");
+    btn.disabled=true;
+    btn.textContent="Saving…";
+
+    try{
+      const ins=await sb.from("vehicle_insurance").insert({
+        customer_id:customerId,
+        mobile:customer.mobile||customer.whatsapp||null,
+        vehicle_number:vehicle,
+        expiry_date:expiry
+      });
+      if(ins.error)throw ins.error;
+
+      insuranceStatus("Vehicle insurance saved successfully.");
+      clearInsuranceForm();
+      await loadInsuranceRows();
+    }catch(err){
+      console.error("Insurance save error:",err);
+      insuranceStatus(err.message||"Unable to save insurance.",true);
+    }finally{
+      btn.disabled=false;
+      btn.textContent="💾 Save Insurance";
+    }
+  });
+
+  async function refreshDashboard(){
+    const [work,pay,bal,enq]=await Promise.all([
+      sb.from("today_work_report").select("*"),
+      sb.from("payments").select("amount").eq("payment_date",today),
+      sb.from("customer_balances").select("current_balance"),
+      sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+    ]);
+    if(work.error)return;
+    const rows=work.data||[];
+    $("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+    $("todayEntries").textContent=rows.length+" entries";
+    $("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+    $("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+    $("enquiries").textContent=enq.count||0;
+  }
+
+  await Promise.all([
+    loadCustomers(),
+    loadServices(),
+    refreshDashboard(),
+    loadWhatsAppReminders(),
+    loadInsuranceCustomers()
+  ]);
+  await loadInsuranceRows();
+  updateTotals();
 })();
-
 </script>
 
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
 
-<!-- =====================================================
-     ACTIVE NAV
-===================================================== -->
 
-<script>
-
+<script data-dashboard-active-nav>
 (() => {
-
-  const current =
-    location.pathname
-      .split("/")
-      .pop() ||
-      "dashboard.html";
-
-
-  document
-    .querySelectorAll(
-      ".sidebar nav a"
-    )
-    .forEach(
-      link => {
-
-        const href =
-          (
-            link.getAttribute(
-              "href"
-            ) || ""
-          )
-          .split("?")[0]
-          .split("#")[0];
-
-
-        const file =
-          href
-            .split("/")
-            .pop();
-
-
-        if(
-          file === current
-        ){
-
-          link.classList.add(
-            "active"
-          );
-
-        }
-
-      }
-    );
-
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
 })();
-
 </script>
-
-
 </body>
 </html>

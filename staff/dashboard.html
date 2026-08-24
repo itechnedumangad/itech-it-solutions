@@ -424,6 +424,159 @@ button:disabled{cursor:wait;opacity:.7}
 
 </style>
     <link rel="stylesheet" href="../css/dashboard-shell.css">
+
+<style id="staff-dashboard-final-corrections">
+/* ===== Staff WhatsApp reminders ===== */
+.staff-wa-reminders{
+  margin-top:18px;
+  padding:22px;
+}
+.staff-wa-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.staff-wa-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:4px 0 16px;
+}
+.wa-btn{
+  border:0;
+  border-radius:10px;
+  min-height:42px;
+  padding:0 15px;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+.wa-primary{background:#138a4b}
+.wa-orange{background:#ed7c13}
+.staff-wa-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.wa-list-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fbfdff;
+  padding:14px;
+  min-width:0;
+}
+.wa-list-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:9px;
+}
+.wa-list-title span{
+  min-width:25px;height:25px;padding:0 7px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:999px;background:#0b2142;color:#fff;
+  font-size:11px;font-weight:800;
+}
+.wa-customer-list{
+  display:grid;
+  gap:7px;
+  max-height:300px;
+  overflow:auto;
+}
+.wa-customer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px;
+  border:1px solid #e1e9f4;
+  border-radius:10px;
+  background:#fff;
+}
+.wa-customer-main{min-width:0}
+.wa-customer-name{
+  font-size:13px;font-weight:800;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.wa-customer-meta{
+  font-size:11px;color:var(--muted);
+  margin-top:2px;
+}
+.wa-send{
+  flex:0 0 auto;
+  border:0;border-radius:8px;
+  min-height:34px;padding:0 10px;
+  background:#159447;color:#fff;
+  font-size:11px;font-weight:800;
+  cursor:pointer;
+}
+.wa-empty{
+  padding:16px 8px;
+  color:var(--muted);
+  text-align:center;
+  font-size:12px;
+}
+
+/* ===== Footer: logo on top, details below ===== */
+.unified-site-footer{
+  width:100%;
+  box-sizing:border-box;
+  margin:32px 0 0;
+  padding:30px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:6px;
+}
+.unified-site-footer .footer-logo{
+  width:68px;height:68px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 8px;
+}
+.unified-site-footer p{
+  width:100%;max-width:620px;
+  margin:0;line-height:1.5;text-align:center;
+}
+.unified-site-footer .footer-address{font-size:13px;font-weight:600;color:#dce7f8}
+.unified-site-footer .footer-contact{font-size:14px;font-weight:800;color:#fff}
+.unified-site-footer .footer-email{font-size:12.5px;color:#dce7f8;overflow-wrap:anywhere}
+.unified-site-footer .footer-social{font-size:12.5px;font-weight:800;color:#ff9a25}
+.unified-site-footer .footer-tagline{
+  width:min(360px,90%);
+  margin-top:9px;padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;font-weight:800;letter-spacing:.4px;color:#fff;
+}
+@media(max-width:850px){
+  .staff-wa-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .staff-wa-reminders{padding:16px}
+  .staff-wa-head{align-items:flex-start;flex-direction:column}
+  .staff-wa-actions{display:grid;grid-template-columns:1fr}
+  .wa-btn{width:100%}
+  .unified-site-footer{
+    margin-top:22px;padding:24px 14px 20px;border-radius:14px 14px 0 0;gap:5px;
+  }
+  .unified-site-footer .footer-logo{width:60px;height:60px;margin-bottom:7px}
+  .unified-site-footer .footer-address{font-size:12px;padding:0 8px}
+  .unified-site-footer .footer-contact{font-size:13px}
+  .unified-site-footer .footer-email,.unified-site-footer .footer-social{font-size:12px}
+}
+@media(max-width:380px){
+  .unified-site-footer{padding-left:10px;padding-right:10px}
+  .unified-site-footer .footer-logo{width:56px;height:56px}
+}
+</style>
+
 </head>
 <body>
 
@@ -580,6 +733,33 @@ button:disabled{cursor:wait;opacity:.7}
   </div>
   <div id="statusBox" class="status-box"></div>
 </section>
+<section id="staffWhatsappReminders" class="dashboard-card staff-wa-reminders">
+  <div class="staff-wa-head">
+    <div>
+      <div class="quick-title"><span class="bolt">📲</span><h2>WhatsApp Payment Reminders</h2></div>
+      <p class="quick-sub">Send payment reminders to today's customers and customers with balances older than 7 days.</p>
+    </div>
+    <button type="button" id="waRefreshBtn" class="btn-clear">↻ Refresh</button>
+  </div>
+
+  <div class="staff-wa-actions">
+    <button type="button" id="waTodayBtn" class="wa-btn wa-primary">📱 Send Today's All</button>
+    <button type="button" id="waOldBtn" class="wa-btn wa-orange">📱 Send 7+ Days All</button>
+  </div>
+
+  <div class="staff-wa-grid">
+    <div class="wa-list-card">
+      <div class="wa-list-title"><strong>Today's Customers</strong><span id="waTodayCount">0</span></div>
+      <div id="waTodayList" class="wa-customer-list"><div class="muted">Loading…</div></div>
+    </div>
+    <div class="wa-list-card">
+      <div class="wa-list-title"><strong>7+ Days Outstanding</strong><span id="waOldCount">0</span></div>
+      <div id="waOldList" class="wa-customer-list"><div class="muted">Loading…</div></div>
+    </div>
+  </div>
+  <div id="waStatus" class="status-box"></div>
+</section>
+
 
 </main></div>
 
@@ -681,12 +861,13 @@ button:disabled{cursor:wait;opacity:.7}
   function renderCustomerSuggestions(query){
     const box=$("customerSuggestions");
     const q=(query||"").trim().toLowerCase();
-    const matches=customers.filter(c=>{
+    const filtered=customers.filter(c=>{
       const name=String(c.full_name||"").toLowerCase();
       const mobile=String(c.mobile||"").toLowerCase();
       const whatsapp=String(c.whatsapp||"").toLowerCase();
       return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
-    }).slice(0,8);
+    });
+    const matches=filtered.slice(0,q ? 8 : 4);
 
     if(!matches.length){
       box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
@@ -883,8 +1064,7 @@ button:disabled{cursor:wait;opacity:.7}
           print_amount:amount("print_amount"),
           scanning:amount("scanning"),
           other_works:amount("other_works"),
-          description:desc||null,
-          total_amount:work
+          description:desc||null
         };
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
@@ -999,6 +1179,133 @@ button:disabled{cursor:wait;opacity:.7}
   <p class="footer-tagline">Your Trust Our Service</p>
 </footer>
 
+
+
+<script id="staff-whatsapp-reminder-script">
+(async()=>{
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  const today=new Date().toISOString().slice(0,10);
+  const $=id=>document.getElementById(id);
+  let todayRows=[], oldRows=[];
+
+  function phoneOf(c){ return String(c.whatsapp||c.mobile||"").replace(/[^\d+]/g,""); }
+
+  function waUrl(row){
+    let phone=phoneOf(row);
+    if(phone && phone.length===10) phone="91"+phone;
+    if(phone.startsWith("+")) phone=phone.slice(1);
+    const msg=[
+      "iTech IT Solutions",
+      "Payment Reminder",
+      `Customer: ${row.full_name||"Customer"}`,
+      `Date: ${new Date().toLocaleDateString("en-IN")}`,
+      `Old Balance: ${money(row.old_balance)}`,
+      `Today's Work: ${money(row.today_work)}`,
+      `Paid Today: ${money(row.paid_today)}`,
+      `Total Balance: ${money(row.total_balance)}`,
+      "",
+      "Please contact us for any clarification.",
+      "Your Trust Our Service"
+    ].join("\n");
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  }
+
+  async function buildRows(){
+    const {data:customers,error:cErr}=await sb.from("customers")
+      .select("id,full_name,mobile,whatsapp")
+      .eq("status","active")
+      .order("full_name");
+    if(cErr) throw cErr;
+
+    const {data:balances,error:bErr}=await sb.from("customer_balances")
+      .select("id,current_balance,total_work,total_paid");
+    if(bErr) throw bErr;
+    const balanceMap={};
+    (balances||[]).forEach(b=>balanceMap[String(b.id)]=b);
+
+    const {data:work,error:wErr}=await sb.from("today_work_report")
+      .select("customer_id,total_amount");
+    if(wErr) throw wErr;
+    const todayWork={};
+    (work||[]).forEach(r=>{
+      todayWork[String(r.customer_id)]=(todayWork[String(r.customer_id)]||0)+Number(r.total_amount||0);
+    });
+
+    const {data:payments,error:pErr}=await sb.from("payments")
+      .select("customer_id,amount,payment_date")
+      .eq("payment_date",today);
+    if(pErr) throw pErr;
+    const paid={};
+    (payments||[]).forEach(r=>{
+      paid[String(r.customer_id)]=(paid[String(r.customer_id)]||0)+Number(r.amount||0);
+    });
+
+    const base=(customers||[]).map(c=>{
+      const b=balanceMap[String(c.id)]||{};
+      const tw=todayWork[String(c.id)]||0;
+      const pt=paid[String(c.id)]||0;
+      const current=Number(b.current_balance||0);
+      const old=Math.max(current-tw+pt,0);
+      return {...c,old_balance:old,today_work:tw,paid_today:pt,total_balance:current};
+    });
+
+    todayRows=base.filter(r=>r.today_work>0 || r.paid_today>0);
+    oldRows=base.filter(r=>r.old_balance>0).sort((a,b)=>b.old_balance-a.old_balance);
+  }
+
+  function renderList(el,rows){
+    $(el).innerHTML=rows.length ? rows.map(r=>`
+      <div class="wa-customer">
+        <div class="wa-customer-main">
+          <div class="wa-customer-name">${esc(r.full_name||"Customer")}</div>
+          <div class="wa-customer-meta">Balance: <b>${money(r.total_balance)}</b></div>
+        </div>
+        <button type="button" class="wa-send" data-wa-id="${esc(r.id)}">WhatsApp</button>
+      </div>`).join("") :
+      '<div class="wa-empty">No customers found.</div>';
+    $(el).querySelectorAll(".wa-send").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const row=[...todayRows,...oldRows].find(x=>String(x.id)===String(btn.dataset.waId));
+        if(row) window.open(waUrl(row),"_blank","noopener");
+      });
+    });
+  }
+
+  async function refresh(){
+    try{
+      $("waStatus").className="status-box show ok";
+      $("waStatus").textContent="Loading reminder customers…";
+      await buildRows();
+      $("waTodayCount").textContent=todayRows.length;
+      $("waOldCount").textContent=oldRows.length;
+      renderList("waTodayList",todayRows);
+      renderList("waOldList",oldRows);
+      $("waStatus").className="status-box";
+    }catch(e){
+      $("waStatus").className="status-box show error";
+      $("waStatus").textContent=e.message||"Unable to load WhatsApp reminders.";
+    }
+  }
+
+  function openAll(rows){
+    if(!rows.length){
+      $("waStatus").className="status-box show error";
+      $("waStatus").textContent="No customers available for this reminder.";
+      return;
+    }
+    rows.forEach((row,i)=>setTimeout(()=>{
+      window.open(waUrl(row),"_blank","noopener");
+    },i*250));
+  }
+
+  $("waTodayBtn").addEventListener("click",()=>openAll(todayRows));
+  $("waOldBtn").addEventListener("click",()=>openAll(oldRows));
+  $("waRefreshBtn").addEventListener("click",refresh);
+
+  await refresh();
+})();
+</script>
 
 <script data-dashboard-active-nav>
 (() => {

@@ -440,6 +440,9 @@ body{
 }
 </style>
 
+<style id="vehicle-insurance-quick-style">
+.vi-quick{margin-top:18px;background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07);border-left:4px solid #ff8a00}.viq-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.viq-field{display:flex;flex-direction:column;gap:6px;font-weight:800;color:#10284b}.viq-field input{width:100%;box-sizing:border-box;border:1px solid #d8e2ef;border-radius:10px;padding:11px;background:#fff;color:#10284b}.viq-suggest{position:relative}.viq-list{position:absolute;z-index:30;left:0;right:0;top:100%;background:#fff;border:1px solid #d8e2ef;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.12);overflow:hidden}.viq-list button{display:block;width:100%;padding:10px;text-align:left;border:0;background:#fff;border-bottom:1px solid #edf1f6;cursor:pointer}.viq-list button:hover{background:#f3f7fc}.viq-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.viq-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.viq-badge{padding:7px 10px;border-radius:999px;background:#eef6ff;color:#245182;font-weight:800;font-size:12px}.viq-badge.danger{background:#fee2e2;color:#b91c1c}.viq-badge.warn{background:#ffedd5;color:#c2410c}.viq-badge.ok{background:#dcfce7;color:#15803d}.viq-message{margin-top:10px;padding:11px 12px;background:#f8fbff;border:1px solid #e0e9f4;border-radius:10px;font-size:13px;color:#53657c}.viq-table{width:100%;border-collapse:collapse;margin-top:14px}.viq-table th,.viq-table td{padding:9px;border-bottom:1px solid #edf1f6;text-align:left;font-size:13px}.viq-table th{font-size:11px;text-transform:uppercase;color:#71819b}.viq-table-wrap{overflow:auto}.viq-status{font-weight:800}.viq-expired{color:#b91c1c}.viq-7,.viq-15,.viq-30{color:#c2410c}.viq-active{color:#15803d}@media(max-width:1000px){.viq-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.vi-quick{padding:15px}.viq-grid{grid-template-columns:1fr}.viq-actions .btn{width:100%}.viq-table{min-width:600px}}
+</style>
 </head>
 <body>
 
@@ -462,7 +465,7 @@ body{
 <a href="services.html">Services</a>
 <a href="products.html">Products</a>
 <a href="enquiries.html">Enquiries</a>
-<a href="amc.html">AMC</a>
+<a href="amc.html">AMC</a><a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
 <a href="messages.html">Messages</a>
@@ -631,7 +634,7 @@ body{
   }
 
   async function loadCustomers(){
-    const r=await sb.from("customers").select("*").order("full_name");
+    const r=await sb.from("customers").select("*").eq("created_from_insurance",false).order("full_name");
     if(r.error){status(r.error.message,true);return;}
     customers=r.data||[];
     $("customer").value="";
@@ -1026,6 +1029,42 @@ Your Trust Our Service`;
 })();
 </script>
 
+<section class="vi-quick" id="vehicleInsuranceQuick">
+  <div class="quick-title"><span class="bolt">🚗</span><h2>Vehicle Insurance Reminder – Quick Entry</h2></div>
+  <p class="muted">Customer Name, Mobile Number, Vehicle Number and Expiry Date are mandatory.</p>
+  <div class="viq-grid">
+    <label class="viq-field viq-suggest">Customer Name *<input id="viqCustomer" autocomplete="off" placeholder="Search customer..."><div id="viqSuggestions" class="viq-list" hidden></div></label>
+    <label class="viq-field">Mobile Number *<input id="viqMobile" inputmode="tel" placeholder="Mobile number"></label>
+    <label class="viq-field">Vehicle Number *<input id="viqVehicle" placeholder="KL-01-AB-1234"></label>
+    <label class="viq-field">Insurance Expiry Date *<input id="viqExpiry" type="date"></label>
+  </div>
+  <div class="viq-actions"><button class="btn primary" id="viqSave" type="button">Save Insurance</button><button class="btn secondary" id="viqClear" type="button">Clear</button><a class="btn secondary" href="vehicle-insurance.html">Manage All</a></div>
+  <div class="viq-meta"><span class="viq-badge" id="viqTotal">Policies: 0</span><span class="viq-badge danger" id="viqExpired">Expired: 0</span><span class="viq-badge warn" id="viq7">7 Days: 0</span><span class="viq-badge ok" id="viq30">30 Days: 0</span></div>
+  <div class="viq-message">WhatsApp reminder uses the saved customer mobile number and the iTech IT Solutions renewal message format.</div>
+  <div class="viq-table-wrap"><table class="viq-table"><thead><tr><th>Customer</th><th>Vehicle</th><th>Expiry</th><th>Status</th><th>WhatsApp</th></tr></thead><tbody id="viqRows"><tr><td colspan="5" class="muted">Loading...</td></tr></tbody></table></div>
+  <div data-vi-status class="status"></div>
+</section>
+<script id="vehicle-insurance-quick-script">
+(()=>{
+ const $=id=>document.getElementById(id); if(!$('vehicleInsuranceQuick')||!window.sb)return;
+ let customers=[],ins=[];
+ const days=d=>Math.ceil((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/86400000);
+ const fmt=d=>new Date(d+'T00:00:00').toLocaleDateString('en-IN');
+ const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ const show=t=>{const e=document.querySelector('[data-vi-status]');if(e){e.textContent=t;e.className='status success'}};
+ const err=t=>{const e=document.querySelector('[data-vi-status]');if(e){e.textContent=t;e.className='status error'}};
+ const status=d=>{const n=days(d);if(n<0)return ['Expired','viq-expired'];if(n<=7)return ['Within 7 Days','viq-7'];if(n<=15)return ['Within 15 Days','viq-15'];if(n<=30)return ['Within 30 Days','viq-30'];return ['Active','viq-active']};
+ function wa(r){const p=(r.mobile||'').replace(/\D/g,'');const m=`iTech IT Solutions – Vehicle Insurance Reminder\n\nDear Customer,\n\nYour vehicle insurance for ${r.vehicle_number} is expiring on ${fmt(r.expiry_date)}.\n\nPlease contact us for renewal assistance.\n\niTech IT Solutions\n7736929233 · 8943165951\n\nYour Trust Our Service`;window.open('https://wa.me/91'+p+'?text='+encodeURIComponent(m),'_blank')}
+ window.viqWa=id=>{const r=ins.find(x=>x.id===id);if(r)wa(r)};
+ function render(){const counts={expired:0,d7:0,d30:0};ins.forEach(r=>{const n=days(r.expiry_date);if(n<0)counts.expired++;if(n>=0&&n<=7)counts.d7++;if(n>=0&&n<=30)counts.d30++});$('viqTotal').textContent='Policies: '+ins.length;$('viqExpired').textContent='Expired: '+counts.expired;$('viq7').textContent='7 Days: '+counts.d7;$('viq30').textContent='30 Days: '+counts.d30;const list=ins.slice(0,8);$('viqRows').innerHTML=list.length?list.map(r=>{const [label,cls]=status(r.expiry_date);return `<tr><td><b>${esc(r.customer_name)}</b></td><td>${esc(r.vehicle_number)}</td><td>${fmt(r.expiry_date)}</td><td class="viq-status ${cls}">${label}</td><td><button class="btn btn-small" type="button" onclick="viqWa('${r.id}')">WhatsApp</button></td></tr>`}).join(''):'<tr><td colspan="5" class="muted">No insurance records found.</td></tr>'}
+ async function load(){const [cr,ir]=await Promise.all([sb.from('customers').select('id,full_name,mobile').order('full_name').limit(1000),sb.from('vehicle_insurance').select('*').order('expiry_date',{ascending:true}).limit(1000)]);if(cr.error){err(cr.error.message);return}if(ir.error){err(ir.error.message);return}customers=cr.data||[];ins=ir.data||[];render()}
+ function suggestions(){const q=$('viqCustomer').value.trim().toLowerCase();const list=(q?customers.filter(c=>(c.full_name+' '+(c.mobile||'')).toLowerCase().includes(q)):customers).slice(0,4);$('viqSuggestions').innerHTML=list.map(c=>`<button type="button" onclick="viqPick('${c.id}')"><b>${esc(c.full_name)}</b> · ${esc(c.mobile||'')}</button>`).join('');$('viqSuggestions').hidden=!list.length}
+ window.viqPick=id=>{const c=customers.find(x=>x.id===id);if(!c)return;$('viqCustomer').value=c.full_name||'';$('viqMobile').value=c.mobile||'';$('viqSuggestions').hidden=true};
+ $('viqCustomer').addEventListener('input',suggestions);$('viqCustomer').addEventListener('focus',suggestions);document.addEventListener('click',e=>{if(!e.target.closest('.viq-suggest'))$('viqSuggestions').hidden=true});
+ $('viqClear').onclick=()=>{$('viqCustomer').value='';$('viqMobile').value='';$('viqVehicle').value='';$('viqExpiry').value='';$('viqSuggestions').hidden=true};
+ $('viqSave').onclick=async()=>{const name=$('viqCustomer').value.trim(),mobile=$('viqMobile').value.trim(),vehicle=$('viqVehicle').value.trim().toUpperCase(),expiry=$('viqExpiry').value;if(!name||!mobile||!vehicle||!expiry)return err('Please fill all mandatory fields.');const match=customers.find(c=>(c.mobile||'').replace(/\D/g,'')===mobile.replace(/\D/g,''));if(!match)return err('Select a customer from the Add Customer list. Insurance-created profiles are not available in Quick Daily Work.');const payload={customer_id:match.id,customer_name:name,mobile,vehicle_number:vehicle,expiry_date:expiry,created_by:(await sb.auth.getUser()).data.user?.id||null};show('Saving insurance…');const {error}=await sb.from('vehicle_insurance').insert(payload);if(error)return err(error.message);show('Vehicle insurance saved successfully.');$('viqClear').click();load()};load();
+})();
+</script>
 <footer class="footer">
   <div class="footer-brand">
     <img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech">

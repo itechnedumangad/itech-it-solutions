@@ -286,32 +286,36 @@ body{
 </style>
 <link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
 <style>
-/* ===== Unified iTech Footer - ordered layout ===== */
+/* ===== Unified iTech Footer - full dashboard alignment ===== */
 .unified-site-footer{
   width:100%;
-  margin-top:32px;
-  padding:28px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  margin:0;
+  padding:22px 28px;
+  background:linear-gradient(100deg,#071c3b,#0d2d5a);
   color:#fff;
-  border-radius:18px 18px 0 0;
+  border-radius:0;
+  border-top:1px solid rgba(255,255,255,.08);
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
   align-items:center;
   justify-content:center;
+  gap:18px;
   text-align:center;
-  gap:7px;
-  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  box-shadow:0 -5px 18px rgba(5,27,57,.10);
+  min-height:92px;
 }
 .unified-site-footer .footer-logo{
-  width:58px;
-  height:58px;
+  width:50px;
+  height:50px;
   object-fit:contain;
   display:block;
-  margin:0 auto 4px;
+  flex:0 0 auto;
+  margin:0;
 }
 .unified-site-footer p{
   margin:0;
   line-height:1.45;
+  white-space:nowrap;
 }
 .unified-site-footer .footer-address{
   font-size:12px;
@@ -333,23 +337,45 @@ body{
   color:#ff9a25;
 }
 .unified-site-footer .footer-tagline{
-  margin-top:7px;
-  padding-top:9px;
-  width:min(360px,90%);
-  border-top:1px solid rgba(255,255,255,.16);
+  padding-left:18px;
+  border-left:1px solid rgba(255,255,255,.18);
   font-size:12px;
   font-weight:800;
   letter-spacing:.4px;
   color:#fff;
 }
+@media(max-width:900px){
+  .unified-site-footer{
+    flex-wrap:wrap;
+    gap:8px 16px;
+    padding:20px 18px;
+  }
+  .unified-site-footer .footer-tagline{
+    padding-left:0;
+    border-left:0;
+    width:100%;
+  }
+}
 @media(max-width:620px){
   .unified-site-footer{
-    margin-top:22px;
-    padding:24px 14px 20px;
-    border-radius:14px 14px 0 0;
+    flex-direction:column;
+    gap:6px;
+    padding:22px 14px 20px;
+    min-height:0;
   }
   .unified-site-footer .footer-logo{
-    width:52px;height:52px;
+    width:52px;
+    height:52px;
+    margin-bottom:3px;
+  }
+  .unified-site-footer p{
+    white-space:normal;
+  }
+  .unified-site-footer .footer-tagline{
+    margin-top:6px;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.16);
+    width:min(360px,90%);
   }
 }
 </style>
@@ -399,33 +425,7 @@ body{
 </div>
 
 
-<section class="wa-reminder-section">
-  <div class="wa-reminder-head">
-    <div class="wa-reminder-title">
-      <span class="wa-icon">📲</span>
-      <div>
-        <h2>WhatsApp Payment Reminders</h2>
-        <p>Today's customers and customers with 7+ days outstanding.</p>
-      </div>
-    </div>
-    <div class="wa-actions">
-      <button type="button" id="waSendTodayAll" class="wa-btn green">📲 Send Today's All</button>
-      <button type="button" id="waSendOverdueAll" class="wa-btn light">📲 Send 7+ Days All</button>
-      <button type="button" id="waRefresh" class="wa-btn light">↻ Refresh</button>
-    </div>
-  </div>
-  <div class="wa-reminder-grid">
-    <div class="wa-list-card">
-      <div class="wa-list-head"><strong>Today's Customers</strong><span id="waTodayCount" class="wa-badge today">0</span></div>
-      <div id="waTodayList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
-    </div>
-    <div class="wa-list-card">
-      <div class="wa-list-head"><strong>7+ Days Outstanding</strong><span id="waOverdueCount" class="wa-badge overdue">0</span></div>
-      <div id="waOverdueList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
-    </div>
-  </div>
-  <div class="wa-note">ℹ️ WhatsApp opens with the message already prepared. Review it and press Send.</div>
-</section>
+
 
 <section class="dashboard-card quick-entry">
   <div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
@@ -491,6 +491,34 @@ body{
     </div>
   </div>
   <div id="statusBox" class="status-box"></div>
+</section>
+
+<section class="wa-reminder-section">
+  <div class="wa-reminder-head">
+    <div class="wa-reminder-title">
+      <span class="wa-icon">📲</span>
+      <div>
+        <h2>WhatsApp Payment Reminders</h2>
+        <p>Today's customers and customers with 7+ days outstanding.</p>
+      </div>
+    </div>
+    <div class="wa-actions">
+      <button type="button" id="waSendTodayAll" class="wa-btn green">📲 Send Today's All</button>
+      <button type="button" id="waSendOverdueAll" class="wa-btn light">📲 Send 7+ Days All</button>
+      <button type="button" id="waRefresh" class="wa-btn light">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="wa-reminder-grid">
+    <div class="wa-list-card">
+      <div class="wa-list-head"><strong>Today's Customers</strong><span id="waTodayCount" class="wa-badge today">0</span></div>
+      <div id="waTodayList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
+    </div>
+    <div class="wa-list-card">
+      <div class="wa-list-head"><strong>7+ Days Outstanding</strong><span id="waOverdueCount" class="wa-badge overdue">0</span></div>
+      <div id="waOverdueList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
+    </div>
+  </div>
+  <div class="wa-note">ℹ️ WhatsApp opens with the message already prepared. Review it and press Send.</div>
 </section>
 
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>

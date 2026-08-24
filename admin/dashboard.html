@@ -762,8 +762,7 @@ body{
           print_amount:amount("print_amount"),
           scanning:amount("scanning"),
           other_works:amount("other_works"),
-          description:desc||null,
-          total_amount:work
+          description:desc||null
         };
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();

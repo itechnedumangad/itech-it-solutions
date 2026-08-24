@@ -584,12 +584,16 @@ button{
    FOOTER
 ========================================================= */
 
+/* =========================================================
+   FOOTER - FULL WIDTH / COMPACT
+========================================================= */
+
 .unified-site-footer{
   width:100%;
-  margin-top:45px;
+  margin-top:30px;
   background:#031a39;
   border-top:3px solid #ff8c00;
-  padding:42px 20px 35px;
+  padding:28px 15px 25px;
   text-align:center;
   color:#fff;
 }
@@ -605,11 +609,11 @@ button{
 }
 
 .footer-logo{
-  width:170px;
-  max-width:70%;
+  width:160px;
+  max-width:75%;
   height:auto;
   object-fit:contain;
-  margin-bottom:18px;
+  margin:0 0 10px;
 }
 
 .footer-address,
@@ -617,42 +621,64 @@ button{
 .footer-email,
 .footer-social,
 .footer-tagline{
-  margin:5px 0;
-  line-height:1.5;
+  margin:2px 0;
+  padding:0;
+  line-height:1.35;
 }
 
 .footer-address{
-  font-size:13px;
+  font-size:12px;
+  color:#dce7f8;
 }
 
 .footer-contact{
-  font-size:13px;
+  font-size:12px;
+  font-weight:800;
+  color:#fff;
 }
 
 .footer-email{
-  font-size:13px;
+  font-size:12px;
+  color:#dce7f8;
 }
 
 .footer-social{
-  color:#ff8c00;
+  font-size:12px;
   font-weight:800;
-  font-size:13px;
+  color:#ff8c00;
 }
 
 .footer-tagline{
-  margin-top:10px;
-  color:#ff8c00;
-  font-weight:900;
-  font-size:13px;
+  margin-top:5px;
+  font-size:12px;
+  font-weight:800;
+  color:#fff;
 }
 
-.footer-line{
-  width:100%;
-  max-width:980px;
-  height:1px;
-  background:rgba(255,255,255,.16);
-  margin:22px auto 0;
+@media(max-width:600px){
+
+  .unified-site-footer{
+    margin-top:22px;
+    padding:25px 12px 22px;
+  }
+
+  .footer-logo{
+    width:140px;
+    margin-bottom:8px;
+  }
+
+  .footer-address,
+  .footer-contact,
+  .footer-email,
+  .footer-social,
+  .footer-tagline{
+    font-size:11px;
+    line-height:1.3;
+    margin:2px 0;
+  }
+
 }
+
 
 
 /* =========================================================
@@ -1633,8 +1659,6 @@ button{
     <p class="footer-social">
       @itechndd
     </p>
-
-    <div class="footer-line"></div>
 
     <p class="footer-tagline">
       Your Trust Our Service

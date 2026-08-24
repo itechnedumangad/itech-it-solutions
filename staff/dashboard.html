@@ -425,155 +425,60 @@ button:disabled{cursor:wait;opacity:.7}
 </style>
     <link rel="stylesheet" href="../css/dashboard-shell.css">
 
-<style id="staff-dashboard-final-corrections">
-/* ===== Staff WhatsApp reminders ===== */
-.staff-wa-reminders{
-  margin-top:18px;
-  padding:22px;
-}
-.staff-wa-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-}
-.staff-wa-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:4px 0 16px;
-}
-.wa-btn{
-  border:0;
-  border-radius:10px;
-  min-height:42px;
-  padding:0 15px;
-  color:#fff;
-  font-weight:800;
-  cursor:pointer;
-}
-.wa-primary{background:#138a4b}
-.wa-orange{background:#ed7c13}
-.staff-wa-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-.wa-list-card{
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:#fbfdff;
-  padding:14px;
-  min-width:0;
-}
-.wa-list-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:9px;
-}
-.wa-list-title span{
-  min-width:25px;height:25px;padding:0 7px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:999px;background:#0b2142;color:#fff;
-  font-size:11px;font-weight:800;
-}
-.wa-customer-list{
-  display:grid;
-  gap:7px;
-  max-height:300px;
-  overflow:auto;
-}
-.wa-customer{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px;
-  border:1px solid #e1e9f4;
-  border-radius:10px;
-  background:#fff;
-}
-.wa-customer-main{min-width:0}
-.wa-customer-name{
-  font-size:13px;font-weight:800;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.wa-customer-meta{
-  font-size:11px;color:var(--muted);
-  margin-top:2px;
-}
-.wa-send{
-  flex:0 0 auto;
-  border:0;border-radius:8px;
-  min-height:34px;padding:0 10px;
-  background:#159447;color:#fff;
-  font-size:11px;font-weight:800;
-  cursor:pointer;
-}
-.wa-empty{
-  padding:16px 8px;
-  color:var(--muted);
-  text-align:center;
-  font-size:12px;
-}
 
-/* ===== Footer: logo on top, details below ===== */
-.unified-site-footer{
+
+
+<style id="index-footer-style">
+.footer{
   width:100%;
-  box-sizing:border-box;
-  margin:32px 0 0;
-  padding:30px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
-  color:#fff;
-  border-radius:18px 18px 0 0;
+  max-width:none;
+  min-height:180px;
+  padding:42px 20px 30px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+  gap:8px;
   text-align:center;
-  gap:6px;
+  overflow:hidden;
 }
-.unified-site-footer .footer-logo{
-  width:68px;height:68px;
-  object-fit:contain;
+.footer-brand{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:75px;
+}
+.footer-logo-only{
   display:block;
-  margin:0 auto 8px;
+  width:clamp(120px,16vw,190px);
+  height:auto;
+  max-width:190px;
+  max-height:75px;
+  object-fit:contain;
+  object-position:center;
+  margin:0 auto 14px;
 }
-.unified-site-footer p{
-  width:100%;max-width:620px;
-  margin:0;line-height:1.5;text-align:center;
+.footer span,.footer small{
+  display:block;
+  max-width:100%;
+  overflow-wrap:anywhere;
 }
-.unified-site-footer .footer-address{font-size:13px;font-weight:600;color:#dce7f8}
-.unified-site-footer .footer-contact{font-size:14px;font-weight:800;color:#fff}
-.unified-site-footer .footer-email{font-size:12.5px;color:#dce7f8;overflow-wrap:anywhere}
-.unified-site-footer .footer-social{font-size:12.5px;font-weight:800;color:#ff9a25}
-.unified-site-footer .footer-tagline{
-  width:min(360px,90%);
-  margin-top:9px;padding-top:10px;
-  border-top:1px solid rgba(255,255,255,.16);
-  font-size:12px;font-weight:800;letter-spacing:.4px;color:#fff;
-}
-@media(max-width:850px){
-  .staff-wa-grid{grid-template-columns:1fr}
-}
-@media(max-width:620px){
-  .staff-wa-reminders{padding:16px}
-  .staff-wa-head{align-items:flex-start;flex-direction:column}
-  .staff-wa-actions{display:grid;grid-template-columns:1fr}
-  .wa-btn{width:100%}
-  .unified-site-footer{
-    margin-top:22px;padding:24px 14px 20px;border-radius:14px 14px 0 0;gap:5px;
+@media(max-width:767px){
+  .footer{
+    padding-left:14px;
+    padding-right:14px;
   }
-  .unified-site-footer .footer-logo{width:60px;height:60px;margin-bottom:7px}
-  .unified-site-footer .footer-address{font-size:12px;padding:0 8px}
-  .unified-site-footer .footer-contact{font-size:13px}
-  .unified-site-footer .footer-email,.unified-site-footer .footer-social{font-size:12px}
 }
-@media(max-width:380px){
-  .unified-site-footer{padding-left:10px;padding-right:10px}
-  .unified-site-footer .footer-logo{width:56px;height:56px}
+@media(max-width:480px){
+  .footer{
+    min-height:170px;
+    padding:34px 12px 25px;
+  }
+  .footer-logo-only{
+    width:145px!important;
+    max-height:65px!important;
+  }
 }
 </style>
 
@@ -1170,13 +1075,15 @@ button:disabled{cursor:wait;opacity:.7}
 })();
 </script>
 
-<footer class="unified-site-footer">
-  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
-  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-  <p class="footer-contact">7736929233 · 8943165951</p>
-  <p class="footer-email">itnedumangad@gmail.com</p>
-  <p class="footer-social">@itechndd</p>
-  <p class="footer-tagline">Your Trust Our Service</p>
+<footer class="footer">
+  <div class="footer-brand">
+    <img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech">
+  </div>
+  <span>Govt. Sub Treasury Road, Nedumangad</span>
+  <span>7736929233 · 8943165951</span>
+  <span>itnedumangad@gmail.com</span>
+  <span>@itechndd</span>
+  <small>Your Trust Our Service</small>
 </footer>
 
 

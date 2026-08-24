@@ -380,143 +380,123 @@ body{
 }
 </style>
 
-<style id="mobile-friendly-footer">
-/* ===== iTech Dashboard Footer - Responsive ===== */
+
+
+
+<style id="final-footer-style">
+/* ===== iTech Footer: Logo + Details ===== */
 .unified-site-footer{
   width:100%;
   box-sizing:border-box;
   margin:32px 0 0;
-  padding:24px 28px;
+  padding:30px 20px 24px;
   background:linear-gradient(135deg,#071c3b,#0d2d5a);
   color:#fff;
   border-radius:18px 18px 0 0;
   display:flex;
-  flex-direction:row;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:18px 28px;
   text-align:center;
-  flex-wrap:wrap;
+  gap:6px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
 }
 
 .unified-site-footer .footer-logo{
-  width:54px;
-  height:54px;
-  flex:0 0 54px;
+  width:68px;
+  height:68px;
   object-fit:contain;
   display:block;
+  margin:0 auto 8px;
 }
 
 .unified-site-footer p{
+  width:100%;
+  max-width:620px;
   margin:0;
-  line-height:1.4;
+  line-height:1.5;
+  text-align:center;
 }
 
-.unified-site-footer .footer-address,
-.unified-site-footer .footer-contact,
-.unified-site-footer .footer-email,
-.unified-site-footer .footer-social{
-  font-size:12px;
-  white-space:nowrap;
-}
-
-.unified-site-footer .footer-address,
-.unified-site-footer .footer-email{
+.unified-site-footer .footer-address{
+  font-size:13px;
+  font-weight:600;
   color:#dce7f8;
 }
 
 .unified-site-footer .footer-contact{
-  color:#fff;
+  font-size:14px;
   font-weight:800;
+  color:#fff;
+  letter-spacing:.2px;
+}
+
+.unified-site-footer .footer-email{
+  font-size:12.5px;
+  color:#dce7f8;
+  overflow-wrap:anywhere;
 }
 
 .unified-site-footer .footer-social{
-  color:#ff9a25;
+  font-size:12.5px;
   font-weight:800;
+  color:#ff9a25;
 }
 
 .unified-site-footer .footer-tagline{
-  flex-basis:100%;
-  width:min(360px,100%);
-  padding-top:8px;
+  width:min(360px,90%);
+  margin-top:9px;
+  padding-top:10px;
   border-top:1px solid rgba(255,255,255,.16);
   font-size:12px;
   font-weight:800;
-  letter-spacing:.35px;
+  letter-spacing:.4px;
+  color:#fff;
 }
 
-/* Tablet */
-@media (max-width:900px){
+@media(max-width:620px){
   .unified-site-footer{
-    padding:22px 20px;
-    gap:10px 18px;
-  }
-}
-
-/* Mobile */
-@media (max-width:620px){
-  .unified-site-footer{
-    width:100%;
     margin-top:22px;
-    padding:22px 14px 18px;
+    padding:24px 14px 20px;
     border-radius:14px 14px 0 0;
-    flex-direction:column;
-    gap:6px;
-    text-align:center;
+    gap:5px;
   }
 
   .unified-site-footer .footer-logo{
-    width:52px;
-    height:52px;
-    flex-basis:52px;
-    margin:0 0 4px;
+    width:60px;
+    height:60px;
+    margin-bottom:7px;
   }
 
-  .unified-site-footer .footer-address,
-  .unified-site-footer .footer-contact,
-  .unified-site-footer .footer-email,
-  .unified-site-footer .footer-social{
-    width:100%;
-    white-space:normal;
-    overflow-wrap:anywhere;
-    word-break:break-word;
+  .unified-site-footer .footer-address{
     font-size:12px;
+    padding:0 8px;
   }
 
   .unified-site-footer .footer-contact{
     font-size:13px;
   }
 
-  .unified-site-footer .footer-tagline{
-    flex-basis:auto;
-    width:min(320px,100%);
-    margin-top:5px;
-    padding-top:9px;
+  .unified-site-footer .footer-email,
+  .unified-site-footer .footer-social{
     font-size:12px;
+  }
+
+  .unified-site-footer .footer-tagline{
+    margin-top:8px;
+    padding-top:9px;
   }
 }
 
-/* Very small phones */
-@media (max-width:380px){
+@media(max-width:380px){
   .unified-site-footer{
-    padding:20px 10px 16px;
+    padding-left:10px;
+    padding-right:10px;
   }
 
   .unified-site-footer .footer-logo{
-    width:48px;
-    height:48px;
-    flex-basis:48px;
-  }
-
-  .unified-site-footer .footer-address,
-  .unified-site-footer .footer-email,
-  .unified-site-footer .footer-social{
-    font-size:11px;
-  }
-
-  .unified-site-footer .footer-contact,
-  .unified-site-footer .footer-tagline{
-    font-size:12px;
+    width:56px;
+    height:56px;
   }
 }
 </style>

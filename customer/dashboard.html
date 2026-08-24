@@ -1,13 +1,1123 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Customer Dashboard | iTech Customer</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><style>.customer-card{background:#fff;border:1px solid #e3ebf5;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07)}.customer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.customer-stat{background:#f8fbff;border:1px solid #e0e9f4;border-radius:14px;padding:17px}.customer-stat small{display:block;color:#71819b;font-weight:700}.customer-stat strong{display:block;font-size:25px;margin-top:8px;color:#10284b}@media(max-width:900px){.customer-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.customer-grid{grid-template-columns:1fr}}</style><link rel="stylesheet" href="../css/unified-dashboard.css"><style id="customer-insurance-preview">.ci-preview{overflow:hidden}.ci-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.ci-preview-list{display:grid;gap:9px;margin-top:14px}.ci-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #e2eaf4;border-radius:13px;background:#f8fbff;animation:ciRise .45s ease both}.ci-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#edf5ff;flex:0 0 38px}.ci-main{min-width:0;flex:1}.ci-main b{display:block;color:#10284b;font-size:13px}.ci-main small{display:block;color:#71819b;font-size:11px;margin-top:3px;overflow-wrap:anywhere}.ci-status{font-size:10px;font-weight:900;white-space:nowrap}.ci-item.active .ci-status{color:#16834b}.ci-item.near .ci-status{color:#c56a00}.ci-item.expired .ci-status{color:#c62828}.ci-more{font-size:12px;font-weight:800;text-decoration:none;color:#0d5aa7;text-align:center;padding:5px}.ci-empty,.ci-loading{padding:15px;border:1px dashed #cbd8e8;border-radius:12px;text-align:center;color:#71819b;font-size:12px}.ci-item:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(17,50,91,.06);transition:.2s}.ci-icon{animation:ciPulse 3s ease-in-out infinite}@keyframes ciRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes ciPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@media(max-width:600px){.ci-head{align-items:flex-start}.ci-head .btn{width:100%;text-align:center}.ci-item{padding:10px}.ci-status{font-size:9px}.ci-main small{font-size:10px}}@media(prefers-reduced-motion:reduce){.ci-item,.ci-icon{animation:none!important;transition:none!important}}</style>
-</head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a><a href="products.html">My Products</a><a href="services.html">My Services</a><a href="payments.html">Payments</a><a href="vehicle-insurance.html">🚗 Vehicle Insurance</a><a href="register-product.html">Register Product</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>Customer Dashboard</h1></div></div><div class="customer-grid"><div class="customer-stat"><small>Current Balance</small><strong id="balance">₹0.00</strong></div><div class="customer-stat"><small>Total Work</small><strong id="work">₹0.00</strong></div><div class="customer-stat"><small>Total Paid</small><strong id="paid">₹0.00</strong></div><div class="customer-stat"><small>Products</small><strong id="products">0</strong></div></div><section class="customer-card ci-preview" style="margin-top:18px"><div class="ci-head"><div><p class="eyebrow" style="margin:0 0 4px">INSURANCE PROTECTION</p><h2 style="margin:0">🚗 Vehicle Insurance</h2><p id="vehicleInsuranceSummary" class="muted" style="margin:6px 0 0">Checking your vehicle insurance...</p></div><a class="btn secondary" href="vehicle-insurance.html">View All Vehicles</a></div><div id="vehicleInsurancePreview" class="ci-preview-list"><div class="ci-loading">🛡️ Loading insurance details…</div></div></section>
-<section class="customer-card" style="margin-top:18px"><h2>Account Summary</h2><p id="welcome" class="muted">Loading...</p><div id="recent" style="margin-top:15px"></div></section><div data-status class="status"></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const a=await requireCustomer();if(!a)return;const c=await sb.from("customers").select("*").eq("auth_user_id",a.session.user.id).single();if(c.error||!c.data)return showStatus("Customer profile not found.",true);const id=c.data.id;const [b,p,w,pr]=await Promise.all([sb.from("customer_balances").select("*").eq("id",id).single(),sb.from("payments").select("amount").eq("customer_id",id),sb.from("today_work_report").select("total_amount").eq("customer_id",id),sb.from("product_approvals").select("id",{count:"exact",head:true}).eq("customer_id",id)]);const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});document.getElementById("balance").textContent=money(b.data?.current_balance);document.getElementById("work").textContent=money(b.data?.total_work);document.getElementById("paid").textContent=money(b.data?.total_paid);document.getElementById("products").textContent=pr.count||0;document.getElementById("welcome").textContent=`Welcome ${c.data.full_name||a.profile.full_name||"Customer"}. Your account is connected to iTech IT Solutions.`;const vi=await sb.from("vehicle_insurance").select("expiry_date,vehicle_number,vehicle_type,insurance_company,mobile").eq("customer_id",id).order("expiry_date",{ascending:true});const ve=document.getElementById("vehicleInsuranceSummary"),vp=document.getElementById("vehicleInsurancePreview");if(vi.data&&vi.data.length){const all=vi.data;const today=new Date();today.setHours(0,0,0,0);const left=r=>Math.ceil((new Date(r.expiry_date+"T00:00:00")-today)/86400000);const expired=all.filter(r=>left(r)<0).length,due=all.filter(r=>left(r)>=0&&left(r)<=30).length;ve.innerHTML=`<b>${escText(c.data.mobile||"—")}</b> • ${all.length} vehicle${all.length===1?"":"s"} linked${expired?` • 🔴 ${expired} expired`:""}${due?` • 🟠 ${due} due soon`:""}`;vp.innerHTML=all.slice(0,3).map((r,i)=>{const n=left(r);const label=n<0?"🔴 Expired":n<=30?(n===0?"🟠 Due Today":`🟠 ${n} days left`):"🟢 Active";const cls=n<0?"expired":n<=30?"near":"active";return `<div class="ci-item ${cls}" style="animation-delay:${i*70}ms"><div class="ci-icon">🚗</div><div class="ci-main"><b>${escText(r.vehicle_number||"Vehicle")}</b><small>${escText(r.insurance_company||"Insurance")} • Expiry ${new Date(r.expiry_date+"T00:00:00").toLocaleDateString("en-IN")}</small></div><span class="ci-status">${label}</span></div>`}).join("")+ (all.length>3?`<a class="ci-more" href="vehicle-insurance.html">+ ${all.length-3} more vehicle${all.length-3===1?"":"s"}</a>`:"");}else{ve.textContent="No vehicle insurance record linked yet.";vp.innerHTML='<div class="ci-empty">🛡️ No insurance records yet.</div>'}function escText(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#039;"}[m]))}</script>
-<footer class="unified-site-footer">
-  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
-  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-  <p class="footer-contact">7736929233 · 8943165951</p>
-  <p class="footer-email">itnedumangad@gmail.com</p>
-  <p class="footer-social">@itechndd</p>
-  <p class="footer-tagline">Your Trust Our Service</p>
-</footer>
+<!doctype html>
+<html lang="en">
 
-</body></html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Customer Dashboard | iTech Customer</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/unified-dashboard.css">
+
+  <style>
+    /* ================================
+       CUSTOMER DASHBOARD
+    ================================= */
+
+    .customer-card {
+      background: #fff;
+      border: 1px solid #e3ebf5;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(17, 50, 91, .07);
+    }
+
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .customer-stat {
+      background: #f8fbff;
+      border: 1px solid #e0e9f4;
+      border-radius: 14px;
+      padding: 17px;
+    }
+
+    .customer-stat small {
+      display: block;
+      color: #71819b;
+      font-weight: 700;
+    }
+
+    .customer-stat strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 8px;
+      color: #10284b;
+    }
+
+    /* ================================
+       VEHICLE INSURANCE PREVIEW
+    ================================= */
+
+    .ci-preview {
+      overflow: hidden;
+    }
+
+    .ci-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .ci-preview-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .ci-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px;
+      border: 1px solid #e2eaf4;
+      border-radius: 13px;
+      background: #f8fbff;
+      animation: ciRise .45s ease both;
+      transition: .2s ease;
+    }
+
+    .ci-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(17, 50, 91, .06);
+    }
+
+    .ci-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: #edf5ff;
+      flex: 0 0 38px;
+      animation: ciPulse 3s ease-in-out infinite;
+    }
+
+    .ci-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .ci-main b {
+      display: block;
+      color: #10284b;
+      font-size: 13px;
+    }
+
+    .ci-main small {
+      display: block;
+      color: #71819b;
+      font-size: 11px;
+      margin-top: 3px;
+      overflow-wrap: anywhere;
+    }
+
+    .ci-status {
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .ci-item.active .ci-status {
+      color: #16834b;
+    }
+
+    .ci-item.near .ci-status {
+      color: #c56a00;
+    }
+
+    .ci-item.expired .ci-status {
+      color: #c62828;
+    }
+
+    .ci-more {
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      color: #0d5aa7;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .ci-empty,
+    .ci-loading {
+      padding: 15px;
+      border: 1px dashed #cbd8e8;
+      border-radius: 12px;
+      text-align: center;
+      color: #71819b;
+      font-size: 12px;
+    }
+
+    .ci-error {
+      padding: 15px;
+      border: 1px dashed #e8b4b4;
+      border-radius: 12px;
+      text-align: center;
+      color: #a62b2b;
+      background: #fff7f7;
+      font-size: 12px;
+    }
+
+    @keyframes ciRise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes ciPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.04);
+      }
+    }
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 900px) {
+      .customer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      .customer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-card {
+        padding: 15px;
+        border-radius: 15px;
+      }
+
+      .ci-head {
+        align-items: flex-start;
+      }
+
+      .ci-head .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .ci-item {
+        padding: 10px;
+      }
+
+      .ci-status {
+        font-size: 9px;
+      }
+
+      .ci-main small {
+        font-size: 10px;
+      }
+
+      .customer-stat strong {
+        font-size: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .ci-item,
+      .ci-icon {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- ================================
+       HEADER
+  ================================= -->
+
+  <header class="dash-header">
+
+    <a class="brand" href="dashboard.html">
+      <img
+        class="brand-logo"
+        src="../assets/itech-logo.png"
+        alt="iTech IT Solutions">
+    </a>
+
+    <a
+      class="btn secondary"
+      href="../pages/login.html"
+      data-logout>
+      Logout
+    </a>
+
+  </header>
+
+
+  <!-- ================================
+       DASHBOARD LAYOUT
+  ================================= -->
+
+  <div class="dash-layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+      <nav>
+
+        <a href="dashboard.html">
+          Dashboard
+        </a>
+
+        <a href="products.html">
+          My Products
+        </a>
+
+        <a href="services.html">
+          My Services
+        </a>
+
+        <a href="payments.html">
+          Payments
+        </a>
+
+        <a href="vehicle-insurance.html">
+          🚗 Vehicle Insurance
+        </a>
+
+        <a href="register-product.html">
+          Register Product
+        </a>
+
+      </nav>
+
+    </aside>
+
+
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
+
+    <main class="dash-main">
+
+      <!-- PAGE TITLE -->
+
+      <div class="toolbar">
+
+        <div>
+
+          <p class="eyebrow">
+            CUSTOMER PORTAL
+          </p>
+
+          <h1>
+            Customer Dashboard
+          </h1>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================
+           STAT CARDS
+      ================================= -->
+
+      <div class="customer-grid">
+
+        <div class="customer-stat">
+
+          <small>
+            Current Balance
+          </small>
+
+          <strong id="balance">
+            ₹0.00
+          </strong>
+
+        </div>
+
+
+        <div class="customer-stat">
+
+          <small>
+            Total Work
+          </small>
+
+          <strong id="work">
+            ₹0.00
+          </strong>
+
+        </div>
+
+
+        <div class="customer-stat">
+
+          <small>
+            Total Paid
+          </small>
+
+          <strong id="paid">
+            ₹0.00
+          </strong>
+
+        </div>
+
+
+        <div class="customer-stat">
+
+          <small>
+            Products
+          </small>
+
+          <strong id="products">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================
+           VEHICLE INSURANCE
+      ================================= -->
+
+      <section
+        class="customer-card ci-preview"
+        style="margin-top:18px">
+
+        <div class="ci-head">
+
+          <div>
+
+            <p
+              class="eyebrow"
+              style="margin:0 0 4px">
+
+              INSURANCE PROTECTION
+
+            </p>
+
+            <h2 style="margin:0">
+
+              🚗 Vehicle Insurance
+
+            </h2>
+
+            <p
+              id="vehicleInsuranceSummary"
+              class="muted"
+              style="margin:6px 0 0">
+
+              Checking your vehicle insurance...
+
+            </p>
+
+          </div>
+
+
+          <a
+            class="btn secondary"
+            href="vehicle-insurance.html">
+
+            View All Vehicles
+
+          </a>
+
+        </div>
+
+
+        <div
+          id="vehicleInsurancePreview"
+          class="ci-preview-list">
+
+          <div class="ci-loading">
+
+            🛡️ Loading insurance details…
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           ACCOUNT SUMMARY
+      ================================= -->
+
+      <section
+        class="customer-card"
+        style="margin-top:18px">
+
+        <h2>
+          Account Summary
+        </h2>
+
+        <p
+          id="welcome"
+          class="muted">
+
+          Loading...
+
+        </p>
+
+        <div
+          id="recent"
+          style="margin-top:15px">
+
+        </div>
+
+      </section>
+
+
+      <!-- STATUS -->
+
+      <div
+        data-status
+        class="status">
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ================================
+       SUPABASE
+  ================================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="../js/config.js"></script>
+
+  <script src="../js/supabase.js"></script>
+
+  <script src="../js/auth.js"></script>
+
+
+  <!-- ================================
+       DASHBOARD SCRIPT
+  ================================= -->
+
+  <script>
+
+    (async function () {
+
+      try {
+
+        /* --------------------------------
+           CUSTOMER LOGIN CHECK
+        -------------------------------- */
+
+        const authResult = await requireCustomer();
+
+        if (!authResult) {
+          return;
+        }
+
+
+        /* --------------------------------
+           GET CUSTOMER PROFILE
+        -------------------------------- */
+
+        const {
+          data: customer,
+          error: customerError
+        } = await sb
+          .from("customers")
+          .select("*")
+          .eq("auth_user_id", authResult.session.user.id)
+          .single();
+
+
+        if (customerError || !customer) {
+
+          showStatus(
+            "Customer profile not found.",
+            true
+          );
+
+          return;
+        }
+
+
+        const customerId = customer.id;
+
+
+        /* --------------------------------
+           MONEY FORMAT
+        -------------------------------- */
+
+        function money(value) {
+
+          return "₹" +
+            Number(value || 0).toLocaleString(
+              "en-IN",
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }
+            );
+
+        }
+
+
+        /* --------------------------------
+           SAFE TEXT
+        -------------------------------- */
+
+        function escText(value) {
+
+          return String(value ?? "")
+            .replace(/[&<>"']/g, function (char) {
+
+              const map = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+              };
+
+              return map[char];
+
+            });
+
+        }
+
+
+        /* --------------------------------
+           GET ACCOUNT DATA
+        -------------------------------- */
+
+        const balanceResult = await sb
+          .from("customer_balances")
+          .select("*")
+          .eq("id", customerId)
+          .single();
+
+
+        const paymentsResult = await sb
+          .from("payments")
+          .select("amount")
+          .eq("customer_id", customerId);
+
+
+        const workResult = await sb
+          .from("today_work_report")
+          .select("total_amount")
+          .eq("customer_id", customerId);
+
+
+        const productsResult = await sb
+          .from("product_approvals")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq("customer_id", customerId);
+
+
+        /* --------------------------------
+           UPDATE STAT CARDS
+        -------------------------------- */
+
+        const balanceData =
+          balanceResult.data || {};
+
+        document.getElementById("balance").textContent =
+          money(balanceData.current_balance);
+
+
+        document.getElementById("work").textContent =
+          money(balanceData.total_work);
+
+
+        document.getElementById("paid").textContent =
+          money(balanceData.total_paid);
+
+
+        document.getElementById("products").textContent =
+          productsResult.count || 0;
+
+
+        /* --------------------------------
+           WELCOME MESSAGE
+        -------------------------------- */
+
+        const customerName =
+          customer.full_name ||
+          authResult.profile?.full_name ||
+          "Customer";
+
+
+        document.getElementById("welcome").textContent =
+          `Welcome ${customerName}. Your account is connected to iTech IT Solutions.`;
+
+
+        /* --------------------------------
+           VEHICLE INSURANCE
+        -------------------------------- */
+
+        const summaryElement =
+          document.getElementById(
+            "vehicleInsuranceSummary"
+          );
+
+
+        const previewElement =
+          document.getElementById(
+            "vehicleInsurancePreview"
+          );
+
+
+        const insuranceResult = await sb
+          .from("vehicle_insurance")
+          .select(
+            "expiry_date,vehicle_number,vehicle_type,insurance_company,mobile"
+          )
+          .eq("customer_id", customerId)
+          .order(
+            "expiry_date",
+            {
+              ascending: true
+            }
+          );
+
+
+        /* --------------------------------
+           INSURANCE ERROR
+        -------------------------------- */
+
+        if (insuranceResult.error) {
+
+          console.error(
+            "Vehicle insurance error:",
+            insuranceResult.error
+          );
+
+          summaryElement.textContent =
+            "Unable to load vehicle insurance details.";
+
+
+          previewElement.innerHTML = `
+            <div class="ci-error">
+              🛡️ Insurance details could not be loaded.
+              Please try again later.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        const insuranceList =
+          insuranceResult.data || [];
+
+
+        /* --------------------------------
+           NO INSURANCE
+        -------------------------------- */
+
+        if (!insuranceList.length) {
+
+          summaryElement.textContent =
+            "No vehicle insurance record linked yet.";
+
+
+          previewElement.innerHTML = `
+            <div class="ci-empty">
+              🛡️ No insurance records yet.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        /* --------------------------------
+           DATE CALCULATION
+        -------------------------------- */
+
+        const today = new Date();
+
+        today.setHours(
+          0,
+          0,
+          0,
+          0
+        );
+
+
+        function daysLeft(expiryDate) {
+
+          const expiry =
+            new Date(
+              expiryDate + "T00:00:00"
+            );
+
+          return Math.ceil(
+            (
+              expiry.getTime() -
+              today.getTime()
+            ) /
+            86400000
+          );
+
+        }
+
+
+        /* --------------------------------
+           INSURANCE SUMMARY
+        -------------------------------- */
+
+        const expiredCount =
+          insuranceList.filter(
+            function (record) {
+
+              return daysLeft(
+                record.expiry_date
+              ) < 0;
+
+            }
+          ).length;
+
+
+        const dueSoonCount =
+          insuranceList.filter(
+            function (record) {
+
+              const days =
+                daysLeft(
+                  record.expiry_date
+                );
+
+              return days >= 0 && days <= 30;
+
+            }
+          ).length;
+
+
+        summaryElement.innerHTML = `
+
+          <b>
+            ${escText(customer.mobile || "—")}
+          </b>
+
+          • ${insuranceList.length}
+          vehicle${insuranceList.length === 1 ? "" : "s"}
+          linked
+
+          ${expiredCount
+            ? ` • 🔴 ${expiredCount} expired`
+            : ""
+          }
+
+          ${dueSoonCount
+            ? ` • 🟠 ${dueSoonCount} due soon`
+            : ""
+          }
+
+        `;
+
+
+        /* --------------------------------
+           SHOW FIRST 3 VEHICLES
+        -------------------------------- */
+
+        const visibleVehicles =
+          insuranceList.slice(0, 3);
+
+
+        let vehicleHTML = "";
+
+
+        visibleVehicles.forEach(
+          function (record, index) {
+
+            const days =
+              daysLeft(
+                record.expiry_date
+              );
+
+
+            let label = "";
+            let statusClass = "";
+
+
+            if (days < 0) {
+
+              label = "🔴 Expired";
+              statusClass = "expired";
+
+            } else if (days === 0) {
+
+              label = "🟠 Due Today";
+              statusClass = "near";
+
+            } else if (days <= 30) {
+
+              label =
+                `🟠 ${days} days left`;
+
+              statusClass = "near";
+
+            } else {
+
+              label = "🟢 Active";
+              statusClass = "active";
+
+            }
+
+
+            const expiryText =
+              record.expiry_date
+                ? new Date(
+                    record.expiry_date +
+                    "T00:00:00"
+                  ).toLocaleDateString(
+                    "en-IN"
+                  )
+                : "—";
+
+
+            vehicleHTML += `
+
+              <div
+                class="ci-item ${statusClass}"
+                style="animation-delay:${index * 70}ms">
+
+                <div class="ci-icon">
+                  🚗
+                </div>
+
+                <div class="ci-main">
+
+                  <b>
+                    ${escText(
+                      record.vehicle_number ||
+                      "Vehicle"
+                    )}
+                  </b>
+
+                  <small>
+
+                    ${escText(
+                      record.vehicle_type ||
+                      ""
+                    )}
+
+                    ${record.vehicle_type ? " • " : ""}
+
+                    ${escText(
+                      record.insurance_company ||
+                      "Insurance"
+                    )}
+
+                    • Expiry ${expiryText}
+
+                  </small>
+
+                </div>
+
+                <span class="ci-status">
+                  ${label}
+                </span>
+
+              </div>
+
+            `;
+
+          }
+        );
+
+
+        /* --------------------------------
+           MORE VEHICLES LINK
+        -------------------------------- */
+
+        if (insuranceList.length > 3) {
+
+          const remaining =
+            insuranceList.length - 3;
+
+
+          vehicleHTML += `
+
+            <a
+              class="ci-more"
+              href="vehicle-insurance.html">
+
+              + ${remaining}
+              more vehicle${remaining === 1 ? "" : "s"}
+
+            </a>
+
+          `;
+
+        }
+
+
+        previewElement.innerHTML =
+          vehicleHTML;
+
+
+      } catch (error) {
+
+        console.error(
+          "Customer dashboard error:",
+          error
+        );
+
+
+        const preview =
+          document.getElementById(
+            "vehicleInsurancePreview"
+          );
+
+
+        if (preview) {
+
+          preview.innerHTML = `
+
+            <div class="ci-error">
+
+              ⚠️ Something went wrong while
+              loading your dashboard.
+
+            </div>
+
+          `;
+
+        }
+
+
+        if (typeof showStatus === "function") {
+
+          showStatus(
+            "Unable to load dashboard data.",
+            true
+          );
+
+        }
+
+      }
+
+    })();
+
+  </script>
+
+
+  <!-- ================================
+       FOOTER
+  ================================= -->
+
+  <footer class="unified-site-footer">
+
+    <img
+      class="footer-logo"
+      src="../assets/itech-logo.png"
+      alt="iTech IT Solutions">
+
+    <p class="footer-address">
+      Govt. Sub Treasury Road, Nedumangad
+    </p>
+
+    <p class="footer-contact">
+      7736929233 · 8943165951
+    </p>
+
+    <p class="footer-email">
+      itnedumangad@gmail.com
+    </p>
+
+    <p class="footer-social">
+      @itechndd
+    </p>
+
+    <p class="footer-tagline">
+      Your Trust Our Service
+    </p>
+
+  </footer>
+
+
+  <!-- ================================
+       ACTIVE SIDEBAR
+  ================================= -->
+
+  <script>
+
+    (() => {
+
+      const current =
+        location.pathname
+          .split("/")
+          .pop() ||
+        "dashboard.html";
+
+
+      document
+        .querySelectorAll(
+          ".sidebar nav a"
+        )
+        .forEach(function (link) {
+
+          const href =
+            (
+              link.getAttribute("href") ||
+              ""
+            )
+              .split("?")[0]
+              .split("#")[0];
+
+
+          const file =
+            href
+              .split("/")
+              .pop();
+
+
+          if (file === current) {
+
+            link.classList.add(
+              "active"
+            );
+
+          }
+
+        });
+
+    })();
+
+  </script>
+
+</body>
+</html>

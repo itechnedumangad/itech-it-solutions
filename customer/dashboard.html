@@ -245,7 +245,103 @@
         transition: none !important;
       }
     }
-  </style>
+  
+/* ===== Advanced Customer Dashboard UI ===== */
+:root{
+  --cd-navy:#071c3b;
+  --cd-blue:#0d5aa7;
+  --cd-orange:#ff8a1f;
+  --cd-soft:#f4f8fd;
+}
+body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
+.dash-main{animation:pageIn .55s ease both;}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.customer-grid{gap:18px;}
+.customer-stat{
+  position:relative;
+  overflow:hidden;
+  min-height:105px;
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+  animation:cardIn .55s ease both;
+}
+.customer-stat:nth-child(2){animation-delay:.06s}.customer-stat:nth-child(3){animation-delay:.12s}.customer-stat:nth-child(4){animation-delay:.18s}
+.customer-stat:before{
+  content:"";position:absolute;inset:auto -30px -45px auto;width:120px;height:120px;
+  background:radial-gradient(circle,rgba(13,90,167,.13),transparent 68%);
+  border-radius:50%;pointer-events:none;
+}
+.customer-stat:hover{transform:translateY(-4px);box-shadow:0 16px 35px rgba(17,50,91,.12);border-color:#c9d9eb}
+.customer-stat strong{transition:transform .25s ease}
+.customer-stat:hover strong{transform:scale(1.03)}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* Insurance hero */
+.ci-preview{
+  position:relative;
+  border:1px solid #dbe7f4;
+  background:
+    radial-gradient(circle at 92% 10%,rgba(255,138,31,.12),transparent 22%),
+    linear-gradient(135deg,#fff 0%,#f7fbff 100%);
+  box-shadow:0 14px 36px rgba(17,50,91,.09);
+}
+.ci-preview:before{
+  content:"";position:absolute;left:0;top:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--cd-navy),var(--cd-blue),var(--cd-orange));
+}
+.ci-head h2{letter-spacing:-.3px}
+.ci-preview-list{gap:11px}
+.ci-item{
+  position:relative;
+  overflow:hidden;
+  border-color:#dce7f3;
+  background:rgba(248,251,255,.92);
+  box-shadow:0 5px 15px rgba(17,50,91,.045);
+  animation:insuranceIn .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.ci-item:after{
+  content:"";position:absolute;left:-70%;top:0;width:45%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+  transform:skewX(-18deg);transition:left .65s ease;pointer-events:none;
+}
+.ci-item:hover:after{left:125%}
+.ci-item:hover{transform:translateX(3px) translateY(-2px);box-shadow:0 10px 24px rgba(17,50,91,.09)}
+@keyframes insuranceIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.ci-icon{
+  background:linear-gradient(145deg,#eaf4ff,#fff);
+  border:1px solid #d8e8f8;
+  box-shadow:inset 0 1px 0 #fff,0 5px 12px rgba(13,90,167,.08);
+}
+.ci-item.active .ci-icon{box-shadow:0 0 0 4px rgba(22,131,75,.06),0 6px 14px rgba(22,131,75,.10)}
+.ci-item.near .ci-icon{box-shadow:0 0 0 4px rgba(197,106,0,.07),0 6px 14px rgba(197,106,0,.11)}
+.ci-item.expired .ci-icon{box-shadow:0 0 0 4px rgba(198,40,40,.07),0 6px 14px rgba(198,40,40,.10)}
+.ci-status{padding:5px 9px;border-radius:999px;background:#fff;border:1px solid currentColor;box-shadow:0 3px 9px rgba(0,0,0,.04)}
+.ci-more{
+  display:block;border:1px dashed #bdd0e5;border-radius:11px;
+  background:#fff;transition:.2s ease;
+}
+.ci-more:hover{background:#eef6ff;transform:translateY(-1px)}
+.ci-empty,.ci-loading,.ci-error{background:rgba(255,255,255,.75);}
+
+/* Account summary */
+.customer-card:not(.ci-preview){
+  transition:box-shadow .25s ease,transform .25s ease;
+}
+.customer-card:not(.ci-preview):hover{box-shadow:0 14px 32px rgba(17,50,91,.10);transform:translateY(-2px)}
+
+@media(max-width:600px){
+  .customer-grid{gap:11px}
+  .customer-stat{min-height:92px;padding:14px}
+  .ci-preview{padding:14px}
+  .ci-item{gap:8px}
+  .ci-status{padding:4px 7px;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+}
+@media(prefers-reduced-motion:reduce){
+  .dash-main,.customer-stat,.ci-item{animation:none!important}
+  .customer-stat,.customer-card,.ci-item,.ci-more{transition:none!important}
+}
+
+</style>
 </head>
 
 
@@ -372,7 +468,7 @@
         </div>
 
 
-        <div class="customer-stat">
+        <div class="customer-stat" id="paidStatCard" hidden>
 
           <small>
             Total Paid
@@ -741,6 +837,12 @@
         const insuranceList =
           insuranceResult.data || [];
 
+        const totalBadge = document.getElementById("insTotalBadge");
+        const dueBadge = document.getElementById("insDueBadge");
+        const expiredBadge = document.getElementById("insExpiredBadge");
+        if(totalBadge) totalBadge.textContent = `🛡️ ${insuranceList.length} Vehicle${insuranceList.length===1?"":"s"}`;
+
+
 
         /* --------------------------------
            NO INSURANCE
@@ -824,6 +926,8 @@
             }
           ).length;
 
+        if(dueBadge) dueBadge.textContent = `🟠 ${dueSoonCount} Due Soon`;
+        if(expiredBadge) expiredBadge.textContent = `🔴 ${expiredCount} Expired`;
 
         summaryElement.innerHTML = `
 

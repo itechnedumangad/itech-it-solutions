@@ -1,39 +1,262 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vehicle Insurance | iTech Customer</title>
-<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><link rel="stylesheet" href="../css/unified-dashboard.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<link rel="stylesheet" href="../css/unified-dashboard.css">
 <style>
-:root{--navy:#071c3b;--blue:#0d2d5a;--orange:#ff8b1a;--green:#16834b;--red:#c62828;--muted:#70829b;--line:#e3ebf5}
-.ins-wrap{display:grid;gap:18px}.ins-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#071c3b,#0d2d5a 65%,#153f78);color:#fff;border-radius:22px;padding:24px;box-shadow:0 18px 45px rgba(7,28,59,.18);animation:rise .55s ease both}.ins-hero:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-65px;top:-80px;background:rgba(255,139,26,.15);animation:float 5s ease-in-out infinite}.ins-hero h1{margin:4px 0 7px;font-size:clamp(24px,4vw,34px)}.ins-hero p{margin:0;color:#dbe8f8;max-width:650px}.ins-mobile{margin-top:14px;display:inline-flex;gap:7px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}.ins-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.ins-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 25px rgba(17,50,91,.06);animation:rise .55s ease both}.ins-stat:nth-child(2){animation-delay:.05s}.ins-stat:nth-child(3){animation-delay:.1s}.ins-stat:nth-child(4){animation-delay:.15s}.ins-stat small{display:block;color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px}.ins-stat strong{display:block;color:var(--navy);font-size:25px;margin-top:6px}.ins-list{display:grid;gap:14px}.vehicle-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(17,50,91,.07);animation:rise .6s ease both}.vehicle-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#1f8a52}.vehicle-card.status-near:before{background:var(--orange)}.vehicle-card.status-expired:before{background:var(--red)}.vehicle-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.vehicle-title{display:flex;gap:12px;align-items:center;min-width:0}.car-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:#eef5ff;font-size:22px;animation:pulse 3s ease-in-out infinite}.vehicle-number{font-size:18px;font-weight:900;color:var(--navy);letter-spacing:.5px}.vehicle-type{font-size:12px;color:var(--muted);margin-top:2px}.status-pill{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;white-space:nowrap}.status-active{background:#e5f7ed;color:var(--green)}.status-near{background:#fff1df;color:#c56a00}.status-expired{background:#ffe8e8;color:var(--red)}.vehicle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.detail{padding:11px 12px;background:#f8fbff;border:1px solid #e8eef6;border-radius:12px;min-width:0}.detail small{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.45px}.detail b{display:block;color:#17345c;font-size:13px;margin-top:4px;overflow-wrap:anywhere}.expiry-bar{height:7px;background:#edf1f6;border-radius:999px;overflow:hidden;margin-top:15px}.expiry-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#28a35f,#7acb91);transition:width 1s ease}.status-near .expiry-fill{background:linear-gradient(90deg,#ff8b1a,#ffc266)}.status-expired .expiry-fill{background:#d9534f}.vehicle-bottom{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;font-size:11px;color:var(--muted)}.renew-note{font-weight:800;color:#17345c}.empty-ins{background:#fff;border:1px dashed #cbd8e8;border-radius:18px;padding:35px 20px;text-align:center;color:var(--muted);animation:rise .5s ease both}.empty-ins .big{font-size:42px;margin-bottom:8px}.ins-note{font-size:12px;color:var(--muted);text-align:center}.footer{width:100%;max-width:none;min-height:180px;padding:42px 20px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;overflow:hidden;background:linear-gradient(135deg,#071c3b,#0d2d5a);color:#fff;margin-top:28px;border-radius:18px 18px 0 0}.footer-brand{width:100%;display:flex;align-items:center;justify-content:center;min-height:75px}.footer-logo-only{display:block;width:clamp(120px,16vw,190px);height:auto;max-width:190px;max-height:75px;object-fit:contain;object-position:center;margin:0 auto 14px}.footer span,.footer small{display:block;max-width:100%;overflow-wrap:anywhere}.footer small{color:#fff;font-weight:800}.btn-back{display:inline-flex;margin-top:14px;text-decoration:none}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-@media(max-width:900px){.ins-stats{grid-template-columns:repeat(2,1fr)}.vehicle-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.ins-hero{padding:19px;border-radius:18px}.ins-hero h1{font-size:25px}.ins-stats{grid-template-columns:repeat(2,1fr);gap:9px}.ins-stat{padding:13px}.ins-stat strong{font-size:21px}.vehicle-card{padding:15px;border-radius:17px}.vehicle-top{align-items:flex-start}.status-pill{font-size:10px;padding:6px 8px}.vehicle-title{gap:9px}.car-icon{width:40px;height:40px;font-size:20px}.vehicle-number{font-size:16px}.vehicle-grid{grid-template-columns:1fr 1fr;gap:8px}.detail{padding:10px}.detail b{font-size:12px}.vehicle-bottom{align-items:flex-start;flex-direction:column}.footer{min-height:170px;padding:34px 12px 25px;border-radius:14px 14px 0 0}.footer-logo-only{width:145px!important;max-height:65px!important}}
-@media(max-width:360px){.ins-stats{grid-template-columns:1fr}.vehicle-grid{grid-template-columns:1fr}.ins-mobile{max-width:100%;overflow-wrap:anywhere}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+*{box-sizing:border-box}
+.ins-page{max-width:1100px;margin:0 auto}
+.ins-hero{
+  background:linear-gradient(135deg,#071f43,#0d3970);
+  color:#fff;border-radius:20px;padding:24px;
+  box-shadow:0 14px 32px rgba(17,50,91,.14);
+  position:relative;overflow:hidden
+}
+.ins-hero:after{
+  content:"";position:absolute;width:180px;height:180px;border-radius:50%;
+  right:-70px;top:-70px;background:rgba(255,140,0,.15)
+}
+.ins-eyebrow{color:#ff9a25;font-size:10px;font-weight:900;letter-spacing:1.4px;margin:0 0 6px}
+.ins-hero h1{margin:0;font-size:28px}
+.ins-hero p{margin:8px 0 0;color:#d9e8fb;font-size:13px}
+.ins-summary{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px
+}
+.ins-summary-card{
+  background:#fff;border:1px solid #dfe8f3;border-radius:15px;padding:15px;
+  box-shadow:0 8px 22px rgba(17,50,91,.06)
+}
+.ins-summary-card small{display:block;color:#71819b;font-size:10px;font-weight:800}
+.ins-summary-card strong{display:block;margin-top:7px;color:#10284b;font-size:22px}
+.ins-list{display:grid;gap:14px;margin-top:18px}
+.ins-vehicle{
+  background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:18px;
+  box-shadow:0 10px 28px rgba(17,50,91,.07);
+  animation:insRise .45s ease both
+}
+.ins-vehicle-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.ins-vehicle-number{font-size:18px;font-weight:900;color:#10284b}
+.ins-company{margin-top:5px;color:#71819b;font-size:12px}
+.ins-expiry{
+  margin-top:15px;padding:13px;border-radius:13px;background:#f7faff;border:1px solid #e1eaf4
+}
+.ins-expiry small{display:block;color:#71819b;font-size:10px;font-weight:800}
+.ins-expiry strong{display:block;margin-top:4px;color:#10284b;font-size:16px;font-weight:900}
+.ins-days{
+  display:inline-flex;margin-top:7px;padding:5px 9px;border-radius:999px;
+  font-size:10px;font-weight:900
+}
+.ins-days.active{background:#e8f8ef;color:#16834b}
+.ins-days.near{background:#fff2dc;color:#b56600}
+.ins-days.expired{background:#ffecec;color:#c62828}
+.ins-empty{
+  background:#fff;border:1px solid #dfe8f3;border-radius:20px;padding:30px;
+  text-align:center;box-shadow:0 10px 28px rgba(17,50,91,.07)
+}
+.ins-empty-icon{
+  width:70px;height:70px;margin:0 auto 12px;display:grid;place-items:center;
+  border-radius:22px;background:#eef5ff;font-size:34px;animation:insFloat 2.8s ease-in-out infinite
+}
+.ins-empty h2{margin:0;color:#10284b}
+.ins-empty p{max-width:600px;margin:8px auto 18px;color:#71819b;font-size:13px;line-height:1.6}
+.ins-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+@keyframes insRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes insFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media(max-width:700px){
+  .ins-hero{padding:20px;border-radius:16px}
+  .ins-hero h1{font-size:23px}
+  .ins-summary{grid-template-columns:1fr}
+  .ins-vehicle{padding:14px}
+  .ins-vehicle-top{flex-direction:column}
+  .ins-actions{display:grid;grid-template-columns:1fr}
+  .ins-actions .btn{width:100%;text-align:center}
+}
+@media(prefers-reduced-motion:reduce){.ins-vehicle,.ins-empty-icon{animation:none}}
 </style>
 </head>
 <body>
-<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header>
-<div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a><a href="products.html">My Products</a><a href="services.html">My Services</a><a href="payments.html">Payments</a><a href="vehicle-insurance.html" class="active">🚗 Vehicle Insurance</a><a href="register-product.html">Register Product</a></nav></aside>
-<main class="dash-main">
-<div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>Vehicle Insurance</h1></div></div>
-<div class="ins-wrap">
-<section class="ins-hero"><p class="eyebrow" style="color:#ffb45d">INSURANCE PROTECTION</p><h1>Your Vehicles, Protected.</h1><p>View every vehicle linked to your iTech customer account, check expiry dates and stay ahead of renewals.</p><div id="mobileBadge" class="ins-mobile">📱 Mobile: Loading…</div></section>
-<section id="stats" class="ins-stats"></section>
-<section><div class="section-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">Your Vehicles</h2><p class="muted" style="margin:5px 0 0">All insurance records linked to your mobile number.</p></div><a class="btn secondary btn-back" href="dashboard.html">← Dashboard</a></div><div id="vehicleList" class="ins-list" style="margin-top:14px"><div class="empty-ins"><div class="big">🚗</div>Loading your insurance details…</div></div></section>
-<p class="ins-note">For renewal assistance, please contact iTech IT Solutions at 7736929233 or 8943165951.</p>
+<header class="dash-header">
+  <a class="brand" href="dashboard.html">
+    <img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  </a>
+  <a class="btn secondary" href="../pages/login.html" data-logout>Logout</a>
+</header>
+
+<div class="dash-layout">
+  <aside class="sidebar">
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="products.html">My Products</a>
+      <a href="services.html">My Services</a>
+      <a href="payments.html">Payments</a>
+      <a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+      <a href="register-product.html">Register Product</a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+    <div class="ins-page">
+      <div class="toolbar">
+        <div>
+          <p class="eyebrow">CUSTOMER PORTAL</p>
+          <h1>Vehicle Insurance</h1>
+          <p class="muted">View your vehicle insurance details and expiry status.</p>
+        </div>
+      </div>
+
+      <section class="ins-hero">
+        <p class="ins-eyebrow">INSURANCE PROTECTION</p>
+        <h1>🚗 Your Vehicle Insurance</h1>
+        <p id="insWelcome">Checking your insurance records...</p>
+      </section>
+
+      <div id="insSummary" class="ins-summary" style="display:none">
+        <div class="ins-summary-card"><small>Total Vehicles</small><strong id="insTotal">0</strong></div>
+        <div class="ins-summary-card"><small>Due Within 30 Days</small><strong id="insDue">0</strong></div>
+        <div class="ins-summary-card"><small>Expired</small><strong id="insExpired">0</strong></div>
+      </div>
+
+      <section id="insList" class="ins-list">
+        <div class="ins-empty">🛡️ Loading insurance details...</div>
+      </section>
+
+      <section id="insEnquiry" class="ins-empty" style="display:none;margin-top:18px">
+        <div class="ins-empty-icon">🚗</div>
+        <p class="ins-eyebrow" style="color:#f28a1a">VEHICLE INSURANCE</p>
+        <h2>No Vehicle Insurance Linked</h2>
+        <p>
+          You currently don't have a vehicle insurance record linked to your account.
+          If you need a new policy or renewal assistance, send an enquiry to iTech IT Solutions.
+        </p>
+        <div class="ins-actions">
+          <a class="btn primary" href="../pages/enquiry.html?service=Vehicle%20Insurance">📝 Send Vehicle Insurance Enquiry</a>
+          <a class="btn secondary" href="dashboard.html">← Back to Dashboard</a>
+        </div>
+      </section>
+
+      <div data-status class="status"></div>
+    </div>
+  </main>
 </div>
-<div data-status class="status"></div>
-</main></div>
-<footer class="footer"><div class="footer-brand"><img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech"></div><span>Govt. Sub Treasury Road, Nedumangad</span><span>7736929233 · 8943165951</span><span>itnedumangad@gmail.com</span><span>@itechndd</span><small>Your Trust Our Service</small></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
 <script>
-const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-const today=new Date();today.setHours(0,0,0,0);const dateObj=d=>new Date(d+'T00:00:00');const daysLeft=d=>Math.ceil((dateObj(d)-today)/86400000);const fmt=d=>d?dateObj(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
-function statusFor(d){const n=daysLeft(d);if(n<0)return {key:'expired',label:'🔴 Expired',days:n};if(n<=30)return {key:'near',label:n===0?'🟠 Due Today':`🟠 Due in ${n} day${n===1?'':'s'}`,days:n};return {key:'active',label:'🟢 Active',days:n}}
-function progress(n){if(n<0)return 0;return Math.max(8,Math.min(100,Math.round((n/365)*100)))}
-(async()=>{const a=await requireCustomer();if(!a)return;const c=await sb.from('customers').select('id,full_name,mobile').eq('auth_user_id',a.session.user.id).single();if(c.error||!c.data)return showStatus('Customer profile not found.',true);const {data,error}=await sb.from('vehicle_insurance').select('*').eq('customer_id',c.data.id).order('expiry_date',{ascending:true});if(error)return showStatus(error.message,true);const list=data||[];const expired=list.filter(x=>daysLeft(x.expiry_date)<0).length;const due=list.filter(x=>daysLeft(x.expiry_date)>=0&&daysLeft(x.expiry_date)<=30).length;const active=list.filter(x=>daysLeft(x.expiry_date)>30).length;$('mobileBadge').innerHTML=`📱 Mobile: <b>${esc(c.data.mobile||'—')}</b> &nbsp;•&nbsp; ${list.length} vehicle${list.length===1?'':'s'} linked`;$('stats').innerHTML=`<div class="ins-stat"><small>Total Vehicles</small><strong>${list.length}</strong></div><div class="ins-stat"><small>Active</small><strong>${active}</strong></div><div class="ins-stat"><small>Due Soon</small><strong>${due}</strong></div><div class="ins-stat"><small>Expired</small><strong>${expired}</strong></div>`;if(!list.length){$('vehicleList').innerHTML='<div class="empty-ins"><div class="big">🛡️</div><b style="color:#10284b">No insurance records yet</b><p>Please contact iTech IT Solutions if you need to add or renew a vehicle insurance policy.</p></div>';return}$('vehicleList').innerHTML=list.map((r,i)=>{const s=statusFor(r.expiry_date);const n=s.days;const company=r.insurance_company||'Not specified';const policy=r.policy_number||'Not specified';return `<article class="vehicle-card status-${s.key}" style="animation-delay:${Math.min(i*70,350)}ms"><div class="vehicle-top"><div class="vehicle-title"><div class="car-icon">🚗</div><div><div class="vehicle-number">${esc(r.vehicle_number||'Vehicle')}</div><div class="vehicle-type">${esc(r.vehicle_type||'Vehicle Insurance')}</div></div></div><span class="status-pill status-${s.key}">${s.label}</span></div><div class="vehicle-grid"><div class="detail"><small>Insurance Company</small><b>${esc(company)}</b></div><div class="detail"><small>Policy Number</small><b>${esc(policy)}</b></div><div class="detail"><small>Expiry Date</small><b>${fmt(r.expiry_date)}</b></div><div class="detail"><small>Mobile Number</small><b>${esc(r.mobile||c.data.mobile||'—')}</b></div></div><div class="expiry-bar"><div class="expiry-fill" style="width:${progress(n)}%"></div></div><div class="vehicle-bottom"><span>${n<0?`Expired ${Math.abs(n)} day${Math.abs(n)===1?'':'s'} ago`:n===0?'Insurance expires today':`${n} day${n===1?'':'s'} remaining`}</span><span class="renew-note">Need renewal assistance? Call iTech IT Solutions</span></div></article>`}).join('')})()
+(async()=>{
+  const authResult = await requireCustomer();
+  if(!authResult) return;
+
+  const profileResult = await sb
+    .from("customers")
+    .select("*")
+    .eq("auth_user_id",authResult.session.user.id)
+    .single();
+
+  if(profileResult.error || !profileResult.data){
+    return showStatus("Customer profile not found.",true);
+  }
+
+  const customer = profileResult.data;
+  const result = await sb
+    .from("vehicle_insurance")
+    .select("*")
+    .eq("customer_id",customer.id)
+    .order("expiry_date",{ascending:true});
+
+  const list = document.getElementById("insList");
+  const enquiry = document.getElementById("insEnquiry");
+  const summary = document.getElementById("insSummary");
+
+  if(result.error){
+    list.innerHTML = '<div class="ins-empty">⚠️ Unable to load insurance details.</div>';
+    return;
+  }
+
+  const records = result.data || [];
+  document.getElementById("insWelcome").textContent =
+    `${customer.full_name || "Customer"} • ${customer.mobile || ""}`;
+
+  if(!records.length){
+    list.style.display = "none";
+    enquiry.style.display = "";
+    return;
+  }
+
+  summary.style.display = "";
+  document.getElementById("insTotal").textContent = records.length;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const daysLeft = date => Math.ceil(
+    (new Date(date+"T00:00:00") - today) / 86400000
+  );
+
+  const expired = records.filter(r=>daysLeft(r.expiry_date)<0).length;
+  const due = records.filter(r=>{
+    const d=daysLeft(r.expiry_date);
+    return d>=0 && d<=30;
+  }).length;
+
+  document.getElementById("insExpired").textContent = expired;
+  document.getElementById("insDue").textContent = due;
+
+  const moneySafe = v => String(v ?? "").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+
+  list.innerHTML = records.map((r,i)=>{
+    const d = daysLeft(r.expiry_date);
+    const cls = d < 0 ? "expired" : d <= 30 ? "near" : "active";
+    const text = d < 0
+      ? `Expired ${Math.abs(d)} day${Math.abs(d)===1?"":"s"} ago`
+      : d === 0
+        ? "Expires Today"
+        : `${d} day${d===1?"":"s"} remaining`;
+
+    return `
+      <article class="ins-vehicle" style="animation-delay:${i*70}ms">
+        <div class="ins-vehicle-top">
+          <div>
+            <div class="ins-vehicle-number">🚗 ${moneySafe(r.vehicle_number || "Vehicle")}</div>
+            <div class="ins-company">${moneySafe(r.insurance_company || "Insurance")} ${r.vehicle_type ? "• "+moneySafe(r.vehicle_type) : ""}</div>
+          </div>
+          <span class="ins-days ${cls}">${text}</span>
+        </div>
+        <div class="ins-expiry">
+          <small>INSURANCE EXPIRY DATE</small>
+          <strong>${new Date(r.expiry_date+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"})}</strong>
+        </div>
+      </article>
+    `;
+  }).join("");
+})();
 </script>
-</body></html>
+
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    if (href.split('/').pop() === current) a.classList.add('active');
+  });
+})();
+</script>
+</body>
+</html>

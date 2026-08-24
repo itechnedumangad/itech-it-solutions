@@ -730,12 +730,16 @@ body{
   function renderCustomerSuggestions(query){
     const box=$("customerSuggestions");
     const q=(query||"").trim().toLowerCase();
-    const matches=customers.filter(c=>{
+    const filtered=customers.filter(c=>{
       const name=String(c.full_name||"").toLowerCase();
       const mobile=String(c.mobile||"").toLowerCase();
       const whatsapp=String(c.whatsapp||"").toLowerCase();
       return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
-    }).slice(0,8);
+    });
+
+    // Show only 4 customers when the search box is empty.
+    // When the user types, show matching customers (up to 8).
+    const matches = filtered.slice(0, q ? 8 : 4);
 
     if(!matches.length){
       box.innerHTML='<div class="customer-empty">No matching customer found.</div>';

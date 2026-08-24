@@ -341,7 +341,124 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
   .customer-stat,.customer-card,.ci-item,.ci-more{transition:none!important}
 }
 
+
+
+/* Empty dashboard statistic cards stay completely hidden */
+.customer-stat[hidden]{
+  display:none !important;
+}
+
+/* ===== Insurance Expiry Highlight ===== */
+.ci-expiry{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:4px;
+  font-size:11px;
+  font-weight:800;
+  color:#10284b;
+  flex-wrap:wrap;
+}
+.ci-expiry-date{
+  font-weight:900;
+  color:#0b2347;
+  letter-spacing:.1px;
+}
+.ci-days{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+  background:#eef6ff;
+  color:#0d5aa7;
+  border:1px solid #cfe2f6;
+}
+.ci-days.near{
+  background:#fff5e8;
+  color:#a85d00;
+  border-color:#ffd8a8;
+}
+.ci-days.urgent{
+  background:#fff0f0;
+  color:#b52b2b;
+  border-color:#ffcaca;
+  animation:expiryPulse 1.7s ease-in-out infinite;
+}
+.ci-days.expired{
+  background:#f5f5f5;
+  color:#777;
+  border-color:#ddd;
+}
+@keyframes expiryPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.04)}
+}
+@media(max-width:600px){
+  .ci-expiry{font-size:10px;gap:5px}
+  .ci-days{font-size:9px;padding:3px 7px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ci-days.urgent{animation:none}
+}
+
+
+/* ===== Vehicle Insurance Enquiry ===== */
+.vi-enquiry-card{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%);
+  border:1px solid #dfe9f4;
+}
+.vi-enquiry-card:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:linear-gradient(180deg,#ff8a00,#315efb);
+}
+.vi-enquiry-content{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.vi-enquiry-icon{
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  background:#eef5ff;
+  font-size:28px;
+  box-shadow:0 8px 20px rgba(35,92,180,.10);
+  animation:viFloat 2.8s ease-in-out infinite;
+}
+.vi-enquiry-copy{flex:1;min-width:0}
+.vi-enquiry-copy h2{margin:0;color:#10284b}
+.vi-enquiry-copy p{margin:7px 0 0;color:#71819b;font-size:13px;line-height:1.5}
+.vi-enquiry-actions{display:flex;gap:9px;flex-wrap:wrap}
+.vi-enquiry-actions .btn{white-space:nowrap}
+@keyframes viFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:600px){
+  .vi-enquiry-content{flex-direction:column;align-items:flex-start}
+  .vi-enquiry-actions{width:100%;display:grid;grid-template-columns:1fr}
+  .vi-enquiry-actions .btn{text-align:center;width:100%}
+}
+@media(prefers-reduced-motion:reduce){.vi-enquiry-icon{animation:none}}
+
 </style>
+
+<style id="vehicle-insurance-conditional-style">
+  #vehicleInsuranceNav{display:none}
+  #vehicleInsuranceSection{display:none}
+</style>
+
 </head>
 
 
@@ -442,7 +559,7 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
 
       <div class="customer-grid">
 
-        <div class="customer-stat">
+        <div class="customer-stat" id="balanceStatCard" hidden>
 
           <small>
             Current Balance
@@ -455,7 +572,7 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
         </div>
 
 
-        <div class="customer-stat">
+        <div class="customer-stat" id="workStatCard" hidden>
 
           <small>
             Total Work
@@ -481,7 +598,7 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
         </div>
 
 
-        <div class="customer-stat">
+        <div class="customer-stat" id="productsStatCard" hidden>
 
           <small>
             Products
@@ -762,6 +879,53 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
 
         document.getElementById("products").textContent =
           productsResult.count || 0;
+
+        /* --------------------------------
+           HIDE EMPTY STAT CARDS
+           --------------------------------
+           Cards are shown only when the
+           customer has actual data.
+        -------------------------------- */
+
+        const balanceValue =
+          Number(balanceData.current_balance || 0);
+
+        const workValue =
+          Number(balanceData.total_work || 0);
+
+        const paidValue =
+          Number(balanceData.total_paid || 0);
+
+        const productCount =
+          Number(productsResult.count || 0);
+
+        const balanceCard =
+          document.getElementById("balanceStatCard");
+
+        const workCard =
+          document.getElementById("workStatCard");
+
+        const paidCard =
+          document.getElementById("paidStatCard");
+
+        const productsCard =
+          document.getElementById("productsStatCard");
+
+        if (balanceCard) {
+          balanceCard.hidden = balanceValue === 0;
+        }
+
+        if (workCard) {
+          workCard.hidden = workValue === 0;
+        }
+
+        if (paidCard) {
+          paidCard.hidden = paidValue === 0;
+        }
+
+        if (productsCard) {
+          productsCard.hidden = productCount === 0;
+        }
 
 
         /* --------------------------------

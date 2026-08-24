@@ -1,7 +1,20 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Add Customer | iTech Admin</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Add Customer | iTech Admin</title>
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<link rel="stylesheet" href="../css/unified-dashboard.css">
+<link rel="stylesheet" href="../css/dashboard-shell.css">
+
 <style>
 /* ===== Unified iTech Footer - ordered layout ===== */
+
 .unified-site-footer{
   width:100%;
   margin-top:32px;
@@ -17,6 +30,7 @@
   gap:7px;
   box-shadow:0 -6px 22px rgba(7,28,59,.10);
 }
+
 .unified-site-footer .footer-logo{
   width:58px;
   height:58px;
@@ -24,29 +38,35 @@
   display:block;
   margin:0 auto 4px;
 }
+
 .unified-site-footer p{
   margin:0;
   line-height:1.45;
 }
+
 .unified-site-footer .footer-address{
   font-size:12px;
   font-weight:600;
   color:#dce7f8;
 }
+
 .unified-site-footer .footer-contact{
   font-size:13px;
   font-weight:800;
   color:#fff;
 }
+
 .unified-site-footer .footer-email{
   font-size:12px;
   color:#dce7f8;
 }
+
 .unified-site-footer .footer-social{
   font-size:12px;
   font-weight:800;
   color:#ff9a25;
 }
+
 .unified-site-footer .footer-tagline{
   margin-top:7px;
   padding-top:9px;
@@ -57,71 +77,824 @@
   letter-spacing:.4px;
   color:#fff;
 }
+
 @media(max-width:620px){
+
   .unified-site-footer{
     margin-top:22px;
     padding:24px 14px 20px;
     border-radius:14px 14px 0 0;
   }
+
   .unified-site-footer .footer-logo{
-    width:52px;height:52px;
+    width:52px;
+    height:52px;
   }
+
 }
 </style>
-</head><body>
-<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header>
-<div class="dash-layout"><aside class="sidebar"><nav>
-<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a>
-<a href="services.html">Services</a><a href="products.html">Products</a><a href="enquiries.html">Enquiries</a>
-<a href="amc.html">AMC</a><a href="offers.html">Offers</a><a href="works.html">Our Works</a><a href="messages.html">Messages</a>
-</nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER ONBOARDING</p><h1>Add Customer</h1><p class="muted">Creates a customer record and, when the Supabase Edge Function is deployed, a secure login account.</p></div><a class="btn secondary" href="customers.html">Customer List</a></div>
-<section class="panel form"><div class="grid">
-<label class="field">Customer Name<input id="full_name" required></label>
-<label class="field">Mobile<input id="mobile" required></label>
-<label class="field">WhatsApp<input id="whatsapp"></label>
-<label class="field">Email / Login Email<input id="email" type="email" required></label>
+
+</head>
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="dash-header">
+
+  <a class="brand" href="dashboard.html">
+
+    <img
+      class="brand-logo"
+      src="../assets/itech-logo.png"
+      alt="iTech IT Solutions">
+
+  </a>
+
+  <a
+    class="btn secondary"
+    href="../pages/login.html"
+    data-logout>
+    Logout
+  </a>
+
+</header>
+
+
+
+<!-- =========================
+     DASHBOARD LAYOUT
+========================= -->
+
+<div class="dash-layout">
+
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <nav>
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a href="customers.html">
+        Customers
+      </a>
+
+      <a href="add-customer.html">
+        + Add Customer
+      </a>
+
+      <a href="daily-work.html">
+        Daily Work
+      </a>
+
+      <a href="payments.html">
+        Payments
+      </a>
+
+      <a href="reports.html">
+        Reports
+      </a>
+
+      <a href="services.html">
+        Services
+      </a>
+
+      <a href="products.html">
+        Products
+      </a>
+
+      <a href="enquiries.html">
+        Enquiries
+      </a>
+
+      <a href="amc.html">
+        AMC
+      </a>
+
+      <a href="offers.html">
+        Offers
+      </a>
+
+      <a href="works.html">
+        Our Works
+      </a>
+
+      <a href="messages.html">
+        Messages
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="dash-main">
+
+
+    <!-- TOOLBAR -->
+
+    <div class="toolbar">
+
+      <div>
+
+        <p class="eyebrow">
+          CUSTOMER ONBOARDING
+        </p>
+
+        <h1>
+          Add Customer
+        </h1>
+
+        <p class="muted">
+          Create a customer record. Login details are optional.
+        </p>
+
+      </div>
+
+
+      <a
+        class="btn secondary"
+        href="customers.html">
+        Customer List
+      </a>
+
+    </div>
+
+
+
+    <!-- =========================
+         CUSTOMER FORM
+    ========================= -->
+
+    <section class="panel form">
+
+
+      <div class="grid">
+
+
+        <!-- CUSTOMER NAME -->
+
+        <label class="field">
+
+          Customer Name
+
+          <input
+            id="full_name"
+            type="text"
+            placeholder="Enter customer name"
+            required>
+
+        </label>
+
+
+
+        <!-- MOBILE -->
+
+        <label class="field">
+
+          Mobile
+
+          <input
+            id="mobile"
+            type="tel"
+            placeholder="Optional">
+
+        </label>
+
+
+
+        <!-- WHATSAPP -->
+
+        <label class="field">
+
+          WhatsApp
+
+          <input
+            id="whatsapp"
+            type="tel"
+            placeholder="Optional">
+
+        </label>
+
+
+
+        <!-- EMAIL -->
+
+        <label class="field">
+
+          Email / Login Email
+
+          <input
+            id="email"
+            type="email"
+            placeholder="Optional">
+
+        </label>
+
+
+      </div>
+
+
+
+      <!-- ADDRESS -->
+
+      <label class="field">
+
+        Address
+
+        <textarea
+          id="address"
+          rows="3"
+          placeholder="Optional">
+        </textarea>
+
+      </label>
+
+
+
+      <!-- BALANCE + PASSWORD -->
+
+      <div class="grid">
+
+
+        <label class="field">
+
+          Opening Balance
+
+          <input
+            id="opening_balance"
+            type="number"
+            min="0"
+            step="0.01"
+            value="0">
+
+        </label>
+
+
+
+        <label class="field">
+
+          Temporary Password
+
+          <input
+            id="password"
+            type="password"
+            minlength="8"
+            placeholder="Optional">
+
+        </label>
+
+
+      </div>
+
+
+
+      <!-- INFORMATION -->
+
+      <div class="notice">
+
+        <strong>Optional Login:</strong>
+
+        You can create the customer without login details.
+        If an Email and Password are provided, a secure login
+        account will also be created.
+
+      </div>
+
+
+
+      <!-- CREATE BUTTON -->
+
+      <button
+        id="save"
+        class="btn primary"
+        type="button">
+
+        Create Customer
+
+      </button>
+
+
+
+      <!-- STATUS -->
+
+      <div
+        data-status
+        class="status">
+      </div>
+
+
+    </section>
+
+
+  </main>
+
 </div>
-<label class="field">Address<textarea id="address" rows="3"></textarea></label>
-<div class="grid"><label class="field">Opening Balance<input id="opening_balance" type="number" min="0" step="0.01" value="0"></label>
-<label class="field">Temporary Password<input id="password" type="password" minlength="8" placeholder="Minimum 8 characters" required></label></div>
-<div class="notice">The password is sent securely to Supabase Auth through the Edge Function. It is not stored in the customer table.</div>
-<button id="save" class="btn primary" type="button">Create Customer Account</button><div data-status class="status"></div>
-</section></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+
+
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
+
+
+<!-- =========================
+     CUSTOMER CREATION
+========================= -->
+
 <script>
+
 (async()=>{
- const ok=await requireStaff();if(!ok)return;
- document.getElementById("save").onclick=async()=>{
-   const payload={full_name:document.getElementById("full_name").value.trim(),mobile:document.getElementById("mobile").value.trim(),whatsapp:document.getElementById("whatsapp").value.trim(),email:document.getElementById("email").value.trim(),address:document.getElementById("address").value.trim(),opening_balance:Number(document.getElementById("opening_balance").value||0),password:document.getElementById("password").value};
-   if(!payload.full_name||!payload.mobile||!payload.email||payload.password.length<8)return showStatus("Please complete the required fields. Password must be at least 8 characters.",true);
-   showStatus("Creating customer account…");
-   const {data:{session}}=await sb.auth.getSession();
-   const res=await fetch(`${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},body:JSON.stringify(payload)});
-   const json=await res.json().catch(()=>({}));
-   if(!res.ok)return showStatus(json.error||"Customer creation failed. Deploy the create-customer Edge Function first.",true);
-   showStatus("Customer created successfully.");
-   document.querySelectorAll("input,textarea").forEach(x=>{if(x.id!=="opening_balance")x.value=""});opening_balance.value="0";
- };
+
+
+  /* -------------------------
+     AUTH CHECK
+  ------------------------- */
+
+  const ok = await requireStaff();
+
+  if(!ok) return;
+
+
+
+  const saveButton =
+    document.getElementById("save");
+
+
+
+  /* -------------------------
+     CREATE CUSTOMER
+  ------------------------- */
+
+  saveButton.onclick = async()=>{
+
+
+    const fullName =
+      document
+        .getElementById("full_name")
+        .value
+        .trim();
+
+
+    const mobile =
+      document
+        .getElementById("mobile")
+        .value
+        .trim();
+
+
+    const whatsapp =
+      document
+        .getElementById("whatsapp")
+        .value
+        .trim();
+
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+
+    const address =
+      document
+        .getElementById("address")
+        .value
+        .trim();
+
+
+    const openingBalance =
+      Number(
+        document
+          .getElementById("opening_balance")
+          .value || 0
+      );
+
+
+    const password =
+      document
+        .getElementById("password")
+        .value
+        .trim();
+
+
+
+    /* -------------------------
+       ONLY NAME REQUIRED
+    ------------------------- */
+
+    if(!fullName){
+
+      showStatus(
+        "Please enter the customer name.",
+        true
+      );
+
+      document
+        .getElementById("full_name")
+        .focus();
+
+      return;
+    }
+
+
+
+    /* -------------------------
+       BALANCE VALIDATION
+    ------------------------- */
+
+    if(
+      !Number.isFinite(openingBalance) ||
+      openingBalance < 0
+    ){
+
+      showStatus(
+        "Please enter a valid opening balance.",
+        true
+      );
+
+      return;
+    }
+
+
+
+    /* -------------------------
+       LOGIN VALIDATION
+    ------------------------- */
+
+    /*
+      If password is entered,
+      email must also be provided.
+    */
+
+    if(password && !email){
+
+      showStatus(
+        "Enter an email address if you want to create a login account.",
+        true
+      );
+
+      document
+        .getElementById("email")
+        .focus();
+
+      return;
+    }
+
+
+
+    /*
+      If email is entered without password,
+      we simply create the customer record.
+    */
+
+    if(
+      password &&
+      password.length < 8
+    ){
+
+      showStatus(
+        "Password must be at least 8 characters.",
+        true
+      );
+
+      document
+        .getElementById("password")
+        .focus();
+
+      return;
+    }
+
+
+
+    /* -------------------------
+       PAYLOAD
+    ------------------------- */
+
+    const payload = {
+
+      full_name: fullName,
+
+      mobile: mobile,
+
+      whatsapp: whatsapp,
+
+      email: email,
+
+      address: address,
+
+      opening_balance:
+        openingBalance
+
+    };
+
+
+
+    /*
+      Password is included only
+      when the user wants login.
+    */
+
+    if(password){
+
+      payload.password =
+        password;
+
+    }
+
+
+
+    /* -------------------------
+       BUTTON STATE
+    ------------------------- */
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+      "Creating…";
+
+
+    showStatus(
+      "Creating customer…"
+    );
+
+
+
+    try{
+
+
+      /* -------------------------
+         GET SESSION
+      ------------------------- */
+
+      const {
+        data: {
+          session
+        }
+      } = await sb.auth.getSession();
+
+
+
+      if(!session){
+
+        throw new Error(
+          "Your admin session has expired. Please login again."
+        );
+
+      }
+
+
+
+      /* -------------------------
+         EDGE FUNCTION
+      ------------------------- */
+
+      const response =
+        await fetch(
+
+          `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,
+
+          {
+
+            method:"POST",
+
+            headers:{
+
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                `Bearer ${session.access_token}`
+
+            },
+
+            body:
+              JSON.stringify(payload)
+
+          }
+
+        );
+
+
+
+      /* -------------------------
+         RESPONSE
+      ------------------------- */
+
+      const json =
+        await response
+          .json()
+          .catch(()=>({}));
+
+
+
+      if(!response.ok){
+
+        throw new Error(
+          json.error ||
+          "Customer creation failed."
+        );
+
+      }
+
+
+
+      /* -------------------------
+         SUCCESS
+      ------------------------- */
+
+      if(password){
+
+        showStatus(
+          "Customer and login account created successfully."
+        );
+
+      }else{
+
+        showStatus(
+          "Customer created successfully."
+        );
+
+      }
+
+
+
+      /* -------------------------
+         CLEAR FORM
+      ------------------------- */
+
+      document
+        .getElementById("full_name")
+        .value = "";
+
+      document
+        .getElementById("mobile")
+        .value = "";
+
+      document
+        .getElementById("whatsapp")
+        .value = "";
+
+      document
+        .getElementById("email")
+        .value = "";
+
+      document
+        .getElementById("address")
+        .value = "";
+
+      document
+        .getElementById("opening_balance")
+        .value = "0";
+
+      document
+        .getElementById("password")
+        .value = "";
+
+
+    }
+
+    catch(error){
+
+      console.error(
+        "Customer creation error:",
+        error
+      );
+
+
+      showStatus(
+        error.message ||
+        "Customer creation failed.",
+        true
+      );
+
+    }
+
+
+    finally{
+
+      saveButton.disabled =
+        false;
+
+      saveButton.textContent =
+        "Create Customer";
+
+    }
+
+  };
+
+
 })();
+
 </script>
+
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer class="unified-site-footer">
-  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
-  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-  <p class="footer-contact">7736929233 · 8943165951</p>
-  <p class="footer-email">itnedumangad@gmail.com</p>
-  <p class="footer-social">@itechndd</p>
-  <p class="footer-tagline">Your Trust Our Service</p>
+
+  <img
+    class="footer-logo"
+    src="../assets/itech-logo.png"
+    alt="iTech IT Solutions">
+
+  <p class="footer-address">
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+  <p class="footer-contact">
+    7736929233 · 8943165951
+  </p>
+
+  <p class="footer-email">
+    itnedumangad@gmail.com
+  </p>
+
+  <p class="footer-social">
+    @itechndd
+  </p>
+
+  <p class="footer-tagline">
+    Your Trust Our Service
+  </p>
+
 </footer>
 
 
+
+<!-- =========================
+     ACTIVE SIDEBAR
+========================= -->
+
 <script data-dashboard-active-nav>
+
 (() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
+
+  const current =
+    location.pathname
+      .split('/')
+      .pop() ||
+      'dashboard.html';
+
+
+  document
+    .querySelectorAll(
+      '.sidebar nav a'
+    )
+    .forEach(a=>{
+
+      const href =
+        (
+          a.getAttribute('href') ||
+          ''
+        )
+        .split('?')[0]
+        .split('#')[0];
+
+
+      const file =
+        href
+          .split('/')
+          .pop();
+
+
+      if(file === current){
+
+        a.classList.add(
+          'active'
+        );
+
+      }
+
+    });
+
 })();
+
 </script>
-</body></html>
+
+
+</body>
+</html>

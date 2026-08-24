@@ -1,85 +1,591 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Login | iTech IT Solutions</title>
+
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/dashboard.css">
-<link rel="stylesheet" href="../css/unified-dashboard.css"></head>
-<body>
-<header class="site-header"><div class="nav-wrap">
-<a class="brand" href="../index.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
-<button id="menu" class="menu">☰</button>
-<nav id="nav" class="nav">
-<a href="../index.html">Home</a><a href="services.html">Services</a><a href="works.html">Our Works</a>
-<a href="enquiry.html">Enquiry</a><a href="service-register.html">Service</a>
-<a href="product-register.html">Product</a><a href="login.html">Login</a>
-</nav></div></header>
+<link rel="stylesheet" href="../css/unified-dashboard.css">
+</head>
 
-<section class="page-hero"><p class="eyebrow">SECURE PORTAL</p><h1>Welcome Back</h1>
-<p>Sign in to access your iTech account.</p></section>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+
+    <a class="brand" href="../index.html">
+      <img
+        class="brand-logo"
+        src="../assets/itech-logo.png"
+        alt="iTech IT Solutions">
+    </a>
+
+    <button id="menu" class="menu" type="button">☰</button>
+
+    <nav id="nav" class="nav">
+      <a href="../index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="works.html">Our Works</a>
+      <a href="enquiry.html">Enquiry</a>
+      <a href="service-register.html">Service</a>
+      <a href="product-register.html">Product</a>
+      <a href="login.html">Login</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<section class="page-hero">
+  <p class="eyebrow">SECURE PORTAL</p>
+
+  <h1>Welcome Back</h1>
+
+  <p>
+    Sign in to access your iTech account.
+  </p>
+</section>
+
 
 <main class="container">
-<div class="two">
-<section class="panel form">
-<h2>Login</h2>
-<p class="muted">Admin, staff and customer accounts use the same secure sign-in.</p>
-<form id="loginForm" class="form">
-<label class="field">Email<input id="email" type="email" required autocomplete="email"></label>
-<label class="field">Password<input id="password" type="password" required autocomplete="current-password"></label>
-<button class="btn primary" type="submit">Sign In</button>
-<div data-status class="status"></div>
-</form>
-</section>
-<section class="card">
-<div class="hero-icon">iT</div>
-<h2>Your account, connected.</h2>
-<p class="muted">Customers can view their products, services, payments and balance. Admin users can manage the complete shop system.</p>
-</section>
-</div>
+
+  <div class="two">
+
+    <!-- LOGIN PANEL -->
+    <section class="panel form">
+
+      <h2>Login</h2>
+
+      <p class="muted">
+        Admin, staff and customer accounts use the same secure sign-in.
+      </p>
+
+
+      <form id="loginForm" class="form">
+
+        <!-- EMAIL OR MOBILE -->
+        <label class="field">
+          Email / Mobile Number
+
+          <input
+            id="loginIdentity"
+            type="text"
+            required
+            autocomplete="username"
+            inputmode="email"
+            placeholder="Enter email or mobile number">
+        </label>
+
+
+        <!-- PASSWORD -->
+        <label class="field">
+          Password
+
+          <input
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder="Enter your password">
+        </label>
+
+
+        <!-- LOGIN BUTTON -->
+        <button
+          id="loginButton"
+          class="btn primary"
+          type="submit">
+          Sign In
+        </button>
+
+
+        <!-- STATUS -->
+        <div
+          id="loginStatus"
+          data-status
+          class="status">
+        </div>
+
+      </form>
+
+    </section>
+
+
+    <!-- INFORMATION PANEL -->
+    <section class="card">
+
+      <div class="hero-icon">iT</div>
+
+      <h2>Your account, connected.</h2>
+
+      <p class="muted">
+        Customers can view their products, services, payments and balance.
+        Admin users can manage the complete shop system.
+      </p>
+
+    </section>
+
+  </div>
+
 </main>
 
 
-
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
+
 <script>
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  showStatus("Signing in…");
-  if (!window.sb) return showStatus("Configure Supabase Publishable Key first.", true);
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async function(e) {
 
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) return showStatus(error.message, true);
+    e.preventDefault();
 
-  const { data: profile, error: profileError } = await sb.from("profiles")
-    .select("role").eq("id", data.user.id).single();
 
-  if (profileError || !profile) {
-    await sb.auth.signOut();
-    return showStatus("Account profile not found.", true);
+    const statusEl =
+      document.getElementById("loginStatus");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const identity =
+      document
+        .getElementById("loginIdentity")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+
+    /* -----------------------------
+       BASIC VALIDATION
+    ----------------------------- */
+
+    if (!identity) {
+
+      showLoginStatus(
+        "Please enter your email or mobile number.",
+        true
+      );
+
+      document
+        .getElementById("loginIdentity")
+        .focus();
+
+      return;
+    }
+
+
+    if (!password) {
+
+      showLoginStatus(
+        "Please enter your password.",
+        true
+      );
+
+      document
+        .getElementById("password")
+        .focus();
+
+      return;
+    }
+
+
+    /* -----------------------------
+       CHECK SUPABASE
+    ----------------------------- */
+
+    if (!window.sb) {
+
+      showLoginStatus(
+        "Supabase is not configured correctly.",
+        true
+      );
+
+      return;
+    }
+
+
+    /* -----------------------------
+       BUTTON LOADING
+    ----------------------------- */
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Signing In…";
+
+
+    try {
+
+      let email = identity;
+
+
+      /* -----------------------------
+         DETECT MOBILE NUMBER
+      ----------------------------- */
+
+      const digits =
+        identity.replace(/\D/g, "");
+
+
+      const isMobile =
+        !identity.includes("@") &&
+        digits.length >= 10;
+
+
+      /* -----------------------------
+         MOBILE LOGIN
+      ----------------------------- */
+
+      if (isMobile) {
+
+        showLoginStatus(
+          "Checking mobile number…"
+        );
+
+
+        const {
+          data: loginEmail,
+          error: mobileError
+        } = await sb.rpc(
+          "get_login_email_by_mobile",
+          {
+            p_mobile: identity
+          }
+        );
+
+
+        if (mobileError) {
+
+          console.error(
+            "Mobile lookup error:",
+            mobileError
+          );
+
+          showLoginStatus(
+            "Unable to find this mobile number.",
+            true
+          );
+
+          return;
+        }
+
+
+        if (!loginEmail) {
+
+          showLoginStatus(
+            "No account found with this mobile number.",
+            true
+          );
+
+          return;
+        }
+
+
+        email = loginEmail;
+      }
+
+
+      /* -----------------------------
+         EMAIL LOGIN
+      ----------------------------- */
+
+      showLoginStatus(
+        "Signing in…"
+      );
+
+
+      const {
+        data,
+        error
+      } = await sb.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+
+      /* -----------------------------
+         LOGIN ERROR
+      ----------------------------- */
+
+      if (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+        showLoginStatus(
+          getFriendlyLoginError(error),
+          true
+        );
+
+        return;
+      }
+
+
+      /* -----------------------------
+         USER CHECK
+      ----------------------------- */
+
+      if (!data || !data.user) {
+
+        showLoginStatus(
+          "Unable to verify your account.",
+          true
+        );
+
+        return;
+      }
+
+
+      /* -----------------------------
+         GET USER PROFILE
+      ----------------------------- */
+
+      showLoginStatus(
+        "Checking account…"
+      );
+
+
+      const {
+        data: profile,
+        error: profileError
+      } = await sb
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+
+      /* -----------------------------
+         PROFILE ERROR
+      ----------------------------- */
+
+      if (profileError || !profile) {
+
+        console.error(
+          "Profile error:",
+          profileError
+        );
+
+
+        await sb.auth.signOut();
+
+
+        showLoginStatus(
+          "Account profile not found. Please contact the administrator.",
+          true
+        );
+
+        return;
+      }
+
+
+      /* -----------------------------
+         ROLE REDIRECT
+      ----------------------------- */
+
+      const role =
+        String(profile.role || "")
+          .toLowerCase()
+          .trim();
+
+
+      showLoginStatus(
+        "Login successful. Opening dashboard…"
+      );
+
+
+      if (role === "admin") {
+
+        window.location.href =
+          "../admin/dashboard.html";
+
+        return;
+      }
+
+
+      if (role === "staff") {
+
+        window.location.href =
+          "../staff/dashboard.html";
+
+        return;
+      }
+
+
+      if (
+        role === "customer" ||
+        role === "user" ||
+        role === ""
+      ) {
+
+        window.location.href =
+          "../customer/dashboard.html";
+
+        return;
+      }
+
+
+      /* -----------------------------
+         UNKNOWN ROLE
+      ----------------------------- */
+
+      await sb.auth.signOut();
+
+
+      showLoginStatus(
+        "Your account role is not configured correctly.",
+        true
+      );
+
+    }
+
+
+    catch (error) {
+
+      console.error(
+        "Unexpected login error:",
+        error
+      );
+
+
+      showLoginStatus(
+        error.message ||
+        "Something went wrong while signing in.",
+        true
+      );
+
+    }
+
+
+    finally {
+
+      loginButton.disabled = false;
+      loginButton.textContent = "Sign In";
+
+    }
+
+  });
+
+
+/* =========================================
+   STATUS MESSAGE
+========================================= */
+
+function showLoginStatus(
+  message,
+  isError = false
+) {
+
+  const statusEl =
+    document.getElementById("loginStatus");
+
+
+  statusEl.textContent =
+    message;
+
+
+  statusEl.className =
+    "status " +
+    (isError
+      ? "error"
+      : "success");
+}
+
+
+/* =========================================
+   FRIENDLY LOGIN ERRORS
+========================================= */
+
+function getFriendlyLoginError(error) {
+
+  const message =
+    String(error?.message || "")
+      .toLowerCase();
+
+
+  if (
+    message.includes("invalid login credentials")
+  ) {
+
+    return "Invalid email/mobile number or password.";
   }
 
-  if (profile.role === "admin") {
-    location.href = "../admin/dashboard.html";
-  } else if (profile.role === "staff") {
-    location.href = "../staff/dashboard.html";
-  } else {
-    location.href = "../customer/dashboard.html";
+
+  if (
+    message.includes("email not confirmed")
+  ) {
+
+    return "Please confirm your account email before signing in.";
   }
-});
+
+
+  if (
+    message.includes("too many requests")
+  ) {
+
+    return "Too many login attempts. Please try again later.";
+  }
+
+
+  if (
+    message.includes("user not found")
+  ) {
+
+    return "Account not found.";
+  }
+
+
+  return error?.message ||
+    "Unable to sign in. Please try again.";
+}
+
 </script>
 
+
+<!-- FOOTER -->
+
 <footer class="unified-site-footer">
-  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
-  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-  <p class="footer-contact">7736929233 · 8943165951</p>
-  <p class="footer-email">itnedumangad@gmail.com</p>
-  <p class="footer-social">@itechndd</p>
-  <p class="footer-tagline">Your Trust Our Service</p>
+
+  <img
+    class="footer-logo"
+    src="../assets/itech-logo.png"
+    alt="iTech IT Solutions">
+
+  <p class="footer-address">
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+  <p class="footer-contact">
+    7736929233 · 8943165951
+  </p>
+
+  <p class="footer-email">
+    itnedumangad@gmail.com
+  </p>
+
+  <p class="footer-social">
+    @itechndd
+  </p>
+
+  <p class="footer-tagline">
+    Your Trust Our Service
+  </p>
+
 </footer>
 
-</body></html>
+
+</body>
+</html>

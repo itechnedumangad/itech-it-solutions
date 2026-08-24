@@ -132,7 +132,9 @@
 <div class="dash-layout">
 
 
-  <!-- SIDEBAR -->
+  <!-- =========================
+       SIDEBAR
+  ========================= -->
 
   <aside class="sidebar">
 
@@ -203,7 +205,9 @@
   <main class="dash-main">
 
 
-    <!-- TOOLBAR -->
+    <!-- =========================
+         TOOLBAR
+    ========================= -->
 
     <div class="toolbar">
 
@@ -240,6 +244,10 @@
 
     <section class="panel form">
 
+
+      <!-- =========================
+           BASIC DETAILS
+      ========================= -->
 
       <div class="grid">
 
@@ -308,7 +316,9 @@
 
 
 
-      <!-- ADDRESS -->
+      <!-- =========================
+           ADDRESS
+      ========================= -->
 
       <label class="field">
 
@@ -317,17 +327,20 @@
         <textarea
           id="address"
           rows="3"
-          placeholder="Optional">
-        </textarea>
+          placeholder="Optional"></textarea>
 
       </label>
 
 
 
-      <!-- BALANCE + PASSWORD -->
+      <!-- =========================
+           BALANCE + PASSWORD
+      ========================= -->
 
       <div class="grid">
 
+
+        <!-- OPENING BALANCE -->
 
         <label class="field">
 
@@ -343,6 +356,8 @@
         </label>
 
 
+
+        <!-- PASSWORD -->
 
         <label class="field">
 
@@ -361,21 +376,32 @@
 
 
 
-      <!-- INFORMATION -->
+      <!-- =========================
+           LOGIN INFORMATION
+      ========================= -->
 
       <div class="notice">
 
         <strong>Optional Login:</strong>
 
         You can create the customer without login details.
-        If an Email and Password are provided, a secure login
-        account will also be created.
+
+        If both an Email and Password are provided,
+        a secure login account will also be created.
+
+        <br><br>
+
+        <strong>Note:</strong>
+
+        Email or Password alone will not create a login account.
 
       </div>
 
 
 
-      <!-- CREATE BUTTON -->
+      <!-- =========================
+           CREATE BUTTON
+      ========================= -->
 
       <button
         id="save"
@@ -388,7 +414,9 @@
 
 
 
-      <!-- STATUS -->
+      <!-- =========================
+           STATUS
+      ========================= -->
 
       <div
         data-status
@@ -426,9 +454,9 @@
 (async()=>{
 
 
-  /* -------------------------
+  /* =========================
      AUTH CHECK
-  ------------------------- */
+  ========================= */
 
   const ok = await requireStaff();
 
@@ -441,12 +469,16 @@
 
 
 
-  /* -------------------------
+  /* =========================
      CREATE CUSTOMER
-  ------------------------- */
+  ========================= */
 
   saveButton.onclick = async()=>{
 
+
+    /* =========================
+       READ FORM VALUES
+    ========================= */
 
     const fullName =
       document
@@ -499,9 +531,9 @@
 
 
 
-    /* -------------------------
-       ONLY NAME REQUIRED
-    ------------------------- */
+    /* =========================
+       ONLY CUSTOMER NAME REQUIRED
+    ========================= */
 
     if(!fullName){
 
@@ -519,9 +551,9 @@
 
 
 
-    /* -------------------------
+    /* =========================
        BALANCE VALIDATION
-    ------------------------- */
+    ========================= */
 
     if(
       !Number.isFinite(openingBalance) ||
@@ -533,29 +565,8 @@
         true
       );
 
-      return;
-    }
-
-
-
-    /* -------------------------
-       LOGIN VALIDATION
-    ------------------------- */
-
-    /*
-      If password is entered,
-      email must also be provided.
-    */
-
-    if(password && !email){
-
-      showStatus(
-        "Enter an email address if you want to create a login account.",
-        true
-      );
-
       document
-        .getElementById("email")
+        .getElementById("opening_balance")
         .focus();
 
       return;
@@ -563,13 +574,29 @@
 
 
 
-    /*
-      If email is entered without password,
-      we simply create the customer record.
-    */
+    /* =========================
+       LOGIN LOGIC
+    =========================
+
+       Login account will ONLY be
+       created when BOTH:
+
+       1. Email exists
+       2. Password exists
+
+    ========================= */
+
+    const createLogin =
+      Boolean(email && password);
+
+
+
+    /* =========================
+       PASSWORD VALIDATION
+    ========================= */
 
     if(
-      password &&
+      createLogin &&
       password.length < 8
     ){
 
@@ -587,21 +614,26 @@
 
 
 
-    /* -------------------------
+    /* =========================
        PAYLOAD
-    ------------------------- */
+    ========================= */
 
     const payload = {
 
-      full_name: fullName,
+      full_name:
+        fullName,
 
-      mobile: mobile,
+      mobile:
+        mobile,
 
-      whatsapp: whatsapp,
+      whatsapp:
+        whatsapp,
 
-      email: email,
+      email:
+        email,
 
-      address: address,
+      address:
+        address,
 
       opening_balance:
         openingBalance
@@ -611,11 +643,14 @@
 
 
     /*
-      Password is included only
-      when the user wants login.
+      IMPORTANT:
+
+      Password is sent ONLY when
+      Email + Password are both
+      available.
     */
 
-    if(password){
+    if(createLogin){
 
       payload.password =
         password;
@@ -624,9 +659,9 @@
 
 
 
-    /* -------------------------
+    /* =========================
        BUTTON STATE
-    ------------------------- */
+    ========================= */
 
     saveButton.disabled = true;
 
@@ -634,8 +669,11 @@
       "Creating…";
 
 
+
     showStatus(
-      "Creating customer…"
+      createLogin
+        ? "Creating customer and login account…"
+        : "Creating customer…"
     );
 
 
@@ -643,15 +681,16 @@
     try{
 
 
-      /* -------------------------
-         GET SESSION
-      ------------------------- */
+      /* =========================
+         GET CURRENT SESSION
+      ========================= */
 
       const {
         data: {
           session
         }
-      } = await sb.auth.getSession();
+      } =
+        await sb.auth.getSession();
 
 
 
@@ -665,9 +704,9 @@
 
 
 
-      /* -------------------------
+      /* =========================
          EDGE FUNCTION
-      ------------------------- */
+      ========================= */
 
       const response =
         await fetch(
@@ -676,7 +715,8 @@
 
           {
 
-            method:"POST",
+            method:
+              "POST",
 
             headers:{
 
@@ -697,9 +737,9 @@
 
 
 
-      /* -------------------------
+      /* =========================
          RESPONSE
-      ------------------------- */
+      ========================= */
 
       const json =
         await response
@@ -719,11 +759,11 @@
 
 
 
-      /* -------------------------
-         SUCCESS
-      ------------------------- */
+      /* =========================
+         SUCCESS MESSAGE
+      ========================= */
 
-      if(password){
+      if(createLogin){
 
         showStatus(
           "Customer and login account created successfully."
@@ -739,9 +779,9 @@
 
 
 
-      /* -------------------------
+      /* =========================
          CLEAR FORM
-      ------------------------- */
+      ========================= */
 
       document
         .getElementById("full_name")
@@ -773,7 +813,6 @@
 
 
     }
-
     catch(error){
 
       console.error(

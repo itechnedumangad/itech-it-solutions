@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Staff Dashboard | iTech IT Solutions</title>
+<title>Dashboard | iTech Staff</title>
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/dashboard.css">
 <style>
@@ -259,322 +259,131 @@ body{
   .btn-clear{width:100%;height:45px}
 }
 
-/* =========================================================
-   STAFF DASHBOARD - COMPACT NOTIFICATION CARDS
-========================================================= */
-.staff-notifications{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-  margin:0 0 18px;
-}
+/* ===== WhatsApp Payment Reminder ===== */
+.wa-reminder-section{margin-top:18px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.wa-reminder-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.wa-reminder-title{display:flex;align-items:center;gap:10px}
+.wa-reminder-title .wa-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#eafaf0;font-size:22px}
+.wa-reminder-title h2{margin:0;font-size:20px}.wa-reminder-title p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.wa-actions{display:flex;gap:8px;flex-wrap:wrap}.wa-btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;font-size:12px}
+.wa-btn.green{background:#16a05d;color:#fff}.wa-btn.light{background:#eef5ff;color:#164b8f;border:1px solid #d9e7f8}
+.wa-reminder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wa-list-card{border:1px solid #e0e8f2;border-radius:14px;overflow:hidden;background:#fbfdff}
+.wa-list-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e3ebf4;background:#f7faff}
+.wa-list-head strong{font-size:13px}.wa-badge{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:850}
+.wa-badge.today{background:#1769e0}.wa-badge.overdue{background:#ef4444}.wa-list-body{max-height:330px;overflow:auto}
+.wa-customer{padding:12px 14px;border-bottom:1px solid #edf1f6;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wa-customer:last-child{border-bottom:0}.wa-customer-main{min-width:0}
+.wa-customer-name{font-weight:800;color:#10284b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-meta{margin-top:3px;color:#71819b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-balance{margin-top:4px;font-size:11px;font-weight:800;color:#d97706}
+.wa-send{flex:0 0 auto;border:0;border-radius:9px;padding:8px 10px;background:#16a05d;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.wa-empty{padding:22px 14px;text-align:center;color:#71819b;font-size:12px}
+.wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
+@media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
 
-.staff-notify-card{
-  min-width:0;
-  min-height:82px;
-  padding:13px 14px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  position:relative;
-  overflow:hidden;
-  text-decoration:none!important;
-  color:var(--ink)!important;
-  background:rgba(255,255,255,.97);
-  border:1px solid #e1e9f4;
-  border-radius:15px;
-  box-shadow:0 7px 22px rgba(17,50,91,.07);
-  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
-}
-.staff-notify-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 13px 28px rgba(17,50,91,.11);
-}
-.staff-notify-card::after{
-  content:"";
-  position:absolute;
-  width:70px;
-  height:70px;
-  right:-28px;
-  bottom:-30px;
-  border-radius:50%;
-  background:rgba(23,105,224,.06);
-}
-.notify-icon{
-  width:43px;
-  height:43px;
-  flex:0 0 43px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  font-size:21px;
-  position:relative;
-  z-index:1;
-}
-.notify-content{
-  min-width:0;
-  display:flex;
-  flex:1;
-  flex-direction:column;
-  gap:3px;
-}
-.notify-content strong{
-  font-size:14px;
-  color:var(--ink);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.notify-content small{
-  color:var(--muted);
-  font-size:10px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.notify-count{
-  min-width:28px;
-  height:28px;
-  padding:0 8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:999px;
-  background:#0b2142;
+</style>
+<link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+<style>
+/* ===== Unified iTech Footer - full width compact ===== */
+.unified-site-footer{
+  width:100%!important;
+  max-width:none!important;
+  margin:32px 0 0!important;
+  padding:22px 20px 20px!important;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a)!important;
   color:#fff;
-  font-size:12px;
-  font-weight:850;
-  position:relative;
-  z-index:2;
+  border-radius:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  clear:both;
 }
-.notify-enquiry .notify-icon{background:#fff0f0}
-.notify-enquiry .notify-count{background:#ef4444}
-.notify-amc .notify-icon{background:#fff4e5}
-.notify-amc .notify-count{background:#f28a1a}
-.notify-service .notify-icon{background:#eaf3ff}
-.notify-service .notify-count{background:#1769e0}
-
-@media(max-width:850px){
-  .staff-notifications{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:9px;
-  }
-  .staff-notify-card{
-    min-height:76px;
-    padding:10px;
-    gap:8px;
-  }
-  .notify-icon{
-    width:37px;
-    height:37px;
-    flex-basis:37px;
-    font-size:18px;
-  }
-  .notify-content strong{font-size:12px}
-  .notify-content small{font-size:9px}
-  .notify-count{
-    min-width:24px;
-    height:24px;
-    padding:0 6px;
-    font-size:11px;
-  }
+.unified-site-footer .footer-logo{
+  width:66px!important;height:66px!important;object-fit:contain;display:block;
+  margin:0 auto 5px!important;
 }
-
+.unified-site-footer p{
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
+}
+.unified-site-footer .footer-address{font-size:12px;font-weight:600;color:#dce7f8}
+.unified-site-footer .footer-contact{font-size:13px;font-weight:800;color:#fff}
+.unified-site-footer .footer-email{font-size:12px;color:#dce7f8}
+.unified-site-footer .footer-social{font-size:12px;font-weight:800;color:#ff9a25}
+.unified-site-footer .footer-tagline{
+  margin:6px 0 0!important;
+  padding:0!important;
+  width:auto!important;
+  border:0!important;
+  font-size:12px;font-weight:800;letter-spacing:.4px;color:#ff9a25;
+}
 @media(max-width:620px){
-  .staff-notifications{
-    grid-template-columns:1fr 1fr;
+  .unified-site-footer{
+    margin-top:22px!important;
+    padding:20px 14px 18px!important;
   }
-  .staff-notify-card:last-child{
-    grid-column:1/-1;
-  }
+  .unified-site-footer .footer-logo{width:58px!important;height:58px!important}
 }
-
-@media(max-width:420px){
-  .staff-notifications{
-    grid-template-columns:1fr;
-  }
-  .staff-notify-card:last-child{
-    grid-column:auto;
-  }
-}
-
-
-/* =========================================================
-   NO AUTO REFRESH / STABLE DASHBOARD
-========================================================= */
-html,body{
-  min-width:0;
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-}
-button:disabled{cursor:wait;opacity:.7}
-
-
-/* =========================================================
-   STAFF-ONLY CLEAN DASHBOARD
-========================================================= */
-.sidebar nav{
-  gap:6px;
-}
-.sidebar nav a:nth-child(n+7){
-  display:none!important;
-}
-
-</style>
-    <link rel="stylesheet" href="../css/dashboard-shell.css">
-
-
-
-
-<style id="index-footer-style">
-.footer{
-  width:100%;
-  max-width:none;
-  min-height:180px;
-  padding:42px 20px 30px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  text-align:center;
-  overflow:hidden;
-}
-.footer-brand{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:75px;
-}
-.footer-logo-only{
-  display:block;
-  width:clamp(120px,16vw,190px);
-  height:auto;
-  max-width:190px;
-  max-height:75px;
-  object-fit:contain;
-  object-position:center;
-  margin:0 auto 14px;
-}
-.footer span,.footer small{
-  display:block;
-  max-width:100%;
-  overflow-wrap:anywhere;
-}
-@media(max-width:767px){
-  .footer{
-    padding-left:14px;
-    padding-right:14px;
-  }
-}
-@media(max-width:480px){
-  .footer{
-    min-height:170px;
-    padding:34px 12px 25px;
-  }
-  .footer-logo-only{
-    width:145px!important;
-    max-height:65px!important;
-  }
-}
-</style>
-
-<style id="vehicle-insurance-quick-style">
-.vi-quick{margin-top:18px;background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07);border-left:4px solid #ff8a00}.viq-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.viq-field{display:flex;flex-direction:column;gap:6px;font-weight:800;color:#10284b}.viq-field input{width:100%;box-sizing:border-box;border:1px solid #d8e2ef;border-radius:10px;padding:11px;background:#fff;color:#10284b}.viq-suggest{position:relative}.viq-list{position:absolute;z-index:30;left:0;right:0;top:100%;background:#fff;border:1px solid #d8e2ef;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.12);overflow:hidden}.viq-list button{display:block;width:100%;padding:10px;text-align:left;border:0;background:#fff;border-bottom:1px solid #edf1f6;cursor:pointer}.viq-list button:hover{background:#f3f7fc}.viq-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.viq-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.viq-badge{padding:7px 10px;border-radius:999px;background:#eef6ff;color:#245182;font-weight:800;font-size:12px}.viq-badge.danger{background:#fee2e2;color:#b91c1c}.viq-badge.warn{background:#ffedd5;color:#c2410c}.viq-badge.ok{background:#dcfce7;color:#15803d}.viq-message{margin-top:10px;padding:11px 12px;background:#f8fbff;border:1px solid #e0e9f4;border-radius:10px;font-size:13px;color:#53657c}.viq-table{width:100%;border-collapse:collapse;margin-top:14px}.viq-table th,.viq-table td{padding:9px;border-bottom:1px solid #edf1f6;text-align:left;font-size:13px}.viq-table th{font-size:11px;text-transform:uppercase;color:#71819b}.viq-table-wrap{overflow:auto}.viq-status{font-weight:800}.viq-expired{color:#b91c1c}.viq-7,.viq-15,.viq-30{color:#c2410c}.viq-active{color:#15803d}@media(max-width:1000px){.viq-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.vi-quick{padding:15px}.viq-grid{grid-template-columns:1fr}.viq-actions .btn{width:100%}.viq-table{min-width:600px}}
 </style>
 </head>
 <body>
 
-<script id="no-auto-refresh-guard">
-(() => {
-  "use strict";
-
-  /* This page must never reload itself automatically. */
-  window.addEventListener("beforeunload", () => {
-    window.__staffDashboardLeaving = true;
-  });
-
-  /* Prevent accidental form submission if the dashboard is ever wrapped in a form. */
-  document.addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
-
-  /* Prevent Enter in text/number inputs from causing an implicit form submit. */
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" &&
-        e.target &&
-        ["INPUT","TEXTAREA"].includes(e.target.tagName) &&
-        !e.target.closest(".customer-suggestions")) {
-      e.preventDefault();
-    }
-  });
-})();
-</script>
-
-
 <header class="dash-header">
-  <a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></a>
+  <a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
   <div class="header-actions">
-    <span class="user-chip" data-admin-name>Staff</span>
+    <span class="user-chip" data-staff-name>Staff</span>
     <a class="btn secondary" href="../pages/login.html" data-logout>Logout</a>
   </div>
 </header>
 
 <div class="dash-layout">
-<aside class="sidebar">
-  <nav>
-    <a class="active" href="dashboard.html">Dashboard</a>
-    <a href="../admin/customers.html">Customers</a>
-    <a href="../admin/add-customer.html">+ Add Customer</a>
-    <a href="../admin/daily-work.html">Daily Work</a>
-    <a href="../admin/payments.html">Payments</a>
-    <a href="../admin/reports.html">Reports</a>
-  </nav>
-</aside>
+<aside class="sidebar"><nav>
+<a class="active" href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a>
+</nav></aside>
 
 <main class="dash-main">
 
 <div class="toolbar">
   <div>
     <p class="eyebrow">STAFF CONTROL CENTER</p>
-    <h1>Staff Dashboard</h1>
-    <p class="muted">Manage daily work and customer activities.</p>
+    <h1>Dashboard</h1>
+    <p class="muted">Daily shop activity and customer work at a glance.</p>
   </div>
 </div>
 
-<div class="staff-notifications" aria-label="Staff notifications">
-
-  <a class="staff-notify-card notify-enquiry" href="../admin/enquiries.html">
-    <span class="notify-icon">📩</span>
-    <span class="notify-content">
-      <strong>Enquiries</strong>
-      <small>Pending / new</small>
-    </span>
-    <span id="enquiryCount" class="notify-count">0</span>
-  </a>
-
-  <a class="staff-notify-card notify-amc" href="../admin/amc.html">
-    <span class="notify-icon">🛠️</span>
-    <span class="notify-content">
-      <strong>AMC</strong>
-      <small>Pending requests</small>
-    </span>
-    <span id="amcCount" class="notify-count">0</span>
-  </a>
-
-  <a class="staff-notify-card notify-service" href="../pages/service-register.html">
-    <span class="notify-icon">🔧</span>
-    <span class="notify-content">
-      <strong>Service Register</strong>
-      <small>Open services</small>
-    </span>
-    <span id="serviceRegisterCount" class="notify-count">0</span>
-  </a>
-
+<div class="info-bar" style="margin-bottom:16px">
+  👤 Staff Mode — You can manage customer work, payments, services and vehicle insurance. Staff Management is available only to Admin.
 </div>
+
+<div class="kpis">
+  <div class="kpi"><b>Today's Work</b><div id="todayWork" class="value">₹0.00</div><small id="todayEntries" class="muted">0 entries</small></div>
+  <div class="kpi"><b>Today's Payments</b><div id="todayPayments" class="value">₹0.00</div><small class="muted">Collected today</small></div>
+  <div class="kpi"><b>Total Outstanding</b><div id="outstanding" class="value">₹0.00</div><small class="muted">All customers</small></div>
+  <div class="kpi"><b>New Enquiries</b><div id="enquiries" class="value">0</div><small class="muted">Pending / new</small></div>
+</div>
+
+
+
 
 <section class="dashboard-card quick-entry">
   <div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
@@ -641,79 +450,48 @@ button:disabled{cursor:wait;opacity:.7}
   </div>
   <div id="statusBox" class="status-box"></div>
 </section>
-<section id="staffWhatsappReminders" class="dashboard-card staff-wa-reminders">
-  <div class="staff-wa-head">
-    <div>
-      <div class="quick-title"><span class="bolt">📲</span><h2>WhatsApp Payment Reminders</h2></div>
-      <p class="quick-sub">Send payment reminders to today's customers and customers with balances older than 7 days.</p>
-    </div>
-    <button type="button" id="waRefreshBtn" class="btn-clear">↻ Refresh</button>
-  </div>
 
-  <div class="staff-wa-actions">
-    <button type="button" id="waTodayBtn" class="wa-btn wa-primary">📱 Send Today's All</button>
-    <button type="button" id="waOldBtn" class="wa-btn wa-orange">📱 Send 7+ Days All</button>
+<section class="wa-reminder-section">
+  <div class="wa-reminder-head">
+    <div class="wa-reminder-title">
+      <span class="wa-icon">📲</span>
+      <div>
+        <h2>WhatsApp Payment Reminders</h2>
+        <p>Today's customers and customers with 7+ days outstanding.</p>
+      </div>
+    </div>
+    <div class="wa-actions">
+      <button type="button" id="waSendTodayAll" class="wa-btn green">📲 Send Today's All</button>
+      <button type="button" id="waSendOverdueAll" class="wa-btn light">📲 Send 7+ Days All</button>
+      <button type="button" id="waRefresh" class="wa-btn light">↻ Refresh</button>
+    </div>
   </div>
-
-  <div class="staff-wa-grid">
+  <div class="wa-reminder-grid">
     <div class="wa-list-card">
-      <div class="wa-list-title"><strong>Today's Customers</strong><span id="waTodayCount">0</span></div>
-      <div id="waTodayList" class="wa-customer-list"><div class="muted">Loading…</div></div>
+      <div class="wa-list-head"><strong>Today's Customers</strong><span id="waTodayCount" class="wa-badge today">0</span></div>
+      <div id="waTodayList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
     </div>
     <div class="wa-list-card">
-      <div class="wa-list-title"><strong>7+ Days Outstanding</strong><span id="waOldCount">0</span></div>
-      <div id="waOldList" class="wa-customer-list"><div class="muted">Loading…</div></div>
+      <div class="wa-list-head"><strong>7+ Days Outstanding</strong><span id="waOverdueCount" class="wa-badge overdue">0</span></div>
+      <div id="waOverdueList" class="wa-list-body"><div class="wa-empty">Loading…</div></div>
     </div>
   </div>
-  <div id="waStatus" class="status-box"></div>
+  <div class="wa-note">ℹ️ WhatsApp opens with the message already prepared. Review it and press Send.</div>
 </section>
 
+
+<div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 
 </main></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
 
 <script>
 (async()=>{
-  /* PAGE-LOCAL AUTH: no redirect loop, no reload, no polling. */
-  if(window.__staffDashboardStarted)return;
-  window.__staffDashboardStarted=true;
-
-  try{
-    const {data:{user},error:sessionError}=await sb.auth.getUser();
-
-    if(sessionError || !user){
-      console.warn("Staff Dashboard: no active session.");
-      window.__staffDashboardStarted=false;
-      return;
-    }
-
-    const {data:profile,error:profileError}=await sb
-      .from("profiles")
-      .select("id,full_name,mobile,role")
-      .eq("id",user.id)
-      .maybeSingle();
-
-    if(profileError){
-      console.error("Staff Dashboard profile error:",profileError);
-      window.__staffDashboardStarted=false;
-      return;
-    }
-
-    if(!profile || !["admin","staff"].includes(String(profile.role||"").toLowerCase())){
-      console.warn("Staff Dashboard: unauthorized role.");
-      window.__staffDashboardStarted=false;
-      return;
-    }
-
-    const nameEl=document.querySelector("[data-admin-name]");
-    if(nameEl){
-      nameEl.textContent=profile.full_name || user.email || "Staff";
-    }
-  if(window.__staffDashboardInitialized)return;
-  window.__staffDashboardInitialized=true;
+  const ok=await requireStaff(); if(!ok)return;
 
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
   const today=new Date().toISOString().slice(0,10);
@@ -729,7 +507,7 @@ button:disabled{cursor:wait;opacity:.7}
     const el=$("statusBox");
     el.textContent=msg;
     el.className="status-box show "+(error?"error":"ok");
-
+    setTimeout(()=>el.classList.remove("show"),5000);
   }
 
   function amount(id){ return Math.max(Number($(id).value||0),0); }
@@ -751,7 +529,12 @@ button:disabled{cursor:wait;opacity:.7}
   }
 
   async function loadCustomers(){
-    const r=await sb.from("customers").select("*").eq("created_from_insurance",false).order("full_name");
+    // Quick Daily Work shows only normal customer profiles, not insurance-created profiles.
+    // Insurance-created profiles are intentionally excluded.
+    const r=await sb.from("customers")
+      .select("*")
+      .or("created_from_insurance.is.null,created_from_insurance.eq.false")
+      .order("full_name");
     if(r.error){status(r.error.message,true);return;}
     customers=r.data||[];
     $("customer").value="";
@@ -769,13 +552,12 @@ button:disabled{cursor:wait;opacity:.7}
   function renderCustomerSuggestions(query){
     const box=$("customerSuggestions");
     const q=(query||"").trim().toLowerCase();
-    const filtered=customers.filter(c=>{
+    const matches=customers.filter(c=>{
       const name=String(c.full_name||"").toLowerCase();
       const mobile=String(c.mobile||"").toLowerCase();
       const whatsapp=String(c.whatsapp||"").toLowerCase();
       return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
-    });
-    const matches=filtered.slice(0,q ? 8 : 4);
+    }).slice(0,8);
 
     if(!matches.length){
       box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
@@ -972,7 +754,8 @@ button:disabled{cursor:wait;opacity:.7}
           print_amount:amount("print_amount"),
           scanning:amount("scanning"),
           other_works:amount("other_works"),
-          description:desc||null
+          description:desc||null,
+          total_amount:work
         };
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
@@ -1007,8 +790,8 @@ button:disabled{cursor:wait;opacity:.7}
 
       status("Transaction saved successfully.");
       await refreshDashboard();
+      await loadWhatsAppReminders();
       clearForm();
-      updateTotals();
     }catch(err){
       status(err.message||"Unable to save transaction.",true);
     }finally{
@@ -1017,241 +800,147 @@ button:disabled{cursor:wait;opacity:.7}
     }
   });
 
-  async function countTable(table, filters=[]){
-    try{
-      let q=sb.from(table).select("id",{count:"exact",head:true});
-      for(const f of filters){
-        if(f.type==="in") q=q.in(f.column,f.values);
-        else if(f.type==="eq") q=q.eq(f.column,f.value);
-      }
-      const r=await q;
-      if(r.error) return 0;
-      return Number(r.count||0);
-    }catch(e){
-      return 0;
-    }
+
+  /* ===== WhatsApp Payment Reminders ===== */
+  function normalizePhone(value){
+    let p=String(value||"").replace(/\D/g,"");
+    if(p.startsWith("0")) p=p.slice(1);
+    if(p.length===10) p="91"+p;
+    return p;
   }
 
-  async function countFirstAvailable(tables, filters=[]){
-    for(const table of tables){
-      try{
-        let q=sb.from(table).select("id",{count:"exact",head:true});
-        for(const f of filters){
-          if(f.type==="in") q=q.in(f.column,f.values);
-          else if(f.type==="eq") q=q.eq(f.column,f.value);
-        }
-        const r=await q;
-        if(!r.error) return Number(r.count||0);
-      }catch(e){}
-    }
-    return 0;
+  function buildPaymentMessage(c){
+    return `Hello ${c.full_name||"Customer"},
+
+iTech IT Solutions — Payment Reminder
+
+Date: ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"})}
+Old Balance: ${money(c.oldBalance)}
+Today's Work: ${money(c.todayWork)}
+Paid Today: ${money(c.todayPaid)}
+Total Balance: ${money(c.totalBalance)}
+
+Please contact us for any clarification.
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
   }
 
-  async function refreshDashboard(){
-    const enquiryCount=await countTable(
-      "enquiries",
-      [{type:"in",column:"status",values:["New","Contacted","In Progress"]}]
-    );
-
-    const amcCount=await countFirstAvailable(
-      ["amc","amc_requests","amc_records"],
-      []
-    );
-
-    const serviceRegisterCount=await countFirstAvailable(
-      ["service_register","service_registrations","service_requests"],
-      []
-    );
-
-    $("enquiryCount").textContent=enquiryCount;
-    $("amcCount").textContent=amcCount;
-    $("serviceRegisterCount").textContent=serviceRegisterCount;
+  function openWhatsApp(c){
+    const phone=normalizePhone(c.mobile||c.whatsapp);
+    if(!phone){ status("No valid WhatsApp/mobile number for "+(c.full_name||"this customer"),true); return; }
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
   }
 
-  await Promise.all([loadCustomers(),loadServices(),refreshDashboard()]);
-  updateTotals();
-
-  }catch(error){
-    console.error("Staff Dashboard initialization error:",error);
-    window.__staffDashboardStarted=false;
-  }
-})();
-</script>
-
-<section class="vi-quick" id="vehicleInsuranceQuick">
-  <div class="quick-title"><span class="bolt">🚗</span><h2>Vehicle Insurance Reminder – Quick Entry</h2></div>
-  <p class="muted">Customer Name, Mobile Number, Vehicle Number and Expiry Date are mandatory.</p>
-  <div class="viq-grid">
-    <label class="viq-field viq-suggest">Customer Name *<input id="viqCustomer" autocomplete="off" placeholder="Search customer..."><div id="viqSuggestions" class="viq-list" hidden></div></label>
-    <label class="viq-field">Mobile Number *<input id="viqMobile" inputmode="tel" placeholder="Mobile number"></label>
-    <label class="viq-field">Vehicle Number *<input id="viqVehicle" placeholder="KL-01-AB-1234"></label>
-    <label class="viq-field">Insurance Expiry Date *<input id="viqExpiry" type="date"></label>
-  </div>
-  <div class="viq-actions"><button class="btn primary" id="viqSave" type="button">Save Insurance</button><button class="btn secondary" id="viqClear" type="button">Clear</button><a class="btn secondary" href="vehicle-insurance.html">Manage All</a></div>
-  <div class="viq-meta"><span class="viq-badge" id="viqTotal">Policies: 0</span><span class="viq-badge danger" id="viqExpired">Expired: 0</span><span class="viq-badge warn" id="viq7">7 Days: 0</span><span class="viq-badge ok" id="viq30">30 Days: 0</span></div>
-  <div class="viq-message">WhatsApp reminder uses the saved customer mobile number and the iTech IT Solutions renewal message format.</div>
-  <div class="viq-table-wrap"><table class="viq-table"><thead><tr><th>Customer</th><th>Vehicle</th><th>Expiry</th><th>Status</th><th>WhatsApp</th></tr></thead><tbody id="viqRows"><tr><td colspan="5" class="muted">Loading...</td></tr></tbody></table></div>
-  <div data-vi-status class="status"></div>
-</section>
-<script id="vehicle-insurance-quick-script">
-(()=>{
- const $=id=>document.getElementById(id); if(!$('vehicleInsuranceQuick')||!window.sb)return;
- let customers=[],ins=[];
- const days=d=>Math.ceil((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/86400000);
- const fmt=d=>new Date(d+'T00:00:00').toLocaleDateString('en-IN');
- const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- const show=t=>{const e=document.querySelector('[data-vi-status]');if(e){e.textContent=t;e.className='status success'}};
- const err=t=>{const e=document.querySelector('[data-vi-status]');if(e){e.textContent=t;e.className='status error'}};
- const status=d=>{const n=days(d);if(n<0)return ['Expired','viq-expired'];if(n<=7)return ['Within 7 Days','viq-7'];if(n<=15)return ['Within 15 Days','viq-15'];if(n<=30)return ['Within 30 Days','viq-30'];return ['Active','viq-active']};
- function wa(r){const p=(r.mobile||'').replace(/\D/g,'');const m=`iTech IT Solutions – Vehicle Insurance Reminder\n\nDear Customer,\n\nYour vehicle insurance for ${r.vehicle_number} is expiring on ${fmt(r.expiry_date)}.\n\nPlease contact us for renewal assistance.\n\niTech IT Solutions\n7736929233 · 8943165951\n\nYour Trust Our Service`;window.open('https://wa.me/91'+p+'?text='+encodeURIComponent(m),'_blank')}
- window.viqWa=id=>{const r=ins.find(x=>x.id===id);if(r)wa(r)};
- function render(){const counts={expired:0,d7:0,d30:0};ins.forEach(r=>{const n=days(r.expiry_date);if(n<0)counts.expired++;if(n>=0&&n<=7)counts.d7++;if(n>=0&&n<=30)counts.d30++});$('viqTotal').textContent='Policies: '+ins.length;$('viqExpired').textContent='Expired: '+counts.expired;$('viq7').textContent='7 Days: '+counts.d7;$('viq30').textContent='30 Days: '+counts.d30;const list=ins.slice(0,8);$('viqRows').innerHTML=list.length?list.map(r=>{const [label,cls]=status(r.expiry_date);return `<tr><td><b>${esc(r.customer_name)}</b></td><td>${esc(r.vehicle_number)}</td><td>${fmt(r.expiry_date)}</td><td class="viq-status ${cls}">${label}</td><td><button class="btn btn-small" type="button" onclick="viqWa('${r.id}')">WhatsApp</button></td></tr>`}).join(''):'<tr><td colspan="5" class="muted">No insurance records found.</td></tr>'}
- async function load(){const [cr,ir]=await Promise.all([sb.from('customers').select('id,full_name,mobile').order('full_name').limit(1000),sb.from('vehicle_insurance').select('*').order('expiry_date',{ascending:true}).limit(1000)]);if(cr.error){err(cr.error.message);return}if(ir.error){err(ir.error.message);return}customers=cr.data||[];ins=ir.data||[];render()}
- function suggestions(){const q=$('viqCustomer').value.trim().toLowerCase();const list=(q?customers.filter(c=>(c.full_name+' '+(c.mobile||'')).toLowerCase().includes(q)):customers).slice(0,4);$('viqSuggestions').innerHTML=list.map(c=>`<button type="button" onclick="viqPick('${c.id}')"><b>${esc(c.full_name)}</b> · ${esc(c.mobile||'')}</button>`).join('');$('viqSuggestions').hidden=!list.length}
- window.viqPick=id=>{const c=customers.find(x=>x.id===id);if(!c)return;$('viqCustomer').value=c.full_name||'';$('viqMobile').value=c.mobile||'';$('viqSuggestions').hidden=true};
- $('viqCustomer').addEventListener('input',suggestions);$('viqCustomer').addEventListener('focus',suggestions);document.addEventListener('click',e=>{if(!e.target.closest('.viq-suggest'))$('viqSuggestions').hidden=true});
- $('viqClear').onclick=()=>{$('viqCustomer').value='';$('viqMobile').value='';$('viqVehicle').value='';$('viqExpiry').value='';$('viqSuggestions').hidden=true};
- $('viqSave').onclick=async()=>{const name=$('viqCustomer').value.trim(),mobile=$('viqMobile').value.trim(),vehicle=$('viqVehicle').value.trim().toUpperCase(),expiry=$('viqExpiry').value;if(!name||!mobile||!vehicle||!expiry)return err('Please fill all mandatory fields.');const match=customers.find(c=>(c.mobile||'').replace(/\D/g,'')===mobile.replace(/\D/g,''));if(!match)return err('Select a customer from the Add Customer list. Insurance-created profiles are not available in Quick Daily Work.');const payload={customer_id:match.id,customer_name:name,mobile,vehicle_number:vehicle,expiry_date:expiry,created_by:(await sb.auth.getUser()).data.user?.id||null};show('Saving insurance…');const {error}=await sb.from('vehicle_insurance').insert(payload);if(error)return err(error.message);show('Vehicle insurance saved successfully.');$('viqClear').click();load()};load();
-})();
-</script>
-<footer class="footer">
-  <div class="footer-brand">
-    <img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech">
-  </div>
-  <span>Govt. Sub Treasury Road, Nedumangad</span>
-  <span>7736929233 · 8943165951</span>
-  <span>itnedumangad@gmail.com</span>
-  <span>@itechndd</span>
-  <small>Your Trust Our Service</small>
-</footer>
-
-
-
-<script id="staff-whatsapp-reminder-script">
-(async()=>{
-  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-  const today=new Date().toISOString().slice(0,10);
-  const $=id=>document.getElementById(id);
-  let todayRows=[], oldRows=[];
-
-  function phoneOf(c){ return String(c.whatsapp||c.mobile||"").replace(/[^\d+]/g,""); }
-
-  function waUrl(row){
-    let phone=phoneOf(row);
-    if(phone && phone.length===10) phone="91"+phone;
-    if(phone.startsWith("+")) phone=phone.slice(1);
-    const msg=[
-      "iTech IT Solutions",
-      "Payment Reminder",
-      `Customer: ${row.full_name||"Customer"}`,
-      `Date: ${new Date().toLocaleDateString("en-IN")}`,
-      `Old Balance: ${money(row.old_balance)}`,
-      `Today's Work: ${money(row.today_work)}`,
-      `Paid Today: ${money(row.paid_today)}`,
-      `Total Balance: ${money(row.total_balance)}`,
-      "",
-      "Please contact us for any clarification.",
-      "Your Trust Our Service"
-    ].join("\n");
-    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-  }
-
-  async function buildRows(){
-    const {data:customers,error:cErr}=await sb.from("customers")
-      .select("id,full_name,mobile,whatsapp")
-      .eq("status","active")
-      .order("full_name");
-    if(cErr) throw cErr;
-
-    const {data:balances,error:bErr}=await sb.from("customer_balances")
-      .select("id,current_balance,total_work,total_paid");
-    if(bErr) throw bErr;
-    const balanceMap={};
-    (balances||[]).forEach(b=>balanceMap[String(b.id)]=b);
-
-    const {data:work,error:wErr}=await sb.from("today_work_report")
-      .select("customer_id,total_amount");
-    if(wErr) throw wErr;
-    const todayWork={};
-    (work||[]).forEach(r=>{
-      todayWork[String(r.customer_id)]=(todayWork[String(r.customer_id)]||0)+Number(r.total_amount||0);
-    });
-
-    const {data:payments,error:pErr}=await sb.from("payments")
-      .select("customer_id,amount,payment_date")
-      .eq("payment_date",today);
-    if(pErr) throw pErr;
-    const paid={};
-    (payments||[]).forEach(r=>{
-      paid[String(r.customer_id)]=(paid[String(r.customer_id)]||0)+Number(r.amount||0);
-    });
-
-    const base=(customers||[]).map(c=>{
-      const b=balanceMap[String(c.id)]||{};
-      const tw=todayWork[String(c.id)]||0;
-      const pt=paid[String(c.id)]||0;
-      const current=Number(b.current_balance||0);
-      const old=Math.max(current-tw+pt,0);
-      return {...c,old_balance:old,today_work:tw,paid_today:pt,total_balance:current};
-    });
-
-    todayRows=base.filter(r=>r.today_work>0 || r.paid_today>0);
-    oldRows=base.filter(r=>r.old_balance>0).sort((a,b)=>b.old_balance-a.old_balance);
-  }
-
-  function renderList(el,rows){
-    $(el).innerHTML=rows.length ? rows.map(r=>`
+  function renderWaList(el,rows,emptyText){
+    if(!rows.length){el.innerHTML=`<div class="wa-empty">${emptyText}</div>`;return;}
+    el.innerHTML=rows.map((c,i)=>`
       <div class="wa-customer">
         <div class="wa-customer-main">
-          <div class="wa-customer-name">${esc(r.full_name||"Customer")}</div>
-          <div class="wa-customer-meta">Balance: <b>${money(r.total_balance)}</b></div>
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
+          <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
         </div>
-        <button type="button" class="wa-send" data-wa-id="${esc(r.id)}">WhatsApp</button>
-      </div>`).join("") :
-      '<div class="wa-empty">No customers found.</div>';
-    $(el).querySelectorAll(".wa-send").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const row=[...todayRows,...oldRows].find(x=>String(x.id)===String(btn.dataset.waId));
-        if(row) window.open(waUrl(row),"_blank","noopener");
-      });
-    });
+        <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
+      </div>`).join("");
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
   }
 
-  async function refresh(){
+  async function loadWhatsAppReminders(){
+    const todayList=$("waTodayList"), overdueList=$("waOverdueList");
+    if(!todayList||!overdueList)return;
+    todayList.innerHTML='<div class="wa-empty">Loading…</div>';
+    overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+
     try{
-      $("waStatus").className="status-box show ok";
-      $("waStatus").textContent="Loading reminder customers…";
-      await buildRows();
+      const [cu,ba,tw,tp,wh,ph]=await Promise.all([
+        sb.from("customers").select("id,full_name,mobile,whatsapp,status").eq("status","active").order("full_name"),
+        sb.from("customer_balances").select("id,current_balance"),
+        sb.from("today_work_report").select("customer_id,total_amount"),
+        sb.from("payments").select("customer_id,amount").eq("payment_date",today),
+        sb.from("today_work_report").select("customer_id,created_at"),
+        sb.from("payments").select("customer_id,payment_date")
+      ]);
+      for(const r of [cu,ba,tw,tp,wh,ph]) if(r.error) throw r.error;
+
+      const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
+      const works=new Map(), paid=new Map(), last=new Map();
+
+      (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
+      (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
+      (wh.data||[]).forEach(r=>{
+        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
+        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
+      });
+      (ph.data||[]).forEach(r=>{
+        const id=String(r.customer_id); if(!r.payment_date)return;
+        const d=new Date(String(r.payment_date)+"T23:59:59");
+        if(!last.has(id)||d>last.get(id))last.set(id,d);
+      });
+
+      const customersWithData=(cu.data||[]).map(c=>{
+        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+      });
+
+      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+
+      const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+        .sort((a,b)=>b.totalBalance-a.totalBalance);
+
       $("waTodayCount").textContent=todayRows.length;
-      $("waOldCount").textContent=oldRows.length;
-      renderList("waTodayList",todayRows);
-      renderList("waOldList",oldRows);
-      $("waStatus").className="status-box";
-    }catch(e){
-      $("waStatus").className="status-box show error";
-      $("waStatus").textContent=e.message||"Unable to load WhatsApp reminders.";
+      $("waOverdueCount").textContent=overdueRows.length;
+      renderWaList(todayList,todayRows,"No customer activity recorded today.");
+      renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
+
+      $("waSendTodayAll").onclick=()=>todayRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waRefresh").onclick=loadWhatsAppReminders;
+    }catch(err){
+      console.error("WhatsApp reminder error:",err);
+      todayList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+      overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
     }
   }
 
-  function openAll(rows){
-    if(!rows.length){
-      $("waStatus").className="status-box show error";
-      $("waStatus").textContent="No customers available for this reminder.";
-      return;
-    }
-    rows.forEach((row,i)=>setTimeout(()=>{
-      window.open(waUrl(row),"_blank","noopener");
-    },i*250));
+
+  async function refreshDashboard(){
+    const [work,pay,bal,enq]=await Promise.all([
+      sb.from("today_work_report").select("*"),
+      sb.from("payments").select("amount").eq("payment_date",today),
+      sb.from("customer_balances").select("current_balance"),
+      sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+    ]);
+    if(work.error)return;
+    const rows=work.data||[];
+    $("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+    $("todayEntries").textContent=rows.length+" entries";
+    $("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+    $("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+    $("enquiries").textContent=enq.count||0;
   }
 
-  $("waTodayBtn").addEventListener("click",()=>openAll(todayRows));
-  $("waOldBtn").addEventListener("click",()=>openAll(oldRows));
-  $("waRefreshBtn").addEventListener("click",refresh);
-
-  await refresh();
+  await Promise.all([
+    loadCustomers(),
+    loadServices(),
+    refreshDashboard(),
+    loadWhatsAppReminders()
+  ]);
+  updateTotals();
 })();
 </script>
+
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
 
 <script data-dashboard-active-nav>
 (() => {

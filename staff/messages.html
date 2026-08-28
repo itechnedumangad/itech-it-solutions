@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Messages &amp; WhatsApp | iTech Staff</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><style>
+.modern-panel{background:#fff;border:1px solid #e3ebf5;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(17,50,91,.07)} .modern-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:18px 0} .modern-stat{background:#fff;border:1px solid #e3ebf5;border-radius:17px;padding:18px;box-shadow:0 8px 24px rgba(17,50,91,.06)} .modern-stat small{display:block;color:#71819b;font-weight:700;margin-bottom:7px} .modern-stat strong{font-size:26px;color:#10284b} .toolbar h1{margin-bottom:4px} .filter{padding:11px 13px;border:1px solid #d8e2ef;border-radius:10px;width:min(360px,100%)} .tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#2458b8;font-size:11px;font-weight:800} .status-select{padding:8px;border:1px solid #d8e2ef;border-radius:8px;background:#fff} .mini-btn{border:0;border-radius:8px;padding:8px 10px;font-weight:750;cursor:pointer;font-size:11px} .mini-primary{background:#2563eb;color:#fff} .mini-green{background:#16a34a;color:#fff} .mini-red{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2} @media(max-width:900px){.modern-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:600px){.modern-grid{grid-template-columns:1fr}}
+</style><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+}
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><div class="header-actions"><span class="user-chip" data-admin-name="">Admin</span><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></div></header><div class="dash-layout"><aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a><a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a><a href="customer-reports.html">Customer Reports</a><a href="services.html">Services</a><a href="products.html">Products</a><a href="vehicle-insurance.html">🚗 Vehicle Insurance</a><a href="enquiries.html">Enquiries</a><a href="amc.html">AMC</a><a href="offers.html">Offers</a><a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a>
+</nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">MESSAGES &amp; WHATSAPP</p><h1>Messages &amp; WhatsApp</h1></div></div><section class="modern-panel"><div class="section-title"><div><h2>WhatsApp / Message Log</h2><p class="muted">Recent WhatsApp/message activity recorded by the system.</p></div><input class="filter" id="search" placeholder="Search message or mobile..."/></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Customer / Phone</th><th>Type</th><th>Message</th></tr></thead><tbody id="rows"><tr><td colspan="4">Loading...</td></tr></tbody></table></div></section><div class="status" data-status=""></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const a=await requireStaff();if(!a)return;let rows=[];const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");const r=await sb.from("whatsapp_logs").select("*").order("created_at",{ascending:false});if(r.error)return showStatus(r.error.message,true);rows=r.data||[];function render(d){document.getElementById("rows").innerHTML=d.length?d.map(x=>`<tr><td>${x.created_at?new Date(x.created_at).toLocaleString("en-IN"):"—"}</td><td><b>${esc(x.customer_name||x.name||"")}</b><br><span class="muted">${esc(x.mobile||x.phone||x.whatsapp||"")}</span></td><td><span class="tag">${esc(x.message_type||x.type||"WhatsApp")}</span></td><td>${esc(x.message||x.text||x.content||"")}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:center">No message logs.</td></tr>`}render(rows);document.getElementById("search").oninput=e=>{const q=e.target.value.toLowerCase();render(rows.filter(x=>Object.values(x).some(v=>String(v??"").toLowerCase().includes(q))))}})();</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body></html>

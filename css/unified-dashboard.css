@@ -1,0 +1,124 @@
+
+/* =========================================================
+   iTech Unified Design System
+   Dashboard-inspired design for every public/customer page
+   ========================================================= */
+:root{
+  --it-navy:#071c3b;
+  --it-navy2:#0d2d5a;
+  --it-blue:#1769e0;
+  --it-blue2:#3459ff;
+  --it-orange:#ff8a16;
+  --it-green:#16a05d;
+  --it-purple:#7148e8;
+  --it-ink:#10284b;
+  --it-muted:#71819b;
+  --it-line:#dfe8f4;
+  --it-bg:#f4f8fd;
+  --it-white:#fff;
+  --it-shadow:0 10px 30px rgba(17,50,91,.08);
+}
+html{scroll-behavior:smooth}
+body{
+  background:linear-gradient(135deg,#f6f9fd 0%,#eef4fb 100%)!important;
+  color:var(--it-ink)!important;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+.site-header{
+  background:linear-gradient(100deg,var(--it-navy),var(--it-navy2))!important;
+  box-shadow:0 5px 18px rgba(5,27,57,.18)!important;
+  position:sticky!important;top:0;z-index:100;
+}
+.site-header .nav-wrap{min-height:76px}
+.site-header .brand{
+  color:#fff!important;font-weight:800!important;font-size:19px!important;
+}
+.site-header .logo{
+  width:44px!important;height:44px!important;border-radius:13px!important;
+  display:inline-flex!important;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#ffb04b,#ff8410)!important;
+  box-shadow:0 6px 15px rgba(255,138,22,.25)!important;
+}
+.site-header .nav a{
+  color:#dce7f8!important;font-weight:650!important;
+  border-radius:9px;padding:9px 11px;
+  transition:.2s ease;
+}
+.site-header .nav a:hover{
+  color:#fff!important;background:rgba(255,255,255,.10)!important;
+}
+.menu{color:#fff!important}
+.hero,.page-hero{
+  background:linear-gradient(135deg,#071c3b 0%,#0d4774 100%)!important;
+  position:relative;overflow:hidden;
+}
+.hero:after,.page-hero:after{
+  content:"";position:absolute;width:360px;height:360px;border-radius:50%;
+  right:-120px;top:-170px;background:rgba(255,138,22,.12);
+}
+.hero-inner,.page-hero>*{position:relative;z-index:1}
+.hero h1,.page-hero h1{color:#fff!important}
+.hero p,.page-hero p{color:#dbe6f3!important}
+.hero-card,.card,.panel,.quick-card{
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid var(--it-line)!important;
+  border-radius:18px!important;
+  box-shadow:var(--it-shadow)!important;
+  transition:.28s ease;
+}
+.hero-card:hover,.card:hover,.panel:hover,.quick-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 35px rgba(17,50,91,.12)!important;
+}
+.card{padding:20px!important}
+.heading h2{color:var(--it-ink)!important}
+.eyebrow{
+  color:var(--it-orange)!important;
+  font-weight:850!important;
+  letter-spacing:1.8px;
+}
+.btn.primary{
+  background:linear-gradient(100deg,var(--it-blue),var(--it-blue2))!important;
+  border:0!important;box-shadow:0 8px 18px rgba(23,105,224,.20);
+}
+.btn.outline{
+  border-color:#fff!important;color:#fff!important;
+}
+.btn.secondary{
+  border:1px solid #d7e1ed!important;
+  background:#fff!important;color:#183252!important;
+}
+.btn.secondary:hover{border-color:#9db8dc!important}
+.container{max-width:1400px!important}
+.footer{
+  background:linear-gradient(100deg,#04152d,#071f43)!important;
+  color:#dbe6f3!important;
+}
+.footer small{color:var(--it-orange)!important}
+.field input,.field select,.field textarea,
+input,select,textarea{
+  border-color:#d6e1ee!important;
+  border-radius:11px!important;
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+input:focus,select:focus,textarea:focus{
+  border-color:#4d83e7!important;
+  box-shadow:0 0 0 3px rgba(23,105,224,.09)!important;
+}
+.data-table th{background:#f5f8fc!important;color:#153052!important}
+.data-table td{border-bottom-color:#edf1f6!important}
+.status{border-radius:10px!important}
+@media(max-width:700px){
+  .site-header .nav{background:var(--it-navy)!important}
+  .hero h1,.page-hero h1{font-size:40px!important}
+}
+
+
+/* Admin pages keep the established dashboard geometry */
+.dash-header{background:linear-gradient(100deg,#071c3b,#0d2d5a)!important}
+.sidebar{background:linear-gradient(180deg,#071c3b,#09264d)!important}
+.dash-main{max-width:none!important}
+
+/* Official supplied logo only */
+.brand .brand-logo{width:auto!important;height:48px!important;max-width:170px!important;border-radius:0!important;background:none!important;box-shadow:none!important;display:block!important;object-fit:contain!important;}
+@media(max-width:760px){.brand .brand-logo{height:40px!important;max-width:140px!important;}}

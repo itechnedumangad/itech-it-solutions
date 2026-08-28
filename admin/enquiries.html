@@ -35,6 +35,10 @@
 .save{background:#2563eb;color:#fff}
 .wa{background:#16a34a;color:#fff}
 .del{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2}
+.status-closed-badge{display:inline-flex;align-items:center;padding:8px 11px;border-radius:8px;background:#ecfdf3;color:#15803d;font-weight:800;font-size:12px}
+.reopen{background:#f59e0b;color:#fff}
+.reopen:hover{filter:brightness(.96)}
+
 .center{padding:35px!important;text-align:center;color:#77879c}
 @media(max-width:900px){.enquiry-stats{grid-template-columns:repeat(2,1fr)}.enquiry-head{flex-direction:column;align-items:stretch}.search-box{width:100%}}
 @media(max-width:600px){.enquiry-stats{grid-template-columns:1fr}.enquiry-panel{padding:15px}}
@@ -235,19 +239,23 @@
         <td><div class="message">${esc(x.message||"No message")}</div></td>
         <td>${date}</td>
         <td>
-          <select class="status-select">
-            <option ${x.status==="New"||!x.status?"selected":""}>New</option>
-            <option ${x.status==="Contacted"?"selected":""}>Contacted</option>
-            <option ${x.status==="In Progress"?"selected":""}>In Progress</option>
-            <option ${x.status==="Closed"?"selected":""}>Closed</option>
-          </select>
+          ${String(x.status||"New").toLowerCase()==="closed"
+            ? '<span class="status-closed-badge">Closed</span>'
+            : `<select class="status-select">
+                <option ${x.status==="New"||!x.status?"selected":""}>New</option>
+                <option ${x.status==="Contacted"?"selected":""}>Contacted</option>
+                <option ${x.status==="In Progress"?"selected":""}>In Progress</option>
+                <option ${x.status==="Closed"?"selected":""}>Closed</option>
+              </select>`}
         </td>
         <td>
           <textarea class="note-input" placeholder="Admin note...">${esc(x.admin_note||"")}</textarea>
         </td>
         <td>
           <div class="actions">
-            <button class="mini save" data-action="save">Save</button>
+            ${String(x.status||"New").toLowerCase()==="closed"
+              ? '<button class="mini reopen" data-action="reopen">↻ Reopen Case</button>'
+              : '<button class="mini save" data-action="save">Save</button>'}
             ${x.mobile ? '<button class="mini wa" data-action="wa">WhatsApp</button>' : ''}
             <button class="mini del" data-action="delete">Delete</button>
           </div>
@@ -315,8 +323,31 @@
       return;
     }
 
+    if(action==="reopen"){
+      if(!confirm("Reopen this closed enquiry?")) return;
+
+      btn.disabled=true;
+      btn.textContent="Reopening...";
+
+      const {error}=await sb.from("enquiries")
+        .update({status:"In Progress"})
+        .eq("id",id);
+
+      if(error){
+        btn.disabled=false;
+        btn.textContent="↻ Reopen Case";
+        return showStatus(error.message,true);
+      }
+
+      showStatus("Enquiry reopened and moved to In Progress.");
+      await load();
+      return;
+    }
+
     if(action==="save"){
-      const status=tr.querySelector(".status-select").value;
+      const select=tr.querySelector(".status-select");
+      if(!select) return;
+      const status=select.value;
       const note=tr.querySelector(".note-input").value.trim();
 
       /* Save both Status and Admin Note */

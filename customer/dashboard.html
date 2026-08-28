@@ -459,6 +459,54 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
   #vehicleInsuranceSection{display:none}
 </style>
 
+
+<style id="customer-notification-style">
+.cd-notification-wrap{position:relative}
+.cd-notification-btn{
+  position:relative;border:1px solid #d9e5f2;background:#fff;color:#10284b;
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  cursor:pointer;font-size:19px;box-shadow:0 5px 16px rgba(17,50,91,.07);
+  transition:.2s ease;
+}
+.cd-notification-btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(17,50,91,.11)}
+.cd-notification-count{
+  position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 5px;
+  border-radius:999px;background:#ff5b4d;color:#fff;font-size:10px;font-weight:900;
+  display:none;align-items:center;justify-content:center;border:2px solid #fff;
+}
+.cd-notification-panel{
+  position:absolute;right:0;top:50px;width:min(390px,calc(100vw - 28px));
+  background:#fff;border:1px solid #dce7f3;border-radius:16px;
+  box-shadow:0 20px 50px rgba(17,50,91,.18);overflow:hidden;z-index:1000;
+  display:none;
+}
+.cd-notification-panel.open{display:block;animation:cdNotifIn .18s ease both}
+@keyframes cdNotifIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.cd-notification-head{
+  padding:13px 15px;border-bottom:1px solid #e8eef5;display:flex;
+  align-items:center;justify-content:space-between;gap:10px;
+}
+.cd-notification-head strong{color:#10284b;font-size:14px}
+.cd-notification-head button{
+  border:0;background:none;color:#0d5aa7;font-size:11px;font-weight:800;cursor:pointer
+}
+.cd-notification-list{max-height:390px;overflow:auto}
+.cd-notification-item{
+  display:block;padding:13px 15px;border-bottom:1px solid #edf2f7;
+  text-decoration:none;color:inherit;background:#fff;transition:.18s ease;cursor:pointer
+}
+.cd-notification-item:hover{background:#f7fbff}
+.cd-notification-item.unread{background:#f1f7ff}
+.cd-notification-title{font-size:13px;font-weight:900;color:#10284b}
+.cd-notification-message{font-size:11px;line-height:1.45;color:#71819b;margin-top:4px}
+.cd-notification-time{font-size:10px;color:#9aa8b8;margin-top:6px}
+.cd-notification-empty{padding:28px 15px;text-align:center;color:#71819b;font-size:12px}
+.cd-notification-error{padding:20px 15px;text-align:center;color:#a62b2b;font-size:12px}
+@media(max-width:600px){
+  .cd-notification-panel{position:fixed;right:12px;top:68px;width:calc(100vw - 24px)}
+}
+</style>
+
 </head>
 
 

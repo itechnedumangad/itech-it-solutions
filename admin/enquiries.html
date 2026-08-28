@@ -263,7 +263,7 @@
        admin_note is NOT included in the SELECT, so a missing admin_note column
        cannot break the page loading. */
     const {data,error}=await sb.from("enquiries")
-      .select("id,customer_id,name,mobile,category,message,status,created_at")
+      .select("id,customer_id,name,mobile,category,message,status,admin_note,created_at")
       .order("created_at",{ascending:false});
 
     if(error){
@@ -281,7 +281,7 @@
     const q=search.value.trim().toLowerCase();
     if(!q) return render(rows);
     render(rows.filter(x=>[
-      x.name,x.mobile,x.category,x.message,x.status
+      x.name,x.mobile,x.category,x.message,x.status,x.admin_note
     ].filter(Boolean).some(v=>String(v).toLowerCase().includes(q))));
   });
 
@@ -319,25 +319,31 @@
       const status=tr.querySelector(".status-select").value;
       const note=tr.querySelector(".note-input").value.trim();
 
-      /* Update status only. This matches the current table safely.
-         Admin note is displayed when present in returned data, but is not
-         written to a column that may not exist in the current schema. */
+      /* Save both Status and Admin Note */
       btn.disabled=true;
       btn.textContent="Saving...";
 
       const {error}=await sb.from("enquiries")
-        .update({status})
+        .update({
+          status: status,
+          admin_note: note || null
+        })
         .eq("id",id);
 
       if(error){
         btn.disabled=false;
         btn.textContent="Save";
-        return showStatus(error.message,true);
+        return showStatus(
+          error.message.includes("admin_note")
+            ? "Admin Note column is missing in Supabase. Add the admin_note column first."
+            : error.message,
+          true
+        );
       }
 
       btn.disabled=false;
       btn.textContent="Save";
-      showStatus("Enquiry status updated.");
+      showStatus("Status and Admin Note updated successfully.");
       await load();
     }
   });

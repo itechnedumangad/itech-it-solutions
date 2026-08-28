@@ -477,12 +477,36 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
         alt="iTech IT Solutions">
     </a>
 
-    <a
-      class="btn secondary"
-      href="../pages/login.html"
-      data-logout>
-      Logout
-    </a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="cd-notification-wrap">
+        <button
+          id="customerNotificationBtn"
+          class="cd-notification-btn"
+          type="button"
+          aria-label="Notifications"
+          title="Notifications">
+          🔔
+          <span id="customerNotificationCount" class="cd-notification-count">0</span>
+        </button>
+
+        <div id="customerNotificationPanel" class="cd-notification-panel" aria-hidden="true">
+          <div class="cd-notification-head">
+            <strong>Notifications</strong>
+            <button id="customerNotificationReadAll" type="button">Mark all as read</button>
+          </div>
+          <div id="customerNotificationList" class="cd-notification-list">
+            <div class="cd-notification-empty">Loading notifications…</div>
+          </div>
+        </div>
+      </div>
+
+      <a
+        class="btn secondary"
+        href="../pages/login.html"
+        data-logout>
+        Logout
+      </a>
+    </div>
 
   </header>
 
@@ -779,6 +803,199 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
 
 
         const customerId = customer.id;
+
+
+        /* --------------------------------
+           CUSTOMER NOTIFICATIONS
+        -------------------------------- */
+
+        const notificationBtn =
+          document.getElementById("customerNotificationBtn");
+
+        const notificationPanel =
+          document.getElementById("customerNotificationPanel");
+
+        const notificationCount =
+          document.getElementById("customerNotificationCount");
+
+        const notificationList =
+          document.getElementById("customerNotificationList");
+
+        const notificationReadAll =
+          document.getElementById("customerNotificationReadAll");
+
+        function notificationTime(value) {
+          if (!value) return "";
+          const d = new Date(value);
+          if (Number.isNaN(d.getTime())) return "";
+          return d.toLocaleString("en-IN", {
+            dateStyle: "medium",
+            timeStyle: "short"
+          });
+        }
+
+        function notificationTarget(page) {
+          const allowed = [
+            "dashboard.html",
+            "profile.html",
+            "payments.html",
+            "daily-work.html",
+            "vehicle-insurance.html",
+            "products.html",
+            "services.html"
+          ];
+          return allowed.includes(page) ? page : "dashboard.html";
+        }
+
+        async function loadCustomerNotifications() {
+
+          if (!notificationList) return;
+
+          const result = await sb
+            .from("notifications")
+            .select("id,type,title,message,target_page,reference_id,is_read,created_at")
+            .eq("user_id", authResult.session.user.id)
+            .eq("role", "customer")
+            .order("created_at", { ascending: false })
+            .limit(30);
+
+          if (result.error) {
+            console.error("Customer notifications error:", result.error);
+            notificationList.innerHTML =
+              `<div class="cd-notification-error">
+                 Unable to load notifications.
+               </div>`;
+            return;
+          }
+
+          const rows = result.data || [];
+          const unread = rows.filter(row => !row.is_read).length;
+
+          if (notificationCount) {
+            notificationCount.textContent = unread > 99 ? "99+" : String(unread);
+            notificationCount.style.display = unread ? "flex" : "none";
+          }
+
+          if (!rows.length) {
+            notificationList.innerHTML =
+              `<div class="cd-notification-empty">
+                 🔔 No notifications yet.
+               </div>`;
+            return;
+          }
+
+          notificationList.innerHTML = rows.map(row => `
+            <div
+              class="cd-notification-item ${row.is_read ? "" : "unread"}"
+              data-notification-id="${escText(row.id)}"
+              data-target-page="${escText(notificationTarget(row.target_page))}">
+              <div class="cd-notification-title">
+                ${escText(row.title || "Notification")}
+              </div>
+              <div class="cd-notification-message">
+                ${escText(row.message || "")}
+              </div>
+              <div class="cd-notification-time">
+                ${escText(notificationTime(row.created_at))}
+              </div>
+            </div>
+          `).join("");
+
+          notificationList
+            .querySelectorAll(".cd-notification-item")
+            .forEach(item => {
+              item.addEventListener("click", async () => {
+
+                const id = item.dataset.notificationId;
+                const target = item.dataset.targetPage || "dashboard.html";
+
+                await sb
+                  .from("notifications")
+                  .update({ is_read: true })
+                  .eq("id", id)
+                  .eq("user_id", authResult.session.user.id);
+
+                window.location.href = target;
+              });
+            });
+        }
+
+        async function markAllCustomerNotificationsRead() {
+
+          const result = await sb
+            .from("notifications")
+            .update({ is_read: true })
+            .eq("user_id", authResult.session.user.id)
+            .eq("role", "customer")
+            .eq("is_read", false);
+
+          if (result.error) {
+            console.error("Mark notifications read error:", result.error);
+            return;
+          }
+
+          await loadCustomerNotifications();
+        }
+
+        if (notificationBtn && notificationPanel) {
+
+          notificationBtn.addEventListener("click", async (event) => {
+            event.stopPropagation();
+            notificationPanel.classList.toggle("open");
+            notificationPanel.setAttribute(
+              "aria-hidden",
+              notificationPanel.classList.contains("open") ? "false" : "true"
+            );
+
+            if (notificationPanel.classList.contains("open")) {
+              await loadCustomerNotifications();
+            }
+          });
+
+          notificationPanel.addEventListener("click", event => {
+            event.stopPropagation();
+          });
+
+          document.addEventListener("click", () => {
+            notificationPanel.classList.remove("open");
+            notificationPanel.setAttribute("aria-hidden", "true");
+          });
+
+          if (notificationReadAll) {
+            notificationReadAll.addEventListener(
+              "click",
+              markAllCustomerNotificationsRead
+            );
+          }
+        }
+
+        await loadCustomerNotifications();
+
+        /* --------------------------------
+           REALTIME CUSTOMER NOTIFICATIONS
+        -------------------------------- */
+
+        try {
+          sb.channel("customer-notifications-" + authResult.session.user.id)
+            .on(
+              "postgres_changes",
+              {
+                event: "*",
+                schema: "public",
+                table: "notifications",
+                filter: "user_id=eq." + authResult.session.user.id
+              },
+              async () => {
+                await loadCustomerNotifications();
+              }
+            )
+            .subscribe();
+        } catch (realtimeError) {
+          console.warn(
+            "Customer notification realtime unavailable:",
+            realtimeError
+          );
+        }
 
 
         /* --------------------------------

@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Dashboard | iTech Admin</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<style>
+/* ===== iTech Dashboard Redesign ===== */
+:root{
+  --navy:#071d3d;
+  --navy2:#0d2c58;
+  --blue:#1769e0;
+  --blue2:#3459ff;
+  --orange:#ff8a16;
+  --green:#16a05d;
+  --purple:#7148e8;
+  --ink:#10284b;
+  --muted:#71819b;
+  --line:#dfe8f4;
+  --bg:#f4f8fd;
+  --white:#fff;
+  --shadow:0 10px 30px rgba(17,50,91,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:linear-gradient(135deg,#f6f9fd 0%,#eef4fb 100%);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.dash-header{
+  height:76px!important;
+  background:linear-gradient(100deg,#071c3b,#0d2d5a)!important;
+  box-shadow:0 5px 18px rgba(5,27,57,.18);
+  position:sticky;top:0;z-index:50;
+}
+.dash-header .brand{font-size:19px;font-weight:800}
+.dash-header .logo{
+  width:44px!important;height:44px!important;border-radius:13px!important;
+  display:inline-flex!important;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#ffb04b,#ff8410)!important;
+  box-shadow:0 6px 15px rgba(255,138,22,.25);
+}
+.header-actions{display:flex;align-items:center;gap:10px}
+.user-chip{
+  background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.12);
+  padding:10px 14px;border-radius:22px;font-size:12px;font-weight:700
+}
+.dash-layout{min-height:calc(100vh - 76px)}
+.sidebar{
+  width:246px!important;
+  background:linear-gradient(180deg,#071c3b,#09264d)!important;
+  border:0!important;color:#fff!important;
+  padding:18px!important;
+  box-shadow:8px 0 25px rgba(6,29,59,.08);
+}
+.sidebar nav{display:flex;flex-direction:column;gap:4px}
+.sidebar nav a{
+  color:#dce7f8!important;text-decoration:none!important;
+  border-radius:11px!important;padding:12px 14px!important;
+  font-weight:600;font-size:14px;transition:.2s ease;
+}
+.sidebar nav a:hover,.sidebar nav a.active{
+  background:linear-gradient(90deg,#1769e0,#3459ff)!important;
+  color:#fff!important;transform:translateX(2px);
+  box-shadow:0 7px 18px rgba(31,102,224,.25);
+}
+.sidebar nav a:nth-child(4){margin-top:3px}
+.dash-main{
+  max-width:none!important;
+  padding:22px 28px 34px!important;
+}
+.toolbar{
+  margin-bottom:18px;
+}
+.toolbar h1{font-size:30px;margin:0 0 4px}
+.eyebrow{color:var(--orange)!important;font-weight:800;letter-spacing:2px}
+.kpis{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+.kpi{
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #e3ebf5!important;
+  border-radius:18px!important;
+  padding:20px!important;
+  min-height:148px;
+  box-shadow:var(--shadow)!important;
+  transition:.28s ease;
+}
+.kpi:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(17,50,91,.13)!important}
+.kpi:after{
+  content:"";position:absolute;right:-25px;top:-35px;width:100px;height:100px;
+  border-radius:50%;background:rgba(255,138,22,.09);
+}
+.kpi:nth-child(2):after{background:rgba(22,160,93,.09)}
+.kpi:nth-child(3):after{background:rgba(255,138,22,.09)}
+.kpi:nth-child(4):after{background:rgba(113,72,232,.10)}
+.kpi b{font-size:14px}
+.kpi .value{font-size:28px!important;margin-top:10px;font-weight:850!important}
+.kpi small{display:block;margin-top:7px}
+.dashboard-card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.quick-entry{
+  margin-top:18px;padding:24px;
+  position:relative;overflow:hidden;
+}
+.quick-entry:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(#ff9b25,#ff7d00);
+}
+.quick-title{display:flex;align-items:center;gap:10px}
+.quick-title .bolt{font-size:27px}
+.quick-title h2{margin:0;font-size:23px}
+.quick-sub{margin:5px 0 20px;color:var(--muted)}
+.entry-layout{
+  display:grid;grid-template-columns:minmax(0,1fr) 355px;gap:18px
+}
+.entry-main{
+  border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff
+}
+.customer-paid{
+  display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px
+}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px;color:#39506f}
+.field input,.field select,.field textarea{
+  width:100%;height:45px;border:1px solid #d8e2ef;border-radius:10px;
+  padding:0 12px;background:#fff;color:var(--ink);outline:none;
+  transition:.2s;
+}
+.field textarea{height:70px;padding-top:11px;resize:vertical}
+.customer-picker{position:relative}
+.customer-input-wrap{position:relative}
+.customer-input-wrap input{padding-right:42px}
+.customer-clear{
+  position:absolute;right:7px;top:4px;width:36px;height:36px;border:0;
+  border-radius:8px;background:transparent;color:#8392a8;font-size:22px;
+  cursor:pointer;display:none
+}
+.customer-clear:hover{background:#f1f5fa;color:#17345b}
+.customer-suggestions{
+  position:absolute;z-index:30;left:0;right:0;top:76px;
+  background:#fff;border:1px solid #d9e4f1;border-radius:12px;
+  box-shadow:0 16px 35px rgba(16,40,75,.14);overflow:hidden;display:none;
+  max-height:250px;overflow-y:auto
+}
+.customer-suggestions.show{display:block}
+.customer-option{
+  width:100%;border:0;background:#fff;text-align:left;padding:11px 13px;
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;color:#142e52
+}
+.customer-option:hover,.customer-option.active{background:#eef5ff}
+.customer-option .customer-main{font-weight:750}
+.customer-option .customer-mobile{font-size:12px;color:#7a8aa0;white-space:nowrap}
+.customer-option .customer-balance{font-size:11px;color:#d97706;font-weight:750}
+.customer-empty{padding:13px;color:#7889a2;font-size:13px}
+
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#4d83e7;box-shadow:0 0 0 3px rgba(23,105,224,.09)
+}
+.amount-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px
+}
+.amount-box{
+  border:1px solid #dce5f0;border-radius:11px;padding:9px 10px;background:#fbfdff
+}
+.amount-box label{display:block;font-size:11px;font-weight:700;color:#60728c;margin-bottom:5px}
+.amount-box input{
+  width:100%;border:0;outline:0;background:transparent;font-size:14px;
+  color:var(--ink);height:28px;padding:0
+}
+.amount-box input::placeholder{color:#a1aec0}
+.service-label{font-size:12px;font-weight:800;margin:18px 0 8px}
+.service-list{display:flex;flex-direction:column;gap:8px}
+.service-row{
+  border:1px solid #dce5f0;border-radius:10px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:#fbfdff
+}
+.service-row label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:650}
+.service-row input[type=checkbox]{width:18px;height:18px;accent-color:#1769e0}
+.service-price{font-weight:800;color:#0b376e;font-size:13px}
+.summary{
+  border:1px solid #dfe7f2;border-radius:15px;padding:14px;
+  background:linear-gradient(180deg,#fff,#fbfdff)
+}
+.summary h3{margin:0 0 12px;font-size:16px}
+.sum-card{
+  border-radius:12px;padding:13px;margin-bottom:9px;border:1px solid #e2e9f2
+}
+.sum-card .label{font-size:12px;font-weight:650;margin-bottom:5px}
+.sum-card .num{font-size:22px;font-weight:850}
+.sum-old{background:#fff8ef;border-color:#ffe2c4}.sum-old .num{color:#e56f00}
+.sum-work{background:#eef6ff;border-color:#d7e8ff}.sum-work .num{color:#0862dc}
+.sum-paid{background:#effbf5;border-color:#d7f0e2}.sum-paid .num{color:#0a9652}
+.sum-new{background:#f4f0ff;border-color:#e4d9ff}.sum-new .num{color:#6840d5}
+.formula{font-size:11px;color:#536781;margin-top:10px}
+.bottom-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:10px;margin-top:12px
+}
+.total-strip{
+  display:grid;grid-template-columns:1fr 35px 1fr 35px 1fr;align-items:center;
+  background:#f5f9ff;border:1px solid #dce8f7;border-radius:12px;padding:13px 16px
+}
+.total-strip .cap{font-size:10px;font-weight:800;color:#60718a}
+.total-strip .num{font-size:20px;font-weight:850;margin-top:4px}
+.work-color{color:#0758c9}.paid-color{color:#079653}.balance-color{color:#e56f00}
+.action-row{display:flex;gap:9px}
+.btn-save{
+  flex:1;border:0;border-radius:11px;color:#fff;font-size:15px;font-weight:800;
+  background:linear-gradient(100deg,#1769e0,#b53be0);cursor:pointer;
+  box-shadow:0 9px 20px rgba(55,73,215,.22);transition:.2s
+}
+.btn-save:hover{transform:translateY(-2px)}
+.btn-clear{
+  width:115px;border:1px solid #d6dfeb;border-radius:11px;background:#fff;
+  color:#183252;font-weight:750;cursor:pointer
+}
+.status-box{
+  margin-top:14px;border-radius:11px;padding:12px 14px;font-size:13px;
+  display:none
+}
+.status-box.show{display:block}.status-box.error{background:#fff0f0;color:#b42318}
+.status-box.ok{background:#effbf4;color:#087a42}
+.info-bar{
+  margin-top:16px;background:#eaf3ff;border:1px solid #d8e8ff;border-radius:12px;
+  padding:13px 16px;color:#1760b7;font-size:13px
+}
+@media(max-width:1100px){
+  .entry-layout{grid-template-columns:1fr}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .summary h3,.formula{grid-column:1/-1}
+  .sum-card{margin:0}
+  .bottom-row{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  .sidebar{width:210px!important}
+  .kpis{grid-template-columns:repeat(2,1fr)!important}
+  .amount-grid{grid-template-columns:repeat(2,1fr)}
+  .customer-paid{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .dash-main{padding:15px!important}
+  .sidebar{display:none}
+  .kpis{grid-template-columns:1fr!important}
+  .amount-grid{grid-template-columns:1fr 1fr}
+  .summary{grid-template-columns:1fr}
+  .total-strip{grid-template-columns:1fr;text-align:center;gap:7px}
+  .total-strip .eq{display:none}
+  .action-row{flex-direction:column}
+  .btn-clear{width:100%;height:45px}
+}
+
+/* ===== WhatsApp Payment Reminder ===== */
+.wa-reminder-section{margin-top:18px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.wa-reminder-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.wa-reminder-title{display:flex;align-items:center;gap:10px}
+.wa-reminder-title .wa-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#eafaf0;font-size:22px}
+.wa-reminder-title h2{margin:0;font-size:20px}.wa-reminder-title p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.wa-actions{display:flex;gap:8px;flex-wrap:wrap}.wa-btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;font-size:12px}
+.wa-btn.green{background:#16a05d;color:#fff}.wa-btn.light{background:#eef5ff;color:#164b8f;border:1px solid #d9e7f8}
+.wa-reminder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wa-list-card{border:1px solid #e0e8f2;border-radius:14px;overflow:hidden;background:#fbfdff}
+.wa-list-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e3ebf4;background:#f7faff}
+.wa-list-head strong{font-size:13px}.wa-badge{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:850}
+.wa-badge.today{background:#1769e0}.wa-badge.overdue{background:#ef4444}.wa-list-body{max-height:330px;overflow:auto}
+.wa-customer{padding:12px 14px;border-bottom:1px solid #edf1f6;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wa-customer:last-child{border-bottom:0}.wa-customer-main{min-width:0}
+.wa-customer-name{font-weight:800;color:#10284b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-meta{margin-top:3px;color:#71819b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-balance{margin-top:4px;font-size:11px;font-weight:800;color:#d97706}
+.wa-send{flex:0 0 auto;border:0;border-radius:9px;padding:8px 10px;background:#16a05d;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.wa-empty{padding:22px 14px;text-align:center;color:#71819b;font-size:12px}
+.wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
+@media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
+
+</style>
+<link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - full width compact ===== */
+.unified-site-footer{
+  width:100%!important;
+  max-width:none!important;
+  margin:32px 0 0!important;
+  padding:22px 20px 20px!important;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a)!important;
+  color:#fff;
+  border-radius:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  clear:both;
+}
+.unified-site-footer .footer-logo{
+  width:66px!important;height:66px!important;object-fit:contain;display:block;
+  margin:0 auto 5px!important;
+}
+.unified-site-footer p{
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
+}
+.unified-site-footer .footer-address{font-size:12px;font-weight:600;color:#dce7f8}
+.unified-site-footer .footer-contact{font-size:13px;font-weight:800;color:#fff}
+.unified-site-footer .footer-email{font-size:12px;color:#dce7f8}
+.unified-site-footer .footer-social{font-size:12px;font-weight:800;color:#ff9a25}
+.unified-site-footer .footer-tagline{
+  margin:6px 0 0!important;
+  padding:0!important;
+  width:auto!important;
+  border:0!important;
+  font-size:12px;font-weight:800;letter-spacing:.4px;color:#ff9a25;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px!important;
+    padding:20px 14px 18px!important;
+  }
+  .unified-site-footer .footer-logo{width:58px!important;height:58px!important}
+}
+
+/* ===== Notification Center ===== */
+.notification-wrap{position:relative}
+.notification-btn{
+  position:relative;width:44px;height:44px;border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;background:rgba(255,255,255,.10);color:#fff;font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s ease
+}
+.notification-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.notification-count{
+  position:absolute;right:-4px;top:-5px;min-width:20px;height:20px;padding:0 5px;
+  border-radius:999px;background:#ff5b35;color:#fff;border:2px solid #071c3b;
+  font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center
+}
+.notification-panel{
+  position:absolute;right:0;top:54px;width:380px;max-width:calc(100vw - 24px);
+  background:#fff;border:1px solid #dfe8f4;border-radius:16px;
+  box-shadow:0 18px 45px rgba(7,29,61,.22);overflow:hidden;display:none;
+  z-index:9999;animation:notificationDrop .18s ease
+}
+.notification-panel.show{display:block}
+@keyframes notificationDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notification-head{
+  padding:14px 15px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #e8eef6;background:#f8fbff
+}
+.notification-head strong{color:#10284b;font-size:15px}
+.notification-head button{
+  border:0;background:transparent;color:#1769e0;font-size:11px;font-weight:800;cursor:pointer
+}
+.notification-list{max-height:390px;overflow-y:auto}
+.notification-item{
+  display:flex;gap:11px;padding:13px 14px;border-bottom:1px solid #edf1f6;
+  cursor:pointer;transition:.18s ease
+}
+.notification-item:hover{background:#f5f9ff}
+.notification-item.unread{background:#f1f7ff}
+.notification-icon{
+  width:38px;height:38px;flex:0 0 38px;border-radius:11px;display:flex;
+  align-items:center;justify-content:center;background:#eaf2ff;font-size:18px
+}
+.notification-content{min-width:0;flex:1}
+.notification-title{color:#10284b;font-size:13px;font-weight:850}
+.notification-message{margin-top:3px;color:#71819b;font-size:11px;line-height:1.45}
+.notification-time{margin-top:4px;color:#9aa8ba;font-size:10px}
+.notification-empty{padding:35px 15px;text-align:center;color:#71819b;font-size:12px}
+@media(max-width:620px){
+  .notification-panel{position:fixed;top:70px;left:10px;right:10px;width:auto;max-width:none}
+  .notification-btn{width:40px;height:40px}
+  .header-actions{gap:6px}
+  .user-chip{display:none}
+}
+
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<body>
+<header class="dash-header">
+<a class="brand" href="dashboard.html">
+<img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/>
+</a>
+<div class="header-actions">
+<div class="notification-wrap">
+<button aria-label="Notifications" class="notification-btn" id="notificationBtn" title="Notifications" type="button">
+        🔔
+        <span class="notification-count" id="notificationCount" style="display:none">0</span>
+</button>
+<div class="notification-panel" id="notificationPanel">
+<div class="notification-head">
+<strong>Notifications</strong>
+<button id="markAllRead" type="button">Mark all read</button>
+</div>
+<div class="notification-list" id="notificationList">
+<div class="notification-empty">Loading notifications…</div>
+</div>
+</div>
+</div>
+<span class="user-chip" data-admin-name="">Admin</span>
+<a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a>
+</div>
+</header>
+<div class="dash-layout">
+<aside class="sidebar"><nav>
+<a class="active" href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a><a href="customer-reports.html">Customer Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="activities.html">📋 Staff Activities</a>
+<a href="messages.html">Messages</a>
+</nav></aside>
+<main class="dash-main">
+<div class="toolbar">
+<div>
+<p class="eyebrow">CONTROL CENTER</p>
+<h1>Dashboard</h1>
+<p class="muted">Daily shop activity at a glance.</p>
+</div>
+</div>
+<div class="kpis">
+<div class="kpi"><b>Today's Work</b><div class="value" id="todayWork">₹0.00</div><small class="muted" id="todayEntries">0 entries</small></div>
+<div class="kpi"><b>Today's Payments</b><div class="value" id="todayPayments">₹0.00</div><small class="muted">Collected today</small></div>
+<div class="kpi"><b>Total Outstanding</b><div class="value" id="outstanding">₹0.00</div><small class="muted">All customers</small></div>
+<div class="kpi"><b>New Enquiries</b><div class="value" id="enquiries">0</div><small class="muted">Pending / new</small></div>
+</div>
+<section class="dashboard-card quick-entry">
+<div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
+<p class="quick-sub">Work + payment can be entered from this screen.</p>
+<div class="entry-layout">
+<div class="entry-main">
+<div class="customer-paid">
+<div class="field customer-picker">
+<label>Customer <span style="color:#e33">*</span></label>
+<div class="customer-input-wrap">
+<input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
+<button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
+</div>
+<div aria-label="Customer suggestions" class="customer-suggestions" id="customerSuggestions" role="listbox"></div>
+<input id="customer" type="hidden" value=""/>
+</div>
+<div class="field">
+<label>Paid Amount Today</label>
+<input id="paidAmount" min="0" placeholder="Enter amount" step="0.01" type="number"/>
+</div>
+</div>
+<div class="amount-grid">
+<div class="amount-box"><label>E-Filing</label><input id="e_filing" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>E-Payment</label><input id="e_payment" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Print</label><input id="print_amount" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Scanning</label><input id="scanning" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Other Works</label><input id="other_works" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+</div>
+<div class="service-label">Services</div>
+<div class="service-list" id="serviceList"><div class="muted">Loading services…</div></div>
+<div class="field" style="margin-top:14px">
+<label>Description <span style="font-weight:500;color:#7a8ba2">(Optional)</span></label>
+<textarea id="description" placeholder="Optional note / work description"></textarea>
+</div>
+</div>
+<aside class="summary">
+<h3>👤 Customer Summary</h3>
+<div class="sum-card sum-old"><div class="label">Old Balance (Before Today)</div><div class="num" id="oldBalance">₹0.00</div></div>
+<div class="sum-card sum-work"><div class="label">Today's Work Total</div><div class="num" id="customerTodayWork">₹0.00</div></div>
+<div class="sum-card sum-paid"><div class="label">Today's Paid</div><div class="num" id="customerTodayPaid">₹0.00</div></div>
+<div class="sum-card sum-new"><div class="label">New Balance (After Transaction)</div><div class="num" id="newBalance">₹0.00</div></div>
+<div class="formula">New Balance = Old Balance + Work − Paid</div>
+</aside>
+</div>
+<div class="bottom-row">
+<div class="total-strip">
+<div><div class="cap">WORK TOTAL</div><div class="num work-color" id="workTotal">₹0.00</div></div>
+<div class="eq">−</div>
+<div><div class="cap">PAID TODAY</div><div class="num paid-color" id="paidTotal">₹0.00</div></div>
+<div class="eq">=</div>
+<div><div class="cap">BALANCE ADDED</div><div class="num balance-color" id="balanceAdded">₹0.00</div></div>
+</div>
+<div class="action-row">
+<button class="btn-save" id="saveBtn">💾 Save Work &amp; Payment</button>
+<button class="btn-clear" id="clearBtn">↻ Clear</button>
+</div>
+</div>
+<div class="status-box" id="statusBox"></div>
+</section>
+<section class="wa-reminder-section">
+<div class="wa-reminder-head">
+<div class="wa-reminder-title">
+<span class="wa-icon">📲</span>
+<div>
+<h2>WhatsApp Payment Reminders</h2>
+<p>Today's customers and customers with 7+ days outstanding.</p>
+</div>
+</div>
+<div class="wa-actions">
+<button class="wa-btn green" id="waSendTodayAll" type="button">📲 Send Today's All</button>
+<button class="wa-btn light" id="waSendOverdueAll" type="button">📲 Send 7+ Days All</button>
+<button class="wa-btn light" id="waRefresh" type="button">↻ Refresh</button>
+</div>
+</div>
+<div class="wa-reminder-grid">
+<div class="wa-list-card">
+<div class="wa-list-head"><strong>Today's Customers</strong><span class="wa-badge today" id="waTodayCount">0</span></div>
+<div class="wa-list-body" id="waTodayList"><div class="wa-empty">Loading…</div></div>
+</div>
+<div class="wa-list-card">
+<div class="wa-list-head"><strong>7+ Days Outstanding</strong><span class="wa-badge overdue" id="waOverdueCount">0</span></div>
+<div class="wa-list-body" id="waOverdueList"><div class="wa-empty">Loading…</div></div>
+</div>
+</div>
+<div class="wa-note">ℹ️ WhatsApp opens with the message already prepared. Review it and press Send.</div>
+</section>
+<div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+/* ===== iTech Admin Notification Center ===== */
+(async()=>{
+  const btn=document.getElementById("notificationBtn");
+  const panel=document.getElementById("notificationPanel");
+  const list=document.getElementById("notificationList");
+  const count=document.getElementById("notificationCount");
+  const markAll=document.getElementById("markAllRead");
+  if(!btn||!panel||!list)return;
+
+  let rows=[];
+
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+
+  const iconFor=type=>({
+    customer:"👤",payment:"💰",work:"⚡",insurance:"🚗",
+    enquiry:"📩",service:"🛠️",product:"📦",staff:"👨‍💼",staff_activity:"👨‍💼",general:"🔔"
+  })[String(type||"general").toLowerCase()]||"🔔";
+
+  const timeAgo=value=>{
+    const d=new Date(value), now=new Date();
+    const sec=Math.max(0,Math.floor((now-d)/1000));
+    if(sec<60)return"Just now";
+    const min=Math.floor(sec/60);
+    if(min<60)return`${min} min ago`;
+    const hrs=Math.floor(min/60);
+    if(hrs<24)return`${hrs} hour${hrs>1?"s":""} ago`;
+    const days=Math.floor(hrs/24);
+    if(days<7)return`${days} day${days>1?"s":""} ago`;
+    return d.toLocaleDateString("en-IN");
+  };
+
+  const targetPath=page=>{
+    if(!page)return"";
+    if(/^https?:\/\//i.test(page))return page;
+    return String(page).replace(/^\/+/,"").replace(/^admin\//,"");
+  };
+
+  function render(){
+    const unread=rows.filter(x=>!x.is_read).length;
+    if(unread){
+      count.textContent=unread>99?"99+":String(unread);
+      count.style.display="flex";
+    }else{
+      count.style.display="none";
+    }
+
+    if(!rows.length){
+      list.innerHTML='<div class="notification-empty">🔔<br><span style="display:block;margin-top:7px">No notifications</span></div>';
+      return;
+    }
+
+    list.innerHTML=rows.map(n=>`
+      <div class="notification-item ${n.is_read?"":"unread"}"
+           data-id="${esc(n.id)}"
+           data-target="${esc(targetPath(n.target_page))}">
+        <div class="notification-icon">${iconFor(n.type)}</div>
+        <div class="notification-content">
+          <div class="notification-title">${esc(n.title)}</div>
+          <div class="notification-message">${esc(n.message||"")}</div>
+          <div class="notification-time">${timeAgo(n.created_at)}</div>
+        </div>
+      </div>
+    `).join("");
+
+    list.querySelectorAll(".notification-item").forEach(item=>{
+      item.addEventListener("click",async()=>{
+        const id=item.dataset.id;
+        const target=item.dataset.target;
+
+        await sb.from("notifications").update({is_read:true}).eq("id",id);
+
+        if(target){
+          window.location.href=target;
+        }else{
+          await load();
+        }
+      });
+    });
+  }
+
+  async function load(){
+    try{
+      const r=await sb.from("notifications")
+        .select("id,user_id,role,type,title,message,target_page,reference_id,is_read,created_at")
+        .or("role.eq.admin,role.eq.all")
+        .order("created_at",{ascending:false})
+        .limit(50);
+
+      if(r.error){
+        console.error("Notification load error:",r.error);
+        list.innerHTML='<div class="notification-empty">Unable to load notifications.</div>';
+        return;
+      }
+
+      rows=r.data||[];
+      render();
+    }catch(e){
+      console.error("Notification error:",e);
+    }
+  }
+
+  btn.addEventListener("click",e=>{
+    e.stopPropagation();
+    panel.classList.toggle("show");
+  });
+
+  panel.addEventListener("click",e=>e.stopPropagation());
+
+  document.addEventListener("click",()=>{
+    panel.classList.remove("show");
+  });
+
+  markAll.addEventListener("click",async()=>{
+    const unreadIds=rows.filter(x=>!x.is_read).map(x=>x.id);
+    if(!unreadIds.length)return;
+
+    const r=await sb.from("notifications")
+      .update({is_read:true})
+      .in("id",unreadIds);
+
+    if(r.error){
+      console.error("Mark all read error:",r.error);
+      return;
+    }
+    await load();
+  });
+
+  sb.channel("admin-notifications")
+    .on("postgres_changes",
+      {event:"*",schema:"public",table:"notifications"},
+      ()=>load()
+    )
+    .subscribe();
+
+  await load();
+})();
+</script>
+<script>
+(async()=>{
+  const ok=await requireAdmin(); if(!ok)return;
+
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const today=new Date().toISOString().slice(0,10);
+  const $=id=>document.getElementById(id);
+
+  let customers=[];
+  let services=[];
+  let selectedBalance=0;
+  let selectedTodayWork=0;
+  let selectedTodayPaid=0;
+
+  function status(msg,error=false){
+    const el=$("statusBox");
+    el.textContent=msg;
+    el.className="status-box show "+(error?"error":"ok");
+    setTimeout(()=>el.classList.remove("show"),5000);
+  }
+
+  function amount(id){ return Math.max(Number($(id).value||0),0); }
+
+  function workTotal(){
+    const fields=["e_filing","e_payment","print_amount","scanning","other_works"];
+    return fields.reduce((s,id)=>s+amount(id),0)+
+      [...document.querySelectorAll(".service-check:checked")].reduce((s,x)=>s+Number(x.dataset.total||0),0);
+  }
+
+  function updateTotals(){
+    const work=workTotal(), paid=amount("paidAmount");
+    $("workTotal").textContent=money(work);
+    $("paidTotal").textContent=money(paid);
+    $("balanceAdded").textContent=money(work-paid);
+    $("customerTodayWork").textContent=money(selectedTodayWork+work);
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
+    $("newBalance").textContent=money(selectedBalance+work-paid);
+  }
+
+  async function loadCustomers(){
+    // Quick Daily Work must show ONLY customers created through Add Customer.
+    // Insurance-created profiles are intentionally excluded.
+    const r=await sb.from("customers")
+      .select("*")
+      .eq("created_from_insurance",false)
+      .order("full_name");
+    if(r.error){status(r.error.message,true);return;}
+    customers=r.data||[];
+    $("customer").value="";
+    $("customerSearch").value="";
+    renderCustomerSuggestions("");
+  }
+
+
+  let activeSuggestion = -1;
+
+  function customerText(c){
+    return `${c.full_name||""} — ${c.mobile||c.whatsapp||""}`.trim();
+  }
+
+  function renderCustomerSuggestions(query){
+    const box=$("customerSuggestions");
+    const q=(query||"").trim().toLowerCase();
+    const matches=customers.filter(c=>{
+      const name=String(c.full_name||"").toLowerCase();
+      const mobile=String(c.mobile||"").toLowerCase();
+      const whatsapp=String(c.whatsapp||"").toLowerCase();
+      return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
+    }).slice(0,8);
+
+    if(!matches.length){
+      box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
+      box.classList.add("show");
+      return;
+    }
+
+    box.innerHTML=matches.map((c,i)=>`
+      <button type="button" class="customer-option ${i===activeSuggestion?"active":""}"
+              data-customer-id="${c.id}" role="option">
+        <span>
+          <span class="customer-main">${String(c.full_name||"Customer")}</span>
+          <span class="customer-mobile">${c.mobile||c.whatsapp||""}</span>
+        </span>
+        <span class="customer-balance">Select</span>
+      </button>`).join("");
+
+    box.classList.add("show");
+
+    box.querySelectorAll(".customer-option").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const c=customers.find(x=>String(x.id)===String(btn.dataset.customerId));
+        if(!c)return;
+        $("customer").value=c.id;
+        $("customerSearch").value=customerText(c);
+        $("customerSuggestions").classList.remove("show");
+        $("customerClear").style.display="block";
+        activeSuggestion=-1;
+        loadCustomerSummary(c.id);
+      });
+    });
+  }
+
+  $("customerSearch").addEventListener("input",e=>{
+    if($("customer").value){
+      $("customer").value="";
+      selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+      $("oldBalance").textContent=money(0);
+    }
+    $("customerClear").style.display=e.target.value.trim()?"block":"none";
+    activeSuggestion=-1;
+    renderCustomerSuggestions(e.target.value);
+    updateTotals();
+  });
+
+  $("customerSearch").addEventListener("focus",()=>{
+    renderCustomerSuggestions($("customerSearch").value);
+  });
+
+  $("customerSearch").addEventListener("keydown",e=>{
+    const options=[...document.querySelectorAll(".customer-option")];
+    if(!options.length)return;
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeSuggestion=Math.min(activeSuggestion+1,options.length-1);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeSuggestion=Math.max(activeSuggestion-1,0);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="Enter" && activeSuggestion>=0){
+      e.preventDefault();
+      options[activeSuggestion].click();
+    }else if(e.key==="Escape"){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  $("customerClear").addEventListener("click",()=>{
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+    $("customerSearch").focus();
+  });
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".customer-picker")){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  async function loadServices(){
+    // Services table uses service_name and active status.
+    const r=await sb.from("services")
+      .select("id,service_name,category,description,price,gst_enabled,gst_percent,status")
+      .eq("status","active")
+      .order("service_name");
+
+    if(r.error){
+      $("serviceList").innerHTML=`<div class="muted">Unable to load services: ${r.error.message}</div>`;
+      return;
+    }
+
+    services=r.data||[];
+
+    $("serviceList").innerHTML=services.map(s=>{
+      const name=String(s.service_name||"Service");
+      const price=Number(s.price||0);
+      const gstEnabled=Boolean(s.gst_enabled);
+      const gst=Number(s.gst_percent||0);
+      const gstAmount=gstEnabled ? price*gst/100 : 0;
+      const total=price+gstAmount;
+
+      return `<div class="service-row">
+        <label>
+          <input class="service-check"
+            type="checkbox"
+            data-id="${s.id}"
+            data-name="${name.replace(/"/g,"&quot;")}"
+            data-base="${price}"
+            data-gst="${gst}"
+            data-gst-enabled="${gstEnabled ? "1" : "0"}"
+            data-total="${total}">
+          <span>${name}
+            <span style="color:#72829a;font-weight:500">· ${s.category||"Service"}</span>
+          </span>
+        </label>
+        <span class="service-price">${money(total)}</span>
+      </div>`;
+    }).join("") || '<div class="muted">No active services available. Add/activate services from Services page.</div>';
+
+    document.querySelectorAll(".service-check").forEach(x=>{
+      x.addEventListener("change",updateTotals);
+    });
+  }
+
+  async function loadCustomerSummary(id){
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
+
+    const [b,w,p]=await Promise.all([
+      sb.from("customer_balances").select("*").eq("id",id).single(),
+      sb.from("today_work_report").select("total_amount").eq("customer_id",id),
+      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",today)
+    ]);
+    if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
+    selectedTodayWork=(w.data||[]).reduce((s,r)=>s+Number(r.total_amount||0),0);
+    selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
+
+    $("oldBalance").textContent=money(selectedBalance);
+    $("customerTodayWork").textContent=money(selectedTodayWork+workTotal());
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+amount("paidAmount"));
+    $("newBalance").textContent=money(selectedBalance+workTotal()-amount("paidAmount"));
+  }
+
+  $("customer").addEventListener("change",e=>loadCustomerSummary(e.target.value));
+  ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
+    $(id).addEventListener("input",updateTotals);
+  });
+
+  function clearForm(){
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
+    $("description").value="";
+    document.querySelectorAll(".service-check").forEach(x=>x.checked=false);
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+  }
+  $("clearBtn").addEventListener("click",clearForm);
+
+  /*
+    The save routine uses the same database structure used by the existing
+    Daily Work / Payment pages. If your existing save logic has extra fields,
+    keep those fields in the corresponding INSERT blocks below.
+  */
+  $("saveBtn").addEventListener("click",async()=>{
+    const customerId=$("customer").value;
+    const work=workTotal();
+    const paid=amount("paidAmount");
+    if(!customerId){status("Please select a customer.",true);return;}
+    if(work<=0 && paid<=0){status("Enter a work amount, select a service, or enter a payment.",true);return;}
+
+    $("saveBtn").disabled=true;
+    $("saveBtn").textContent="Saving…";
+
+    try{
+      const desc=$("description").value.trim();
+      const selectedServices=[...document.querySelectorAll(".service-check:checked")];
+
+      /* Work entry: keep the same column names as the existing report view. */
+      if(work>0){
+        const payload={
+          customer_id:customerId,
+          e_filing:amount("e_filing"),
+          e_payment:amount("e_payment"),
+          print_amount:amount("print_amount"),
+          scanning:amount("scanning"),
+          other_works:amount("other_works"),
+          description:desc||null
+        };
+
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        if(ins.error) throw ins.error;
+
+        if(selectedServices.length){
+          const rows=selectedServices.map(x=>({
+            work_entry_id:ins.data.id,
+            service_id:x.dataset.id,
+            service_name:x.dataset.name,
+            base_amount:Number(x.dataset.base||0),
+            gst_percent:Number(x.dataset.gst||0),
+            gst_amount:Number(x.dataset.total||0)-Number(x.dataset.base||0),
+            total_amount:Number(x.dataset.total||0)
+          }));
+          const sr=await sb.from("daily_work_entry_services").insert(rows);
+          if(sr.error) throw sr.error;
+        }
+      }
+
+      if(paid>0){
+        const pr=await sb.from("payments").insert({
+          customer_id:customerId,
+          amount:paid,
+          payment_date:today,
+          payment_method:"Cash",
+          reference_note:"Dashboard Quick Entry"
+        });
+        if(pr.error) throw pr.error;
+      }
+
+      status("Transaction saved successfully.");
+      await refreshDashboard();
+      await loadWhatsAppReminders();
+      clearForm();
+    }catch(err){
+      status(err.message||"Unable to save transaction.",true);
+    }finally{
+      $("saveBtn").disabled=false;
+      $("saveBtn").textContent="💾 Save Work & Payment";
+    }
+  });
+
+
+  /* ===== WhatsApp Payment Reminders ===== */
+  function normalizePhone(value){
+    let p=String(value||"").replace(/\D/g,"");
+    if(p.startsWith("0")) p=p.slice(1);
+    if(p.length===10) p="91"+p;
+    return p;
+  }
+
+  function buildPaymentMessage(c){
+    return `Hello ${c.full_name||"Customer"},
+
+iTech IT Solutions — Payment Reminder
+
+Date: ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"})}
+Old Balance: ${money(c.oldBalance)}
+Today's Work: ${money(c.todayWork)}
+Paid Today: ${money(c.todayPaid)}
+Total Balance: ${money(c.totalBalance)}
+
+Please contact us for any clarification.
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
+  }
+
+  function openWhatsApp(c){
+    const phone=normalizePhone(c.mobile||c.whatsapp);
+    if(!phone){ status("No valid WhatsApp/mobile number for "+(c.full_name||"this customer"),true); return; }
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+  }
+
+  function renderWaList(el,rows,emptyText){
+    if(!rows.length){el.innerHTML=`<div class="wa-empty">${emptyText}</div>`;return;}
+    el.innerHTML=rows.map((c,i)=>`
+      <div class="wa-customer">
+        <div class="wa-customer-main">
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
+          <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
+        </div>
+        <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
+      </div>`).join("");
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+  }
+
+  async function loadWhatsAppReminders(){
+    const todayList=$("waTodayList"), overdueList=$("waOverdueList");
+    if(!todayList||!overdueList)return;
+    todayList.innerHTML='<div class="wa-empty">Loading…</div>';
+    overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+
+    try{
+      const [cu,ba,tw,tp,wh,ph]=await Promise.all([
+        sb.from("customers").select("id,full_name,mobile,whatsapp,status").eq("status","active").order("full_name"),
+        sb.from("customer_balances").select("id,current_balance"),
+        sb.from("today_work_report").select("customer_id,total_amount"),
+        sb.from("payments").select("customer_id,amount").eq("payment_date",today),
+        sb.from("today_work_report").select("customer_id,created_at"),
+        sb.from("payments").select("customer_id,payment_date")
+      ]);
+      for(const r of [cu,ba,tw,tp,wh,ph]) if(r.error) throw r.error;
+
+      const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
+      const works=new Map(), paid=new Map(), last=new Map();
+
+      (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
+      (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
+      (wh.data||[]).forEach(r=>{
+        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
+        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
+      });
+      (ph.data||[]).forEach(r=>{
+        const id=String(r.customer_id); if(!r.payment_date)return;
+        const d=new Date(String(r.payment_date)+"T23:59:59");
+        if(!last.has(id)||d>last.get(id))last.set(id,d);
+      });
+
+      const customersWithData=(cu.data||[]).map(c=>{
+        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+      });
+
+      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+
+      const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+        .sort((a,b)=>b.totalBalance-a.totalBalance);
+
+      $("waTodayCount").textContent=todayRows.length;
+      $("waOverdueCount").textContent=overdueRows.length;
+      renderWaList(todayList,todayRows,"No customer activity recorded today.");
+      renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
+
+      $("waSendTodayAll").onclick=()=>todayRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waRefresh").onclick=loadWhatsAppReminders;
+    }catch(err){
+      console.error("WhatsApp reminder error:",err);
+      todayList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+      overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+    }
+  }
+
+
+  async function refreshDashboard(){
+    const [work,pay,bal,enq]=await Promise.all([
+      sb.from("today_work_report").select("*"),
+      sb.from("payments").select("amount").eq("payment_date",today),
+      sb.from("customer_balances").select("current_balance"),
+      sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+    ]);
+    if(work.error)return;
+    const rows=work.data||[];
+    $("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+    $("todayEntries").textContent=rows.length+" entries";
+    $("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+    $("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+    $("enquiries").textContent=enq.count||0;
+  }
+
+  await Promise.all([
+    loadCustomers(),
+    loadServices(),
+    refreshDashboard(),
+    loadWhatsAppReminders()
+  ]);
+  updateTotals();
+})();
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body>
+</html>

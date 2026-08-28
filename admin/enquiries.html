@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Enquiries | iTech Admin</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<style>
+.enquiry-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
+.enquiry-stat{background:#fff;border:1px solid #e4ebf4;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(15,35,65,.07)}
+.enquiry-stat small{display:block;color:#71809a;font-weight:700;margin-bottom:8px}
+.enquiry-stat strong{font-size:28px;color:#102a4c}
+.enquiry-stat:nth-child(1) strong{color:#f08a16}
+.enquiry-stat:nth-child(2) strong{color:#2563eb}
+.enquiry-stat:nth-child(3) strong{color:#7c3aed}
+.enquiry-stat:nth-child(4) strong{color:#16a34a}
+.enquiry-panel{background:#fff;border:1px solid #e4ebf4;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(15,35,65,.06)}
+.enquiry-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.enquiry-head h2{margin:0}
+.search-box{width:320px;max-width:100%;padding:12px 14px;border:1px solid #d7e1ed;border-radius:10px;outline:none}
+.search-box:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.table-scroll{overflow-x:auto}
+.enquiry-table{width:100%;border-collapse:separate;border-spacing:0;min-width:920px}
+.enquiry-table th{background:#f5f8fc;color:#153052;text-align:left;font-size:12px;padding:13px 11px;border-bottom:1px solid #e2e8f0}
+.enquiry-table td{padding:14px 11px;border-bottom:1px solid #edf1f6;font-size:13px;vertical-align:top}
+.customer-name{font-weight:750;color:#102a4c}
+.customer-mobile{display:block;margin-top:4px;color:#7b8aa0;font-size:12px}
+.category{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#2458b8;font-weight:700;font-size:11px}
+.message{max-width:260px;line-height:1.45}
+.status-select{border:1px solid #d6e0ec;border-radius:8px;padding:8px;background:#fff;font-weight:700;font-size:12px}
+.note-input{width:180px;min-height:58px;border:1px solid #d6e0ec;border-radius:8px;padding:8px;resize:vertical;font:12px inherit}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.mini{border:0;border-radius:8px;padding:8px 10px;font-weight:750;font-size:11px;cursor:pointer}
+.save{background:#2563eb;color:#fff}
+.wa{background:#16a34a;color:#fff}
+.del{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2}
+.status-closed-badge{display:inline-flex;align-items:center;padding:8px 11px;border-radius:8px;background:#ecfdf3;color:#15803d;font-weight:800;font-size:12px}
+.reopen{background:#f59e0b;color:#fff}
+.reopen:hover{filter:brightness(.96)}
+
+.center{padding:35px!important;text-align:center;color:#77879c}
+@media(max-width:900px){.enquiry-stats{grid-template-columns:repeat(2,1fr)}.enquiry-head{flex-direction:column;align-items:stretch}.search-box{width:100%}}
+@media(max-width:600px){.enquiry-stats{grid-template-columns:1fr}.enquiry-panel{padding:15px}}
+</style>
+<link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+}
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<body>
+<header class="dash-header">
+<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
+<div class="header-actions">
+<span class="user-chip" data-admin-name="">Admin</span>
+<a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a>
+</div>
+</header>
+<div class="dash-layout">
+<aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a><a href="customer-reports.html">Customer Reports</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a class="active" href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="activities.html">📋 Staff Activities</a>
+<a href="messages.html">Messages</a>
+</nav></aside>
+<main class="dash-main">
+<div class="toolbar">
+<div>
+<p class="eyebrow">CUSTOMER COMMUNICATION</p>
+<h1>Enquiries</h1>
+<p class="muted">Manage customer enquiries, follow-ups and responses.</p>
+</div>
+</div>
+<div class="enquiry-stats">
+<div class="enquiry-stat"><small>New Enquiries</small><strong id="newCount">0</strong></div>
+<div class="enquiry-stat"><small>Contacted</small><strong id="contactedCount">0</strong></div>
+<div class="enquiry-stat"><small>In Progress</small><strong id="progressCount">0</strong></div>
+<div class="enquiry-stat"><small>Closed</small><strong id="closedCount">0</strong></div>
+</div>
+<section class="enquiry-panel">
+<div class="enquiry-head">
+<div>
+<h2>Customer Enquiries</h2>
+<p class="muted">Live enquiries from the Supabase database.</p>
+</div>
+<input class="search-box" id="searchInput" placeholder="Search customer, mobile, category..." type="search"/>
+</div>
+<div class="table-scroll">
+<table class="enquiry-table">
+<thead>
+<tr>
+<th>Customer</th>
+<th>Category</th>
+<th>Message</th>
+<th>Date</th>
+<th>Status</th>
+<th>Admin Note</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="enquiryBody">
+<tr><td class="center" colspan="7">Loading enquiries...</td></tr>
+</tbody>
+</table>
+</div>
+<div class="status" data-status=""></div>
+</section>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+(async()=>{
+  const auth = await requireStaff();
+  if(!auth) return;
+
+  const body = document.getElementById("enquiryBody");
+  const search = document.getElementById("searchInput");
+  let rows = [];
+
+  const esc = v => String(v ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+  function stats(data){
+    document.getElementById("newCount").textContent =
+      data.filter(x => String(x.status||"New").toLowerCase()==="new").length;
+    document.getElementById("contactedCount").textContent =
+      data.filter(x => String(x.status||"").toLowerCase()==="contacted").length;
+    document.getElementById("progressCount").textContent =
+      data.filter(x => String(x.status||"").toLowerCase()==="in progress").length;
+    document.getElementById("closedCount").textContent =
+      data.filter(x => String(x.status||"").toLowerCase()==="closed").length;
+  }
+
+  function render(data){
+    if(!data.length){
+      body.innerHTML='<tr><td colspan="7" class="center">No enquiries found.</td></tr>';
+      return;
+    }
+
+    body.innerHTML=data.map(x=>{
+      const date=x.created_at
+        ? new Date(x.created_at).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})
+        : "—";
+
+      return `<tr data-id="${esc(x.id)}">
+        <td>
+          <div class="customer-name">${esc(x.name||"Unknown Customer")}</div>
+          <span class="customer-mobile">${esc(x.mobile||"No mobile")}</span>
+        </td>
+        <td><span class="category">${esc(x.category||"General")}</span></td>
+        <td><div class="message">${esc(x.message||"No message")}</div></td>
+        <td>${date}</td>
+        <td>
+          ${String(x.status||"New").toLowerCase()==="closed"
+            ? '<span class="status-closed-badge">Closed</span>'
+            : `<select class="status-select">
+                <option ${x.status==="New"||!x.status?"selected":""}>New</option>
+                <option ${x.status==="Contacted"?"selected":""}>Contacted</option>
+                <option ${x.status==="In Progress"?"selected":""}>In Progress</option>
+                <option ${x.status==="Closed"?"selected":""}>Closed</option>
+              </select>`}
+        </td>
+        <td>
+          <textarea class="note-input" placeholder="Admin note...">${esc(x.admin_note||"")}</textarea>
+        </td>
+        <td>
+          <div class="actions">
+            ${String(x.status||"New").toLowerCase()==="closed"
+              ? '<button class="mini reopen" data-action="reopen">↻ Reopen Case</button>'
+              : '<button class="mini save" data-action="save">Save</button>'}
+            ${x.mobile ? '<button class="mini wa" data-action="wa">WhatsApp</button>' : ''}
+            <button class="mini del" data-action="delete">Delete</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  async function load(){
+    body.innerHTML='<tr><td colspan="7" class="center">Loading enquiries...</td></tr>';
+
+    /* Only columns known to exist in the current project are requested here.
+       admin_note is NOT included in the SELECT, so a missing admin_note column
+       cannot break the page loading. */
+    const {data,error}=await sb.from("enquiries")
+      .select("id,customer_id,name,mobile,category,message,status,admin_note,created_at")
+      .order("created_at",{ascending:false});
+
+    if(error){
+      body.innerHTML=`<tr><td colspan="7" class="center">${esc(error.message)}</td></tr>`;
+      showStatus(error.message,true);
+      return;
+    }
+
+    rows=data||[];
+    stats(rows);
+    render(rows);
+  }
+
+  search.addEventListener("input",()=>{
+    const q=search.value.trim().toLowerCase();
+    if(!q) return render(rows);
+    render(rows.filter(x=>[
+      x.name,x.mobile,x.category,x.message,x.status,x.admin_note
+    ].filter(Boolean).some(v=>String(v).toLowerCase().includes(q))));
+  });
+
+  body.addEventListener("click",async e=>{
+    const btn=e.target.closest("[data-action]");
+    if(!btn) return;
+
+    const tr=btn.closest("tr");
+    const id=tr.dataset.id;
+    const item=rows.find(x=>String(x.id)===String(id));
+    const action=btn.dataset.action;
+
+    if(action==="wa"){
+      if(!item?.mobile) return showStatus("Mobile number is missing.",true);
+      const phone=String(item.mobile).replace(/\D/g,"");
+      const msg=`Hi ${item.name||"Customer"},%0A%0AThank you for contacting iTech IT Solutions.%0A%0AEnquiry: ${item.message||""}%0A%0ARegards,%0AiTech IT Solutions`;
+      window.open(`https://wa.me/${phone}?text=${msg}`,"_blank");
+      return;
+    }
+
+    if(action==="delete"){
+      if(!confirm("Delete this enquiry?")) return;
+      btn.disabled=true;
+      const {error}=await sb.from("enquiries").delete().eq("id",id);
+      if(error){
+        btn.disabled=false;
+        return showStatus(error.message,true);
+      }
+      showStatus("Enquiry deleted.");
+      await load();
+      return;
+    }
+
+    if(action==="reopen"){
+      if(!confirm("Reopen this closed enquiry?")) return;
+
+      btn.disabled=true;
+      btn.textContent="Reopening...";
+
+      const {error}=await sb.from("enquiries")
+        .update({status:"In Progress"})
+        .eq("id",id);
+
+      if(error){
+        btn.disabled=false;
+        btn.textContent="↻ Reopen Case";
+        return showStatus(error.message,true);
+      }
+
+      showStatus("Enquiry reopened and moved to In Progress.");
+      await load();
+      return;
+    }
+
+    if(action==="save"){
+      const select=tr.querySelector(".status-select");
+      if(!select) return;
+      const status=select.value;
+      const note=tr.querySelector(".note-input").value.trim();
+
+      /* Save both Status and Admin Note */
+      btn.disabled=true;
+      btn.textContent="Saving...";
+
+      const {error}=await sb.from("enquiries")
+        .update({
+          status: status,
+          admin_note: note || null
+        })
+        .eq("id",id);
+
+      if(error){
+        btn.disabled=false;
+        btn.textContent="Save";
+        return showStatus(
+          error.message.includes("admin_note")
+            ? "Admin Note column is missing in Supabase. Add the admin_note column first."
+            : error.message,
+          true
+        );
+      }
+
+      btn.disabled=false;
+      btn.textContent="Save";
+      showStatus("Status and Admin Note updated successfully.");
+      await load();
+    }
+  });
+
+  await load();
+})();
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body>
+</html>

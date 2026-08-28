@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Login | iTech IT Solutions</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/><style>.login-help{padding:11px 13px;border:1px solid #dfe8f3;border-radius:10px;background:#f7fbff;color:#5b6d84;font-size:12px;margin-top:10px}</style><link href="../css/public-polish.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body>
+<header class="site-header"><div class="nav-wrap"><a class="brand" href="../index.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/></a><button class="menu" id="menu">☰</button><nav class="nav" id="nav"><a href="../index.html">Home</a><a href="services.html">Services</a><a href="works.html">Our Works</a><a href="enquiry.html">Enquiry</a><a href="service-register.html">Service</a><a href="product-register.html">Product</a><a href="login.html">Login</a></nav></div></header>
+<section class="page-hero"><p class="eyebrow">SECURE PORTAL</p><h1>Welcome Back</h1><p>Sign in with your email or mobile number.</p></section>
+<main class="container"><div class="two"><section class="panel form"><h2>Login</h2><p class="muted">Admin, staff and customer accounts use the same secure sign-in.</p><form class="form" id="loginForm"><label class="field">Email / Mobile<input autocomplete="username" id="identifier" placeholder="Email or mobile number" required=""/></label><label class="field">Password<input autocomplete="current-password" id="password" required="" type="password"/></label><div class="login-help">New insurance customer? Use your mobile number and the temporary password given by iTech.</div><button class="btn primary" type="submit">Sign In</button><div class="status" data-status=""></div></form></section><section class="card"><div class="hero-icon">iT</div><h2>Your account, connected.</h2><p class="muted">Customers can view products, services, payments, balance and vehicle insurance.</p></section></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>
+document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();showStatus('Signing in…');if(!window.sb)return showStatus('Configure Supabase Publishable Key first.',true);let identifier=document.getElementById('identifier').value.trim();const password=document.getElementById('password').value;let email=identifier;if(!identifier.includes('@')){const digits=identifier.replace(/\D/g,'');if(!digits)return showStatus('Enter a valid email or mobile number.',true);email=digits+'@itech.local'}const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return showStatus(error.message,true);const {data:profile,error:profileError}=await sb.from('profiles').select('role').eq('id',data.user.id).single();if(profileError||!profile){await sb.auth.signOut();return showStatus('Account profile not found.',true)}if(profile.role==='admin')location.href='../admin/dashboard.html';else if(profile.role==='staff')location.href='../staff/dashboard.html';else{const {data:customer}=await sb.from('customers').select('must_change_password').eq('auth_user_id',data.user.id).maybeSingle();if(customer?.must_change_password)location.href='../customer/change-password.html';else location.href='../customer/dashboard.html'}});
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer><script src="../js/site.js"></script>
+</body></html>

@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Staff Management | iTech Admin</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<link href="../css/unified-dashboard.css" rel="stylesheet"/>
+<link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+
+/* =========================================================
+   iTech Staff Management
+   ========================================================= */
+
+:root{
+  --navy:#071c3b;
+  --navy2:#0d2d5a;
+  --blue:#1769e0;
+  --blue2:#3459ff;
+  --orange:#ff8a16;
+  --green:#16a05d;
+  --red:#dc3545;
+  --ink:#10284b;
+  --muted:#71819b;
+  --line:#dfe8f4;
+}
+
+/* ---------- PAGE ---------- */
+
+body{
+  margin:0;
+  background:linear-gradient(
+    135deg,
+    #f6f9fd,
+    #eef4fb
+  );
+  color:var(--ink);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+/* ---------- HEADER ---------- */
+
+.dash-header{
+  min-height:76px !important;
+  background:
+    linear-gradient(
+      100deg,
+      #071c3b,
+      #0d2d5a
+    ) !important;
+
+  box-shadow:
+    0 5px 18px rgba(5,27,57,.18);
+
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.dash-header .brand-logo{
+  max-height:52px;
+  width:auto;
+}
+
+/* ---------- LAYOUT ---------- */
+
+.dash-layout{
+  min-height:calc(100vh - 76px);
+}
+
+.sidebar{
+  width:246px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      #071c3b,
+      #09264d
+    ) !important;
+
+  border:0 !important;
+  color:#fff !important;
+
+  padding:18px !important;
+
+  box-sizing:border-box;
+}
+
+.sidebar nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.sidebar nav a{
+  color:#dce7f8 !important;
+
+  text-decoration:none !important;
+
+  border-radius:11px !important;
+
+  padding:12px 14px !important;
+
+  font-weight:700;
+
+  font-size:14px;
+
+  transition:
+    background .2s ease,
+    transform .2s ease;
+}
+
+.sidebar nav a:hover{
+  background:
+    rgba(255,255,255,.08) !important;
+
+  transform:translateX(2px);
+}
+
+.sidebar nav a.active{
+  background:
+    linear-gradient(
+      90deg,
+      #1769e0,
+      #3459ff
+    ) !important;
+
+  color:#fff !important;
+
+  box-shadow:
+    0 5px 14px rgba(23,105,224,.25);
+}
+
+/* ---------- MAIN ---------- */
+
+.dash-main{
+  max-width:none !important;
+
+  padding:
+    24px
+    28px
+    35px !important;
+}
+
+/* ---------- TOOLBAR ---------- */
+
+.toolbar{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:15px;
+
+  margin-bottom:20px;
+}
+
+.toolbar h1{
+  font-size:30px;
+
+  margin:
+    0
+    0
+    5px;
+}
+
+.eyebrow{
+  color:var(--orange);
+
+  font-weight:900;
+
+  letter-spacing:2px;
+
+  font-size:12px;
+
+  margin-bottom:5px;
+}
+
+/* ---------- CARD ---------- */
+
+.card{
+  background:#fff;
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius:18px;
+
+  padding:20px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(17,50,91,.08);
+
+  margin-bottom:20px;
+}
+
+.card h2{
+  margin-top:0;
+}
+
+/* ---------- FORM ---------- */
+
+.form-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0,1fr)
+    );
+
+  gap:14px;
+}
+
+.field label{
+  display:block;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  margin-bottom:7px;
+
+  color:#39506f;
+}
+
+.field input{
+  width:100%;
+
+  height:45px;
+
+  border:
+    1px solid
+    #d8e2ef;
+
+  border-radius:10px;
+
+  padding:
+    0
+    12px;
+
+  background:#fff;
+
+  color:var(--ink);
+
+  outline:none;
+
+  font-size:14px;
+
+  box-sizing:border-box;
+}
+
+.field input:focus{
+  border-color:#4d83e7;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(23,105,224,.09);
+}
+
+/* ---------- PERMISSIONS ---------- */
+
+.permission-title{
+  margin-top:18px;
+
+  margin-bottom:10px;
+
+  font-weight:900;
+
+  font-size:13px;
+}
+
+.permissions{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0,1fr)
+    );
+
+  gap:9px;
+}
+
+.permission{
+  border:
+    1px solid
+    #dce5f0;
+
+  background:#fbfdff;
+
+  border-radius:10px;
+
+  padding:10px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  display:flex;
+
+  gap:8px;
+
+  align-items:center;
+
+  cursor:pointer;
+
+  transition:.2s ease;
+}
+
+.permission:hover{
+  background:#f2f7ff;
+
+  border-color:#bcd1ee;
+}
+
+.permission input{
+  width:15px;
+  height:15px;
+
+  accent-color:
+    var(--blue);
+}
+
+/* ---------- NOTICE ---------- */
+
+.note{
+  padding:
+    12px
+    14px;
+
+  border-radius:10px;
+
+  background:#fff8ef;
+
+  border:
+    1px solid
+    #ffe2c4;
+
+  color:#8a4a00;
+
+  font-size:12px;
+
+  margin-top:15px;
+
+  line-height:1.5;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.actions{
+  display:flex;
+
+  gap:10px;
+
+  margin-top:16px;
+
+  flex-wrap:wrap;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger{
+  border:0;
+
+  border-radius:10px;
+
+  padding:
+    11px
+    17px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  font-size:13px;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.btn-primary{
+  color:#fff;
+
+  background:
+    linear-gradient(
+      100deg,
+      #1769e0,
+      #3459ff
+    );
+
+  box-shadow:
+    0 6px 16px
+    rgba(23,105,224,.20);
+}
+
+.btn-primary:hover{
+  transform:translateY(-1px);
+}
+
+.btn-secondary{
+  background:#eef5ff;
+
+  color:#164b8f;
+
+  border:
+    1px solid
+    #d9e7f8;
+}
+
+.btn-danger{
+  background:#fff0f0;
+
+  color:#b42318;
+
+  border:
+    1px solid
+    #ffd0d0;
+}
+
+/* ---------- STATUS ---------- */
+
+.status{
+  display:none;
+
+  margin-top:12px;
+
+  padding:
+    12px
+    14px;
+
+  border-radius:10px;
+
+  font-size:13px;
+
+  font-weight:700;
+}
+
+.status.show{
+  display:block;
+}
+
+.status.ok{
+  background:#effbf4;
+
+  color:#087a42;
+
+  border:
+    1px solid
+    #ccefdc;
+}
+
+.status.error{
+  background:#fff0f0;
+
+  color:#b42318;
+
+  border:
+    1px solid
+    #ffd0d0;
+}
+
+/* ---------- TABLE ---------- */
+
+.table-wrap{
+  overflow-x:auto;
+
+  width:100%;
+}
+
+table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  min-width:780px;
+}
+
+th,
+td{
+  text-align:left;
+
+  padding:
+    13px
+    10px;
+
+  border-bottom:
+    1px solid
+    #edf1f6;
+
+  font-size:13px;
+}
+
+th{
+  background:#f7faff;
+
+  color:#526780;
+
+  font-size:11px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.5px;
+
+  font-weight:900;
+}
+
+tbody tr:hover{
+  background:#fafcff;
+}
+
+/* ---------- BADGES ---------- */
+
+.badge{
+  display:inline-flex;
+
+  align-items:center;
+
+  padding:
+    5px
+    10px;
+
+  border-radius:999px;
+
+  font-size:11px;
+
+  font-weight:900;
+
+  text-transform:capitalize;
+}
+
+.badge.active{
+  background:#eafaf0;
+
+  color:#087a42;
+}
+
+.badge.disabled{
+  background:#fff0f0;
+
+  color:#b42318;
+}
+
+/* ---------- ACTIONS ---------- */
+
+.controls{
+  display:flex;
+
+  gap:6px;
+
+  flex-wrap:wrap;
+}
+
+/* ---------- FOOTER ---------- */
+
+.unified-site-footer{
+  width:100% !important;
+
+  margin:
+    32px
+    0
+    0 !important;
+
+  padding:
+    28px
+    20px
+    25px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #071c3b,
+      #0d2d5a
+    ) !important;
+
+  color:#fff;
+
+  border-radius:
+    0 !important;
+
+  display:flex !important;
+
+  flex-direction:column !important;
+
+  align-items:center !important;
+
+  justify-content:center !important;
+
+  text-align:center !important;
+
+  gap:7px !important;
+
+  box-shadow:
+    0 -6px 22px
+    rgba(7,28,59,.10);
+}
+
+.unified-site-footer .footer-logo{
+  width:70px !important;
+
+  height:70px !important;
+
+  object-fit:contain;
+
+  display:block;
+
+  margin:
+    0
+    auto
+    5px !important;
+}
+
+.unified-site-footer p{
+  margin:0 !important;
+
+  line-height:1.45 !important;
+}
+
+.unified-site-footer .footer-address{
+  font-size:12px;
+
+  font-weight:600;
+
+  color:#dce7f8;
+}
+
+.unified-site-footer .footer-contact{
+  font-size:13px;
+
+  font-weight:800;
+
+  color:#fff;
+}
+
+.unified-site-footer .footer-email{
+  font-size:12px;
+
+  color:#dce7f8;
+}
+
+.unified-site-footer .footer-social{
+  font-size:12px;
+
+  font-weight:800;
+
+  color:#ff9a25;
+}
+
+.unified-site-footer .footer-tagline{
+  margin-top:7px !important;
+
+  padding-top:9px;
+
+  width:min(
+    360px,
+    90%
+  );
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.16);
+
+  font-size:12px;
+
+  font-weight:800;
+
+  letter-spacing:.4px;
+
+  color:#fff;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .form-grid{
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0,1fr)
+      );
+  }
+
+  .permissions{
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0,1fr)
+      );
+  }
+
+}
+
+@media(max-width:620px){
+
+  .dash-layout{
+    display:block;
+  }
+
+  .sidebar{
+    display:none !important;
+  }
+
+  .dash-main{
+    width:100% !important;
+
+    padding:
+      15px
+      12px
+      25px !important;
+
+    box-sizing:border-box;
+  }
+
+  .toolbar{
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    margin-bottom:15px;
+  }
+
+  .toolbar h1{
+    font-size:25px;
+  }
+
+  .card{
+    padding:15px;
+
+    border-radius:15px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .permissions{
+    grid-template-columns:1fr;
+  }
+
+  .permission{
+    min-height:40px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
+
+  .actions button{
+    width:100%;
+  }
+
+  .unified-site-footer{
+    margin-top:22px !important;
+
+    padding:
+      25px
+      14px
+      22px !important;
+
+    border-radius:
+      0 !important;
+  }
+
+  .unified-site-footer .footer-logo{
+    width:58px !important;
+
+    height:58px !important;
+  }
+
+}
+
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<body>
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+<header class="dash-header">
+<a class="brand" href="dashboard.html">
+<img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/>
+</a>
+<a class="btn secondary" data-logout="" href="../pages/login.html">
+
+    Logout
+
+  </a>
+</header>
+<!-- =========================================================
+     DASHBOARD LAYOUT
+     ========================================================= -->
+<div class="dash-layout">
+<!-- =========================================================
+     SIDEBAR
+     ========================================================= -->
+<aside class="sidebar">
+<nav>
+<a href="dashboard.html">
+Dashboard
+</a>
+<a href="customers.html">
+Customers
+</a>
+<a href="add-customer.html">
++ Add Customer
+</a>
+<a href="daily-work.html">
+Daily Work
+</a>
+<a href="payments.html">
+Payments
+</a>
+<a href="reports.html">
+Reports
+</a>
+<a href="services.html">
+Services
+</a>
+<a href="products.html">
+Products
+</a>
+<a href="vehicle-insurance.html">
+🚗 Vehicle Insurance
+</a>
+<a href="enquiries.html">
+Enquiries
+</a>
+<a href="amc.html">
+AMC
+</a>
+<a href="offers.html">
+Offers
+</a>
+<a href="works.html">
+Our Works
+</a>
+<a href="messages.html">
+Messages
+</a>
+<a class="active" href="staff-management.html">
+
+👥 Staff Management
+
+</a>
+</nav>
+</aside>
+<!-- =========================================================
+     MAIN
+     ========================================================= -->
+<main class="dash-main">
+<!-- PAGE TITLE -->
+<div class="toolbar">
+<div>
+<p class="eyebrow">
+TEAM CONTROL
+</p>
+<h1>
+Staff Management
+</h1>
+<p class="muted">
+Create staff accounts and control which modules they can access.
+</p>
+</div>
+</div>
+<!-- =========================================================
+     ADD STAFF
+     ========================================================= -->
+<section class="card">
+<h2>
+Add Staff
+</h2>
+<div class="form-grid">
+<!-- STAFF NAME -->
+<div class="field">
+<label>
+Staff Name *
+</label>
+<input autocomplete="name" id="fullName" placeholder="Enter staff name" type="text"/>
+</div>
+<!-- MOBILE -->
+<div class="field">
+<label>
+Mobile *
+</label>
+<input autocomplete="tel" id="mobile" inputmode="numeric" placeholder="10 digit mobile number" type="tel"/>
+</div>
+<!-- EMAIL -->
+<div class="field">
+<label>
+Login Email *
+</label>
+<input autocomplete="email" id="email" placeholder="staff@example.com" type="email"/>
+</div>
+</div>
+<!-- PERMISSION TITLE -->
+<div class="permission-title">
+
+Module Permissions
+
+</div>
+<!-- PERMISSIONS -->
+<div class="permissions" id="permissions">
+</div>
+<!-- NOTICE -->
+<div class="note">
+<b>Default Password: 12345</b>
+<br/>
+
+Ask the staff member to change the password after first login.
+
+<br/>
+
+Staff Management permission is never granted to staff.
+
+</div>
+<!-- BUTTONS -->
+<div class="actions">
+<button class="btn-primary" id="createBtn" type="button">
+
+＋ Create Staff
+
+</button>
+<button class="btn-secondary" id="resetBtn" type="button">
+
+Clear
+
+</button>
+</div>
+<!-- STATUS -->
+<div class="status" id="status">
+</div>
+</section>
+<!-- =========================================================
+     STAFF LIST
+     ========================================================= -->
+<section class="card">
+<div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+  ">
+<h2 style="margin:0">
+
+Staff Accounts
+
+</h2>
+<button class="btn-secondary" id="refreshBtn" type="button">
+
+↻ Refresh
+
+</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Mobile
+</th>
+<th>
+Email
+</th>
+<th>
+Status
+</th>
+<th>
+Permissions
+</th>
+<th>
+Actions
+</th>
+</tr>
+</thead>
+<tbody id="staffBody">
+<tr>
+<td class="muted" colspan="6">
+
+Loading...
+
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<!-- =========================================================
+     SUPABASE
+     ========================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<!-- =========================================================
+     STAFF MANAGEMENT JAVASCRIPT
+     ========================================================= -->
+<script>
+
+(async()=>{
+
+/* ---------------------------------------------------------
+   ADMIN CHECK
+   --------------------------------------------------------- */
+
+const adminOK = await requireAdmin();
+
+if(!adminOK){
+
+  return;
+
+}
+
+
+/* ---------------------------------------------------------
+   SHORT SELECTOR
+   --------------------------------------------------------- */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* ---------------------------------------------------------
+   MODULE LIST
+   --------------------------------------------------------- */
+
+const modules = [
+
+  ["dashboard","Dashboard"],
+
+  ["customers","Customers"],
+
+  ["add-customer","Add Customer"],
+
+  ["daily-work","Daily Work"],
+
+  ["payments","Payments"],
+
+  ["reports","Reports"],
+
+  ["services","Services"],
+
+  ["products","Products"],
+
+  ["vehicle-insurance","Vehicle Insurance"],
+
+  ["enquiries","Enquiries"],
+
+  ["amc","AMC"],
+
+  ["offers","Offers"],
+
+  ["works","Our Works"],
+
+  ["messages","Messages"]
+
+];
+
+
+/* ---------------------------------------------------------
+   CREATE PERMISSION CHECKBOXES
+   --------------------------------------------------------- */
+
+$("permissions").innerHTML =
+
+modules.map(([key,label]) => `
+
+<label class="permission">
+
+<input
+  type="checkbox"
+  value="${key}"
+  checked>
+
+<span>
+${label}
+</span>
+
+</label>
+
+`).join("");
+
+
+/* ---------------------------------------------------------
+   STATUS MESSAGE
+   --------------------------------------------------------- */
+
+function showMessage(message,error=false){
+
+  const box = $("status");
+
+  box.textContent = message;
+
+  box.className =
+    "status show " +
+    (
+      error
+      ? "error"
+      : "ok"
+    );
+
+  clearTimeout(box._timer);
+
+  box._timer = setTimeout(()=>{
+
+    box.classList.remove("show");
+
+  },5000);
+
+}
+
+
+/* ---------------------------------------------------------
+   ESCAPE HTML
+   --------------------------------------------------------- */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    character => ({
+
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+
+    }[character])
+
+  );
+
+}
+
+
+/* ---------------------------------------------------------
+   GET SUPABASE URL
+   --------------------------------------------------------- */
+
+function getSupabaseURL(){
+
+  if(
+    window.APP_CONFIG &&
+    window.APP_CONFIG.SUPABASE_URL
+  ){
+
+    return window.APP_CONFIG.SUPABASE_URL;
+
+  }
+
+  throw new Error(
+    "Supabase configuration not found. Please check js/config.js."
+  );
+
+}
+
+
+/* ---------------------------------------------------------
+   CALL EDGE FUNCTION
+   --------------------------------------------------------- */
+
+async function callStaffFunction(
+  action,
+  payload={}
+){
+
+  /* Get current session */
+
+  const {
+    data:{
+      session
+    }
+  } = await sb.auth.getSession();
+
+
+  if(
+    !session ||
+    !session.access_token
+  ){
+
+    throw new Error(
+      "Admin login session expired. Please login again."
+    );
+
+  }
+
+
+  /* IMPORTANT:
+     Uses APP_CONFIG instead of undefined SUPABASE_URL
+  */
+
+  const supabaseURL =
+    getSupabaseURL();
+
+
+  const functionURL =
+    `${supabaseURL}/functions/v1/staff-management`;
+
+
+  const response =
+    await fetch(
+      functionURL,
+      {
+
+        method:"POST",
+
+        headers:{
+
+          "Authorization":
+            "Bearer " +
+            session.access_token,
+
+          "Content-Type":
+            "application/json",
+
+          "apikey":
+            window.APP_CONFIG.SUPABASE_ANON_KEY || ""
+
+        },
+
+        body:
+          JSON.stringify({
+
+            action,
+
+            ...payload
+
+          })
+
+      }
+    );
+
+
+  const result =
+    await response
+      .json()
+      .catch(
+        () => ({})
+      );
+
+
+  if(
+    !response.ok ||
+    !result.success
+  ){
+
+    throw new Error(
+
+      result.message ||
+      result.error ||
+      "Staff management request failed."
+
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* ---------------------------------------------------------
+   LOAD STAFF
+   --------------------------------------------------------- */
+
+async function loadStaff(){
+
+  $("staffBody").innerHTML = `
+
+<tr>
+
+<td
+  colspan="6"
+  class="muted">
+
+Loading staff accounts...
+
+</td>
+
+</tr>
+
+`;
+
+
+  try{
+
+    const result =
+      await callStaffFunction(
+        "list"
+      );
+
+
+    const staff =
+      result.staff || [];
+
+
+    if(!staff.length){
+
+      $("staffBody").innerHTML = `
+
+<tr>
+
+<td
+  colspan="6"
+  class="muted">
+
+No staff accounts found.
+
+</td>
+
+</tr>
+
+`;
+
+      return;
+
+    }
+
+
+    $("staffBody").innerHTML =
+
+    staff.map(staffMember => {
+
+      const permissions =
+        Array.isArray(
+          staffMember.permissions
+        )
+        ? staffMember.permissions.length
+        : 0;
+
+
+      const status =
+        staffMember.status ||
+        "active";
+
+
+      return `
+
+<tr>
+
+<td>
+
+<b>
+${escapeHTML(
+  staffMember.full_name ||
+  "Staff"
+)}
+</b>
+
+</td>
+
+
+<td>
+
+${escapeHTML(
+  staffMember.mobile ||
+  "-"
+)}
+
+</td>
+
+
+<td>
+
+${escapeHTML(
+  staffMember.email ||
+  "-"
+)}
+
+</td>
+
+
+<td>
+
+<span
+  class="badge ${
+    status === "active"
+    ? "active"
+    : "disabled"
+  }">
+
+${escapeHTML(status)}
+
+</span>
+
+</td>
+
+
+<td>
+
+${permissions}
+modules
+
+</td>
+
+
+<td>
+
+<div class="controls">
+
+
+<button
+  class="btn-secondary"
+  type="button"
+  data-toggle="${escapeHTML(
+    staffMember.id
+  )}">
+
+${
+  status === "active"
+  ? "Disable"
+  : "Enable"
+}
+
+</button>
+
+
+<button
+  class="btn-danger"
+  type="button"
+  data-delete="${escapeHTML(
+    staffMember.id
+  )}">
+
+Delete
+
+</button>
+
+
+</div>
+
+</td>
+
+</tr>
+
+`;
+
+    }).join("");
+
+
+    /* -----------------------------------------------------
+       ENABLE / DISABLE
+       ----------------------------------------------------- */
+
+    document
+      .querySelectorAll(
+        "[data-toggle]"
+      )
+      .forEach(button => {
+
+        button.onclick =
+        async()=>{
+
+          try{
+
+            button.disabled =
+              true;
+
+
+            await callStaffFunction(
+              "toggle",
+              {
+                user_id:
+                  button.dataset.toggle
+              }
+            );
+
+
+            showMessage(
+              "Staff status updated successfully."
+            );
+
+
+            await loadStaff();
+
+          }
+          catch(error){
+
+            showMessage(
+              error.message,
+              true
+            );
+
+          }
+          finally{
+
+            button.disabled =
+              false;
+
+          }
+
+        };
+
+      });
+
+
+    /* -----------------------------------------------------
+       DELETE
+       ----------------------------------------------------- */
+
+    document
+      .querySelectorAll(
+        "[data-delete]"
+      )
+      .forEach(button => {
+
+        button.onclick =
+        async()=>{
+
+          const confirmed =
+            confirm(
+              "Are you sure you want to delete this staff account?"
+            );
+
+
+          if(!confirmed){
+
+            return;
+
+          }
+
+
+          try{
+
+            button.disabled =
+              true;
+
+
+            await callStaffFunction(
+              "delete",
+              {
+                user_id:
+                  button.dataset.delete
+              }
+            );
+
+
+            showMessage(
+              "Staff account deleted successfully."
+            );
+
+
+            await loadStaff();
+
+          }
+          catch(error){
+
+            showMessage(
+              error.message,
+              true
+            );
+
+          }
+          finally{
+
+            button.disabled =
+              false;
+
+          }
+
+        };
+
+      });
+
+
+  }
+  catch(error){
+
+    $("staffBody").innerHTML = `
+
+<tr>
+
+<td
+  colspan="6"
+  class="muted">
+
+Unable to load staff accounts.
+
+</td>
+
+</tr>
+
+`;
+
+    showMessage(
+      error.message,
+      true
+    );
+
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   CREATE STAFF
+   --------------------------------------------------------- */
+
+$("createBtn").onclick =
+async()=>{
+
+  const fullName =
+    $("fullName")
+      .value
+      .trim();
+
+
+  const mobile =
+    $("mobile")
+      .value
+      .trim();
+
+
+  const email =
+    $("email")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const permissions =
+
+    [
+      ...document.querySelectorAll(
+        "#permissions input:checked"
+      )
+    ]
+
+    .map(
+      checkbox =>
+        checkbox.value
+    );
+
+
+  /* Validation */
+
+  if(!fullName){
+
+    showMessage(
+      "Please enter staff name.",
+      true
+    );
+
+    $("fullName").focus();
+
+    return;
+
+  }
+
+
+  if(!mobile){
+
+    showMessage(
+      "Please enter mobile number.",
+      true
+    );
+
+    $("mobile").focus();
+
+    return;
+
+  }
+
+
+  if(!email){
+
+    showMessage(
+      "Please enter login email.",
+      true
+    );
+
+    $("email").focus();
+
+    return;
+
+  }
+
+
+  /* Mobile validation */
+
+  const mobileClean =
+    mobile.replace(
+      /\D/g,
+      ""
+    );
+
+
+  if(
+    mobileClean.length < 10
+  ){
+
+    showMessage(
+      "Please enter a valid mobile number.",
+      true
+    );
+
+    $("mobile").focus();
+
+    return;
+
+  }
+
+
+  /* Email validation */
+
+  const emailPattern =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+  if(
+    !emailPattern.test(email)
+  ){
+
+    showMessage(
+      "Please enter a valid email address.",
+      true
+    );
+
+    $("email").focus();
+
+    return;
+
+  }
+
+
+  /* Disable button */
+
+  const button =
+    $("createBtn");
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "Creating Staff...";
+
+
+  try{
+
+    await callStaffFunction(
+
+      "create",
+
+      {
+
+        full_name:
+          fullName,
+
+        mobile:
+          mobileClean,
+
+        email:
+          email,
+
+        password:
+          "12345",
+
+        permissions:
+          permissions
+
+      }
+
+    );
+
+
+    showMessage(
+
+      "Staff account created successfully. Default password is 12345."
+
+    );
+
+
+    /* Clear fields */
+
+    $("fullName").value =
+      "";
+
+    $("mobile").value =
+      "";
+
+    $("email").value =
+      "";
+
+
+    /* Reset permissions */
+
+    document
+      .querySelectorAll(
+        "#permissions input"
+      )
+      .forEach(
+        checkbox =>
+          checkbox.checked = true
+      );
+
+
+    /* Reload staff list */
+
+    await loadStaff();
+
+
+  }
+  catch(error){
+
+    showMessage(
+      error.message,
+      true
+    );
+
+  }
+  finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "＋ Create Staff";
+
+  }
+
+};
+
+
+/* ---------------------------------------------------------
+   CLEAR BUTTON
+   --------------------------------------------------------- */
+
+$("resetBtn").onclick =
+()=>{
+
+  $("fullName").value =
+    "";
+
+  $("mobile").value =
+    "";
+
+  $("email").value =
+    "";
+
+
+  document
+    .querySelectorAll(
+      "#permissions input"
+    )
+    .forEach(
+      checkbox =>
+        checkbox.checked = true
+    );
+
+
+  $("status")
+    .className =
+      "status";
+
+};
+
+
+/* ---------------------------------------------------------
+   REFRESH
+   --------------------------------------------------------- */
+
+$("refreshBtn").onclick =
+async()=>{
+
+  await loadStaff();
+
+};
+
+
+/* ---------------------------------------------------------
+   ACTIVE SIDEBAR
+   --------------------------------------------------------- */
+
+(() => {
+
+  const current =
+    location.pathname
+      .split("/")
+      .pop() ||
+    "dashboard.html";
+
+
+  document
+    .querySelectorAll(
+      ".sidebar nav a"
+    )
+    .forEach(anchor => {
+
+      const href =
+        (
+          anchor.getAttribute(
+            "href"
+          ) || ""
+        )
+        .split("?")[0]
+        .split("#")[0];
+
+
+      const file =
+        href
+          .split("/")
+          .pop();
+
+
+      if(
+        file === current
+      ){
+
+        anchor.classList.add(
+          "active"
+        );
+
+      }
+
+    });
+
+})();
+
+
+/* ---------------------------------------------------------
+   INITIAL LOAD
+   --------------------------------------------------------- */
+
+await loadStaff();
+
+
+})();
+</script>
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Reports | iTech Admin</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/dashboard.css"><link rel="stylesheet" href="../css/unified-dashboard.css">    <link rel="stylesheet" href="../css/dashboard-shell.css">
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+}
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+</style>
+<link rel="stylesheet" href="../css/ui-enhancements.css">
+  <link rel="stylesheet" href="../../css/mobile-app-ready.css">
+</head><body>
+<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></header>
+<div class="dash-layout"><aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a>
+<a href="services.html">Services</a><a href="products.html">Products</a><a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a><a href="offers.html">Offers</a><a href="works.html">Our Works</a><a href="messages.html">Messages</a>
+</nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">REPORTING</p><h1>Daily Report</h1><p class="muted">Each entry remains separate — 30 + 30 + 30 is shown as three transactions.</p></div><button id="whatsapp" class="btn primary">Today’s WhatsApp</button></div>
+<div class="kpis"><div class="kpi"><b>E-Filing</b><div id="filing" class="value">₹0</div></div><div class="kpi"><b>E-Payment</b><div id="epay" class="value">₹0</div></div><div class="kpi"><b>Print</b><div id="print" class="value">₹0</div></div><div class="kpi"><b>Total</b><div id="total" class="value">₹0</div></div></div>
+<section class="panel" style="margin-top:20px">
+<div class="table-scroll"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>E-Filing</th><th>E-Payment</th><th>Print</th><th>Scanning</th><th>Other</th><th>Total</th></tr></thead><tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody></table></div>
+</section>
+<section class="panel" style="margin-top:20px">
+<h2>Service Line Items</h2>
+<p class="muted">Each selected service is shown separately with base price, GST and final amount.</p>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Service</th><th>Base</th><th>GST</th><th>Total</th></tr></thead><tbody id="serviceRows"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+</section>
+<section class="panel" style="margin-top:20px"><h2>Today's Customers</h2><div id="todayCustomers" class="chip-list"></div></section><div data-status class="status"></div>
+</main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+<script>
+(async()=>{
+ const ok=await requireStaff(); if(!ok)return;
+ const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});
+ const {data,error}=await sb.from("today_work_report").select("*").order("created_at",{ascending:true});
+ if(error)return showStatus(error.message,true);
+ const sum=k=>(data||[]).reduce((s,r)=>s+Number(r[k]||0),0);
+
+ const entryIds=(data||[]).map(r=>r.id).filter(Boolean);
+ let serviceLines=[];
+ if(entryIds.length){
+   const svc=await sb.from("daily_work_entry_services")
+     .select("work_entry_id,service_name,base_amount,gst_percent,gst_amount,total_amount,created_at")
+     .in("work_entry_id",entryIds)
+     .order("created_at",{ascending:true});
+   if(svc.error)return showStatus(svc.error.message,true);
+   serviceLines=svc.data||[];
+ }
+ const entryMap=new Map((data||[]).map(r=>[String(r.id),r]));
+ document.getElementById("filing").textContent=money(sum("e_filing"));document.getElementById("epay").textContent=money(sum("e_payment"));document.getElementById("print").textContent=money(sum("print_amount"));document.getElementById("total").textContent=money(sum("total_amount"));
+ document.getElementById("rows").innerHTML=(data||[]).map(r=>`<tr><td>${new Date(r.created_at).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})}</td><td><b>${r.customer_name}</b><small>${r.mobile||""}</small></td><td>${r.e_filing?money(r.e_filing):"—"}</td><td>${r.e_payment?money(r.e_payment):"—"}</td><td>${r.print_amount?money(r.print_amount):"—"}</td><td>${r.scanning?money(r.scanning):"—"}</td><td>${r.other_works?money(r.other_works):"—"}</td><td><b>${money(r.total_amount)}</b></td></tr>`).join("")||'<tr><td colspan="8">No work entries today.</td></tr>';
+
+ document.getElementById("serviceRows").innerHTML=serviceLines.map(s=>{
+   const r=entryMap.get(String(s.work_entry_id));
+   return `<tr><td>${r?.created_at ? new Date(r.created_at).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "—"}</td><td><b>${r?.customer_name||"—"}</b></td><td><b>${s.service_name}</b><small>${Number(s.gst_percent||0)>0 ? Number(s.gst_percent)+"% GST" : "No GST"}</small></td><td>${money(s.base_amount)}</td><td>${Number(s.gst_amount||0)?money(s.gst_amount):"—"}</td><td><b>${money(s.total_amount)}</b></td></tr>`;
+ }).join("")||'<tr><td colspan="6">No service line items today.</td></tr>';
+ const unique=[...new Map((data||[]).map(r=>[r.customer_id,r])).values()];
+ document.getElementById("todayCustomers").innerHTML=unique.map(r=>`<span class="chip">${r.customer_name}</span>`).join("")||'<span class="muted">No customers today.</span>';
+ document.getElementById("whatsapp").onclick=()=>{
+   const lines=(data||[]).map(r=>`${r.customer_name} — ₹${Number(r.total_amount).toFixed(2)}`).join("%0A");
+   const msg=`iTech IT Solutions%0A%0AToday's work%3A%0A${lines}%0A%0ATotal%3A ₹${sum("total_amount").toFixed(2)}`;
+   window.open("https://wa.me/?text="+msg,"_blank");
+ };
+})();
+</script>
+<footer class="unified-site-footer">
+  <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+<script data-dashboard-active-nav>
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+
+</body></html>

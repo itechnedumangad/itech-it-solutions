@@ -331,13 +331,86 @@ body{
   }
   .unified-site-footer .footer-logo{width:58px!important;height:58px!important}
 }
+
+/* ===== Notification Center ===== */
+.notification-wrap{position:relative}
+.notification-btn{
+  position:relative;width:44px;height:44px;border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;background:rgba(255,255,255,.10);color:#fff;font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s ease
+}
+.notification-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.notification-count{
+  position:absolute;right:-4px;top:-5px;min-width:20px;height:20px;padding:0 5px;
+  border-radius:999px;background:#ff5b35;color:#fff;border:2px solid #071c3b;
+  font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center
+}
+.notification-panel{
+  position:absolute;right:0;top:54px;width:380px;max-width:calc(100vw - 24px);
+  background:#fff;border:1px solid #dfe8f4;border-radius:16px;
+  box-shadow:0 18px 45px rgba(7,29,61,.22);overflow:hidden;display:none;
+  z-index:9999;animation:notificationDrop .18s ease
+}
+.notification-panel.show{display:block}
+@keyframes notificationDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notification-head{
+  padding:14px 15px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #e8eef6;background:#f8fbff
+}
+.notification-head strong{color:#10284b;font-size:15px}
+.notification-head button{
+  border:0;background:transparent;color:#1769e0;font-size:11px;font-weight:800;cursor:pointer
+}
+.notification-list{max-height:390px;overflow-y:auto}
+.notification-item{
+  display:flex;gap:11px;padding:13px 14px;border-bottom:1px solid #edf1f6;
+  cursor:pointer;transition:.18s ease
+}
+.notification-item:hover{background:#f5f9ff}
+.notification-item.unread{background:#f1f7ff}
+.notification-icon{
+  width:38px;height:38px;flex:0 0 38px;border-radius:11px;display:flex;
+  align-items:center;justify-content:center;background:#eaf2ff;font-size:18px
+}
+.notification-content{min-width:0;flex:1}
+.notification-title{color:#10284b;font-size:13px;font-weight:850}
+.notification-message{margin-top:3px;color:#71819b;font-size:11px;line-height:1.45}
+.notification-time{margin-top:4px;color:#9aa8ba;font-size:10px}
+.notification-empty{padding:35px 15px;text-align:center;color:#71819b;font-size:12px}
+@media(max-width:620px){
+  .notification-panel{position:fixed;top:70px;left:10px;right:10px;width:auto;max-width:none}
+  .notification-btn{width:40px;height:40px}
+  .header-actions{gap:6px}
+  .user-chip{display:none}
+}
+
 </style>
 </head>
 <body>
 
 <header class="dash-header">
-  <a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"> </a>
+  <a class="brand" href="dashboard.html">
+    <img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
+  </a>
+
   <div class="header-actions">
+    <div class="notification-wrap">
+      <button type="button" id="notificationBtn" class="notification-btn" aria-label="Notifications" title="Notifications">
+        🔔
+        <span id="notificationCount" class="notification-count" style="display:none">0</span>
+      </button>
+
+      <div id="notificationPanel" class="notification-panel">
+        <div class="notification-head">
+          <strong>Notifications</strong>
+          <button type="button" id="markAllRead">Mark all read</button>
+        </div>
+        <div id="notificationList" class="notification-list">
+          <div class="notification-empty">Loading notifications…</div>
+        </div>
+      </div>
+    </div>
+
     <span class="user-chip" data-admin-name>Admin</span>
     <a class="btn secondary" href="../pages/login.html" data-logout>Logout</a>
   </div>
@@ -359,7 +432,6 @@ body{
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
 <a href="messages.html">Messages</a>
-<a href="staff-management.html">👥 Staff Management</a>
 </nav></aside>
 
 <main class="dash-main">
@@ -485,6 +557,148 @@ body{
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
 <script src="../js/auth.js"></script>
+
+<script>
+/* ===== iTech Admin Notification Center ===== */
+(async()=>{
+  const btn=document.getElementById("notificationBtn");
+  const panel=document.getElementById("notificationPanel");
+  const list=document.getElementById("notificationList");
+  const count=document.getElementById("notificationCount");
+  const markAll=document.getElementById("markAllRead");
+  if(!btn||!panel||!list)return;
+
+  let rows=[];
+
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+
+  const iconFor=type=>({
+    customer:"👤",payment:"💰",work:"⚡",insurance:"🚗",
+    enquiry:"📩",service:"🛠️",product:"📦",staff:"👨‍💼",general:"🔔"
+  })[String(type||"general").toLowerCase()]||"🔔";
+
+  const timeAgo=value=>{
+    const d=new Date(value), now=new Date();
+    const sec=Math.max(0,Math.floor((now-d)/1000));
+    if(sec<60)return"Just now";
+    const min=Math.floor(sec/60);
+    if(min<60)return`${min} min ago`;
+    const hrs=Math.floor(min/60);
+    if(hrs<24)return`${hrs} hour${hrs>1?"s":""} ago`;
+    const days=Math.floor(hrs/24);
+    if(days<7)return`${days} day${days>1?"s":""} ago`;
+    return d.toLocaleDateString("en-IN");
+  };
+
+  const targetPath=page=>{
+    if(!page)return"";
+    if(/^https?:\/\//i.test(page))return page;
+    return String(page).replace(/^\/+/,"").replace(/^admin\//,"");
+  };
+
+  function render(){
+    const unread=rows.filter(x=>!x.is_read).length;
+    if(unread){
+      count.textContent=unread>99?"99+":String(unread);
+      count.style.display="flex";
+    }else{
+      count.style.display="none";
+    }
+
+    if(!rows.length){
+      list.innerHTML='<div class="notification-empty">🔔<br><span style="display:block;margin-top:7px">No notifications</span></div>';
+      return;
+    }
+
+    list.innerHTML=rows.map(n=>`
+      <div class="notification-item ${n.is_read?"":"unread"}"
+           data-id="${esc(n.id)}"
+           data-target="${esc(targetPath(n.target_page))}">
+        <div class="notification-icon">${iconFor(n.type)}</div>
+        <div class="notification-content">
+          <div class="notification-title">${esc(n.title)}</div>
+          <div class="notification-message">${esc(n.message||"")}</div>
+          <div class="notification-time">${timeAgo(n.created_at)}</div>
+        </div>
+      </div>
+    `).join("");
+
+    list.querySelectorAll(".notification-item").forEach(item=>{
+      item.addEventListener("click",async()=>{
+        const id=item.dataset.id;
+        const target=item.dataset.target;
+
+        await sb.from("notifications").update({is_read:true}).eq("id",id);
+
+        if(target){
+          window.location.href=target;
+        }else{
+          await load();
+        }
+      });
+    });
+  }
+
+  async function load(){
+    try{
+      const r=await sb.from("notifications")
+        .select("id,user_id,role,type,title,message,target_page,reference_id,is_read,created_at")
+        .or("role.eq.admin,role.eq.all")
+        .order("created_at",{ascending:false})
+        .limit(50);
+
+      if(r.error){
+        console.error("Notification load error:",r.error);
+        list.innerHTML='<div class="notification-empty">Unable to load notifications.</div>';
+        return;
+      }
+
+      rows=r.data||[];
+      render();
+    }catch(e){
+      console.error("Notification error:",e);
+    }
+  }
+
+  btn.addEventListener("click",e=>{
+    e.stopPropagation();
+    panel.classList.toggle("show");
+  });
+
+  panel.addEventListener("click",e=>e.stopPropagation());
+
+  document.addEventListener("click",()=>{
+    panel.classList.remove("show");
+  });
+
+  markAll.addEventListener("click",async()=>{
+    const unreadIds=rows.filter(x=>!x.is_read).map(x=>x.id);
+    if(!unreadIds.length)return;
+
+    const r=await sb.from("notifications")
+      .update({is_read:true})
+      .in("id",unreadIds);
+
+    if(r.error){
+      console.error("Mark all read error:",r.error);
+      return;
+    }
+    await load();
+  });
+
+  sb.channel("admin-notifications")
+    .on("postgres_changes",
+      {event:"*",schema:"public",table:"notifications"},
+      ()=>load()
+    )
+    .subscribe();
+
+  await load();
+})();
+</script>
+
 
 <script>
 (async()=>{

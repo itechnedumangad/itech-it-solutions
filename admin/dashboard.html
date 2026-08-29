@@ -990,9 +990,18 @@ body{
   /* ===== WhatsApp Payment Reminders ===== */
   function normalizePhone(value){
     let p=String(value||"").replace(/\D/g,"");
-    if(p.startsWith("0")) p=p.slice(1);
-    if(p.length===10) p="91"+p;
-    return p;
+    if(p.length===11 && p.startsWith("0")) p=p.slice(1);
+    if(p.length===12 && p.startsWith("91")) p=p.slice(2);
+    if(!/^[6-9]\d{9}$/.test(p)) return "";
+    return "91"+p;
+  }
+
+  function getValidWhatsAppNumber(c){
+    const whatsapp=normalizePhone(c.whatsapp);
+    if(whatsapp) return whatsapp;
+    const mobile=normalizePhone(c.mobile);
+    if(mobile) return mobile;
+    return "";
   }
 
   function buildPaymentMessage(c){
@@ -1013,9 +1022,10 @@ Your Trust Our Service`;
   }
 
   function openWhatsApp(c){
-    const phone=normalizePhone(c.mobile||c.whatsapp);
-    if(!phone){ status("No valid WhatsApp/mobile number for "+(c.full_name||"this customer"),true); return; }
+    const phone=getValidWhatsAppNumber(c);
+    if(!phone) return false;
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+    return true;
   }
 
   function renderWaList(el,rows,emptyText){
@@ -1081,7 +1091,23 @@ Your Trust Our Service`;
       renderWaList(todayList,todayRows,"No customer activity recorded today.");
       renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
 
-      $("waSendTodayAll").onclick=()=>todayRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendTodayAll").onclick=()=>{
+        let processed=0, skipped=0;
+        const validCustomers=[];
+        todayRows.forEach(c=>{
+          if(getValidWhatsAppNumber(c)) validCustomers.push(c);
+          else skipped++;
+        });
+        validCustomers.forEach((c,i)=>setTimeout(()=>{
+          if(openWhatsApp(c)) processed++;
+          if(i===validCustomers.length-1){
+            setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),300);
+          }
+        },i*700));
+        if(validCustomers.length===0){
+          status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
+        }
+      };
       $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
       $("waRefresh").onclick=loadWhatsAppReminders;
     }catch(err){

@@ -1,9 +1,25 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Customers | iTech Admin</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<title>Customers | iTech Admin</title>
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<link rel="stylesheet" href="../css/unified-dashboard.css">
+<link rel="stylesheet" href="../css/dashboard-shell.css">
+<link rel="stylesheet" href="../css/ui-enhancements.css">
+<link rel="stylesheet" href="../css/mobile-app-ready.css">
+<link rel="stylesheet" href="../css/itech-final-ui.css">
+
 <style>
-/* ===== Unified iTech Footer - ordered layout ===== */
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
 .unified-site-footer{
   width:100%;
   margin-top:32px;
@@ -19,6 +35,7 @@
   gap:7px;
   box-shadow:0 -6px 22px rgba(7,28,59,.10);
 }
+
 .unified-site-footer .footer-logo{
   width:58px;
   height:58px;
@@ -26,29 +43,35 @@
   display:block;
   margin:0 auto 4px;
 }
+
 .unified-site-footer p{
   margin:0;
   line-height:1.45;
 }
+
 .unified-site-footer .footer-address{
   font-size:12px;
   font-weight:600;
   color:#dce7f8;
 }
+
 .unified-site-footer .footer-contact{
   font-size:13px;
   font-weight:800;
   color:#fff;
 }
+
 .unified-site-footer .footer-email{
   font-size:12px;
   color:#dce7f8;
 }
+
 .unified-site-footer .footer-social{
   font-size:12px;
   font-weight:800;
   color:#ff9a25;
 }
+
 .unified-site-footer .footer-tagline{
   margin-top:7px;
   padding-top:9px;
@@ -59,113 +82,1713 @@
   letter-spacing:.4px;
   color:#fff;
 }
+
 @media(max-width:620px){
   .unified-site-footer{
     margin-top:22px;
     padding:24px 14px 20px;
     border-radius:14px 14px 0 0;
   }
+
   .unified-site-footer .footer-logo{
-    width:52px;height:52px;
+    width:52px;
+    height:52px;
   }
 }
+
+
+/* =========================================================
+   CUSTOMER EDIT MODAL
+========================================================= */
+
+.customer-edit-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(5,20,43,.62);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+
+.customer-edit-overlay.open{
+  display:flex;
+  animation:editFade .18s ease;
+}
+
+@keyframes editFade{
+  from{
+    opacity:0;
+  }
+  to{
+    opacity:1;
+  }
+}
+
+.customer-edit-modal{
+  width:min(680px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:22px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+  animation:editUp .22s ease;
+}
+
+@keyframes editUp{
+  from{
+    transform:translateY(18px) scale(.98);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+}
+
+.customer-edit-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:20px 22px;
+  background:linear-gradient(135deg,#071c3b,#10376c);
+  color:#fff;
+}
+
+.customer-edit-header h2{
+  margin:0;
+  font-size:20px;
+}
+
+.customer-edit-header small{
+  display:block;
+  margin-top:4px;
+  color:#cbdaf0;
+}
+
+.customer-edit-close{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  font-size:23px;
+  cursor:pointer;
+}
+
+.customer-edit-body{
+  padding:22px;
+}
+
+.customer-edit-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.customer-edit-field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.customer-edit-field.full{
+  grid-column:1/-1;
+}
+
+.customer-edit-field label{
+  font-size:13px;
+  font-weight:800;
+  color:#10284b;
+}
+
+.customer-edit-field input,
+.customer-edit-field textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px 13px;
+  border:1px solid #d7e2ef;
+  border-radius:11px;
+  outline:none;
+  font-size:14px;
+  color:#10284b;
+  background:#fff;
+}
+
+.customer-edit-field input:focus,
+.customer-edit-field textarea:focus{
+  border-color:#3165f5;
+  box-shadow:0 0 0 3px rgba(49,101,245,.10);
+}
+
+.customer-edit-field input[readonly]{
+  background:#f4f7fb;
+  color:#64748b;
+}
+
+.customer-edit-note{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:11px;
+  background:#fff8ed;
+  border:1px solid #ffe0ae;
+  color:#8a4b00;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.customer-edit-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+  padding-top:17px;
+  border-top:1px solid #e8eef5;
+}
+
+.customer-edit-actions button{
+  min-width:120px;
+}
+
+.edit-customer-btn{
+  white-space:nowrap;
+}
+
+@media(max-width:650px){
+
+  .customer-edit-overlay{
+    padding:10px;
+    align-items:flex-end;
+  }
+
+  .customer-edit-modal{
+    width:100%;
+    max-height:94vh;
+    border-radius:20px 20px 0 0;
+  }
+
+  .customer-edit-grid{
+    grid-template-columns:1fr;
+    gap:13px;
+  }
+
+  .customer-edit-field.full{
+    grid-column:auto;
+  }
+
+  .customer-edit-body{
+    padding:18px;
+  }
+
+  .customer-edit-header{
+    padding:17px 18px;
+  }
+
+  .customer-edit-actions{
+    flex-direction:column-reverse;
+  }
+
+  .customer-edit-actions button{
+    width:100%;
+  }
+
+  .table-scroll{
+    overflow-x:auto;
+  }
+
+  .data-table{
+    min-width:780px;
+  }
+}
+
+
+/* =========================================================
+   SUCCESS / ERROR MESSAGE
+========================================================= */
+
+.edit-message{
+  display:none;
+  margin-top:14px;
+  padding:11px 13px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.edit-message.show{
+  display:block;
+}
+
+.edit-message.success{
+  background:#eafaf1;
+  color:#08783e;
+  border:1px solid #bce8cf;
+}
+
+.edit-message.error{
+  background:#fff0f0;
+  color:#b42318;
+  border:1px solid #ffcaca;
+}
+
 </style>
-<link href="../css/ui-enhancements.css" rel="stylesheet"/>
-<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body>
-<header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><div class="header-actions"><span class="user-chip" data-admin-name="">Admin</span><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></div></header>
-<div class="dash-layout"><aside class="sidebar"><nav>
-<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a><a href="customer-reports.html">Customer Reports</a>
-<a href="services.html">Services</a><a href="products.html">Products</a><a href="enquiries.html">Enquiries</a>
-<a href="amc.html">AMC</a><a href="offers.html">Offers</a><a href="works.html">Our Works</a><a href="activities.html">📋 Staff Activities</a>
-<a href="messages.html">Messages</a>
-</nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER MANAGEMENT</p><h1>Customers</h1></div><a class="btn primary" href="add-customer.html">+ Add Customer</a></div>
-<section class="panel"><div class="search-row"><input id="search" placeholder="Search by customer name or mobile…"/><span class="muted" id="count"></span></div>
-<div class="table-scroll"><table class="data-table"><thead><tr><th>Customer</th><th>Mobile</th><th>Opening</th><th>Total Work</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></section>
-<div class="status" data-status=""></div></main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
-<script>
-(async()=>{
- const ok=await requireStaff(); if(!ok)return;
- const {data,error}=await sb.from("customer_balances").select("*").order("full_name");
- if(error)return showStatus(error.message,true);
- const rows=document.getElementById("rows"), search=document.getElementById("search");
- const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});
- function render(){
-  const q=search.value.toLowerCase();
-  const list=data.filter(c=>(c.full_name||"").toLowerCase().includes(q)||(c.mobile||"").includes(q));
-  document.getElementById("count").textContent=list.length+" customers";
-  rows.innerHTML=list.map(c=>`<tr><td><b>${c.full_name}</b><small>${c.customer_code||""}</small></td><td>${c.mobile}</td><td>${money(c.opening_balance)}</td><td>${money(c.total_work)}</td><td>${money(c.total_paid)}</td><td><b>${money(c.current_balance)}</b></td><td><a class="btn primary" href="customer-profile.html?id=${c.id}">View</a></td></tr>`).join("")||'<tr><td colspan="7">No customers found.</td></tr>';
- }
- search.addEventListener("input",render); render();
-})();
-</script>
-<footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="dash-header">
+
+  <a class="brand" href="dashboard.html">
+    <img
+      alt="iTech IT Solutions"
+      class="brand-logo"
+      src="../assets/itech-logo.png"
+    >
+  </a>
+
+  <div class="header-actions">
+
+    <span
+      class="user-chip"
+      data-admin-name=""
+    >
+      Admin
+    </span>
+
+    <a
+      class="btn secondary"
+      data-logout
+      href="../pages/login.html"
+    >
+      Logout
+    </a>
+
+  </div>
+
+</header>
+
+
+<!-- =====================================================
+     DASHBOARD LAYOUT
+===================================================== -->
+
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <nav>
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a href="customers.html">
+        Customers
+      </a>
+
+      <a href="add-customer.html">
+        + Add Customer
+      </a>
+
+      <a href="daily-work.html">
+        Daily Work
+      </a>
+
+      <a href="payments.html">
+        Payments
+      </a>
+
+      <a href="reports.html">
+        Reports
+      </a>
+
+      <a href="customer-reports.html">
+        Customer Reports
+      </a>
+
+      <a href="services.html">
+        Services
+      </a>
+
+      <a href="products.html">
+        Products
+      </a>
+
+      <a href="enquiries.html">
+        Enquiries
+      </a>
+
+      <a href="amc.html">
+        AMC
+      </a>
+
+      <a href="offers.html">
+        Offers
+      </a>
+
+      <a href="works.html">
+        Our Works
+      </a>
+
+      <a href="activities.html">
+        📋 Staff Activities
+      </a>
+
+      <a href="messages.html">
+        Messages
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- =================================================
+       MAIN
+  ================================================== -->
+
+  <main class="dash-main">
+
+    <div class="toolbar">
+
+      <div>
+
+        <p class="eyebrow">
+          CUSTOMER MANAGEMENT
+        </p>
+
+        <h1>
+          Customers
+        </h1>
+
+      </div>
+
+      <a
+        class="btn primary"
+        href="add-customer.html"
+      >
+        + Add Customer
+      </a>
+
+    </div>
+
+
+    <!-- =================================================
+         CUSTOMER LIST
+    ================================================== -->
+
+    <section class="panel">
+
+      <div class="search-row">
+
+        <input
+          id="search"
+          placeholder="Search by customer name or mobile…"
+          autocomplete="off"
+        >
+
+        <span
+          class="muted"
+          id="count"
+        ></span>
+
+      </div>
+
+
+      <div class="table-scroll">
+
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Customer
+              </th>
+
+              <th>
+                Mobile
+              </th>
+
+              <th>
+                Opening
+              </th>
+
+              <th>
+                Total Work
+              </th>
+
+              <th>
+                Paid
+              </th>
+
+              <th>
+                Balance
+              </th>
+
+              <th>
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="rows">
+
+            <tr>
+
+              <td colspan="7">
+                Loading…
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <div
+      class="status"
+      data-status=""
+    ></div>
+
+  </main>
+
 </div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
+
+
+<!-- =====================================================
+     CUSTOMER EDIT MODAL
+===================================================== -->
+
+<div
+  class="customer-edit-overlay"
+  id="customerEditOverlay"
+>
+
+  <div
+    class="customer-edit-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="editCustomerTitle"
+  >
+
+    <div class="customer-edit-header">
+
+      <div>
+
+        <h2 id="editCustomerTitle">
+          Edit Customer
+        </h2>
+
+        <small>
+          Update customer account details
+        </small>
+
+      </div>
+
+      <button
+        type="button"
+        class="customer-edit-close"
+        id="editClose"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="customer-edit-body">
+
+      <input
+        type="hidden"
+        id="editCustomerId"
+      >
+
+
+      <div class="customer-edit-grid">
+
+
+        <!-- NAME -->
+
+        <div class="customer-edit-field">
+
+          <label for="editName">
+            Customer Name *
+          </label>
+
+          <input
+            id="editName"
+            type="text"
+            placeholder="Customer name"
+            autocomplete="name"
+          >
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div class="customer-edit-field">
+
+          <label for="editMobile">
+            Mobile Number
+          </label>
+
+          <input
+            id="editMobile"
+            type="text"
+            readonly
+          >
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="customer-edit-field">
+
+          <label for="editEmail">
+            Email / Login Email
+          </label>
+
+          <input
+            id="editEmail"
+            type="email"
+            placeholder="customer@example.com"
+            autocomplete="email"
+          >
+
+        </div>
+
+
+        <!-- OPENING BALANCE -->
+
+        <div class="customer-edit-field">
+
+          <label for="editOpeningBalance">
+            Opening Balance
+          </label>
+
+          <input
+            id="editOpeningBalance"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+          >
+
+        </div>
+
+
+        <!-- WHATSAPP -->
+
+        <div class="customer-edit-field">
+
+          <label for="editWhatsapp">
+            WhatsApp Number
+          </label>
+
+          <input
+            id="editWhatsapp"
+            type="tel"
+            inputmode="tel"
+            placeholder="WhatsApp number"
+          >
+
+        </div>
+
+
+        <!-- ADDRESS -->
+
+        <div class="customer-edit-field full">
+
+          <label for="editAddress">
+            Address
+          </label>
+
+          <textarea
+            id="editAddress"
+            rows="3"
+            placeholder="Customer address"
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="customer-edit-note">
+
+        ℹ️ Mobile number is kept read-only because it is the
+        main customer identity used for payments, services,
+        insurance and other customer records.
+
+      </div>
+
+
+      <div
+        class="edit-message"
+        id="editMessage"
+      ></div>
+
+
+      <div class="customer-edit-actions">
+
+        <button
+          type="button"
+          class="btn secondary"
+          id="editCancel"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn primary"
+          id="editSave"
+        >
+          Save Changes
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+
+<script src="../js/supabase.js"></script>
+
+<script src="../js/auth.js"></script>
+
+
+<!-- =====================================================
+     CUSTOMER MANAGEMENT SCRIPT
+===================================================== -->
+
+<script>
+
+(async()=>{
+
+  /* -----------------------------------------------
+     AUTH
+  ------------------------------------------------ */
+
+  const ok = await requireStaff();
+
+  if(!ok){
+    return;
+  }
+
+
+  /* -----------------------------------------------
+     ELEMENTS
+  ------------------------------------------------ */
+
+  const rows =
+    document.getElementById("rows");
+
+  const search =
+    document.getElementById("search");
+
+  const count =
+    document.getElementById("count");
+
+  const overlay =
+    document.getElementById("customerEditOverlay");
+
+  const editClose =
+    document.getElementById("editClose");
+
+  const editCancel =
+    document.getElementById("editCancel");
+
+  const editSave =
+    document.getElementById("editSave");
+
+  const editMessage =
+    document.getElementById("editMessage");
+
+
+  /* -----------------------------------------------
+     EDIT FIELDS
+  ------------------------------------------------ */
+
+  const editCustomerId =
+    document.getElementById("editCustomerId");
+
+  const editName =
+    document.getElementById("editName");
+
+  const editMobile =
+    document.getElementById("editMobile");
+
+  const editEmail =
+    document.getElementById("editEmail");
+
+  const editOpeningBalance =
+    document.getElementById("editOpeningBalance");
+
+  const editWhatsapp =
+    document.getElementById("editWhatsapp");
+
+  const editAddress =
+    document.getElementById("editAddress");
+
+
+  /* -----------------------------------------------
+     DATA
+  ------------------------------------------------ */
+
+  let data = [];
+
+
+  /* -----------------------------------------------
+     MONEY FORMAT
+  ------------------------------------------------ */
+
+  const money = n =>
+    "₹" +
+    Number(n || 0).toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+
+
+  /* -----------------------------------------------
+     ESCAPE HTML
+  ------------------------------------------------ */
+
+  function escapeHtml(value){
+
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+
+  }
+
+
+  /* -----------------------------------------------
+     LOAD CUSTOMERS
+  ------------------------------------------------ */
+
+  async function loadCustomers(){
+
+    rows.innerHTML = `
+      <tr>
+        <td colspan="7">
+          Loading customers…
+        </td>
+      </tr>
+    `;
+
+
+    const result =
+      await sb
+        .from("customer_balances")
+        .select("*")
+        .order("full_name");
+
+
+    if(result.error){
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="7">
+            Unable to load customers.
+          </td>
+        </tr>
+      `;
+
+      showStatus(
+        result.error.message,
+        true
+      );
+
+      return;
+
+    }
+
+
+    data = result.data || [];
+
+    render();
+
+  }
+
+
+  /* -----------------------------------------------
+     RENDER
+  ------------------------------------------------ */
+
+  function render(){
+
+    const q =
+      search.value
+        .trim()
+        .toLowerCase();
+
+
+    const list =
+      data.filter(c => {
+
+        const name =
+          String(c.full_name || "")
+            .toLowerCase();
+
+        const mobile =
+          String(c.mobile || "")
+            .toLowerCase();
+
+        const email =
+          String(c.email || "")
+            .toLowerCase();
+
+        return (
+          name.includes(q) ||
+          mobile.includes(q) ||
+          email.includes(q)
+        );
+
+      });
+
+
+    count.textContent =
+      list.length +
+      " customers";
+
+
+    if(!list.length){
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="7">
+            No customers found.
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+
+    rows.innerHTML =
+      list.map(c => `
+
+        <tr>
+
+          <td>
+
+            <b>
+              ${escapeHtml(c.full_name)}
+            </b>
+
+            <small>
+              ${escapeHtml(c.customer_code || "")}
+            </small>
+
+          </td>
+
+
+          <td>
+            ${escapeHtml(c.mobile || "")}
+          </td>
+
+
+          <td>
+            ${money(c.opening_balance)}
+          </td>
+
+
+          <td>
+            ${money(c.total_work)}
+          </td>
+
+
+          <td>
+            ${money(c.total_paid)}
+          </td>
+
+
+          <td>
+
+            <b>
+              ${money(c.current_balance)}
+            </b>
+
+          </td>
+
+
+          <td>
+
+            <div
+              style="
+                display:flex;
+                gap:7px;
+                flex-wrap:wrap;
+              "
+            >
+
+              <a
+                class="btn primary"
+                href="customer-profile.html?id=${encodeURIComponent(c.id)}"
+              >
+                View
+              </a>
+
+
+              <button
+                type="button"
+                class="btn secondary edit-customer-btn"
+                data-id="${escapeHtml(c.id)}"
+              >
+                ✏️ Edit
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `).join("");
+
+
+    /* ---------------------------------------------
+       EDIT BUTTON EVENTS
+    ---------------------------------------------- */
+
+    rows
+      .querySelectorAll(".edit-customer-btn")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const id =
+              button.dataset.id;
+
+            openEdit(id);
+
+          }
+        );
+
+      });
+
+  }
+
+
+  /* -----------------------------------------------
+     OPEN EDIT
+  ------------------------------------------------ */
+
+  async function openEdit(id){
+
+    editMessage.className =
+      "edit-message";
+
+    editMessage.textContent =
+      "";
+
+
+    /* First try current loaded data */
+
+    let customer =
+      data.find(
+        c => String(c.id) === String(id)
+      );
+
+
+    /*
+      customer_balances may not contain every
+      editable customer field, so fetch directly
+      from customers table.
+    */
+
+    const result =
+      await sb
+        .from("customers")
+        .select(
+          "id,full_name,mobile,email,whatsapp,address,opening_balance"
+        )
+        .eq("id",id)
+        .single();
+
+
+    if(result.error){
+
+      showStatus(
+        result.error.message,
+        true
+      );
+
+      return;
+
+    }
+
+
+    customer =
+      result.data;
+
+
+    editCustomerId.value =
+      customer.id || "";
+
+    editName.value =
+      customer.full_name || "";
+
+    editMobile.value =
+      customer.mobile || "";
+
+    editEmail.value =
+      customer.email || "";
+
+    editOpeningBalance.value =
+      Number(customer.opening_balance || 0);
+
+    editWhatsapp.value =
+      customer.whatsapp || "";
+
+    editAddress.value =
+      customer.address || "";
+
+
+    overlay.classList.add("open");
+
+    document.body.style.overflow =
+      "hidden";
+
+
+    setTimeout(
+      () => editName.focus(),
+      100
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     CLOSE EDIT
+  ------------------------------------------------ */
+
+  function closeEdit(){
+
+    overlay.classList.remove("open");
+
+    document.body.style.overflow =
+      "";
+
+    editMessage.className =
+      "edit-message";
+
+    editMessage.textContent =
+      "";
+
+  }
+
+
+  editClose.addEventListener(
+    "click",
+    closeEdit
+  );
+
+
+  editCancel.addEventListener(
+    "click",
+    closeEdit
+  );
+
+
+  /* -----------------------------------------------
+     CLICK OUTSIDE MODAL
+  ------------------------------------------------ */
+
+  overlay.addEventListener(
+    "click",
+    e => {
+
+      if(e.target === overlay){
+
+        closeEdit();
+
+      }
+
+    }
+  );
+
+
+  /* -----------------------------------------------
+     ESC KEY
+  ------------------------------------------------ */
+
+  document.addEventListener(
+    "keydown",
+    e => {
+
+      if(
+        e.key === "Escape" &&
+        overlay.classList.contains("open")
+      ){
+
+        closeEdit();
+
+      }
+
+    }
+  );
+
+
+  /* -----------------------------------------------
+     SAVE CUSTOMER
+  ------------------------------------------------ */
+
+  editSave.addEventListener(
+    "click",
+    async()=>{
+
+      const id =
+        editCustomerId.value;
+
+
+      const name =
+        editName.value.trim();
+
+
+      const email =
+        editEmail.value.trim()
+          .toLowerCase();
+
+
+      const whatsapp =
+        editWhatsapp.value.trim() ||
+        null;
+
+
+      const address =
+        editAddress.value.trim() ||
+        null;
+
+
+      const openingBalance =
+        Number(
+          editOpeningBalance.value || 0
+        );
+
+
+      /* -----------------------------------------
+         VALIDATION
+      ------------------------------------------ */
+
+      if(!id){
+
+        showEditError(
+          "Customer ID is missing."
+        );
+
+        return;
+
+      }
+
+
+      if(!name){
+
+        showEditError(
+          "Customer name is required."
+        );
+
+        editName.focus();
+
+        return;
+
+      }
+
+
+      if(
+        email &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      ){
+
+        showEditError(
+          "Please enter a valid email address."
+        );
+
+        editEmail.focus();
+
+        return;
+
+      }
+
+
+      if(
+        !Number.isFinite(openingBalance) ||
+        openingBalance < 0
+      ){
+
+        showEditError(
+          "Please enter a valid opening balance."
+        );
+
+        editOpeningBalance.focus();
+
+        return;
+
+      }
+
+
+      /* -----------------------------------------
+         BUTTON STATE
+      ------------------------------------------ */
+
+      editSave.disabled = true;
+
+      editSave.textContent =
+        "Saving…";
+
+
+      editMessage.className =
+        "edit-message";
+
+      editMessage.textContent =
+        "";
+
+
+      /* -----------------------------------------
+         UPDATE CUSTOMER
+      ------------------------------------------ */
+
+      const updateResult =
+        await sb
+          .from("customers")
+          .update({
+
+            full_name:name,
+
+            email:email || null,
+
+            whatsapp:whatsapp,
+
+            address:address,
+
+            opening_balance:
+              openingBalance
+
+          })
+          .eq("id",id);
+
+
+      if(updateResult.error){
+
+        showEditError(
+          updateResult.error.message
+        );
+
+        editSave.disabled = false;
+
+        editSave.textContent =
+          "Save Changes";
+
+        return;
+
+      }
+
+
+      /* -----------------------------------------
+         SUCCESS
+      ------------------------------------------ */
+
+      editMessage.className =
+        "edit-message success";
+
+      editMessage.textContent =
+        "Customer details updated successfully.";
+
+
+      /*
+        Give Supabase a short moment before
+        reloading the balance view.
+      */
+
+      setTimeout(
+        async()=>{
+
+          closeEdit();
+
+          await loadCustomers();
+
+          showStatus(
+            "Customer updated successfully."
+          );
+
+        },
+        500
+      );
+
+
+    }
+  );
+
+
+  /* -----------------------------------------------
+     EDIT ERROR
+  ------------------------------------------------ */
+
+  function showEditError(message){
+
+    editMessage.className =
+      "edit-message error show";
+
+    editMessage.textContent =
+      message;
+
+  }
+
+
+  /* -----------------------------------------------
+     SEARCH
+  ------------------------------------------------ */
+
+  search.addEventListener(
+    "input",
+    render
+  );
+
+
+  /* -----------------------------------------------
+     INITIAL LOAD
+  ------------------------------------------------ */
+
+  await loadCustomers();
+
+
 })();
+
 </script>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer unified-site-footer">
+
+  <div class="footer-brand">
+
+    <img
+      alt="iTech IT Solutions"
+      class="footer-logo"
+      src="../assets/itech-logo.png"
+    >
+
+  </div>
+
+  <p class="footer-address">
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+  <p class="footer-contact">
+    7736929233 · 8943165951
+  </p>
+
+  <p class="footer-email">
+    itnedumangad@gmail.com
+  </p>
+
+  <p class="footer-social">
+    @itechndd
+  </p>
+
+  <p class="footer-tagline">
+    Your Trust Our Service
+  </p>
+
+</footer>
+
+
+<!-- =====================================================
+     ACTIVE NAV
+===================================================== -->
+
+<script data-dashboard-active-nav>
+
+(() => {
+
+  const current =
+    location.pathname
+      .split("/")
+      .pop() ||
+      "dashboard.html";
+
+
+  document
+    .querySelectorAll(
+      ".sidebar nav a"
+    )
+    .forEach(a => {
+
+      const href =
+        (
+          a.getAttribute("href") ||
+          ""
+        )
+        .split("?")[0]
+        .split("#")[0];
+
+
+      const file =
+        href
+          .split("/")
+          .pop();
+
+
+      if(file === current){
+
+        a.classList.add("active");
+
+      }
+
+    });
+
+})();
+
+</script>
+
+
+<!-- =====================================================
+     MOBILE NAVIGATION
+===================================================== -->
+
 <script id="itech-mobile-navigation">
+
 (function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
 
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
+  const header =
+    document.querySelector(
+      ".dash-header"
+    );
 
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
+  const sidebar =
+    document.querySelector(
+      ".sidebar"
+    );
 
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
+
+  if(
+    !header ||
+    !sidebar ||
+    document.getElementById(
+      "uiMobileMenuBtn"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const btn =
+    document.createElement(
+      "button"
+    );
+
+
+  btn.id =
+    "uiMobileMenuBtn";
+
+  btn.className =
+    "ui-mobile-menu-btn";
+
+  btn.type =
+    "button";
+
+  btn.setAttribute(
+    "aria-label",
+    "Open menu"
+  );
+
+  btn.innerHTML =
+    "☰";
+
+
+  const overlay =
+    document.createElement(
+      "div"
+    );
+
+  overlay.className =
+    "ui-mobile-overlay";
+
+
+  const close =
+    document.createElement(
+      "button"
+    );
+
+  close.className =
+    "ui-mobile-close";
+
+  close.type =
+    "button";
+
+  close.setAttribute(
+    "aria-label",
+    "Close menu"
+  );
+
+  close.innerHTML =
+    "×";
+
 
   sidebar.prepend(close);
-  document.body.appendChild(overlay);
 
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
+  document.body.appendChild(
+    overlay
+  );
+
+
+  const brand =
+    header.querySelector(
+      ".brand"
+    );
+
+
+  if(
+    brand &&
+    brand.parentNode
+  ){
+
+    brand.parentNode.insertBefore(
+      btn,
+      brand.nextSibling
+    );
+
+  }else{
+
+    header.insertBefore(
+      btn,
+      header.firstChild
+    );
+
+  }
+
 
   function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
+
+    sidebar.classList.add(
+      "ui-open"
+    );
+
+    overlay.classList.add(
+      "open"
+    );
+
+    document.body.style.overflow =
+      "hidden";
+
   }
 
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+
+  function closeMenu(){
+
+    sidebar.classList.remove(
+      "ui-open"
+    );
+
+    overlay.classList.remove(
+      "open"
+    );
+
+    document.body.style.overflow =
+      "";
+
+  }
+
+
+  btn.addEventListener(
+    "click",
+    openMenu
+  );
+
+
+  close.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  overlay.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  sidebar
+    .querySelectorAll("a")
+    .forEach(a => {
+
+      a.addEventListener(
+        "click",
+        closeMenu
+      );
+
+    });
+
+
+  document.addEventListener(
+    "keydown",
+    e => {
+
+      if(e.key === "Escape"){
+
+        closeMenu();
+
+      }
+
+    }
+  );
+
+
 })();
+
 </script>
-</body></html>
+
+</body>
+</html>

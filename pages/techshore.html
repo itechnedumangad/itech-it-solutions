@@ -68,6 +68,10 @@ body{background:radial-gradient(circle at 10% 10%,rgba(25,118,210,.10),transpare
 .hidden{display:none!important}
 @media(max-width:720px){.quiz-hero{align-items:flex-start;flex-direction:column}.hero-title{font-size:28px}.hero-pill{width:100%;justify-content:center}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.quiz-top{grid-template-columns:1fr}.timer{width:100%}.question-text{font-size:20px!important}.question-panel{padding:16px}.nav{flex-wrap:wrap}.nav-hint{order:3;flex-basis:100%}.nav .btn{flex:1;min-width:130px}}
 </style>
+<style>
+/* ===== Previous Results UI ===== */
+.history-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:16px 0 12px;flex-wrap:wrap}.history-card{margin-top:16px;background:linear-gradient(180deg,#ffffff,#f7fbff);border:1px solid #dbe8f3;border-radius:20px;padding:20px;box-shadow:0 12px 32px rgba(19,50,77,.08)}.history-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.history-stat{background:#eef6fc;border:1px solid #dceaf5;border-radius:14px;padding:12px;text-align:center}.history-stat strong{display:block;font-size:22px;color:#0b4f8a}.history-stat span{font-size:11px;color:#5c7187;font-weight:800}.history-list{display:grid;gap:10px}.history-item{display:grid;grid-template-columns:72px 1fr auto;align-items:center;gap:14px;padding:14px;border:1px solid #e0eaf2;border-radius:15px;background:#fff}.history-task{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#0b4f8a,#1687c7);color:#fff;font-weight:950}.history-main strong{display:block;color:#0c3155;font-size:15px}.history-main small{display:block;color:#71859a;margin-top:4px}.history-score{text-align:right}.history-score strong{font-size:20px;color:#0b4f8a}.history-score span{display:block;font-size:11px;font-weight:900;color:#587089}.empty-history{text-align:center;padding:30px 15px;color:#71859a}.close-history{margin-top:14px}@media(max-width:600px){.history-summary{grid-template-columns:1fr 1fr 1fr;gap:7px}.history-stat{padding:10px 6px}.history-stat strong{font-size:18px}.history-item{grid-template-columns:54px 1fr;gap:10px}.history-task{width:54px;height:54px}.history-score{grid-column:2;text-align:left;margin-top:-6px}.history-score strong{font-size:18px}}
+</style>
 
 
 <style>
@@ -102,7 +106,7 @@ body{background:radial-gradient(circle at 10% 10%,rgba(25,118,210,.10),transpare
   <section id="taskHome" class="hidden">
     <div class="home-toolbar">
       <div><div class="eyebrow">WELCOME BACK</div><h1 class="page-title">Choose Your Task</h1><div id="homeUser" class="muted"></div></div>
-      <button class="btn secondary home-exit" onclick="logoutHome()">↩ Home</button>
+      <div class="home-actions"><button class="btn secondary" onclick="showPreviousResults()">📊 Previous Results</button><button class="btn secondary home-exit" onclick="logoutHome()">↩ Home</button></div>
     </div>
     <div class="overall-card">
       <div class="overall-stat"><strong id="completedCount">0</strong><span>Tasks Completed</span></div>
@@ -111,6 +115,11 @@ body{background:radial-gradient(circle at 10% 10%,rgba(25,118,210,.10),transpare
       <div class="overall-stat"><strong>25 min</strong><span>Per Task</span></div>
     </div>
     <div id="taskGrid" class="task-grid"></div>
+    <section id="historyPanel" class="history-card hidden">
+      <div class="history-toolbar"><div><div class="eyebrow">YOUR HISTORY</div><h2 style="margin:0">Previous Results</h2><div class="muted" style="margin-top:5px;font-size:13px">Results linked to your mobile number</div></div><button class="btn secondary" onclick="hidePreviousResults()">✕ Close</button></div>
+      <div class="history-summary"><div class="history-stat"><strong id="historyAttempts">0</strong><span>Total Attempts</span></div><div class="history-stat"><strong id="historyBest">0%</strong><span>Best Score</span></div><div class="history-stat"><strong id="historyCompleted">0</strong><span>Tasks Attempted</span></div></div>
+      <div id="historyList" class="history-list"></div>
+    </section>
   </section>
 
   <section id="quiz" class="card hidden">
@@ -215,6 +224,21 @@ function finishQuiz(timeout){
  document.getElementById('resultText').textContent=timedOut?'25 minutes completed. This task was submitted automatically. Your result has been saved.':'Task completed successfully. Your result has been saved to the Techshore Admin Dashboard.';
  const nb=document.getElementById('nextTaskBtn');nb.style.display=currentTask<TOTAL_TASKS-1?'inline-flex':'none';nb.textContent=currentTask<TOTAL_TASKS-1?'Task '+(currentTask+2)+' →':'All Tasks Completed';
 }
+function showPreviousResults(){
+ const panel=document.getElementById('historyPanel'); panel.classList.remove('hidden');
+ const mine=reports().filter(r=>r.mobile===user.mobile).sort((a,b)=>Number(b.id)-Number(a.id));
+ const attempts=mine.length; const best=attempts?Math.max(...mine.map(r=>Number(r.percentage||0))):0; const tasks=new Set(mine.map(r=>Number(r.task))).size;
+ document.getElementById('historyAttempts').textContent=attempts; document.getElementById('historyBest').textContent=best+'%'; document.getElementById('historyCompleted').textContent=tasks;
+ const list=document.getElementById('historyList');
+ if(!mine.length){list.innerHTML='<div class="empty-history">📋 No previous results found for this mobile number.<br><small>Complete a task and your result will appear here.</small></div>'; return;}
+ list.innerHTML=mine.map(r=>{
+   const d=r.completedAt?new Date(r.completedAt):null; const date=d&&!isNaN(d)?d.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+   const timeout=r.timedOut?' • Time Out':'';
+   return `<div class="history-item"><div class="history-task">T${esc(r.task)}</div><div class="history-main"><strong>Task ${esc(r.task)} ${timeout}</strong><small>${date} • ${esc(r.name||user.name)}</small></div><div class="history-score"><strong>${esc(r.score)} / ${esc(r.total||50)}</strong><span>${esc(r.percentage||0)}%</span></div></div>`;
+ }).join('');
+ panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function hidePreviousResults(){document.getElementById('historyPanel').classList.add('hidden')}
 function goTaskHome(){showTaskHome()}
 function goNextTask(){if(currentTask<TOTAL_TASKS-1)startTask(currentTask+1);else showTaskHome()}
 function retakeCurrentTask(){startTask(currentTask)}

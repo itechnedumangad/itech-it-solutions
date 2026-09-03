@@ -53,12 +53,13 @@ async function init(){
    const {data,error}=await sb.auth.getUser();
    if(error)throw error;
    if(!data?.user)throw new Error('Admin login required. Please sign in to the iTech Admin Dashboard first.');
-   const {data:role,error:roleError}=await sb.from('user_roles').select('role').eq('user_id',data.user.id).maybeSingle();
-   if(roleError)throw new Error('Unable to read admin role: '+roleError.message);
-   const r=String(role?.role||'').toLowerCase().trim();
+   const {data:profile,error:profileError}=await sb.from('profiles').select('id,full_name,mobile,role,status').eq('id',data.user.id).maybeSingle();
+   if(profileError)throw new Error('Unable to read admin profile: '+profileError.message);
+   if(!profile)throw new Error('Admin profile not found.');
+   const r=String(profile.role||'').toLowerCase().trim();
    if(r!=='admin'&&r!=='staff')throw new Error('Access denied. Admin/Staff account required.');
    adminReady=true;
-   $('authBox').textContent='✓ Signed in: '+(data.user.email||'Admin')+' • Role: '+r;
+   $('authBox').textContent='✓ Signed in: '+(profile.full_name||data.user.email||'Admin')+' • Role: '+r;
    $('authBox').style.color='#16743d';
    for(let i=1;i<=10;i++){const o=document.createElement('option');o.value=i;o.textContent='Task '+i;$('task').appendChild(o)}
    await load();

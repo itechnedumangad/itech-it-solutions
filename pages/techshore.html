@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Techshore – Online Practice</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:#eef4fb;color:#102a43}
+.wrap{max-width:1050px;margin:auto;padding:28px 18px}.brand{font-weight:800;font-size:28px;letter-spacing:.5px}
+.card{background:#fff;border-radius:20px;box-shadow:0 12px 35px #17324d18;padding:28px;margin-top:22px}
+h1,h2{margin:0 0 10px}.muted{color:#6b7f95}.btn{border:0;border-radius:12px;padding:13px 20px;font-weight:800;cursor:pointer;background:#0b4f8a;color:#fff}.btn.secondary{background:#e8eef5;color:#16324f}.btn:disabled{opacity:.5;cursor:not-allowed}
+input{width:100%;padding:14px;border:1px solid #ccd8e5;border-radius:11px;font-size:16px;margin:8px 0 16px}.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.task{padding:18px;border:1px solid #d8e3ef;border-radius:15px;background:#f9fbfd}.task b{display:block;margin-bottom:7px}
+.qhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.progress{height:9px;background:#e6edf5;border-radius:10px;overflow:hidden;margin:18px 0}.progress i{display:block;height:100%;background:#0b4f8a;width:0}
+.option{display:block;width:100%;text-align:left;padding:16px;margin:11px 0;border:2px solid #d8e3ef;border-radius:13px;background:#fff;font-size:16px;cursor:pointer}
+.option:hover{border-color:#0b4f8a}.option.correct{background:#dcfce7;border-color:#16a34a;color:#166534}.option.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.feedback{padding:13px 15px;border-radius:11px;margin:14px 0;font-weight:700}.feedback.ok{background:#dcfce7;color:#166534}.feedback.no{background:#fee2e2;color:#991b1b}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}.score{font-size:42px;font-weight:900}.hidden{display:none}
+.badge{display:inline-block;padding:7px 10px;border-radius:20px;background:#e7f6ed;color:#147a3e;font-weight:800;font-size:12px}
+@media(max-width:600px){.card{padding:20px}.qhead{align-items:flex-start;flex-direction:column}.btn{width:100%}.nav{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">TECHSHORE</div>
+  <div class="muted">Logistics Question Practice • 500 questions • 10 Tasks × 50</div>
+
+  <section id="login" class="card">
+    <h1>Start Practice</h1><p class="muted">Enter your name and mobile number. Your progress and result will be saved.</p>
+    <label>Full Name</label><input id="name" placeholder="Enter your name" autocomplete="name">
+    <label>Mobile Number</label><input id="mobile" placeholder="10 digit mobile number" inputmode="numeric" maxlength="10">
+    <button class="btn" onclick="startUser()">Next →</button>
+  </section>
+
+  <section id="taskScreen" class="card hidden">
+    <div class="qhead"><div><h2>Choose a Task</h2><div id="userLabel" class="muted"></div></div><span class="badge">50 Questions / Task</span></div>
+    <p class="muted">Questions are shuffled for each attempt. Complete any task from Task 1 to Task 10.</p>
+    <div id="tasks" class="tasks"></div>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="qhead"><div><h2 id="taskTitle"></h2><div id="qCounter" class="muted"></div></div><span id="scoreBadge" class="badge">Score: 0</span></div>
+    <div class="progress"><i id="bar"></i></div>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <div class="nav"><button class="btn secondary" onclick="backTasks()">← Tasks</button><button id="nextBtn" class="btn" disabled onclick="nextQuestion()">Next Question →</button></div>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="badge">Task Completed</div><h1 id="resultTitle"></h1>
+    <div class="score" id="finalScore"></div><p id="resultText" class="muted"></p>
+    <button class="btn" onclick="backTasks()">Back to Tasks</button>
+  </section>
+</div>
+<script src="techshore-data.js"></script>
+<script>
+const KEY="techshore_quiz_reports_v1";
+let user=null, taskQuestions=[], taskSets={}, index=0, score=0, answered=false, startedAt=null;
+
+function reports(){return JSON.parse(localStorage.getItem(KEY)||"[]")}
+function saveReports(a){localStorage.setItem(KEY,JSON.stringify(a))}
+function startUser(){
+  const name=document.getElementById("name").value.trim(), mobile=document.getElementById("mobile").value.replace(/\D/g,"");
+  if(!name){alert("Please enter your name.");return}
+  if(mobile.length<10){alert("Please enter a valid 10 digit mobile number.");return}
+  user={name,mobile};
+  // Create one shuffled 500-question set for this student/session, then split into 10 unique tasks of 50.
+  // This guarantees no question repeats across Task 1–10 for the same session.
+  const assignmentKey="techshore_assignment_"+mobile;
+  const saved=JSON.parse(localStorage.getItem(assignmentKey)||"null");
+  if(saved && saved.tasks && Object.keys(saved.tasks).length===10){
+    taskSets=saved.tasks;
+  }else{
+    const shuffled=shuffle(window.TECHSHORE_QUESTIONS);
+    taskSets={};
+    for(let t=1;t<=10;t++) taskSets[t]=shuffled.slice((t-1)*50,t*50);
+    localStorage.setItem(assignmentKey,JSON.stringify({createdAt:new Date().toISOString(),tasks:taskSets}));
+  }
+  document.getElementById("userLabel").textContent=name+" • "+mobile;
+  document.getElementById("login").classList.add("hidden"); document.getElementById("taskScreen").classList.remove("hidden");
+  renderTasks();
+}
+function renderTasks(){
+  const el=document.getElementById("tasks"); el.innerHTML="";
+  for(let t=1;t<=10;t++){
+    const completed=reports().filter(r=>r.mobile===user.mobile&&r.task===t).length;
+    const d=document.createElement("div"); d.className="task";
+    d.innerHTML=`<b>Task ${t}</b><span class="muted">50 shuffled questions</span><br><br><span class="badge">${completed?"Completed "+completed+" time(s)":"Not attempted"}</span><br><br>`;
+    const b=document.createElement("button");b.className="btn";b.textContent="Start Task "+t;b.onclick=()=>startTask(t);d.appendChild(b);el.appendChild(d);
+  }
+}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+function startTask(t){
+  taskQuestions=shuffle(taskSets[t]||[]).slice(0,50);
+  index=0;score=0;answered=false;startedAt=new Date().toISOString();
+  // Randomize answer-option order while keeping the correct answer tied to its text.
+  taskQuestions=taskQuestions.map(x=>{
+    const correctText=x.options[x.answer.charCodeAt(0)-65];
+    return {...x, options:shuffle(x.options.map(text=>({text}))), answerText:correctText};
+  });
+  taskQuestions._task=t;
+  document.getElementById("taskScreen").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");
+  document.getElementById("taskTitle").textContent="Task "+t; renderQuestion();
+}
+function renderQuestion(){
+  const q=taskQuestions[index]; answered=false;
+  document.getElementById("qCounter").textContent=`Question ${index+1} of 50`;
+  document.getElementById("scoreBadge").textContent=`Score: ${score}`;
+  document.getElementById("bar").style.width=((index)/50*100)+"%";
+  document.getElementById("question").textContent=q.q;
+  const box=document.getElementById("options");box.innerHTML="";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("nextBtn").disabled=true;
+  q.options.forEach((o,i)=>{
+    const b=document.createElement("button");b.className="option";b.innerHTML=`<b>${String.fromCharCode(65+i)}.</b> ${escapeHtml(o.text)}`;
+    b.onclick=()=>answerQuestion(o.text,b);box.appendChild(b);
+  });
+}
+function answerQuestion(selected,clicked){
+  if(answered)return;answered=true;
+  const q=taskQuestions[index], correct=q.answerText;
+  document.querySelectorAll(".option").forEach(b=>{
+    if(b.textContent.includes(correct)) b.classList.add("correct");
+  });
+  if(selected===correct){score++;clicked.classList.add("correct");showFeedback(true,"Correct answer!");}
+  else{clicked.classList.add("wrong");showFeedback(false,`Wrong answer. Correct answer: ${correct}`);}
+  document.getElementById("scoreBadge").textContent=`Score: ${score}`;
+  document.getElementById("nextBtn").disabled=false;
+}
+function showFeedback(ok,msg){const f=document.getElementById("feedback");f.className="feedback "+(ok?"ok":"no");f.textContent=msg}
+function nextQuestion(){if(!answered)return;if(index===49){finishTask();return}index++;renderQuestion()}
+function finishTask(){
+  const task=taskQuestions._task, total=50;
+  const report={id:Date.now(),name:user.name,mobile:user.mobile,task,total,score,percentage:Math.round(score/total*100),startedAt,completedAt:new Date().toISOString()};
+  const a=reports();a.push(report);saveReports(a);
+  document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+  document.getElementById("resultTitle").textContent=`Task ${task} Completed`;
+  document.getElementById("finalScore").textContent=`${score} / 50`;
+  document.getElementById("resultText").textContent=`${report.percentage}% • Your result has been saved to the Techshore Admin Dashboard.`;
+}
+function backTasks(){document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("taskScreen").classList.remove("hidden");renderTasks()}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+</script>
+</body></html>

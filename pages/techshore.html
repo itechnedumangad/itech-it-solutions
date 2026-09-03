@@ -59,6 +59,9 @@ body{background:radial-gradient(circle at 10% 10%,rgba(25,118,210,.10),transpare
 .form-grid{max-width:700px;margin:24px auto 0;text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.form-grid .full{grid-column:1/-1}
 .btn{position:relative;overflow:hidden;transition:.18s transform,.18s box-shadow,.18s filter}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(11,79,138,.20);filter:brightness(1.04)}.btn:active{transform:translateY(0) scale(.98)}
 .btn.primary-big{width:100%;font-size:16px;padding:15px 22px;margin-top:4px}
+
+.quiz-top-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}.top-home-btn{white-space:nowrap;padding:11px 18px}.top-home-btn:hover{transform:translateY(-2px)}
+@media(max-width:720px){.quiz-top-actions{width:100%;justify-content:space-between}.top-home-btn{padding:9px 13px;font-size:12px}.timer-wrap{margin-left:auto}.quiz-top{gap:12px}}
 .quiz-top{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.quiz-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.meta-chip{background:#f4f8fc;border:1px solid #dce8f2;border-radius:12px;padding:8px 11px;font-size:12px;font-weight:900;color:#38536d}.timer{min-width:145px;text-align:center;background:#0b2340;color:#fff;border-radius:15px;padding:11px 15px;font-size:20px;font-weight:950;letter-spacing:1px;box-shadow:0 8px 20px rgba(7,28,59,.18)}.timer.warning{background:#b45309;animation:timerPulse 1s infinite}.timer.danger{background:#b91c1c;animation:timerPulse .65s infinite}@keyframes timerPulse{50%{transform:scale(1.025)}}
 .progress{height:12px;margin:17px 0 23px;background:#e2ebf4;box-shadow:inset 0 1px 2px rgba(0,0,0,.05)}.progress i{background:linear-gradient(90deg,#0b4f8a,#12a1d6);transition:width .25s ease}
 .question-panel{background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #e0eaf3;border-radius:18px;padding:22px}.question-number{font-size:12px;font-weight:950;color:#0b67a8;text-transform:uppercase;letter-spacing:1.2px}.question-text{font-size:24px!important;line-height:1.35;margin:8px 0 18px!important}
@@ -193,7 +196,7 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
         <div class="quiz-meta"><span id="taskChip" class="task-chip">TASK 1</span><span id="qCounter" class="meta-chip">Question 1 of 50</span><span id="scoreBadge" class="badge mark-badge">Mark: 0 / 50</span></div>
         <div id="userLabel" class="muted" style="margin-top:8px"></div>
       </div>
-      <div class="timer-wrap"><span class="timer-label">TIME LEFT</span><div id="timer" class="timer">25:00</div></div>
+      <div class="quiz-top-actions"><button class="btn secondary top-home-btn" onclick="goTaskHome()">⌂ Home</button><div class="timer-wrap"><span class="timer-label">TIME LEFT</span><div id="timer" class="timer">25:00</div></div></div>
     </div>
     <div class="progress-row"><span id="progressText">0% Complete</span><div class="progress"><i id="bar"></i></div><span>50 Questions</span></div>
     <div class="question-panel">

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Payments | iTech Admin</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+}
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+
+/* ===== Payment Edit/Delete controls ===== */
+.payment-actions{display:flex;gap:7px;align-items:center;justify-content:center;white-space:nowrap}
+.payment-actions .pay-edit,.payment-actions .pay-delete{border:0;border-radius:8px;padding:7px 10px;font-weight:800;cursor:pointer;font-size:12px}
+.payment-actions .pay-edit{background:#eaf3ff;color:#07559b}
+.payment-actions .pay-delete{background:#ffe9e9;color:#b42318}
+.payment-actions button:disabled{opacity:.55;cursor:not-allowed}
+.pay-modal{position:fixed;inset:0;background:rgba(4,18,40,.58);display:none;align-items:center;justify-content:center;padding:18px;z-index:9999}
+.pay-modal.show{display:flex}
+.pay-modal-card{width:min(520px,100%);background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:22px}
+.pay-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.pay-modal-head h3{margin:0;color:#102a50}
+.pay-modal-close{border:0;background:#eef3f9;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer}
+.pay-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pay-edit-grid .full{grid-column:1/-1}
+.pay-edit-grid label{display:block;font-weight:800;font-size:13px;color:#294568}
+.pay-edit-grid input,.pay-edit-grid select{width:100%;box-sizing:border-box;margin-top:6px;padding:11px 12px;border:1px solid #d7e2ef;border-radius:10px;font:inherit}
+.pay-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.pay-modal-actions button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+.pay-cancel{background:#eef3f9;color:#16375f}
+.pay-update{background:#125b99;color:#fff}
+@media(max-width:600px){.pay-edit-grid{grid-template-columns:1fr}.pay-edit-grid .full{grid-column:auto}.payment-actions{flex-direction:column}.payment-actions button{width:100%}}
+
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<body>
+<header class="dash-header">
+<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
+<a class="btn secondary" data-logout="" href="../pages/login.html">
+    Logout
+  </a>
+</header>
+<div class="dash-layout">
+<aside class="sidebar">
+<nav><a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html" class="active">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="customer-bill.html">Customer Bill</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="techshore-admin.html">📝 Techshore Quiz</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="activities.html">📋 Staff Activities</a>
+<a href="staff-management.html">👥 Staff Management</a>
+<a href="messages.html">Messages</a></nav>
+</aside>
+<main class="dash-main">
+<div class="toolbar">
+<div>
+<p class="eyebrow">LEDGER &amp; COLLECTION</p>
+<h1>Payments</h1>
+</div>
+<a class="btn secondary" href="reports.html">
+        Daily Report
+      </a>
+</div>
+<!-- PAYMENT FORM -->
+<section class="panel form">
+<label class="field">
+        Customer
+
+        <select id="customer" required="">
+<option value="">Select customer</option>
+</select>
+</label>
+<!-- BALANCE -->
+<div class="balance-grid">
+<div class="balance-card">
+<span>Current Balance</span>
+<strong id="oldBalance">₹0.00</strong>
+</div>
+<div class="balance-card">
+<span>Balance After Payment</span>
+<strong id="newBalance">₹0.00</strong>
+</div>
+</div>
+<label class="field">
+        Payment Amount
+
+        <input id="amount" min="0.01" placeholder="Enter payment amount" required="" step="0.01" type="number"/>
+</label>
+<label class="field">
+        Payment Method
+
+        <select id="method">
+<option value="Cash">Cash</option>
+<option value="UPI">UPI</option>
+<option value="Bank Transfer">Bank Transfer</option>
+<option value="Card">Card</option>
+</select>
+</label>
+<label class="field">
+        Reference / Note
+
+        <input id="reference" placeholder="UPI reference / cheque no / note" type="text"/>
+</label>
+<button class="btn primary" id="save" type="button">
+        Save Payment
+      </button>
+<div class="status" data-status="" style="margin-top:12px"></div>
+</section>
+<!-- RECENT PAYMENTS -->
+<section class="panel" style="margin-top:20px">
+<div class="toolbar">
+<div>
+<h2>Recent Payments</h2>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th>Date</th>
+<th>Customer</th>
+<th>Method</th>
+<th>Reference</th>
+<th>Amount</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="rows">
+<tr>
+<td colspan="6">
+                Loading…
+              </td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- EDIT PAYMENT MODAL -->
+<div class="pay-modal" id="paymentEditModal" aria-hidden="true">
+  <div class="pay-modal-card" role="dialog" aria-modal="true" aria-labelledby="paymentEditTitle">
+    <div class="pay-modal-head">
+      <h3 id="paymentEditTitle">✏️ Edit Payment</h3>
+      <button type="button" class="pay-modal-close" id="paymentEditClose" aria-label="Close">×</button>
+    </div>
+    <div class="pay-edit-grid">
+      <label>Date
+        <input type="date" id="editPaymentDate">
+      </label>
+      <label>Amount
+        <input type="number" id="editPaymentAmount" min="0.01" step="0.01">
+      </label>
+      <label>Customer
+        <select id="editPaymentCustomer"><option value="">Cash Sale / No Customer</option></select>
+      </label>
+      <label>Payment Method
+        <select id="editPaymentMethod">
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Card">Card</option>
+        </select>
+      </label>
+      <label class="full">Reference / Note
+        <input type="text" id="editPaymentReference" placeholder="UPI reference / cheque no / note">
+      </label>
+    </div>
+    <div class="pay-modal-actions">
+      <button type="button" class="pay-cancel" id="paymentEditCancel">Cancel</button>
+      <button type="button" class="pay-update" id="paymentEditSave">Update Payment</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
+<script>
+
+(async () => {
+
+  /* -----------------------------
+     ADMIN CHECK
+  ----------------------------- */
+
+  const ok = await requireStaff();
+
+  if (!ok) return;
+
+
+  /* -----------------------------
+     ELEMENTS
+  ----------------------------- */
+
+  const select =
+    document.getElementById("customer");
+
+  const amountEl =
+    document.getElementById("amount");
+
+  const methodEl =
+    document.getElementById("method");
+
+  const referenceEl =
+    document.getElementById("reference");
+
+  const oldBalanceEl =
+    document.getElementById("oldBalance");
+
+  const newBalanceEl =
+    document.getElementById("newBalance");
+
+  const saveBtn =
+    document.getElementById("save");
+
+  const rows =
+    document.getElementById("rows");
+
+
+  /* -----------------------------
+     MONEY FORMAT
+  ----------------------------- */
+
+  const money = (n) =>
+    "₹" +
+    Number(n || 0).toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    );
+
+
+  /* -----------------------------
+     CURRENT BALANCE
+  ----------------------------- */
+
+  let currentBalance = 0;
+
+
+  /* -----------------------------
+     LOAD CUSTOMERS
+  ----------------------------- */
+
+  async function loadCustomers() {
+
+    const { data, error } = await sb
+      .from("customers")
+      .select("id,full_name,mobile")
+      .eq("status", "active")
+      .order("full_name");
+
+    if (error) {
+
+      showStatus(
+        "Unable to load customers: " + error.message,
+        true
+      );
+
+      return;
+    }
+
+
+    select.innerHTML =
+      '<option value="">Select customer</option>' +
+
+      (data || []).map(c => `
+
+        <option value="${c.id}">
+          ${c.full_name} — ${c.mobile || ""}
+        </option>
+
+      `).join("");
+  }
+
+
+  /* -----------------------------
+     GET CUSTOMER BALANCE
+  ----------------------------- */
+
+  async function getBalance() {
+
+    const id = select.value;
+
+
+    if (!id) {
+
+      currentBalance = 0;
+
+      oldBalanceEl.textContent = money(0);
+      newBalanceEl.textContent = money(0);
+
+      return;
+    }
+
+
+    const { data, error } = await sb
+      .from("customer_balances")
+      .select("current_balance")
+      .eq("id", id)
+      .single();
+
+
+    if (error) {
+
+      showStatus(
+        "Unable to load customer balance: " +
+        error.message,
+        true
+      );
+
+      currentBalance = 0;
+
+      oldBalanceEl.textContent = money(0);
+      newBalanceEl.textContent = money(0);
+
+      return;
+    }
+
+
+    currentBalance =
+      Number(data?.current_balance || 0);
+
+
+    oldBalanceEl.textContent =
+      money(currentBalance);
+
+
+    updateNewBalance();
+  }
+
+
+  /* -----------------------------
+     UPDATE NEW BALANCE
+  ----------------------------- */
+
+  function updateNewBalance() {
+
+    const payment =
+      Number(amountEl.value || 0);
+
+
+    const after =
+      currentBalance - payment;
+
+
+    newBalanceEl.textContent =
+      money(after);
+  }
+
+
+  /* -----------------------------
+     LOAD RECENT PAYMENTS
+  ----------------------------- */
+
+  async function loadPayments() {
+
+    rows.innerHTML = `
+      <tr>
+        <td colspan="6">Loading…</td>
+      </tr>
+    `;
+
+
+    const { data, error } = await sb
+      .from("payments")
+      .select(`
+        id,
+        customer_id,
+        payment_date,
+        amount,
+        payment_method,
+        reference_number,
+        customers(full_name)
+      `)
+      .order("created_at", {
+        ascending: false
+      })
+      .limit(30);
+
+
+    if (error) {
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="6">
+            ${error.message}
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="6">
+            No payments found.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    paymentRows = data || [];
+
+    rows.innerHTML =
+      paymentRows.map(p => `
+
+        <tr>
+
+          <td>
+            ${p.payment_date || "—"}
+          </td>
+
+          <td>
+            ${p.customers?.full_name || "—"}
+          </td>
+
+          <td>
+            ${p.payment_method || "Cash"}
+          </td>
+
+          <td>
+            ${p.reference_number || "—"}
+          </td>
+
+          <td>
+            <strong>
+              ${money(p.amount)}
+            </strong>
+          </td>
+
+          <td>
+            <div class="payment-actions">
+              <button type="button" class="pay-edit" data-payment-edit="${p.id}">✏️ Edit</button>
+              <button type="button" class="pay-delete" data-payment-delete="${p.id}">🗑️ Delete</button>
+            </div>
+          </td>
+
+        </tr>
+
+      `).join("");
+  }
+
+
+  /* -----------------------------
+     EDIT / DELETE PAYMENT
+  ----------------------------- */
+
+  const editModal = document.getElementById("paymentEditModal");
+  const editDate = document.getElementById("editPaymentDate");
+  const editAmount = document.getElementById("editPaymentAmount");
+  const editCustomer = document.getElementById("editPaymentCustomer");
+  const editMethod = document.getElementById("editPaymentMethod");
+  const editReference = document.getElementById("editPaymentReference");
+  const editSave = document.getElementById("paymentEditSave");
+  let editingPaymentId = null;
+  let paymentRows = [];
+
+  function openPaymentEditor(payment){
+    editingPaymentId = payment.id;
+    editDate.value = payment.payment_date || "";
+    editAmount.value = Number(payment.amount || 0);
+    editMethod.value = payment.payment_method || "Cash";
+    editReference.value = payment.reference_number || "";
+    editCustomer.value = payment.customer_id || "";
+    editModal.classList.add("show");
+    editModal.setAttribute("aria-hidden","false");
+  }
+
+  function closePaymentEditor(){
+    editingPaymentId = null;
+    editModal.classList.remove("show");
+    editModal.setAttribute("aria-hidden","true");
+  }
+
+  async function populateEditCustomers(){
+    const {data,error}=await sb.from("customers").select("id,full_name,mobile").eq("status","active").order("full_name");
+    if(error) return;
+    editCustomer.innerHTML='<option value="">Cash Sale / No Customer</option>'+(data||[]).map(c=>`<option value="${c.id}">${c.full_name} — ${c.mobile||""}</option>`).join("");
+  }
+
+  editSave.addEventListener("click",async()=>{
+    if(!editingPaymentId) return;
+    const amount=Number(editAmount.value||0);
+    if(!editDate.value){ showStatus("Please select a payment date.",true); return; }
+    if(!amount || amount<=0){ showStatus("Please enter a valid payment amount.",true); return; }
+    editSave.disabled=true; editSave.textContent="Updating…";
+    const {error}=await sb.from("payments").update({
+      customer_id: editCustomer.value || null,
+      amount,
+      payment_date: editDate.value,
+      payment_method: editMethod.value,
+      reference_number: editReference.value.trim() || null
+    }).eq("id",editingPaymentId);
+    if(error){
+      showStatus(error.message,true);
+    }else{
+      closePaymentEditor();
+      showStatus("Payment updated successfully.");
+      await getBalance();
+      await loadPayments();
+    }
+    editSave.disabled=false; editSave.textContent="Update Payment";
+  });
+
+  document.getElementById("paymentEditClose").addEventListener("click",closePaymentEditor);
+  document.getElementById("paymentEditCancel").addEventListener("click",closePaymentEditor);
+  editModal.addEventListener("click",e=>{ if(e.target===editModal) closePaymentEditor(); });
+
+  rows.addEventListener("click",async e=>{
+    const editBtn=e.target.closest("[data-payment-edit]");
+    const deleteBtn=e.target.closest("[data-payment-delete]");
+    if(editBtn){
+      const payment=paymentRows.find(x=>String(x.id)===String(editBtn.dataset.paymentEdit));
+      if(payment) openPaymentEditor(payment);
+      return;
+    }
+    if(deleteBtn){
+      const id=deleteBtn.dataset.paymentDelete;
+      if(!confirm("Delete this payment permanently? This will change the customer's balance.")) return;
+      deleteBtn.disabled=true; deleteBtn.textContent="Deleting…";
+      const {error}=await sb.from("payments").delete().eq("id",id);
+      if(error){
+        deleteBtn.disabled=false; deleteBtn.textContent="🗑️ Delete";
+        showStatus(error.message,true);
+        return;
+      }
+      showStatus("Payment deleted successfully.");
+      await getBalance();
+      await loadPayments();
+    }
+  });
+
+
+  /* -----------------------------
+     CUSTOMER CHANGE
+  ----------------------------- */
+
+  select.addEventListener(
+    "change",
+    getBalance
+  );
+
+
+  /* -----------------------------
+     AMOUNT CHANGE
+  ----------------------------- */
+
+  amountEl.addEventListener(
+    "input",
+    updateNewBalance
+  );
+
+
+  /* -----------------------------
+     SAVE PAYMENT
+  ----------------------------- */
+
+  saveBtn.addEventListener(
+    "click",
+    async () => {
+
+      const customer_id =
+        select.value;
+
+      const amount =
+        Number(amountEl.value || 0);
+
+      const payment_method =
+        methodEl.value;
+
+      const reference_number =
+        referenceEl.value.trim();
+
+
+      /* VALIDATION */
+
+      if (!customer_id) {
+
+        showStatus(
+          "Please select a customer.",
+          true
+        );
+
+        return;
+      }
+
+
+      if (!amount || amount <= 0) {
+
+        showStatus(
+          "Please enter a valid payment amount.",
+          true
+        );
+
+        return;
+      }
+
+
+      if (amount > currentBalance) {
+
+        showStatus(
+          "Payment cannot exceed the current customer balance.",
+          true
+        );
+
+        return;
+      }
+
+
+      /* BUTTON STATE */
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving…";
+
+
+      try {
+
+        /* INSERT PAYMENT */
+
+        const { error } = await sb
+          .from("payments")
+          .insert({
+
+            customer_id:
+              customer_id,
+
+            amount:
+              amount,
+
+            payment_method:
+              payment_method,
+
+            reference_number:
+              reference_number || null
+
+          });
+
+
+        if (error) {
+
+          throw error;
+        }
+
+
+        /* SUCCESS */
+
+        showStatus(
+          "Payment saved successfully — " +
+          money(amount)
+        );
+
+
+        /* RESET */
+
+        amountEl.value = "";
+        referenceEl.value = "";
+
+
+        /* REFRESH BALANCE */
+
+        await getBalance();
+
+
+        /* REFRESH PAYMENTS */
+
+        await loadPayments();
+
+
+      } catch (error) {
+
+        showStatus(
+          error.message ||
+          "Unable to save payment.",
+          true
+        );
+
+      } finally {
+
+        saveBtn.disabled = false;
+        saveBtn.textContent =
+          "Save Payment";
+      }
+
+    }
+  );
+
+
+  /* -----------------------------
+     INITIAL LOAD
+  ----------------------------- */
+
+  await loadCustomers();
+  await populateEditCustomers();
+
+  await loadPayments();
+
+})();
+
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body>
+</html>

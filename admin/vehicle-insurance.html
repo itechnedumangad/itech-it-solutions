@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Vehicle Insurance | iTech Admin</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/><style>
+.vi-wrap{display:grid;grid-template-columns:1fr;gap:18px}.vi-card{background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07)}.vi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.vi-grid .wide{grid-column:span 2}.vi-field{display:flex;flex-direction:column;gap:7px;font-weight:800;color:#10284b}.vi-field input,.vi-field select,.vi-field textarea{width:100%;border:1px solid #d8e2ef;border-radius:11px;padding:12px;background:#fff;color:#10284b;font:inherit;box-sizing:border-box}.vi-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.vi-table-wrap{overflow:auto}.vi-table{width:100%;border-collapse:separate;border-spacing:0;min-width:850px}.vi-table th,.vi-table td{padding:12px;border-bottom:1px solid #e8eef5;text-align:left}.vi-table th{font-size:12px;color:#61728b;text-transform:uppercase}.vi-status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800}.vi-expired{background:#fee2e2;color:#b91c1c}.vi-7{background:#ffedd5;color:#c2410c}.vi-15{background:#fef3c7;color:#a16207}.vi-30{background:#dbeafe;color:#1d4ed8}.vi-active{background:#dcfce7;color:#15803d}.vi-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.vi-stat{padding:14px;border-radius:14px;background:#f8fbff;border:1px solid #e0e9f4}.vi-stat small{display:block;color:#71819b;font-weight:800}.vi-stat strong{display:block;margin-top:7px;font-size:24px;color:#10284b}.vi-search{display:grid;grid-template-columns:1fr 180px 180px;gap:10px;margin-bottom:14px}.vi-search input,.vi-search select{border:1px solid #d8e2ef;border-radius:11px;padding:11px}.btn-small{padding:8px 11px!important;font-size:12px!important}.vi-note{padding:12px;border-radius:12px;background:#eef6ff;color:#244a78;font-size:13px}.vi-danger{background:#b91c1c!important}.vi-edit{background:#0f4c81!important}
+@media(max-width:1000px){.vi-grid{grid-template-columns:repeat(2,1fr)}.vi-stats{grid-template-columns:repeat(3,1fr)}.vi-search{grid-template-columns:1fr 1fr}.vi-search input{grid-column:span 2}}@media(max-width:600px){.vi-grid,.vi-stats,.vi-search{grid-template-columns:1fr}.vi-grid .wide,.vi-search input{grid-column:auto}.vi-card{padding:15px}.vi-actions .btn{width:100%}}
+
+.vi-records{display:grid;gap:14px;margin-top:14px}
+.vi-record{background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(17,50,91,.07);transition:transform .2s ease,box-shadow .2s ease}
+.vi-record:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(17,50,91,.10)}
+.vi-record-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.vi-record-title{font-size:18px;font-weight:900;color:#10284b}
+.vi-record-sub{margin-top:5px;color:#71819b;font-size:12px}
+.vi-record-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.vi-record-detail{padding:11px 12px;background:#f8fbff;border:1px solid #e3ebf5;border-radius:12px}
+.vi-record-detail small{display:block;color:#71819b;font-size:9px;font-weight:900;letter-spacing:.4px;text-transform:uppercase}
+.vi-record-detail strong{display:block;margin-top:5px;color:#10284b;font-size:12px;line-height:1.35;word-break:break-word}
+.vi-record-expiry{margin-top:12px;padding:12px 13px;border-radius:13px;background:#f7faff;border:1px solid #e1eaf4;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.vi-record-expiry small{display:block;color:#71819b;font-size:9px;font-weight:900}.vi-record-expiry strong{display:block;margin-top:3px;color:#10284b;font-size:15px}
+.vi-record-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.vi-file-name{font-size:10px;color:#71819b;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:center}
+.vi-view{background:#eef5ff!important;color:#124d80!important}.vi-upload{background:#f5f7fa!important;color:#10284b!important}.vi-danger{background:#c62828!important;color:#fff!important}
+@media(max-width:900px){.vi-record-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.vi-record{padding:14px}.vi-record-top{flex-direction:column}.vi-record-details{grid-template-columns:1fr}.vi-record-actions{display:grid;grid-template-columns:1fr}.vi-record-actions .btn{width:100%}.vi-file-name{max-width:100%}}
+</style><link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body>
+<header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/></a><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></header>
+<div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="customer-bill.html">Customer Bill</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html" class="active">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="techshore-admin.html">📝 Techshore Quiz</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="activities.html">📋 Staff Activities</a>
+<a href="staff-management.html">👥 Staff Management</a>
+<a href="messages.html">Messages</a></nav></aside>
+<main class="dash-main"><div class="toolbar"><div><p class="eyebrow">INSURANCE MANAGEMENT</p><h1>Vehicle Insurance</h1><p class="muted">Save vehicle insurance details and send renewal reminders through WhatsApp.</p></div><a class="btn secondary" href="dashboard.html">Dashboard</a></div>
+<section class="vi-stats"><div class="vi-stat"><small>Total Policies</small><strong id="sTotal">0</strong></div><div class="vi-stat"><small>Expired</small><strong id="sExpired">0</strong></div><div class="vi-stat"><small>Within 7 Days</small><strong id="s7">0</strong></div><div class="vi-stat"><small>Within 15 Days</small><strong id="s15">0</strong></div><div class="vi-stat"><small>Within 30 Days</small><strong id="s30">0</strong></div></section>
+<section class="vi-card"><h2>Quick Entry</h2><p class="muted">Mobile Number is the main customer identity. If the mobile already exists, the customer profile is linked automatically. One customer can have multiple vehicles.</p><form id="viForm"><div class="vi-grid">
+<label class="vi-field">Mobile Number *<input autocomplete="tel" id="mobile" inputmode="tel" placeholder="Customer mobile number"/></label><label class="vi-field">Customer Name *<input id="customer_name" placeholder="Auto-filled from mobile"/></label><label class="vi-field">Vehicle Number *<input id="vehicle_number"/></label><label class="vi-field">Insurance Expiry Date *<input id="expiry_date" type="date"/></label>
+<label class="vi-field">Insurance Company<input id="insurance_company"/></label><label class="vi-field">Policy Number<input id="policy_number"/></label><label class="vi-field">Vehicle Type<input id="vehicle_type" placeholder="Car / Bike / Auto..."/></label><label class="vi-field">Policy Start Date<input id="policy_start_date" type="date"/></label>
+<label class="vi-field">Premium Amount<input id="premium_amount" min="0" step="0.01" type="number"/></label><label class="vi-field wide">Remarks<textarea id="remarks" rows="2"></textarea></label></div><div class="vi-actions"><button class="btn primary" id="saveBtn" type="submit">Save Insurance</button><button class="btn secondary" id="clearBtn" type="button">Clear</button></div><div class="status" data-status=""></div></form></section>
+<section class="vi-card"><div class="toolbar" style="margin:0 0 10px"><div><h2>Insurance Records</h2><p class="muted">Search by customer, mobile or vehicle number.</p></div></div><div class="vi-search"><input id="search" placeholder="Search customer / mobile / vehicle..."/><select id="filter"><option value="all">All Status</option><option value="expired">Expired</option><option value="7">Within 7 Days</option><option value="15">Within 15 Days</option><option value="30">Within 30 Days</option><option value="active">Active</option></select><button class="btn secondary" id="refresh" type="button">Refresh</button></div><div class="vi-records" id="rows"><div class="vi-record"><span class="muted">Loading...</span></div></div></section></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/global-search.js"></script><script src="../js/insurance-policy.js"></script><script>
+let records=[],editingId=null;
+const $=id=>document.getElementById(id);const fmtDate=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-IN'):'';const daysLeft=d=>Math.ceil((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/86400000);
+function statusInfo(d){const n=daysLeft(d);if(n<0)return ['Expired','expired'];if(n<=7)return ['Within 7 Days','7'];if(n<=15)return ['Within 15 Days','15'];if(n<=30)return ['Within 30 Days','30'];return ['Active','active']}
+function wa(r){const phone=(r.mobile||'').replace(/\D/g,'');const msg=`iTech IT Solutions – Vehicle Insurance Reminder\n\nDear Customer,\n\nYour vehicle insurance for ${r.vehicle_number} is expiring on ${fmtDate(r.expiry_date)}.\n\nPlease contact us for renewal assistance.\n\niTech IT Solutions\n7736929233 · 8943165951\n\nYour Trust Our Service`;window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank')}
+function render(){const q=$('search').value.trim().toLowerCase(),f=$('filter').value;let list=records.filter(r=>{const [_,st]=statusInfo(r.expiry_date);const text=[r.customer_name,r.mobile,r.vehicle_number].join(' ').toLowerCase();let ok=text.includes(q);if(f==='7')ok&&=st==='7';if(f==='15')ok&&=st==='15';if(f==='30')ok&&=st==='30';if(f==='expired')ok&&=st==='expired';if(f==='active')ok&&=st==='active';return ok});
+$('rows').innerHTML=list.length?list.map((r,i)=>{const [label,st]=statusInfo(r.expiry_date);const company=escapeHtml(r.insurance_company||'Insurance Company not specified');const type=escapeHtml(r.vehicle_type||'—');const start=r.policy_start_date?fmtDate(r.policy_start_date):'—';const expiry=fmtDate(r.expiry_date);return `<article class="vi-record" style="animation-delay:${i*50}ms"><div class="vi-record-top"><div><div class="vi-record-title">🚗 ${escapeHtml(r.vehicle_number||'Vehicle')}</div><div class="vi-record-sub">${escapeHtml(r.customer_name||'Customer')} • ${escapeHtml(r.mobile||'')}</div></div><span class="vi-status vi-${st}">${label}</span></div><div class="vi-record-details"><div class="vi-record-detail"><small>Insurance Company</small><strong>${company}</strong></div><div class="vi-record-detail"><small>Policy Number</small><strong>${escapeHtml(r.policy_number||'—')}</strong></div><div class="vi-record-detail"><small>Vehicle Type</small><strong>${type}</strong></div><div class="vi-record-detail"><small>Policy Start</small><strong>${start}</strong></div></div><div class="vi-record-expiry"><div><small>INSURANCE EXPIRY DATE</small><strong>${expiry}</strong></div>${r.premium_amount?`<div><small>PREMIUM</small><strong>₹${escapeHtml(r.premium_amount)}</strong></div>`:''}</div><div class="vi-record-actions"><button class="btn btn-small vi-edit" onclick="editRec('${r.id}')">✏️ Edit</button><button class="btn btn-small" onclick="waById('${r.id}')">📲 WhatsApp</button>${r.policy_pdf_path?`<button class="btn btn-small vi-view" onclick="viewPdfById('${r.id}')">📄 View PDF</button>`:''}<button class="btn btn-small vi-upload" onclick="uploadPdfById('${r.id}')">⬆️ Upload PDF</button><button class="btn btn-small vi-danger" onclick="deleteRec('${r.id}')">🗑️ Delete</button>${r.policy_pdf_name?`<span class="vi-file-name">📎 ${escapeHtml(r.policy_pdf_name)}</span>`:''}</div></article>`}).join(''):'<div class="vi-record"><div class="muted">No records found.</div></div>';updateStats()}
+function escapeHtml(x){return String(x??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]))}
+function updateStats(){const counts={expired:0,'7':0,'15':0,'30':0};records.forEach(r=>{const [_,st]=statusInfo(r.expiry_date);if(counts[st]!=null)counts[st]++});$('sTotal').textContent=records.length;$('sExpired').textContent=counts.expired;$('s7').textContent=counts['7'];$('s15').textContent=counts['15'];$('s30').textContent=counts['30']}
+async function load(){const {data,error}=await sb.from('vehicle_insurance').select('*').order('expiry_date',{ascending:true});if(error)return showStatus(error.message,true);records=data||[];render()}
+function fill(r){editingId=r.id;['customer_name','mobile','vehicle_number','expiry_date','insurance_company','policy_number','vehicle_type','policy_start_date','premium_amount','remarks'].forEach(k=>$(k).value=r[k]??'');$('saveBtn').textContent='Update Insurance';window.scrollTo({top:0,behavior:'smooth'})}
+window.editRec=id=>{const r=records.find(x=>x.id===id);if(r)fill(r)};
+window.waById=id=>{const r=records.find(x=>x.id===id);if(r)wa(r)};
+window.uploadPdfById=async id=>{
+  const r=records.find(x=>x.id===id); if(!r)return;
+  const input=document.createElement('input'); input.type='file'; input.accept='application/pdf';
+  input.onchange=async()=>{
+    const file=input.files?.[0]; if(!file)return;
+    if(file.type && file.type!=='application/pdf' && !/\.pdf$/i.test(file.name)) return showStatus('Please select a PDF policy file.',true);
+    try{
+      showStatus('Uploading policy PDF for '+(r.customer_name||'customer')+'…');
+      const oldPath=r.policy_pdf_path;
+      const path=`${r.id}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      const up=await sb.storage.from('insurance-policies').upload(path,file,{contentType:'application/pdf',upsert:false});
+      if(up.error) throw up.error;
+      const upd=await sb.from('vehicle_insurance').update({policy_pdf_path:path,policy_pdf_name:file.name}).eq('id',r.id);
+      if(upd.error){await sb.storage.from('insurance-policies').remove([path]);throw upd.error;}
+      if(oldPath && oldPath!==path) await sb.storage.from('insurance-policies').remove([oldPath]);
+      showStatus('Policy PDF uploaded successfully for '+(r.customer_name||'customer')+'.');
+      await load();
+    }catch(err){showStatus('Policy PDF upload failed: '+(err.message||err),true)}
+  };
+  input.click();
+};
+window.viewPdfById=async id=>{
+  const r=records.find(x=>x.id===id); if(!r?.policy_pdf_path)return showStatus('No policy PDF uploaded for this record.',true);
+  try{const out=await sb.storage.from('insurance-policies').createSignedUrl(r.policy_pdf_path,600);if(out.error)throw out.error;if(out.data?.signedUrl)window.open(out.data.signedUrl,'_blank');else throw new Error('Unable to create PDF link.')}catch(err){showStatus(err.message||'Unable to open policy PDF.',true)}
+};
+window.deleteRec=async id=>{
+  const r=records.find(x=>x.id===id); if(!r)return;
+  if(!confirm(`Delete insurance record for ${r.customer_name||'customer'} – ${r.vehicle_number||'vehicle'}?\n\nThe insurance record will be permanently deleted.`))return;
+  try{
+    showStatus('Deleting insurance record…');
+    if(r.policy_pdf_path){const rm=await sb.storage.from('insurance-policies').remove([r.policy_pdf_path]);if(rm.error)throw rm.error;}
+    const out=await sb.from('vehicle_insurance').delete().eq('id',id);
+    if(out.error)throw out.error;
+    if(editingId===id)clearForm();
+    showStatus('Insurance record deleted successfully.');
+    await load();
+  }catch(err){showStatus('Delete failed: '+(err.message||err),true)}
+};
+$('viForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const hasPdf=!!$('policyPdf')?.files?.length;
+  let aiData=null;
+  try{
+    // PDF extraction is preview-only. Selecting/fetching a PDF never saves anything.
+    // The current form values are saved only when the user explicitly clicks Save/Update.
+    const mobile=$('mobile').value.trim(),name=$('customer_name').value.trim(),vehicle=$('vehicle_number').value.trim().toUpperCase(),expiry=$('expiry_date').value;
+    if(!mobile||!name||!vehicle||!expiry)return showStatus('Please review the PDF-extracted details and fill Mobile Number, Customer Name, Vehicle Number and Expiry Date.',true);
+    const mobileKey=mobile.replace(/\D/g,'');
+    if(mobileKey.length<10)return showStatus('Please enter a valid mobile number.',true);
+
+    // Mobile number is the customer identity. Always resolve the customer first.
+    showStatus(editingId?'Updating customer and insurance…':'Checking customer by mobile…');
+    let customerId=null;
+    let canonicalName=name;
+    const customerLookup=await sb.from('customers').select('id,full_name,mobile,mobile_key').limit(5000);
+    if(customerLookup.error)return showStatus(customerLookup.error.message,true);
+    const found=(customerLookup.data||[]).find(c=>String(c.mobile_key||'')===mobileKey || String(c.mobile||'').replace(/\D/g,'')===mobileKey);
+
+    if(found){
+      customerId=found.id;
+      // If the user changed the name for this mobile number, update the
+      // master customer record and every insurance record linked to it.
+      canonicalName=name.trim()||String(found.full_name||'').trim();
+      if(canonicalName && canonicalName!==String(found.full_name||'').trim()){
+        const cu=await sb.from('customers').update({full_name:canonicalName,mobile:mobile,mobile_key:mobileKey}).eq('id',found.id);
+        if(cu.error)return showStatus('Customer name update failed: '+cu.error.message,true);
+        const iu=await sb.from('vehicle_insurance').update({customer_name:canonicalName,mobile:mobile,mobile_key:mobileKey}).eq('customer_id',found.id);
+        if(iu.error)return showStatus('Linked insurance name update failed: '+iu.error.message,true);
+      }else{
+        canonicalName=String(found.full_name||canonicalName).trim();
+      }
+    }else if(!editingId){
+      const session=(await sb.auth.getSession()).data.session;
+      if(!session)return showStatus('Your login session has expired.',true);
+      const r=await fetch(`${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-insurance-customer`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({full_name:name,mobile})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)return showStatus(j.message||j.error||'Unable to create/link customer profile.',true);
+      customerId=j.customer?.id||null;
+      canonicalName=j.customer?.full_name||name;
+      if(!j.existing&&j.temporary_password){alert(`Customer profile created successfully.\n\nLogin Mobile: ${mobile}\nTemporary Password: ${j.temporary_password}\n\nCustomer must change the password after first login.`)}
+    }else{
+      const existing=records.find(x=>x.id===editingId);
+      customerId=existing?.customer_id||null;
+      if(customerId){
+        const cr=await sb.from('customers').select('id,full_name,mobile,mobile_key').eq('id',customerId).maybeSingle();
+        if(cr.error)return showStatus(cr.error.message,true);
+        if(cr.data){
+          canonicalName=name.trim()||String(cr.data.full_name||'').trim();
+          if(canonicalName && canonicalName!==String(cr.data.full_name||'').trim()){
+            const cu=await sb.from('customers').update({full_name:canonicalName,mobile:mobile,mobile_key:mobileKey}).eq('id',customerId);
+            if(cu.error)return showStatus('Customer name update failed: '+cu.error.message,true);
+            const iu=await sb.from('vehicle_insurance').update({customer_name:canonicalName,mobile:mobile,mobile_key:mobileKey}).eq('customer_id',customerId);
+            if(iu.error)return showStatus('Linked insurance name update failed: '+iu.error.message,true);
+          }else canonicalName=String(cr.data.full_name||canonicalName).trim();
+        }
+      }
+    }
+
+
+    // Duplicate protection: one insurance record per mobile + vehicle + policy.
+    // Normalize punctuation/case so values such as "KL21 P 7868" and "KL21P7868"
+    // are treated as the same vehicle, and policy formatting differences do not
+    // create a second record.
+    const normVI = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const currentVehicleKey = normVI(vehicle);
+    const currentPolicyKey = normVI($('policy_number').value.trim());
+    let duplicateId = null;
+    if(!editingId){
+      const dupLookup = await sb.from('vehicle_insurance')
+        .select('id,vehicle_number,policy_number,expiry_date,customer_id')
+        .eq('mobile_key', mobileKey)
+        .limit(1000);
+      if(dupLookup.error)return showStatus('Duplicate check failed: '+dupLookup.error.message,true);
+      const duplicate = (dupLookup.data || []).find(r => {
+        const sameVehicle = normVI(r.vehicle_number) === currentVehicleKey;
+        const savedPolicyKey = normVI(r.policy_number);
+        const samePolicy = currentPolicyKey && savedPolicyKey && savedPolicyKey === currentPolicyKey;
+        const sameNoPolicyVehicle = !currentPolicyKey && !savedPolicyKey && String(r.expiry_date||'') === String(expiry||'');
+        return sameVehicle && (samePolicy || sameNoPolicyVehicle);
+      });
+      if(duplicate) duplicateId = duplicate.id;
+    }
+
+    const payload={customer_name:canonicalName,mobile,mobile_key:mobileKey,vehicle_number:vehicle,expiry_date:expiry,insurance_company:$('insurance_company').value.trim()||null,policy_number:$('policy_number').value.trim()||null,vehicle_type:$('vehicle_type').value.trim()||null,policy_start_date:$('policy_start_date').value||null,premium_amount:Number($('premium_amount').value||0),remarks:$('remarks').value.trim()||null};
+    payload.customer_id=customerId;
+    payload.created_by=(await sb.auth.getUser()).data.user?.id||null;
+    const saveId = editingId || duplicateId;
+    if(duplicateId){
+      showStatus('Existing insurance found for this mobile + vehicle + policy. Updating the existing record instead of creating a duplicate…');
+    }else{
+      showStatus(saveId?'Updating…':'Saving insurance…');
+    }
+    const res=saveId
+      ?await sb.from('vehicle_insurance').update(payload).eq('id',saveId).select('id').single()
+      :await sb.from('vehicle_insurance').insert(payload).select('id').single();
+    if(res.error)return showStatus(res.error.message,true);
+    const savedId=saveId||res.data?.id;
+
+    if(savedId && hasPdf){
+      try{
+        await window.itechUploadInsurancePolicy(savedId,aiData||{});
+        editingId=savedId;
+        $('saveBtn').textContent='Update Insurance';
+        showStatus(duplicateId?'Existing insurance updated. PDF uploaded. No duplicate was created.':'Insurance saved. PDF uploaded. Only the final details shown in the form were saved.');
+        await load();
+        return;
+      }catch(pdfErr){
+        showStatus('Insurance saved, but PDF upload failed: '+pdfErr.message,true);return;
+      }
+    }
+    showStatus((editingId||duplicateId)?'Insurance updated successfully. No duplicate was created.':'Insurance saved successfully.');clearForm();await load();
+  }catch(err){showStatus(err.message||'Unable to process insurance policy.',true)}
+});
+
+// Mobile number is the primary lookup key. Existing customer name is filled automatically.
+let viCustomerTimer;async function resolveCustomerByMobile(){clearTimeout(viCustomerTimer);viCustomerTimer=setTimeout(async()=>{const key=$('mobile').value.trim().replace(/\D/g,'');if(key.length<10)return;const r=await sb.from('customers').select('id,full_name,mobile,mobile_key').limit(2000);if(r.error)return;const found=(r.data||[]).find(c=>String(c.mobile_key||'')===key||String(c.mobile||'').replace(/\D/g,'')===key);if(found){$('customer_name').value=found.full_name||'';$('customer_name').readOnly=false;$('customer_name').style.background='#f4f8fc';showStatus(`Customer found: ${found.full_name}. You can correct the name; Save will update the customer record.`);}else{$('customer_name').readOnly=false;$('customer_name').style.background='';}},250)}$('mobile').addEventListener('input',resolveCustomerByMobile);$('mobile').addEventListener('blur',resolveCustomerByMobile);
+$('clearBtn').onclick=clearForm;function clearForm(){editingId=null;$('viForm').reset();if($('policyPdf'))$('policyPdf').value='';if($('policyAiStatus'))$('policyAiStatus').textContent='';$('customer_name').readOnly=false;$('customer_name').style.background='';$('saveBtn').textContent='Save Insurance'}$('search').oninput=render;$('filter').onchange=render;$('refresh').onclick=load;(async()=>{const a=await requireAdmin();if(!a)return;await load()})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+</body></html>

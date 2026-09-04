@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Bill | iTech IT Solutions</title>
+<link href="../css/style.css" rel="stylesheet">
+<link href="../css/dashboard.css" rel="stylesheet">
+<link href="../css/unified-dashboard.css" rel="stylesheet">
+<link href="../css/dashboard-shell.css" rel="stylesheet">
+<link href="../css/ui-enhancements.css" rel="stylesheet">
+<link href="../css/mobile-app-ready.css" rel="stylesheet">
+<link href="../css/itech-final-ui.css" rel="stylesheet">
+<style>
+.bill-tools{background:#fff;border:1px solid #dfe8f3;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(17,50,91,.07);margin-bottom:18px}
+.bill-filter{display:grid;grid-template-columns:minmax(260px,1.5fr) 1fr 1fr auto auto;gap:10px;align-items:end}
+.bill-field{display:flex;flex-direction:column;gap:6px;font-weight:800;color:#10284b;font-size:13px}.bill-field input,.bill-field select{border:1px solid #d8e2ef;border-radius:11px;padding:11px 12px;background:#fff;color:#10284b;font:inherit;box-sizing:border-box;width:100%}
+.bill-actions{display:flex;gap:8px;flex-wrap:wrap}.bill-actions .btn{white-space:nowrap}
+.bill-paper{background:#fff;border:1px solid #d5dfeb;border-radius:8px;box-shadow:0 12px 34px rgba(15,43,79,.10);padding:34px;max-width:980px;margin:0 auto;color:#172b49}
+.bill-top{display:flex;justify-content:space-between;gap:25px;border-bottom:2px solid #102f59;padding-bottom:20px}.company{display:flex;gap:14px;align-items:center}.company img{width:70px;height:70px;object-fit:contain}.company h2{margin:0;font-size:22px;color:#0b2c56}.company p{margin:4px 0 0;font-size:11px;line-height:1.5;color:#60728b}.invoice-meta{text-align:right}.invoice-meta h1{margin:0;font-size:25px;letter-spacing:1px;color:#10284b}.invoice-meta p{margin:5px 0;font-size:11px;color:#63758e}.invoice-no{font-weight:900;color:#10284b}
+.bill-customer{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px;margin:20px 0}.customer-box{border:1px solid #dfe7f1;border-radius:7px;padding:12px;background:#f8fbff}.customer-box small{display:block;text-transform:uppercase;font-size:9px;font-weight:900;color:#72839a;letter-spacing:.5px}.customer-box strong{display:block;margin-top:5px;font-size:14px;color:#10284b}
+.bill-section{margin-top:20px}.bill-section h3{font-size:15px;margin:0 0 9px;color:#10284b;border-left:4px solid #ff8b1f;padding-left:9px}.bill-table{width:100%;border-collapse:collapse;font-size:11px}.bill-table th{background:#edf3f9;color:#173354;text-transform:uppercase;font-size:9px;letter-spacing:.35px}.bill-table th,.bill-table td{border:1px solid #dce5ef;padding:9px 8px;text-align:left;vertical-align:top}.bill-table .amount{text-align:right;white-space:nowrap;font-weight:800}.subline{font-size:9px;color:#71829a;margin-top:3px;line-height:1.45}.muted-cell{text-align:center!important;color:#74849a;padding:16px!important}
+.bill-summary{display:grid;grid-template-columns:1fr 330px;gap:20px;margin-top:22px}.terms{border:1px solid #dfe7f1;border-radius:7px;padding:13px;background:#fbfcfe;font-size:10px;color:#60728a;line-height:1.55}.terms strong{color:#173354}.totals{border:1px solid #d7e1ec;border-radius:7px;overflow:hidden}.total-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid #e3eaf2;font-size:11px}.total-row b{font-size:12px}.total-row.grand{background:#102f59;color:#fff;font-size:14px}.total-row.grand b{font-size:15px}.total-row.balance{background:#fff4e8;color:#a94e00;border-bottom:0}.bill-footer{border-top:1px solid #dfe7f1;margin-top:25px;padding-top:16px;display:flex;justify-content:space-between;gap:20px;font-size:10px;color:#71819a}.signature{text-align:right;color:#173354;font-weight:800}.print-only-note{display:none}
+.empty-note{padding:18px;text-align:center;color:#71819a;background:#f8fbff;border:1px dashed #cfdbe8;border-radius:8px}
+.status{margin-top:10px}
+@media(max-width:900px){.bill-filter{grid-template-columns:1fr 1fr}.bill-filter .bill-field:first-child{grid-column:1/-1}.bill-customer{grid-template-columns:1fr}.bill-summary{grid-template-columns:1fr}.invoice-meta{text-align:left}.bill-top{flex-direction:column}.bill-paper{padding:20px}}
+@media(max-width:600px){.bill-filter{grid-template-columns:1fr}.bill-filter .bill-field:first-child{grid-column:auto}.bill-actions .btn{width:100%}.company img{width:58px;height:58px}.company h2{font-size:18px}.invoice-meta h1{font-size:21px}.bill-table{min-width:700px}.bill-paper{overflow:hidden;padding:14px}.bill-table-wrap{overflow:auto}}
+@media print{
+  @page{size:A4;margin:10mm}
+  body{background:#fff!important}.dash-header,.sidebar,.no-print,.toolbar,.status,.unified-site-footer,.site-footer{display:none!important}.dash-layout{display:block!important}.dash-main{margin:0!important;padding:0!important;width:100%!important}.bill-paper{box-shadow:none;border:0;border-radius:0;max-width:none;padding:0}.print-only-note{display:block}.bill-table th{background:#edf3f9!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.total-row.grand{background:#102f59!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.bill-section{break-inside:auto}.bill-table tr{break-inside:avoid}.bill-footer{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></a><a class="btn secondary" data-logout href="../pages/login.html">Logout</a></header>
+<div class="dash-layout">
+<aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+<a href="products.html">My Products</a>
+<a href="services.html">My Services</a>
+<a href="payments.html">Payments</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="customer-bill.html" class="active">Customer Bill</a>
+<a href="register-product.html">Register Product</a>
+<a href="change-password.html">Change Password</a></nav></aside>
+<main class="dash-main">
+<div class="toolbar"><div><p class="eyebrow">CUSTOMER BILL</p><h1>Customer Bill</h1><p class="muted">Your daily work, service, vehicle insurance and payment history in one printable bill.</p></div><div class="bill-actions no-print"><button class="btn secondary" id="allTime">All Time</button><button class="btn primary" id="printBill">🖨️ Print Bill</button></div></div>
+<section class="bill-tools no-print">
+<div class="bill-filter">
+<label class="bill-field">From<input type="date" id="from"></label>
+<label class="bill-field">To<input type="date" id="to"></label>
+<div class="bill-actions"><button class="btn primary" id="generate" type="button">Generate Bill</button></div>
+<div class="bill-actions"><button class="btn secondary" id="today" type="button">Today</button><button class="btn secondary" id="month" type="button">This Month</button></div>
+</div><div class="status" data-status=""></div>
+</section>
+<section class="bill-paper" id="billPaper">
+<div class="bill-top"><div class="company"><img src="../assets/itech-logo.png" alt="iTech IT Solutions"><div><h2>iTech IT Solutions</h2><p>Govt. Sub Treasury Road, Nedumangad<br>7736929233 · 8943165951<br>itnedumangad@gmail.com · @itechndd</p></div></div><div class="invoice-meta"><h1>CUSTOMER BILL</h1><p>Bill No: <span class="invoice-no" id="billNo">—</span></p><p>Bill Date: <span id="billDate">—</span></p><p>Period: <span id="period">—</span></p></div></div>
+<div class="bill-customer"><div class="customer-box"><small>Customer</small><strong id="billCustomer">—</strong></div><div class="customer-box"><small>Mobile</small><strong id="billMobile">—</strong></div><div class="customer-box"><small>Transactions</small><strong id="txCount">0</strong></div></div>
+<div class="bill-section"><h3>Daily Work & Service Charges</h3><div class="bill-table-wrap"><table class="bill-table"><thead><tr><th style="width:90px">Date</th><th>Description / Service</th><th style="width:90px">Gross</th><th style="width:80px">Discount</th><th style="width:95px">Net Amount</th></tr></thead><tbody id="workRows"><tr><td colspan="5" class="muted-cell">Select a customer and generate the bill.</td></tr></tbody></table></div></div>
+<div class="bill-section"><h3>Service Jobs</h3><div class="bill-table-wrap"><table class="bill-table"><thead><tr><th style="width:90px">Date</th><th>Job / Device</th><th>Status</th><th style="width:105px">Amount</th></tr></thead><tbody id="serviceRows"><tr><td colspan="4" class="muted-cell">No service jobs in this period.</td></tr></tbody></table></div></div>
+<div class="bill-section"><h3>Vehicle Insurance</h3><div class="bill-table-wrap"><table class="bill-table"><thead><tr><th style="width:90px">Date</th><th>Vehicle / Policy</th><th>Company / Type</th><th style="width:110px">Premium</th></tr></thead><tbody id="insuranceRows"><tr><td colspan="4" class="muted-cell">No insurance records in this period.</td></tr></tbody></table></div></div>
+<div class="bill-section"><h3>Payments Received</h3><div class="bill-table-wrap"><table class="bill-table"><thead><tr><th style="width:90px">Date</th><th>Source / Method</th><th>Reference / Notes</th><th style="width:110px">Amount</th></tr></thead><tbody id="paymentRows"><tr><td colspan="4" class="muted-cell">No payments in this period.</td></tr></tbody></table></div></div>
+<div class="bill-summary"><div class="terms"><strong>Notes</strong><br>This bill summarizes the selected customer's recorded daily work, service jobs, vehicle insurance premiums and payments for the selected period. Please verify the entries before payment. Amounts are shown as recorded in the iTech system.</div><div class="totals"><div class="total-row"><span>Total Daily Work</span><b id="totalWork">₹0.00</b></div><div class="total-row"><span>Total Service Jobs</span><b id="totalService">₹0.00</b></div><div class="total-row"><span>Total Insurance</span><b id="totalInsurance">₹0.00</b></div><div class="total-row"><span>Gross Charges</span><b id="grossCharges">₹0.00</b></div><div class="total-row"><span>Discount</span><b id="totalDiscount">₹0.00</b></div><div class="total-row"><span>Net Charges</span><b id="netCharges">₹0.00</b></div><div class="total-row"><span>Payments Received</span><b id="totalPaid">₹0.00</b></div><div class="total-row grand"><span>Balance Due</span><b id="balanceDue">₹0.00</b></div></div></div>
+<div class="bill-footer"><div>Thank you for your business.<br><b>Your Trust Our Service</b></div><div class="signature">For iTech IT Solutions<br><br>Authorized Signature</div></div>
+</section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+<script>
+(async()=>{
+  const auth=await requireCustomer();
+  if(!auth)return;
+  const $=id=>document.getElementById(id);
+  const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dateText=d=>{if(!d)return '—'; const x=new Date(String(d).length===10?d+'T00:00:00':d); return Number.isNaN(x.getTime())?'—':x.toLocaleDateString('en-IN')};
+  const iso=d=>{const x=new Date(d);return new Date(x.getTime()-x.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+  const today=iso(new Date());
+  const firstOfMonth=()=>{const d=new Date();d.setDate(1);return iso(d)};
+  $('from').value=firstOfMonth(); $('to').value=today;
+  const c=await sb.from('customers').select('id,full_name,mobile').eq('auth_user_id',auth.session.user.id).single();
+  if(c.error)return showStatus(c.error.message,true);
+  const customer=c.data; let lastData=null;
+  function setPeriod(from,to){$('from').value=from;$('to').value=to}
+  function renderEmpty(){['workRows','serviceRows','insuranceRows','paymentRows'].forEach(id=>$(id).innerHTML='<tr><td colspan="5" class="muted-cell">Generate the bill to view your records.</td></tr>')}
+  async function generate(){
+    const id=customer.id,from=$('from').value,to=$('to').value;
+    if(!from||!to)return showStatus('Select From and To dates.',true);
+    if(from>to)return showStatus('From date cannot be after To date.',true);
+    try{
+      const [w,p,si,ins]=await Promise.all([
+        sb.from('daily_work_entries').select('id,work_date,created_at,e_filing,e_payment,print_amount,scanning,other_works,description,discount,paid_amount').eq('customer_id',id).gte('work_date',from).lte('work_date',to).order('work_date',{ascending:true}).order('created_at',{ascending:true}),
+        sb.from('payments').select('payment_date,amount,payment_method,reference_number,notes,created_at').eq('customer_id',id).gte('payment_date',from).lte('payment_date',to).order('payment_date',{ascending:true}).order('created_at',{ascending:true}),
+        sb.from('service_jobs').select('id,job_number,device_type,brand,model,status,final_amount,estimate_amount,created_at').eq('customer_id',id).gte('created_at',from+'T00:00:00').lte('created_at',to+'T23:59:59').order('created_at',{ascending:true}),
+        sb.from('vehicle_insurance').select('id,vehicle_number,policy_number,insurance_company,vehicle_type,premium_amount,policy_start_date,expiry_date,created_at').eq('customer_id',id).gte('created_at',from+'T00:00:00').lte('created_at',to+'T23:59:59').order('created_at',{ascending:true})
+      ]);
+      if(w.error)throw w.error;if(p.error)throw p.error;
+      const works=w.data||[], pays=p.data||[], serviceJobs=si.error?[]:(si.data||[]), insurance=ins.error?[]:(ins.data||[]);
+      const workData=works.map(r=>{const base=Number(r.e_filing||0)+Number(r.e_payment||0)+Number(r.print_amount||0)+Number(r.scanning||0)+Number(r.other_works||0);const discount=Math.max(Number(r.discount||0),0);return {...r,gross:base,discount,net:Math.max(base-discount,0)}});
+      const serviceData=serviceJobs.map(r=>({...r,amount:Number(r.final_amount||0)>0?Number(r.final_amount):Number(r.estimate_amount||0)}));
+      const insuranceData=insurance.map(r=>({...r,amount:Number(r.premium_amount||0)}));
+      const workPaid=works.reduce((s,r)=>s+Math.max(Number(r.paid_amount||0),0),0), tablePaid=pays.reduce((s,r)=>s+Math.max(Number(r.amount||0),0),0), totalPaid=workPaid+tablePaid;
+      const totalWork=workData.reduce((s,r)=>s+r.net,0), totalService=serviceData.reduce((s,r)=>s+r.amount,0), totalInsurance=insuranceData.reduce((s,r)=>s+r.amount,0), grossWork=workData.reduce((s,r)=>s+r.gross,0), totalDiscount=workData.reduce((s,r)=>s+r.discount,0);
+      const grossCharges=grossWork+totalService+totalInsurance, netCharges=totalWork+totalService+totalInsurance, balance=Math.max(netCharges-totalPaid,0), tx=works.length+serviceData.length+insuranceData.length+pays.length+(workPaid>0?1:0);
+      $('billCustomer').textContent=customer?.full_name||'Customer'; $('billMobile').textContent=customer?.mobile||'—'; $('txCount').textContent=tx;
+      $('billNo').textContent='CB-'+today.replace(/-/g,'')+'-'+String(id).replace(/[^a-z0-9]/gi,'').slice(0,6).toUpperCase(); $('billDate').textContent=dateText(today); $('period').textContent=dateText(from)+' to '+dateText(to);
+      $('totalWork').textContent=money(totalWork); $('totalService').textContent=money(totalService); $('totalInsurance').textContent=money(totalInsurance); $('grossCharges').textContent=money(grossCharges); $('totalDiscount').textContent=money(totalDiscount); $('netCharges').textContent=money(netCharges); $('totalPaid').textContent=money(totalPaid); $('balanceDue').textContent=money(balance);
+      $('workRows').innerHTML=workData.length?workData.map(r=>`<tr><td>${dateText(r.work_date)}</td><td><b>${esc(r.description||'Daily Work')}</b><div class="subline">E-Filing ${money(r.e_filing)} · E-Payment ${money(r.e_payment)} · Print ${money(r.print_amount)} · Scanning ${money(r.scanning)} · Other ${money(r.other_works)}</div></td><td class="amount">${money(r.gross)}</td><td class="amount">${r.discount?money(r.discount):'—'}</td><td class="amount">${money(r.net)}</td></tr>`).join(''):'<tr><td colspan="5" class="muted-cell">No daily work entries in this period.</td></tr>';
+      $('serviceRows').innerHTML=serviceData.length?serviceData.map(r=>`<tr><td>${dateText(r.created_at)}</td><td><b>${esc(r.job_number||'Service Job')}</b><div class="subline">${esc([r.device_type,r.brand,r.model].filter(Boolean).join(' · ')||'Service job')}</div></td><td>${esc(r.status||'—')}</td><td class="amount">${money(r.amount)}</td></tr>`).join(''):'<tr><td colspan="4" class="muted-cell">No service jobs in this period.</td></tr>';
+      $('insuranceRows').innerHTML=insuranceData.length?insuranceData.map(r=>`<tr><td>${dateText(r.created_at)}</td><td><b>🚗 ${esc(r.vehicle_number||'Vehicle')}</b><div class="subline">Policy: ${esc(r.policy_number||'—')} · Expiry: ${dateText(r.expiry_date)}</div></td><td>${esc(r.insurance_company||'Insurance')}<div class="subline">${esc(r.vehicle_type||'—')}</div></td><td class="amount">${money(r.amount)}</td></tr>`).join(''):'<tr><td colspan="4" class="muted-cell">No insurance records in this period.</td></tr>';
+      let paymentRows=pays.map(r=>`<tr><td>${dateText(r.payment_date)}</td><td>${esc(r.payment_method||'Cash')}</td><td>${esc([r.reference_number,r.notes].filter(Boolean).join(' · ')||'—')}</td><td class="amount">${money(r.amount)}</td></tr>`);
+      if(workPaid>0)paymentRows.unshift(...works.filter(r=>Number(r.paid_amount||0)>0).map(r=>`<tr><td>${dateText(r.work_date)}</td><td>Daily Work Payment</td><td>Payment recorded with work entry</td><td class="amount">${money(r.paid_amount)}</td></tr>`));
+      $('paymentRows').innerHTML=paymentRows.length?paymentRows.join(''):'<tr><td colspan="4" class="muted-cell">No payments in this period.</td></tr>';
+      lastData={from,to};showStatus('Customer bill generated successfully.');
+    }catch(e){console.error(e);showStatus(e.message||'Unable to generate customer bill.',true)}
+  }
+  $('generate').onclick=generate; $('printBill').onclick=()=>{if(!lastData)return showStatus('Generate the bill first.',true);window.print()}; $('today').onclick=()=>{setPeriod(today,today);generate()}; $('month').onclick=()=>{setPeriod(firstOfMonth(),today);generate()}; $('allTime').onclick=()=>{setPeriod('2000-01-01',today);generate()};
+  generate();
+})();
+</script>
+<script id="itech-mobile-navigation">(function(){const h=document.querySelector('.dash-header'),s=document.querySelector('.sidebar');if(!h||!s)return;const b=document.createElement('button');b.id='uiMobileMenuBtn';b.className='ui-mobile-menu-btn';b.type='button';b.innerHTML='☰';const o=document.createElement('div');o.className='ui-mobile-overlay';const x=document.createElement('button');x.className='ui-mobile-close';x.type='button';x.innerHTML='×';s.prepend(x);document.body.appendChild(o);const br=h.querySelector('.brand');if(br)br.parentNode.insertBefore(b,br.nextSibling);function close(){s.classList.remove('ui-open');o.classList.remove('open');document.body.style.overflow=''}function open(){s.classList.add('ui-open');o.classList.add('open');document.body.style.overflow='hidden'}b.onclick=open;x.onclick=close;o.onclick=close;s.querySelectorAll('a').forEach(a=>a.onclick=close)})();</script>
+</body></html>

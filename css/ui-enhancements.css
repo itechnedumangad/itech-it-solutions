@@ -1,0 +1,92 @@
+
+/* =========================================================
+   iTech UI/UX FINAL POLISH
+   Shared Admin / Staff / Customer dashboard pages
+   ========================================================= */
+:root{
+  --ui-navy:#071c3b;--ui-navy2:#0d2d5a;--ui-blue:#1769e0;--ui-blue2:#3459ff;
+  --ui-orange:#ff8a16;--ui-ink:#10284b;--ui-muted:#71819b;--ui-line:#dfe8f4;
+  --ui-bg:#f4f8fd;--ui-radius:18px;--ui-shadow:0 12px 34px rgba(17,50,91,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+.dash-main{animation:uiPageIn .45s ease both}
+@keyframes uiPageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel,.dashboard-card,.customer-card,.card,.quick-card,.kpi,.stat-card,.customer-stat{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.panel:hover,.dashboard-card:hover,.card:hover,.quick-card:hover{box-shadow:0 16px 38px rgba(17,50,91,.10)}
+.kpi:hover,.stat-card:hover,.customer-stat:hover{transform:translateY(-3px)}
+.btn{transition:transform .18s ease,box-shadow .18s ease,background .18s ease!important}
+.btn:hover{transform:translateY(-1px)}
+input,select,textarea{font:inherit;max-width:100%}
+button{font:inherit}
+.table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
+.data-table{min-width:680px}
+.status{max-width:100%}
+
+/* Mobile navigation */
+.ui-mobile-menu-btn{
+  display:none;position:relative;width:42px;height:42px;border:1px solid rgba(255,255,255,.18);
+  border-radius:11px;background:rgba(255,255,255,.10);color:#fff;cursor:pointer;
+  font-size:21px;line-height:1;flex:0 0 42px;
+}
+.ui-mobile-overlay{
+  display:none;position:fixed;inset:0;background:rgba(4,21,45,.46);
+  backdrop-filter:blur(3px);z-index:199;
+}
+.ui-mobile-overlay.open{display:block}
+.ui-mobile-close{display:none}
+
+@media(max-width:760px){
+  .dash-header{padding:0 14px!important;gap:10px!important}
+  .ui-mobile-menu-btn{display:grid;place-items:center}
+  .dash-header .brand-logo{height:40px!important;max-width:145px!important}
+  .dash-header .brand{min-width:0}
+  .header-actions{gap:7px!important}
+  .user-chip{max-width:125px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 10px!important}
+  .sidebar{
+    display:block!important;position:fixed!important;left:0;top:0;bottom:0;
+    width:min(285px,84vw)!important;min-width:0!important;z-index:200!important;
+    transform:translateX(-105%);transition:transform .25s ease!important;
+    overflow-y:auto!important;padding:72px 15px 20px!important;
+  }
+  .sidebar.ui-open{transform:translateX(0)}
+  .sidebar nav a{padding:11px 12px!important}
+  .ui-mobile-close{
+    display:grid;place-items:center;position:absolute;right:12px;top:14px;
+    width:38px;height:38px;border:0;border-radius:10px;background:rgba(255,255,255,.1);
+    color:#fff;font-size:22px;cursor:pointer;
+  }
+  .dash-main{padding:18px 14px 28px!important}
+  .toolbar{gap:12px!important}
+  .toolbar h1{font-size:clamp(23px,6vw,28px)!important}
+  .toolbar .btn{max-width:100%}
+  .panel,.dashboard-card,.customer-card,.card{padding:16px!important;border-radius:15px!important}
+  .kpis,.stats-grid,.customer-grid{gap:11px!important}
+  .kpi,.stat-card,.customer-stat{padding:15px!important;border-radius:15px!important}
+  .kpi .value,.stat-card strong,.customer-stat strong{font-size:23px!important}
+  .entry-layout,.customer-paid{grid-template-columns:1fr!important}
+  .amount-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .search-row{flex-wrap:wrap!important}
+  .search-row input{min-width:0!important;width:100%!important}
+  .data-table{min-width:620px}
+  .unified-site-footer,footer.footer{margin-left:0!important}
+}
+@media(max-width:480px){
+  .dash-header{min-height:64px!important;height:64px!important}
+  .dash-header .brand-logo{height:36px!important;max-width:126px!important}
+  .user-chip{display:none}
+  .dash-main{padding:14px 11px 24px!important}
+  .toolbar{margin-bottom:14px!important}
+  .toolbar .btn{width:100%!important;text-align:center}
+  .amount-grid{grid-template-columns:1fr!important}
+  .ci-head .btn{width:100%!important}
+  .ci-item{align-items:flex-start!important}
+  .ci-status{margin-left:auto}
+}
+
+/* Respect reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+}

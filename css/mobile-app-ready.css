@@ -1,0 +1,581 @@
+
+/* =========================================================
+   iTech IT Solutions — Mobile App Ready UI Layer
+   Mobile-first responsive polish for future Android/WebView use
+   ========================================================= */
+*{box-sizing:border-box}
+html{width:100%;max-width:100%;overflow-x:hidden}
+body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+img,video,canvas{max-width:100%;height:auto}
+button,a,input,select,textarea{font:inherit}
+button,.btn,a.btn{min-height:42px}
+input,select,textarea{max-width:100%}
+
+@media(max-width:900px){
+  .dash-layout{display:block!important}
+  .sidebar{
+    position:fixed!important;left:0;top:0;bottom:0;
+    width:min(290px,82vw)!important;
+    z-index:2000!important;
+    transform:translateX(-105%);
+    transition:transform .25s ease;
+    overflow-y:auto;
+    box-shadow:12px 0 35px rgba(7,28,59,.18);
+  }
+  .sidebar.mobile-open{transform:translateX(0)}
+  .dash-main{width:100%!important;max-width:100%!important;margin:0!important;padding:16px!important}
+  .dash-header{position:sticky;top:0;z-index:1500;min-height:60px;padding:9px 12px!important}
+  .dash-header .brand-logo{max-height:42px;width:auto}
+  .toolbar{gap:12px!important;align-items:flex-start!important;flex-wrap:wrap!important}
+  .toolbar .btn{width:auto}
+  .data-table{min-width:720px}
+  .table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .panel,.customer-card{max-width:100%;overflow:hidden}
+}
+
+@media(max-width:600px){
+  body{font-size:14px}
+  .dash-main{padding:12px!important}
+  .toolbar{margin-bottom:14px!important}
+  .toolbar h1{font-size:24px!important;line-height:1.15}
+  .toolbar .btn{width:100%;justify-content:center;text-align:center}
+  .customer-grid{grid-template-columns:1fr!important}
+  .customer-stat{min-height:88px!important;padding:14px!important}
+  .customer-stat strong{font-size:22px!important}
+  .panel,.customer-card{border-radius:14px!important;padding:14px!important}
+  .search-row{display:flex;flex-direction:column;gap:9px}
+  .search-row input{width:100%!important}
+  .form-grid,.grid,.cards-grid{grid-template-columns:1fr!important}
+  .form-actions,.actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+  .form-actions .btn,.actions .btn{width:100%!important}
+  .ci-head{flex-direction:column!important;align-items:stretch!important}
+  .ci-head .btn{width:100%!important}
+  .ci-item{align-items:flex-start!important}
+  .unified-site-footer{margin-top:18px!important;padding:22px 12px!important}
+}
+
+/* Prevent common fixed-width components from breaking narrow screens */
+@media(max-width:430px){
+  .dash-header{padding-left:9px!important;padding-right:9px!important}
+  .dash-main{padding:10px!important}
+  h1{font-size:23px}
+  h2{font-size:19px}
+  .btn{padding-left:13px!important;padding-right:13px!important}
+}
+
+/* Respect reduced-motion preferences */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+
+/* =========================================================
+   iTech MASTER UI SYSTEM — FINAL RESPONSIVE LAYER
+   Shared by public, admin, staff and customer pages.
+   Mobile-first / WebView / future Android-app friendly.
+========================================================= */
+
+:root{
+  --itech-master-navy:#071c3b;
+  --itech-master-navy2:#0d2d5a;
+  --itech-master-blue:#1769e0;
+  --itech-master-blue2:#3459ff;
+  --itech-master-orange:#f28a1a;
+  --itech-master-ink:#10284b;
+  --itech-master-muted:#71819b;
+  --itech-master-line:#dfe8f4;
+}
+
+/* ---------- Global safety ---------- */
+html,body{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow-x:hidden!important;
+}
+body{
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+}
+*,*::before,*::after{box-sizing:border-box}
+img,svg,video,canvas{max-width:100%}
+table{max-width:100%}
+a,button{touch-action:manipulation}
+
+/* ---------- PUBLIC HEADER ---------- */
+.site-header{
+  width:100%;
+  position:sticky!important;
+  top:0!important;
+  z-index:1000!important;
+}
+.site-header .nav-wrap{
+  width:min(1280px,calc(100% - 32px));
+  min-height:76px;
+  margin:0 auto;
+  padding:10px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.site-header .brand{flex:0 0 auto;min-width:0}
+.site-header .brand-logo{
+  width:auto!important;
+  height:48px!important;
+  max-width:170px!important;
+  object-fit:contain!important;
+}
+.site-header .nav{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  min-width:0;
+}
+.site-header .nav a{
+  white-space:nowrap;
+}
+.site-header #menu{
+  display:none;
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  min-height:44px;
+  margin-left:auto;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;
+  background:rgba(255,255,255,.09);
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+/* ---------- MASTER FOOTER ----------
+   Same visual language as the index/front page.
+*/
+.site-footer,
+.unified-site-footer,
+footer.footer{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:40px 20px 28px!important;
+  min-height:190px;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  text-align:center!important;
+  background:
+    radial-gradient(circle at 50% -30%,rgba(23,105,224,.20),transparent 42%),
+    linear-gradient(180deg,#04152d,#061d3d)!important;
+  color:#dbe6f3!important;
+  border-top:3px solid transparent!important;
+  border-image:linear-gradient(90deg,#1769e0,#f28a1a,#1769e0) 1!important;
+  overflow:hidden!important;
+}
+.site-footer .footer-brand{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:68px;
+}
+.site-footer .footer-logo,
+.unified-site-footer .footer-logo,
+.footer .footer-logo-only{
+  display:block!important;
+  width:clamp(130px,16vw,190px)!important;
+  max-width:190px!important;
+  max-height:76px!important;
+  height:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  margin:0 auto 7px!important;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.16));
+}
+.site-footer p,
+.site-footer span,
+.site-footer small{
+  display:block;
+  max-width:100%;
+  margin:0!important;
+  overflow-wrap:anywhere;
+}
+.site-footer .footer-address,
+.site-footer .footer-contact,
+.site-footer .footer-email{
+  color:#dbe6f3!important;
+  font-size:13px;
+  line-height:1.5;
+}
+.site-footer .footer-social{
+  color:#f28a1a!important;
+  font-size:13px;
+  font-weight:850;
+}
+.site-footer .footer-tagline{
+  width:min(560px,100%);
+  margin-top:6px!important;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.13);
+  color:#f28a1a!important;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.05em;
+}
+
+/* ---------- DASHBOARD HEADER ---------- */
+.dash-header{
+  width:100%!important;
+  min-width:0!important;
+}
+.dash-header .brand-logo{
+  width:auto!important;
+  height:50px!important;
+  max-width:175px!important;
+  object-fit:contain!important;
+}
+.dash-header .brand{
+  min-width:0;
+}
+.dash-header .header-actions{
+  min-width:0;
+}
+
+/* ---------- DASHBOARD MAIN ---------- */
+.dash-layout{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+.dash-main{
+  min-width:0!important;
+  overflow:visible;
+}
+.panel,.dashboard-card,.customer-card,.card,.quick-card,.kpi,.stat-card,.customer-stat{
+  min-width:0;
+}
+.field input,.field select,.field textarea,
+input,select,textarea,button{
+  max-width:100%;
+}
+
+/* Tables stay usable without causing page-level horizontal scroll. */
+.table-scroll{
+  max-width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.data-table{
+  width:100%;
+}
+
+/* ---------- PUBLIC MOBILE NAV ----------
+   One button + one dropdown only.
+*/
+@media(max-width:900px){
+  .site-header .nav-wrap{
+    width:calc(100% - 24px);
+    min-height:66px;
+    padding:9px 0;
+    gap:8px;
+  }
+  .site-header #menu{
+    display:flex!important;
+    margin-left:auto;
+  }
+  .site-header .nav{
+    display:none!important;
+    position:absolute!important;
+    left:12px!important;
+    right:12px!important;
+    top:calc(100% + 7px)!important;
+    padding:8px!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    background:linear-gradient(180deg,#071c3b,#0d2d5a)!important;
+    border:1px solid rgba(255,255,255,.12)!important;
+    border-radius:15px!important;
+    box-shadow:0 18px 45px rgba(4,21,45,.25)!important;
+    z-index:2000!important;
+  }
+  .site-header .nav.ui-open{
+    display:flex!important;
+    animation:itechNavIn .18s ease both;
+  }
+  .site-header .nav a{
+    display:flex!important;
+    align-items:center;
+    min-height:44px!important;
+    width:100%!important;
+    padding:11px 13px!important;
+    border-radius:10px!important;
+    color:#eaf2ff!important;
+  }
+  .site-header .nav a:hover,
+  .site-header .nav a:focus-visible{
+    background:rgba(255,255,255,.10)!important;
+  }
+  @keyframes itechNavIn{
+    from{opacity:0;transform:translateY(-5px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* Dashboard side navigation */
+  .dash-layout{
+    display:block!important;
+  }
+  .sidebar{
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:min(292px,84vw)!important;
+    min-width:0!important;
+    max-width:84vw!important;
+    height:100dvh!important;
+    transform:translateX(-105%)!important;
+    transition:transform .26s cubic-bezier(.22,.61,.36,1)!important;
+    z-index:2000!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+    border-radius:0 18px 18px 0!important;
+    padding:72px 14px 22px!important;
+  }
+  .sidebar.ui-open,
+  .sidebar.mobile-open{
+    transform:translateX(0)!important;
+  }
+  .sidebar nav{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:4px!important;
+  }
+  .sidebar nav a{
+    width:100%!important;
+    min-height:44px!important;
+  }
+  .ui-mobile-overlay{
+    display:none;
+    position:fixed!important;
+    inset:0!important;
+    background:rgba(4,21,45,.52)!important;
+    backdrop-filter:blur(3px);
+    z-index:1990!important;
+  }
+  .ui-mobile-overlay.open{display:block!important}
+  .ui-mobile-close{
+    display:grid!important;
+    place-items:center;
+    position:absolute!important;
+    right:12px!important;
+    top:13px!important;
+    width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    border:1px solid rgba(255,255,255,.12)!important;
+    border-radius:11px!important;
+    background:rgba(255,255,255,.09)!important;
+    color:#fff!important;
+    font-size:23px!important;
+    cursor:pointer;
+  }
+  .ui-mobile-menu-btn{
+    display:grid!important;
+    place-items:center;
+    width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+    flex:0 0 42px!important;
+  }
+  .dash-header{
+    min-height:66px!important;
+    height:auto!important;
+    padding:9px 14px!important;
+    gap:8px!important;
+  }
+  .dash-header .brand-logo{
+    height:40px!important;
+    max-width:145px!important;
+  }
+  .dash-header .brand{
+    flex:0 1 auto!important;
+    min-width:0!important;
+  }
+  .dash-header .header-actions{
+    margin-left:auto;
+  }
+  .dash-header .user-chip{
+    max-width:140px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .dash-main{
+    width:100%!important;
+    padding:18px 14px 30px!important;
+  }
+}
+
+/* ---------- SMALL MOBILE ---------- */
+@media(max-width:600px){
+  .site-header .brand-logo{
+    height:39px!important;
+    max-width:130px!important;
+  }
+  .site-header #menu{
+    width:42px;
+    height:42px;
+    min-height:42px;
+  }
+
+  .dash-header{
+    min-height:62px!important;
+    padding:8px 10px!important;
+  }
+  .dash-header .brand-logo{
+    height:36px!important;
+    max-width:125px!important;
+  }
+  .dash-main{
+    padding:14px 11px 25px!important;
+  }
+  .toolbar{
+    width:100%;
+    min-width:0;
+    margin-bottom:15px!important;
+  }
+  .toolbar h1{
+    max-width:100%;
+    overflow-wrap:anywhere;
+    font-size:clamp(23px,7vw,29px)!important;
+  }
+  .customer-greeting{
+    letter-spacing:-.02em;
+  }
+  .panel,.dashboard-card,.customer-card,.card,.quick-card{
+    padding:15px!important;
+    border-radius:15px!important;
+  }
+  .kpi,.stat-card,.customer-stat{
+    padding:14px!important;
+    border-radius:14px!important;
+  }
+  .kpis,.stats-grid,.customer-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  .entry-layout,.customer-paid,.two{
+    grid-template-columns:1fr!important;
+  }
+  .amount-grid{
+    grid-template-columns:1fr!important;
+  }
+  .search-row{
+    width:100%;
+    flex-direction:column!important;
+    align-items:stretch!important;
+  }
+  .search-row input,.search-row select{
+    width:100%!important;
+    min-width:0!important;
+  }
+  .form-actions,.actions{
+    width:100%;
+  }
+  .form-actions .btn,.actions .btn{
+    width:100%!important;
+    justify-content:center!important;
+  }
+  .ci-head{
+    align-items:stretch!important;
+  }
+  .ci-head .btn{
+    width:100%!important;
+  }
+  .ci-item{
+    width:100%;
+    min-width:0;
+  }
+  .ci-main{
+    min-width:0;
+  }
+  .ci-main small{
+    overflow-wrap:anywhere;
+  }
+
+  .site-footer,
+  .unified-site-footer,
+  footer.footer{
+    min-height:175px;
+    padding:29px 15px 22px!important;
+    gap:6px!important;
+  }
+  .site-footer .footer-brand{
+    min-height:58px;
+  }
+  .site-footer .footer-logo,
+  .unified-site-footer .footer-logo,
+  .footer .footer-logo-only{
+    width:min(175px,64vw)!important;
+    max-height:68px!important;
+    margin-bottom:5px!important;
+  }
+  .site-footer .footer-address,
+  .site-footer .footer-contact,
+  .site-footer .footer-email,
+  .site-footer .footer-social{
+    font-size:12px!important;
+  }
+  .site-footer .footer-tagline{
+    font-size:11px!important;
+    padding-top:10px;
+  }
+}
+
+@media(max-width:420px){
+  .site-header .nav-wrap{
+    width:calc(100% - 18px);
+  }
+  .site-header .brand-logo{
+    height:36px!important;
+    max-width:120px!important;
+  }
+  .dash-header .brand-logo{
+    height:34px!important;
+    max-width:118px!important;
+  }
+  .dash-header .header-actions .btn{
+    padding:9px 11px!important;
+    min-height:40px!important;
+  }
+  .toolbar h1{font-size:23px!important}
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+:focus-visible{
+  outline:3px solid rgba(23,105,224,.35);
+  outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+}

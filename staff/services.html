@@ -199,7 +199,31 @@
 }
 </style>
 
-</head>
+<style>
+/* ===== Service page UI refresh ===== */
+.service-page-polish{margin-bottom:8px}
+.job-card-panel,.service-catalog-panel{border:1px solid #e4ebf5;box-shadow:0 10px 30px rgba(12,40,75,.06)}
+.job-card-panel .toolbar,.service-catalog-panel .toolbar{align-items:center}
+.job-card-panel h2,.service-catalog-panel h2{letter-spacing:-.25px}
+.job-card-panel .muted,.service-catalog-panel .muted{color:#7183a0}
+.job-table-wrap{border:1px solid #e1e9f4;border-radius:14px;background:#fff}
+.job-table-wrap .data-table{min-width:980px}
+.job-table-wrap th{background:#f7faff;font-size:12px;color:#52657f;white-space:nowrap}
+.job-table-wrap td{vertical-align:middle}
+.job-action-wrap .btn-small{min-height:34px;padding:7px 10px;border:1px solid #e0e6ef;background:#f8fafc}
+.job-action-wrap .btn-small:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,45,80,.08)}
+.job-action-wrap .btn-edit-job{background:#eef5ff;color:#12447d;border-color:#d7e6fb}
+.job-action-wrap .btn-delete{background:#fff2f2;color:#b42318;border-color:#ffd9d9}
+.job-card-panel select[data-job-status]{min-width:145px;padding:8px 10px;border:1px solid #d8e2ef;border-radius:9px;background:#fff}
+.service-table-wrap{border:1px solid #e1e9f4;border-radius:14px;background:#fff}
+.service-table-wrap .data-table{min-width:760px}
+.service-table-wrap th{background:#f7faff;font-size:12px;color:#52657f}
+.btn.primary{box-shadow:0 6px 16px rgba(35,91,220,.16)}
+@media(max-width:700px){
+  .job-action-wrap{flex-direction:column;align-items:stretch}
+  .job-action-wrap .btn-small{width:100%}
+}
+</style></head>
 <body>
 <header class="dash-header">
 <a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
@@ -209,8 +233,7 @@
 </header>
 <div class="dash-layout">
 <aside class="sidebar">
-<nav>
-<a href="dashboard.html">Dashboard</a>
+<nav><a href="dashboard.html">Dashboard</a>
 <a href="customers.html">Customers</a>
 <a href="add-customer.html">+ Add Customer</a>
 <a href="daily-work.html">Daily Work</a>
@@ -224,8 +247,7 @@
 <a href="amc.html">AMC</a>
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
-<a href="messages.html">Messages</a>
-</nav>
+<a href="messages.html">Messages</a></nav>
 </aside>
 <main class="dash-main">
 <div class="toolbar">
@@ -277,7 +299,7 @@ Loading services...
 <script>
 /* =========================================================
    iTech SERVICE JOB CARDS
-   Staff: New Customer -> Customer record + Login account
+   Corrected: New Customer -> Customer record + Login account
    Login identifier: mobile number
    Internal auth email: mobile@itech.local
    ========================================================= */
@@ -778,6 +800,10 @@ Loading services...
 
         <td>
           <div class="job-action-wrap">
+            <button class="btn-small btn-edit-job"
+                    data-job-edit="${esc(j.id)}">
+              ✎ Edit
+            </button>
             <button class="btn-small"
                     data-job-print="${esc(j.id)}">
               🖨 Print
@@ -812,6 +838,12 @@ Loading services...
 
         if(r.error)alert(r.error.message);
         else loadJobs();
+      });
+
+    document.querySelectorAll("[data-job-edit]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobEdit));
+        if(j)editJob(j);
       });
 
     document.querySelectorAll("[data-job-print]")
@@ -880,6 +912,126 @@ Loading services...
     };
 
     return m;
+  }
+
+  function editJob(j){
+    if(!j)return;
+
+    const customerOptions = customers.map(c =>
+      `<option value="${esc(c.id)}" ${String(c.id)===String(j.customer_id)?"selected":""}>
+        ${esc(c.full_name||"Customer")} — ${esc(c.mobile||"")}
+      </option>`
+    ).join("");
+
+    modal(
+      "Edit Service Job Card",
+      `<div class="job-form-grid">
+        <label class="field wide">
+          Customer
+          <select id="eCustomer">
+            <option value="">Select customer</option>
+            ${customerOptions}
+          </select>
+        </label>
+
+        <label class="field">
+          Device Type
+          <input id="eDevice" value="${esc(j.device_type||"")}">
+        </label>
+        <label class="field">
+          Brand
+          <input id="eBrand" value="${esc(j.brand||"")}">
+        </label>
+        <label class="field">
+          Model
+          <input id="eModel" value="${esc(j.model||"")}">
+        </label>
+        <label class="field">
+          Serial Number
+          <input id="eSerial" value="${esc(j.serial_number||"")}">
+        </label>
+        <label class="field">
+          Technician ID
+          <input id="eTech" value="${esc(j.technician_id||"")}">
+        </label>
+        <label class="field">
+          Priority
+          <select id="ePriority">
+            ${["Normal","Low","High","Urgent"].map(x=>`<option ${x===(j.priority||"Normal")?"selected":""}>${x}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          Status
+          <select id="eStatus">
+            ${statuses.map(x=>`<option value="${esc(x)}" ${x===(j.status||"Received")?"selected":""}>${esc(x)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          Expected Delivery
+          <input id="eDelivery" type="date" value="${esc((j.expected_delivery||"").slice(0,10))}">
+        </label>
+        <label class="field wide">
+          Accessories
+          <input id="eAccessories" value="${esc(j.accessories||"")}" placeholder="Charger, bag, cable, etc.">
+        </label>
+        <label class="field wide">
+          Complaint
+          <textarea id="eComplaint" rows="3">${esc(j.complaint||"")}</textarea>
+        </label>
+        <label class="field wide">
+          Diagnosis
+          <textarea id="eDiagnosis" rows="2">${esc(j.diagnosis||"")}</textarea>
+        </label>
+        <label class="field">
+          Estimate Amount
+          <input id="eEstimate" type="number" min="0" step="0.01" value="${Number(j.estimate_amount||0)}">
+        </label>
+        <label class="field">
+          Advance / Paid
+          <input id="eAdvance" type="number" min="0" step="0.01" value="${Number(j.advance_amount||0)}">
+        </label>
+        <label class="field">
+          Final Amount
+          <input id="eFinal" type="number" min="0" step="0.01" value="${Number(j.final_amount||0)}">
+        </label>
+        <label class="field wide">
+          Notes
+          <textarea id="eNotes" rows="2">${esc(j.notes||"")}</textarea>
+        </label>
+      </div>`,
+      "Save Changes",
+      async m=>{
+        const estimate=Math.max(0,Number(m.querySelector("#eEstimate").value||0));
+        const advance=Math.max(0,Number(m.querySelector("#eAdvance").value||0));
+        const finalAmount=Math.max(0,Number(m.querySelector("#eFinal").value||0));
+        const balance=Math.max(0,(finalAmount>0?finalAmount:estimate)-advance);
+        const customerId=m.querySelector("#eCustomer").value||null;
+        if(!customerId)throw new Error("Please select a customer.");
+
+        const r=await sb.from("service_jobs").update({
+          customer_id:customerId,
+          device_type:m.querySelector("#eDevice").value.trim()||null,
+          brand:m.querySelector("#eBrand").value.trim()||null,
+          model:m.querySelector("#eModel").value.trim()||null,
+          serial_number:m.querySelector("#eSerial").value.trim()||null,
+          technician_id:m.querySelector("#eTech").value.trim()||null,
+          priority:m.querySelector("#ePriority").value,
+          status:m.querySelector("#eStatus").value,
+          expected_delivery:m.querySelector("#eDelivery").value||null,
+          accessories:m.querySelector("#eAccessories").value.trim()||null,
+          complaint:m.querySelector("#eComplaint").value.trim()||null,
+          diagnosis:m.querySelector("#eDiagnosis").value.trim()||null,
+          estimate_amount:estimate,
+          advance_amount:advance,
+          final_amount:finalAmount,
+          balance_amount:balance,
+          notes:m.querySelector("#eNotes").value.trim()||null,
+          updated_at:new Date().toISOString()
+        }).eq("id",j.id);
+
+        if(r.error)throw r.error;
+      }
+    );
   }
 
   function editEstimate(j){

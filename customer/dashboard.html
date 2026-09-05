@@ -503,7 +503,42 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
 <link href="../css/dashboard-shell.css" rel="stylesheet"/>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/>
+<style id="customer-service-jobcard-style">
+.csj-section{position:relative;overflow:hidden}
+.csj-section:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#071c3b,#0d5aa7,#ff8a1f)}
+.csj-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.csj-list{display:grid;gap:12px;margin-top:15px}
+.csj-card{border:1px solid #dce7f3;border-radius:15px;background:#f9fbfe;padding:15px;box-shadow:0 5px 16px rgba(17,50,91,.05);transition:.2s ease}
+.csj-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,50,91,.09)}
+.csj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.csj-job{font-size:14px;font-weight:900;color:#10284b}
+.csj-device{font-size:12px;color:#52657d;margin-top:4px}
+.csj-status{padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid}
+.csj-status.received,.csj-status.pending{background:#f3f6fa;color:#53657b;border-color:#d7e0ea}
+.csj-status.progress,.csj-status.repairing{background:#eef6ff;color:#0d5aa7;border-color:#cfe0f3}
+.csj-status.ready{background:#fff6e8;color:#a85d00;border-color:#ffd9a8}
+.csj-status.completed,.csj-status.delivered{background:#eaf9f0;color:#087443;border-color:#bfe8cf}
+.csj-status.cancelled{background:#fff0f0;color:#b42318;border-color:#ffcaca}
+.csj-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:13px}
+.csj-field{background:#fff;border:1px solid #e4ebf3;border-radius:10px;padding:9px}
+.csj-field small{display:block;color:#7a8ba0;font-size:9px;font-weight:800;text-transform:uppercase}
+.csj-field b{display:block;color:#173250;font-size:11px;margin-top:3px;overflow-wrap:anywhere}
+.csj-note{margin-top:10px;padding:10px 12px;border-left:3px solid #ff8a1f;background:#fff;border-radius:8px;color:#52657d;font-size:11px;line-height:1.5;white-space:pre-wrap}
+.csj-history{margin-top:11px}
+.csj-history summary{cursor:pointer;color:#0d5aa7;font-size:11px;font-weight:900}
+.csj-timeline{display:grid;gap:7px;margin-top:8px}
+.csj-event{padding:9px 10px;border:1px solid #e4ebf3;border-radius:9px;background:#fff}
+.csj-event strong{font-size:10px;color:#173250}
+.csj-event div{font-size:10px;color:#6e8096;margin-top:3px}
+.csj-empty,.csj-loading,.csj-error{padding:22px;text-align:center;border:1px dashed #cbd8e8;border-radius:12px;color:#71819b;font-size:12px;background:#fbfdff}
+.csj-error{color:#a62b2b;background:#fff7f7;border-color:#e8b4b4}
+@media(max-width:900px){.csj-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.csj-head{align-items:flex-start}.csj-grid{grid-template-columns:1fr 1fr}.csj-card{padding:12px}}
+@media(max-width:430px){.csj-grid{grid-template-columns:1fr}.csj-status{font-size:9px}}
+</style>
+
+</head>
 <body>
 <!-- ================================
        HEADER
@@ -647,8 +682,26 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
   <div id="customerProductsPreview" style="display:grid;gap:12px;margin-top:14px"><p class="muted">Loading products…</p></div>
 </section>
 
+
 <!-- ================================
-           ACCOUNT SUMMARY
+     MY SERVICE JOB CARDS
+================================= -->
+<section class="customer-card csj-section" id="customerServiceSection" style="margin-top:18px;display:none">
+  <div class="csj-head">
+    <div>
+      <p class="eyebrow" style="margin:0 0 4px">SERVICE UPDATES</p>
+      <h2 style="margin:0">🛠️ My Service Job Cards</h2>
+      <p class="muted" id="customerServiceSummary" style="margin:6px 0 0">Your service work and latest updates.</p>
+    </div>
+    <a class="btn secondary" href="services.html">View All Services</a>
+  </div>
+  <div class="csj-list" id="customerServicePreview">
+    <div class="csj-loading">Loading service updates…</div>
+  </div>
+</section>
+
+<!-- ================================
+            ACCOUNT SUMMARY
       ================================= -->
 <section class="customer-card" style="margin-top:18px">
 <h2>
@@ -1008,6 +1061,91 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
             return `<div style="padding:14px;border:1px solid #e1e9f2;border-radius:12px;background:#f8fbff"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>${p.product_type === "package" ? "📦" : "🖥️"} ${escP(p.product_name || "Product")}</strong><span class="tag">${escP(p.status || "Pending")}</span></div>${p.serial_number ? `<div class="muted" style="font-size:12px;margin-top:4px">Serial: ${escP(p.serial_number)}</div>` : ""}${p.notes ? `<div style="font-size:12px;color:#52657d;margin-top:4px">${escP(p.notes)}</div>` : ""}${parts.length ? `<div style="margin-top:9px;font-size:12px"><strong>Included:</strong> ${parts.map(i => `${escP(i.name || "Component")}${i.serial_number ? ` (${escP(i.serial_number)})` : ""}`).join(" · ")}</div>` : ""}</div>`;
           }).join("") : `<p class="muted">No registered products yet.</p>`;
         }
+
+        /* --------------------------------
+           CUSTOMER SERVICE JOB CARDS
+        -------------------------------- */
+        const serviceSection = document.getElementById("customerServiceSection");
+        const servicePreview = document.getElementById("customerServicePreview");
+        const serviceSummary = document.getElementById("customerServiceSummary");
+
+        function serviceStatusClass(value){
+          const s=String(value||"").toLowerCase();
+          if(s.includes("completed")) return "completed";
+          if(s.includes("delivered")) return "delivered";
+          if(s.includes("cancel")) return "cancelled";
+          if(s.includes("ready")) return "ready";
+          if(s.includes("repair") || s.includes("progress") || s.includes("working")) return "progress";
+          if(s.includes("pending")) return "pending";
+          return "received";
+        }
+        function serviceMoney(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});}
+        function serviceDate(v){if(!v)return "—";const x=new Date(v);return Number.isNaN(x.getTime())?"—":x.toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});}
+        function serviceHistory(job){return Array.isArray(job.status_history)?job.status_history:[];}
+
+        function renderCustomerServices(list){
+          if(!serviceSection || !servicePreview)return;
+          if(!list.length){serviceSection.style.display="none";return;}
+          serviceSection.style.display="";
+          if(serviceSummary)serviceSummary.textContent=`${list.length} service job card${list.length===1?"":"s"} linked to your account. Updates appear automatically.`;
+
+          servicePreview.innerHTML=list.slice(0,5).map(job=>{
+            const hist=serviceHistory(job);
+            const latest=hist.length?hist[hist.length-1]:null;
+            const status=job.status||"Received";
+            const staff=job.assigned_staff_name||latest?.by_name||"Assigned by iTech";
+            const done=["work completed","delivered"].includes(String(status).toLowerCase());
+            const historyHtml=hist.length?hist.slice().reverse().map(h=>`
+              <div class="csj-event">
+                <strong>${escText(h.status||"Update")}</strong>
+                <div>${escText(h.by_name||"iTech Staff")} · ${escText(serviceDate(h.at))}</div>
+                ${h.notes?`<div>${escText(h.notes)}</div>`:""}
+              </div>`).join(""):`<div class="csj-event"><div>No status history recorded yet.</div></div>`;
+            return `<article class="csj-card">
+              <div class="csj-top">
+                <div><div class="csj-job">${escText(job.job_number||"Service Job")}</div>
+                <div class="csj-device">${escText([job.device_type,job.brand,job.model].filter(Boolean).join(" • ")||"Device details not available")}</div></div>
+                <span class="csj-status ${serviceStatusClass(status)}">${escText(status)}</span>
+              </div>
+              <div class="csj-grid">
+                <div class="csj-field"><small>Assigned Staff</small><b>${escText(staff)}</b></div>
+                <div class="csj-field"><small>Serial Number</small><b>${escText(job.serial_number||"—")}</b></div>
+                <div class="csj-field"><small>Estimate</small><b>${serviceMoney(job.estimate_amount)}</b></div>
+                <div class="csj-field"><small>Balance</small><b>${serviceMoney(job.balance_amount)}</b></div>
+              </div>
+              ${job.complaint?`<div class="csj-note"><b>Complaint:</b> ${escText(job.complaint)}</div>`:""}
+              ${job.diagnosis?`<div class="csj-note"><b>Diagnosis:</b> ${escText(job.diagnosis)}</div>`:""}
+              ${job.notes?`<div class="csj-note"><b>Latest Update:</b> ${escText(job.notes)}</div>`:""}
+              <div style="margin-top:9px;font-size:10px;color:#71819b">
+                Created: ${escText(serviceDate(job.created_at))}
+                ${job.expected_delivery?` · Expected: ${escText(new Date(job.expected_delivery+"T00:00:00").toLocaleDateString("en-IN"))}`:""}
+                ${done&&job.completed_at?` · Completed: ${escText(serviceDate(job.completed_at))}`:""}
+              </div>
+              <details class="csj-history">
+                <summary>View work status & notes history (${hist.length})</summary>
+                <div class="csj-timeline">${historyHtml}</div>
+              </details>
+            </article>`;
+          }).join("");
+          if(list.length>5)servicePreview.insertAdjacentHTML("beforeend",`<a class="ci-more" href="services.html">+ ${list.length-5} more service job${list.length-5===1?"":"s"}</a>`);
+        }
+
+        async function loadCustomerServices(){
+          const result=await sb.from("service_jobs")
+            .select("id,job_number,device_type,brand,model,serial_number,status,priority,expected_delivery,complaint,diagnosis,notes,estimate_amount,advance_amount,final_amount,balance_amount,status_history,completed_at,created_at,updated_at")
+            .eq("customer_id",customerId)
+            .order("created_at",{ascending:false});
+          if(result.error){console.error("Customer service jobs error:",result.error);if(serviceSection)serviceSection.style.display="none";return;}
+          renderCustomerServices(result.data||[]);
+        }
+        await loadCustomerServices();
+
+        try{
+          sb.channel("customer-service-jobs-"+customerId)
+            .on("postgres_changes",{event:"*",schema:"public",table:"service_jobs",filter:"customer_id=eq."+customerId},
+              async()=>{await loadCustomerServices();})
+            .subscribe();
+        }catch(serviceRealtimeError){console.warn("Customer service realtime unavailable:",serviceRealtimeError);}
 
         /* --------------------------------
            UPDATE STAT CARDS

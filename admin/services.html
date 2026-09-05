@@ -223,1194 +223,134 @@
   .job-action-wrap{flex-direction:column;align-items:stretch}
   .job-action-wrap .btn-small{width:100%}
 }
-</style></head>
+</style>
+<style>
+  .service-jobs-shell{margin-top:20px}
+  .job-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .job-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+  .job-stat{background:#fff;border:1px solid #e2e9f3;border-radius:14px;padding:14px 16px;box-shadow:0 6px 18px rgba(12,40,75,.05)}
+  .job-stat b{display:block;font-size:22px;color:#102d50}.job-stat span{font-size:12px;color:#7183a0;font-weight:700}
+  .job-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+  .job-toolbar input,.job-toolbar select{min-height:42px;padding:10px 12px;border:1px solid #d7e2ef;border-radius:10px;background:#fff}
+  .job-toolbar input{min-width:240px;flex:1}
+  .job-table-wrap{overflow:auto;border:1px solid #dfe7f2;border-radius:15px;background:#fff}
+  .job-table{width:100%;min-width:1280px;border-collapse:separate;border-spacing:0}
+  .job-table th{position:sticky;top:0;background:#f6f9fd;color:#53657d;font-size:11px;text-transform:uppercase;letter-spacing:.3px;padding:12px;border-bottom:1px solid #dfe7f2;text-align:left;white-space:nowrap}
+  .job-table td{padding:12px;border-bottom:1px solid #edf1f6;vertical-align:top;font-size:13px;color:#223a5a}
+  .job-table tr:last-child td{border-bottom:0}.job-table tr:hover td{background:#fbfdff}
+  .job-no{font-weight:800;color:#10335d}.muted{color:#7a8ba4;font-size:11px}
+  .status-pill{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+  .status-pill.received{background:#eef5ff;color:#205493}.status-pill.work{background:#fff3df;color:#9a5a00}.status-pill.done{background:#e8f8ef;color:#087443}.status-pill.cancel{background:#fff0f0;color:#b42318}
+  .assigned{font-weight:800;color:#173d68}.unassigned{color:#a36a00;font-weight:800}
+  .history-mini{max-width:250px;white-space:normal}.history-mini b{color:#163a62}.history-mini div{margin-top:4px}
+  .job-actions{display:flex;gap:6px;flex-wrap:wrap}.job-actions .btn-small{min-height:34px;padding:7px 10px;white-space:nowrap;border:1px solid #dce5f0;background:#f8fafc;border-radius:9px;font-weight:800;cursor:pointer}
+  .job-actions .edit{background:#eef5ff;color:#12447d}.job-actions .take{background:#fff8e8;color:#8a5a00}.job-actions .complete{background:#eaf9f0;color:#087443}.job-actions .delete{background:#fff0f0;color:#b42318}.job-actions .print{background:#f6f8fb}
+  .job-actions .btn-small:disabled{opacity:.45;cursor:not-allowed}
+  .job-modal-backdrop{position:fixed;inset:0;z-index:100000;background:rgba(3,20,42,.62);display:flex;align-items:center;justify-content:center;padding:18px}
+  .job-modal{width:min(900px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+  .job-modal h2{margin:0 0 5px;color:#102d50}.job-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+  .close-x{border:0;background:#eef2f7;border-radius:10px;width:38px;height:38px;font-size:20px;cursor:pointer}
+  .job-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.job-form-grid .wide{grid-column:1/-1}
+  .job-form-grid input,.job-form-grid select,.job-form-grid textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:11px 12px;border:1px solid #d6e1ee;border-radius:10px;background:#fff;font:inherit}
+  .job-form-grid textarea{resize:vertical}.job-form-grid label{font-size:12px;font-weight:800;color:#233b5c}
+  .job-form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.job-form-actions button{min-height:42px}
+  .history-box{margin-top:18px;padding:14px;border:1px solid #e1e8f1;border-radius:14px;background:#f9fbfe}.history-item{padding:10px 0;border-bottom:1px solid #e8edf4}.history-item:last-child{border-bottom:0}.history-item strong{color:#15385f}.history-item small{color:#7b8ba0}
+  .notice{margin-top:12px;padding:11px 13px;border-radius:10px;font-size:13px;font-weight:700}.notice.ok{background:#effbf4;color:#087443}.notice.err{background:#fff0f0;color:#b42318}
+  .login-box{margin-top:12px;padding:13px;border-radius:12px;background:#effbf4;border:1px solid #b9e4c9}.login-box code{background:#fff;padding:3px 7px;border-radius:6px}
+  @media(max-width:900px){.job-stats{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:700px){.job-form-grid{grid-template-columns:1fr}.job-form-grid .wide{grid-column:auto}.job-toolbar input{min-width:100%}.job-stat b{font-size:19px}}
+</style>
+</head>
 <body>
 <header class="dash-header">
-<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
-<a class="btn secondary" data-logout="" href="../pages/login.html">
-    Logout
-</a>
+<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"></a>
+<a class="btn secondary" data-logout href="../pages/login.html">Logout</a>
 </header>
 <div class="dash-layout">
-<aside class="sidebar">
-<nav><a href="dashboard.html">Dashboard</a>
-<a href="customers.html">Customers</a>
-<a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html">Daily Work</a>
-<a href="payments.html">Payments</a>
-<a href="reports.html">Reports</a>
-<a href="customer-bill.html">Customer Bill</a>
-<a href="services.html" class="active">Services</a>
-<a href="products.html">Products</a>
-<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
-<a href="enquiries.html">Enquiries</a>
-<a href="techshore-admin.html">📝 Techshore Quiz</a>
-<a href="amc.html">AMC</a>
-<a href="offers.html">Offers</a>
-<a href="works.html">Our Works</a>
-<a href="activities.html">📋 Staff Activities</a>
-<a href="staff-management.html">👥 Staff Management</a>
-<a href="messages.html">Messages</a></nav>
-</aside>
+<aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="reports.html">Reports</a><a href="customer-bill.html">Customer Bill</a>
+<a href="services.html" class="active">Services</a><a href="products.html">Products</a><a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a><a href="techshore-admin.html">📝 Techshore Quiz</a><a href="amc.html">AMC</a><a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a><a href="activities.html">📋 Staff Activities</a><a href="staff-management.html">👥 Staff Management</a><a href="messages.html">Messages</a>
+</nav></aside>
 <main class="dash-main">
-<div class="toolbar">
-<div>
-<p class="eyebrow">SERVICE MANAGEMENT</p>
-<h1>Services</h1>
-<p>Manage your shop services, service job cards and customer service records.</p>
-</div>
-</div>
-<!-- SERVICES LIST -->
-<section class="panel" id="serviceCatalog" style="margin-top:20px">
-<div class="toolbar" style="margin-bottom:15px">
-<div>
-<h2>Service List</h2>
-</div>
-<div>
-<input id="search" placeholder="Search service..." style="padding:11px 14px;border:1px solid #d5dfed;border-radius:9px;" type="search"/>
-</div>
-</div>
-<div class="table-scroll service-table-wrap">
-<table class="data-table">
-<thead>
-<tr>
-<th>Service</th>
-<th>Category</th>
-<th>Price</th>
-<th>GST</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="serviceRows">
-<tr>
-<td class="empty-state" colspan="6">
-Loading services...
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-</main>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js"></script>
-<script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
-
+<div class="toolbar"><div><p class="eyebrow">SERVICE MANAGEMENT</p><h1>Service Job Cards</h1><p>Assign jobs, track staff work, update status & notes, and print the latest job status.</p></div><button class="btn primary" id="newJobBtn">＋ New Job Card</button></div>
+<section class="service-jobs-shell">
+<div class="job-stats"><div class="job-stat"><b id="statTotal">0</b><span>Total Jobs</span></div><div class="job-stat"><b id="statOpen">0</b><span>Open / In Progress</span></div><div class="job-stat"><b id="statDone">0</b><span>Work Completed</span></div><div class="job-stat"><b id="statBalance">₹0.00</b><span>Total Balance</span></div></div>
+<section class="panel">
+<div class="job-toolbar"><input id="jobSearch" placeholder="Search job no, customer, mobile, device, serial..."><select id="jobFilter"><option value="all">All Jobs</option><option value="open">Open / In Progress</option><option value="done">Work Completed</option><option value="unassigned">Unassigned</option><option value="mine">My Jobs</option></select><button class="btn secondary" id="refreshJobs">↻ Refresh</button></div>
+<div id="pageNotice"></div>
+<div class="job-table-wrap"><table class="job-table"><thead><tr><th>Job Card</th><th>Customer</th><th>Device</th><th>Assigned Staff</th><th>Status</th><th>Latest Status / Note</th><th>Amount</th><th>Actions</th></tr></thead><tbody id="jobRows"><tr><td colspan="8">Loading…</td></tr></tbody></table></div>
+</section></section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
 <script>
-/* =========================================================
-   iTech SERVICE JOB CARDS
-   Corrected: New Customer -> Customer record + Login account
-   Login identifier: mobile number
-   Internal auth email: mobile@itech.local
-   ========================================================= */
 (async()=>{
-  const ok=await requireAdmin();
-  if(!ok)return;
-
-  const main=document.querySelector("main.dash-main");
-  const catalog=document.getElementById("serviceCatalog");
-  if(!main)return;
-
-  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
-
-  const money=v=>"₹"+Number(v||0).toLocaleString("en-IN",{
-    minimumFractionDigits:2,maximumFractionDigits:2
-  });
-
-  const today=()=>new Date().toISOString().slice(0,10);
-
-  const statuses=[
-    "Received","Diagnosis","Estimate Sent","Approved","Repairing",
-    "Testing","Waiting Parts","Ready for Delivery","Work Completed",
-    "Delivered","Cancelled"
-  ];
-
-  const sec=document.createElement("section");
-  sec.className="panel job-card-panel";
-  sec.id="itechServiceJobs";
-
-  sec.innerHTML=`
-    <div class="toolbar">
-      <div>
-        <p class="eyebrow">JOB CARDS</p>
-        <h2>Service Job Cards</h2>
-        <p class="muted">Create and manage service job cards from this screen.</p>
-      </div>
-      <button class="btn primary" id="smNew">＋ New Job Card</button>
-    </div>
-
-    <div id="smForm" class="form" style="display:none">
-      <div class="job-form-grid">
-
-        <label class="field">
-          Customer Mobile
-          <input id="smMobile" inputmode="tel" maxlength="10"
-                 placeholder="10 digit mobile">
-        </label>
-
-        <label class="field">
-          Customer
-          <select id="smCustomer">
-            <option value="">Select existing customer</option>
-            <option value="__new__">＋ New Customer — enter name below</option>
-          </select>
-        </label>
-
-        <label class="field wide" id="smNewNameWrap" style="display:none">
-          New Customer Name
-          <input id="smNewName" placeholder="Enter customer name">
-        </label>
-
-        <label class="field">
-          Device Type
-          <input id="smDevice" placeholder="Desktop / Laptop / Printer">
-        </label>
-
-        <label class="field">
-          Brand
-          <input id="smBrand" placeholder="Brand">
-        </label>
-
-        <label class="field">
-          Model
-          <input id="smModel" placeholder="Model">
-        </label>
-
-        <label class="field">
-          Serial Number
-          <input id="smSerial" placeholder="Serial number">
-        </label>
-
-        <label class="field">
-          Technician ID
-          <input id="smTech" placeholder="Optional">
-        </label>
-
-        <label class="field">
-          Priority
-          <select id="smPriority">
-            <option>Normal</option>
-            <option>Low</option>
-            <option>High</option>
-            <option>Urgent</option>
-          </select>
-        </label>
-
-        <label class="field wide">
-          Complaint
-          <textarea id="smComplaint" rows="3"
-                    placeholder="Customer complaint / problem"></textarea>
-        </label>
-
-        <label class="field wide">
-          Notes
-          <textarea id="smNotes" rows="2"
-                    placeholder="Additional notes"></textarea>
-        </label>
-
-      </div>
-
-      <div class="job-actions">
-        <button class="btn primary" id="smSave">Create Job Card</button>
-        <button class="btn secondary" id="smCancel">Cancel</button>
-      </div>
-
-      <div class="job-status-msg" id="smStatus"></div>
-      <div id="smLoginBox"></div>
-    </div>
-
-    <div class="table-scroll job-table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Job Card</th>
-            <th>Customer</th>
-            <th>Device</th>
-            <th>Status</th>
-            <th>Estimate</th>
-            <th>Paid</th>
-            <th>Balance</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="smRows">
-          <tr><td colspan="8">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  if(catalog) main.insertBefore(sec,catalog);
-  else main.appendChild(sec);
-
-  const customerEl=document.getElementById("smCustomer");
-  const mobileEl=document.getElementById("smMobile");
-  const newWrap=document.getElementById("smNewNameWrap");
-  const newNameEl=document.getElementById("smNewName");
-  const statusEl=document.getElementById("smStatus");
-  const loginBox=document.getElementById("smLoginBox");
-  const formEl=document.getElementById("smForm");
-  const rowsEl=document.getElementById("smRows");
-
-  let customers=[];
-
-  function msg(text,error=false){
-    statusEl.textContent=text||"";
-    statusEl.style.color=error?"#b42318":"#087a42";
+  const IS_ADMIN=true;
+  const ok=IS_ADMIN?await requireAdmin():await requireStaff(); if(!ok)return;
+  const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const statuses=['Received','Diagnosis','Estimate Sent','Approved','Repairing','Testing','Waiting Parts','Ready for Delivery','Work Completed','Delivered','Cancelled'];
+  let me=null, customers=[], staffList=[], jobs=[];
+  const nowISO=()=>new Date().toISOString(); const today=()=>new Date().toISOString().slice(0,10);
+  const roleName=p=>p?.full_name||p?.mobile||'Staff';
+  function statusClass(s){if(s==='Work Completed'||s==='Delivered')return'done';if(s==='Cancelled')return'cancel';if(s==='Received')return'received';return'work'}
+  function historyOf(j){return Array.isArray(j.status_history)?j.status_history:[]}
+  function lastHistory(j){const h=historyOf(j);return h.length?h[h.length-1]:{status:j.status||'Received',notes:j.notes||'',at:j.updated_at||j.created_at,by_name:''}}
+  function notice(text,error=false){const n=$('pageNotice');n.innerHTML=`<div class="notice ${error?'err':'ok'}">${esc(text)}</div>`;setTimeout(()=>n.innerHTML='',4500)}
+  async function loadMe(){const {data:{session}}=await sb.auth.getSession();if(!session)throw Error('Session expired. Please login again.');const r=await sb.from('profiles').select('id,full_name,mobile,role').eq('id',session.user.id).single();if(r.error)throw r.error;me=r.data}
+  async function loadPeople(){
+    const c=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('status','active').order('full_name'); if(c.error)throw c.error; customers=c.data||[];
+    const s=await sb.from('profiles').select('id,full_name,mobile,role').in('role',['staff','admin']).order('full_name'); if(s.error)throw s.error; staffList=s.data||[];
   }
-
-  function generatedPassword(){
-    const raw=(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))
-      .replace(/-/g,"").slice(0,8);
-    return "IT@"+raw+"#";
-  }
-
-  async function loadCustomers(){
-    const r=await sb.from("customers")
-      .select("id,full_name,mobile,auth_user_id")
-      .eq("status","active")
-      .order("full_name");
-
-    if(r.error){
-      msg(r.error.message,true);
-      return;
-    }
-
-    customers=r.data||[];
-
-    customerEl.innerHTML=
-      '<option value="">Select existing customer</option>'+
-      '<option value="__new__">＋ New Customer — enter name below</option>'+
-      customers.map(c=>
-        `<option value="${esc(c.id)}" data-mobile="${esc(c.mobile||"")}">
-          ${esc(c.full_name||"Customer")} — ${esc(c.mobile||"")}
-        </option>`
-      ).join("");
-  }
-
-  customerEl.onchange=()=>{
-    const isNew=customerEl.value==="__new__";
-    newWrap.style.display=isNew?"block":"none";
-
-    if(isNew){
-      loginBox.innerHTML="";
-      mobileEl.value="";
-      newNameEl.value="";
-      newNameEl.focus();
-      return;
-    }
-
-    const opt=customerEl.selectedOptions[0];
-    if(opt?.dataset.mobile) mobileEl.value=opt.dataset.mobile;
-    loginBox.innerHTML="";
-  };
-
-  mobileEl.addEventListener("input",()=>{
-    mobileEl.value=mobileEl.value.replace(/\D/g,"").slice(0,10);
-    const v=mobileEl.value;
-
-    const c=customers.find(x=>
-      String(x.mobile||"").replace(/\D/g,"")===v
-    );
-
-    if(c && customerEl.value!==c.id){
-      customerEl.value=c.id;
-      newWrap.style.display="none";
-    }
-  });
-
-  /*
-    IMPORTANT FIX:
-    New customer creation now uses the already deployed
-    create-customer Edge Function used by Add Customer.
-    This creates the Supabase Auth account safely without
-    replacing/logging out the current admin session.
-  */
+  function customerOptions(selected){return customers.map(c=>`<option value="${esc(c.id)}" ${String(c.id)===String(selected)?'selected':''}>${esc(c.full_name||'Customer')} — ${esc(c.mobile||'')}</option>`).join('')}
+  function staffOptions(selected){return `<option value="">Unassigned</option>`+staffList.filter(x=>x.role==='staff').map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?'selected':''}>${esc(roleName(s))}${s.mobile?' — '+esc(s.mobile):''}</option>`).join('')}
   async function createCustomerWithLogin(name,mobile){
-    const existing=await sb.from("customers")
-      .select("id,full_name,mobile,auth_user_id")
-      .eq("mobile",mobile)
-      .maybeSingle();
-
-    if(existing.error) throw existing.error;
-
-    if(existing.data){
-      if(existing.data.auth_user_id){
-        return {
-          id:existing.data.id,
-          loginCreated:false,
-          existing:true,
-          message:"Existing customer selected."
-        };
-      }
-
-      throw new Error(
-        "This mobile number already belongs to a customer, but that customer has no login account. Please create the login from Add Customer first."
-      );
-    }
-
-    const {data:{session}}=await sb.auth.getSession();
-
-    if(!session){
-      throw new Error(
-        "Admin session expired. Please login again."
-      );
-    }
-
-    const email=mobile+"@itech.local";
-    const password=generatedPassword();
-
-    const payload={
-      full_name:name,
-      mobile:mobile,
-      whatsapp:mobile,
-      email:email,
-      password:password,
-      address:"",
-      opening_balance:0
-    };
-
-    const response=await fetch(
-      `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "Authorization":`Bearer ${session.access_token}`
-        },
-        body:JSON.stringify(payload)
-      }
-    );
-
-    const json=await response.json().catch(()=>({}));
-
-    if(!response.ok){
-      throw new Error(
-        json.error ||
-        json.message ||
-        "Customer login account creation failed."
-      );
-    }
-
-    /*
-      Fetch the customer created by the Edge Function.
-      This avoids depending on a particular response JSON shape.
-    */
-    let created=null;
-
-    for(let i=0;i<5;i++){
-      const q=await sb.from("customers")
-        .select("id,full_name,mobile,auth_user_id")
-        .eq("mobile",mobile)
-        .maybeSingle();
-
-      if(!q.error && q.data){
-        created=q.data;
-        if(created.auth_user_id)break;
-      }
-
-      await new Promise(resolve=>setTimeout(resolve,250));
-    }
-
-    if(!created){
-      throw new Error(
-        "Login account was created, but the customer record could not be found. Please check Customers."
-      );
-    }
-
-    if(!created.auth_user_id){
-      throw new Error(
-        "Customer record was created, but it is not linked to the login account. Please check the create-customer function."
-      );
-    }
-
-    return {
-      id:created.id,
-      loginCreated:true,
-      existing:false,
-      email,
-      password,
-      mobile
-    };
+    const existing=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('mobile',mobile).maybeSingle(); if(existing.error)throw existing.error;
+    if(existing.data){if(existing.data.auth_user_id)return {id:existing.data.id,loginCreated:false};throw Error('This customer already exists but has no login. Please create the login from Add Customer first.')}
+    const {data:{session}}=await sb.auth.getSession(); if(!session)throw Error('Session expired.'); const email=mobile+'@itech.local'; const password='IT@'+(crypto?.randomUUID?.()||Math.random().toString(36).slice(2)).replace(/-/g,'').slice(0,8)+'#';
+    const response=await fetch(`${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({full_name:name,mobile,whatsapp:mobile,email,password,address:'',opening_balance:0})});
+    const json=await response.json().catch(()=>({})); if(!response.ok)throw Error(json.error||json.message||'Customer login creation failed.');
+    let created=null; for(let i=0;i<6;i++){const q=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('mobile',mobile).maybeSingle();if(!q.error&&q.data){created=q.data;if(created.auth_user_id)break}await new Promise(r=>setTimeout(r,250))}
+    if(!created?.auth_user_id)throw Error('Customer account was created but auth_user_id is not linked.'); return {id:created.id,loginCreated:true,mobile,password}
   }
-
-  function resetForm(){
-    [
-      "smMobile","smNewName","smDevice","smBrand","smModel",
-      "smSerial","smTech","smComplaint","smNotes"
-    ].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el)el.value="";
+  function addHistory(j,status,notes,by){const h=historyOf(j).slice();h.push({status,notes:notes||'',at:nowISO(),by_id:by?.id||me?.id||null,by_name:roleName(by||me)});return h}
+  function jobModal(title,html,saveLabel,handler){
+    const b=document.createElement('div');b.className='job-modal-backdrop';b.innerHTML=`<div class="job-modal"><div class="job-modal-head"><div><h2>${title}</h2><div class="muted">Service Job Card</div></div><button class="close-x" type="button">×</button></div>${html}<div id="jmMsg"></div><div class="job-form-actions"><button class="btn primary" id="jmSave">${saveLabel}</button><button class="btn secondary" id="jmCancel">Cancel</button></div></div>`;document.body.appendChild(b);b.querySelector('.close-x').onclick=b.querySelector('#jmCancel').onclick=()=>b.remove();b.onclick=e=>{if(e.target===b)b.remove()};b.querySelector('#jmSave').onclick=async()=>{try{b.querySelector('#jmSave').disabled=true;await handler(b);b.remove();await loadJobs()}catch(e){const x=b.querySelector('#jmMsg');x.className='notice err';x.textContent=e.message||String(e);b.querySelector('#jmSave').disabled=false}};return b
+  }
+  async function newJob(){
+    await loadPeople();
+    const staffField=IS_ADMIN?`<label>Assign Staff<select id="fStaff">${staffOptions('')}</select></label>`:`<label>Assigned Staff<input value="${esc(roleName(me))}" disabled><input id="fStaff" type="hidden" value="${esc(me.id)}"></label>`;
+    jobModal('New Service Job Card',`<div class="job-form-grid"><label>Customer Mobile<input id="fMobile" inputmode="tel" maxlength="10" placeholder="10 digit mobile"></label><label>Customer<select id="fCustomer"><option value="">Select existing customer</option><option value="__new__">＋ New Customer</option></select></label><label class="wide" id="fNewWrap" style="display:none">New Customer Name<input id="fNewName" placeholder="Customer name"></label><label>Device Type<input id="fDevice" placeholder="Desktop / Laptop / Printer"></label><label>Brand<input id="fBrand" placeholder="Brand"></label><label>Model<input id="fModel" placeholder="Model"></label><label>Serial Number<input id="fSerial" placeholder="Serial number"></label>${staffField}<label>Priority<select id="fPriority"><option>Normal</option><option>Low</option><option>High</option><option>Urgent</option></select></label><label>Expected Delivery<input id="fDelivery" type="date"></label><label class="wide">Complaint<textarea id="fComplaint" rows="3" placeholder="Customer complaint / problem"></textarea></label><label class="wide">Initial Notes<textarea id="fNotes" rows="2" placeholder="Initial notes"></textarea></label></div>`, 'Create Job Card', async m=>{
+      const mobile=m.querySelector('#fMobile').value.trim(); if(!/^\d{10}$/.test(mobile))throw Error('Enter a valid 10-digit customer mobile number.'); let cid=m.querySelector('#fCustomer').value, login=null;
+      if(cid==='__new__'||!cid){const name=m.querySelector('#fNewName').value.trim();if(!name)throw Error('Enter new customer name.');login=await createCustomerWithLogin(name,mobile);cid=login.id}else{const c=customers.find(x=>String(x.id)===String(cid));if(c?.mobile&&String(c.mobile).replace(/\D/g,'')!==mobile)throw Error('Customer mobile does not match selected customer.')}
+      const staffId=m.querySelector('#fStaff')?.value||null; const status='Received'; const notes=m.querySelector('#fNotes').value.trim()||''; const job='SRV-'+new Date().getFullYear()+'-'+Date.now().toString().slice(-6); const h=[{status,notes,at:nowISO(),by_id:me.id,by_name:roleName(me)}];
+      const p={job_number:job,customer_id:cid,device_type:m.querySelector('#fDevice').value.trim()||null,brand:m.querySelector('#fBrand').value.trim()||null,model:m.querySelector('#fModel').value.trim()||null,serial_number:m.querySelector('#fSerial').value.trim()||null,technician_id:staffId,priority:m.querySelector('#fPriority').value,status,expected_delivery:m.querySelector('#fDelivery').value||null,complaint:m.querySelector('#fComplaint').value.trim()||null,notes:notes||null,estimate_amount:0,advance_amount:0,final_amount:0,balance_amount:0,status_history:h,created_by:me.id};
+      const r=await sb.from('service_jobs').insert(p);if(r.error)throw r.error; if(login?.loginCreated)notice(`Job ${job} created. Customer login: ${login.mobile} / ${login.password}`); else notice(`Job ${job} created successfully.`)
     });
-
-    document.getElementById("smPriority").value="Normal";
-    customerEl.value="";
-    newWrap.style.display="none";
-    statusEl.textContent="";
-    loginBox.innerHTML="";
+    const m=document.querySelector('.job-modal-backdrop'); const cust=m.querySelector('#fCustomer'), mobile=m.querySelector('#fMobile'); cust.innerHTML='<option value="">Select existing customer</option><option value="__new__">＋ New Customer</option>'+customerOptions('');cust.onchange=()=>{m.querySelector('#fNewWrap').style.display=cust.value==='__new__'?'block':'none';if(cust.value!=='__new__'){const c=customers.find(x=>String(x.id)===String(cust.value));if(c)mobile.value=String(c.mobile||'').replace(/\D/g,'')}};mobile.oninput=()=>{mobile.value=mobile.value.replace(/\D/g,'').slice(0,10);const c=customers.find(x=>String(x.mobile||'').replace(/\D/g,'')===mobile.value);if(c){cust.value=c.id;m.querySelector('#fNewWrap').style.display='none'}};
   }
-
-  function printJob(j,c){
-    const w=window.open(
-      "","_blank","width=900,height=1000"
-    );
-
-    if(!w){
-      alert("Please allow pop-ups to print the job card.");
-      return;
-    }
-
-    const now=new Date(
-      j.created_at||Date.now()
-    ).toLocaleString("en-IN");
-
-    w.document.write(`
-      <!doctype html>
-      <html>
-      <head>
-        <title>${esc(j.job_number)} - Job Card</title>
-        <style>
-          @page{size:A4;margin:12mm}
-          body{font-family:Arial,sans-serif;color:#13294b;margin:0}
-          .head{display:flex;justify-content:space-between;border-bottom:3px solid #123f72;padding-bottom:12px}
-          .logo{font-size:24px;font-weight:800}
-          .orange{color:#f58220}
-          .muted{color:#667085}
-          .box{border:1px solid #d8e1ec;border-radius:8px;padding:12px;margin-top:14px}
-          .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-          .label{font-size:11px;color:#667085;text-transform:uppercase}
-          .value{font-weight:700;margin-top:3px}
-          .title{font-size:20px;font-weight:800}
-          .total{font-size:18px;font-weight:800}
-          .sign{height:70px;border-bottom:1px solid #999}
-          .foot{margin-top:22px;text-align:center;font-size:11px;color:#667085}
-          @media print{button{display:none}}
-        </style>
-      </head>
-      <body>
-        <div class="head">
-          <div>
-            <div class="logo">iTech <span class="orange">IT Solutions</span></div>
-            <div class="muted">Govt. Sub Treasury Road, Nedumangad</div>
-            <div>7736929233 · 8943165951 · itnedumangad@gmail.com</div>
-          </div>
-          <div style="text-align:right">
-            <div class="title">SERVICE JOB CARD</div>
-            <div><b>${esc(j.job_number)}</b></div>
-            <div class="muted">Created: ${esc(now)}</div>
-          </div>
-        </div>
-
-        <div class="box grid">
-          <div><div class="label">Customer</div><div class="value">${esc(c?.full_name||"Customer")}</div></div>
-          <div><div class="label">Mobile</div><div class="value">${esc(c?.mobile||"")}</div></div>
-          <div><div class="label">Device</div><div class="value">${esc(j.device_type||"—")}</div></div>
-          <div><div class="label">Brand / Model</div><div class="value">${esc([j.brand,j.model].filter(Boolean).join(" / ")||"—")}</div></div>
-          <div><div class="label">Serial Number</div><div class="value">${esc(j.serial_number||"—")}</div></div>
-          <div><div class="label">Priority</div><div class="value">${esc(j.priority||"Normal")}</div></div>
-          <div><div class="label">Status</div><div class="value">${esc(j.status||"Received")}</div></div>
-        </div>
-
-        <div class="box">
-          <div class="label">Complaint</div>
-          <div style="margin-top:6px;white-space:pre-wrap">${esc(j.complaint||"—")}</div>
-        </div>
-
-        <div class="box">
-          <div class="label">Notes</div>
-          <div style="margin-top:6px;white-space:pre-wrap">${esc(j.notes||"—")}</div>
-        </div>
-
-        <div class="box grid">
-          <div><div class="label">Estimate</div><div class="total">${money(j.estimate_amount)}</div></div>
-          <div><div class="label">Paid</div><div class="total">${money(j.advance_amount)}</div></div>
-          <div><div class="label">Balance</div><div class="total">${money(j.balance_amount)}</div></div>
-        </div>
-
-        <div class="box grid">
-          <div><div class="label">Customer Signature</div><div class="sign"></div></div>
-          <div><div class="label">Authorized Signature</div><div class="sign"></div></div>
-        </div>
-
-        <div class="foot">
-          Your Trust Our Service · @itechndd
-        </div>
-
-        <script>
-          setTimeout(()=>window.print(),250);
-        <\/script>
-      </body>
-      </html>
-    `);
-
-    w.document.close();
+  async function editJob(j){
+    await loadPeople(); const canStaff=IS_ADMIN||String(j.technician_id||'')===String(me.id); if(!canStaff){notice('This job is assigned to another staff member.',true);return} if(!IS_ADMIN&&['Work Completed','Delivered'].includes(j.status)){notice('Completed jobs can be viewed/printed by staff, but only Admin can edit them.',true);return}
+    const currentNotes=j.notes||''; const h=historyOf(j); const histHtml=h.length?`<div class="history-box"><strong>Status & Notes History</strong>${h.slice().reverse().map(x=>`<div class="history-item"><strong>${esc(x.status||'')}</strong> <small>${esc(x.by_name||'')} · ${x.at?new Date(x.at).toLocaleString('en-IN'):''}</small><div>${esc(x.notes||'—')}</div></div>`).join('')}</div>`:'<div class="history-box">No history yet.</div>';
+    jobModal(`Edit Job Card — ${esc(j.job_number)}`,`<div class="job-form-grid"><label>Customer<select id="eCustomer">${customerOptions(j.customer_id)}</select></label><label>Assigned Staff<select id="eStaff" ${IS_ADMIN?'':'disabled'}>${staffOptions(j.technician_id)}</select></label><label>Device Type<input id="eDevice" value="${esc(j.device_type||'')}"></label><label>Brand<input id="eBrand" value="${esc(j.brand||'')}"></label><label>Model<input id="eModel" value="${esc(j.model||'')}"></label><label>Serial Number<input id="eSerial" value="${esc(j.serial_number||'')}"></label><label>Priority<select id="ePriority">${['Normal','Low','High','Urgent'].map(x=>`<option ${x===(j.priority||'Normal')?'selected':''}>${x}</option>`).join('')}</select></label><label>Status<select id="eStatus">${statuses.map(x=>`<option ${x===(j.status||'Received')?'selected':''}>${esc(x)}</option>`).join('')}</select></label><label>Expected Delivery<input id="eDelivery" type="date" value="${esc((j.expected_delivery||'').slice(0,10))}"></label><label>Estimate Amount<input id="eEstimate" type="number" min="0" step="0.01" value="${Number(j.estimate_amount||0)}"></label><label>Advance / Paid<input id="eAdvance" type="number" min="0" step="0.01" value="${Number(j.advance_amount||0)}"></label><label>Final Amount<input id="eFinal" type="number" min="0" step="0.01" value="${Number(j.final_amount||0)}"></label><label class="wide">Accessories<input id="eAccessories" value="${esc(j.accessories||'')}" placeholder="Charger, cable, bag..."></label><label class="wide">Complaint<textarea id="eComplaint" rows="3">${esc(j.complaint||'')}</textarea></label><label class="wide">Diagnosis<textarea id="eDiagnosis" rows="2">${esc(j.diagnosis||'')}</textarea></label><label class="wide">Current Notes<textarea id="eNotes" rows="3">${esc(currentNotes)}</textarea></label></div>${histHtml}`, 'Save Changes', async m=>{
+      const status=m.querySelector('#eStatus').value, notes=m.querySelector('#eNotes').value.trim(); const estimate=Math.max(0,Number(m.querySelector('#eEstimate').value||0)), advance=Math.max(0,Number(m.querySelector('#eAdvance').value||0)), finalAmt=Math.max(0,Number(m.querySelector('#eFinal').value||0)); const base=finalAmt>0?finalAmt:estimate; const balance=Math.max(0,base-advance); let patch={customer_id:m.querySelector('#eCustomer').value||null,device_type:m.querySelector('#eDevice').value.trim()||null,brand:m.querySelector('#eBrand').value.trim()||null,model:m.querySelector('#eModel').value.trim()||null,serial_number:m.querySelector('#eSerial').value.trim()||null,priority:m.querySelector('#ePriority').value,status,expected_delivery:m.querySelector('#eDelivery').value||null,accessories:m.querySelector('#eAccessories').value.trim()||null,complaint:m.querySelector('#eComplaint').value.trim()||null,diagnosis:m.querySelector('#eDiagnosis').value.trim()||null,estimate_amount:estimate,advance_amount:advance,final_amount:finalAmt,balance_amount:balance,notes:notes||null,updated_at:nowISO()}; if(IS_ADMIN)patch.technician_id=m.querySelector('#eStaff').value||null; const oldStatus=j.status||'Received'; if(status!==oldStatus||notes!==currentNotes)patch.status_history=addHistory(j,status,notes,me); if(status==='Work Completed'&&oldStatus!=='Work Completed'){patch.completed_at=nowISO();patch.completed_by=me.id} const r=await sb.from('service_jobs').update(patch).eq('id',j.id);if(r.error)throw r.error; notice(`Job ${j.job_number} updated.`)
+    });
   }
-
-  async function loadJobs(){
-    const r=await sb.from("service_jobs")
-      .select("*,customers(full_name,mobile)")
-      .order("created_at",{ascending:false})
-      .limit(100);
-
-    if(r.error){
-      rowsEl.innerHTML=
-        `<tr><td colspan="8">${esc(r.error.message)}</td></tr>`;
-      return;
-    }
-
-    const rows=r.data||[];
-
-    rowsEl.innerHTML=rows.map(j=>`
-      <tr>
-        <td>
-          <b>${esc(j.job_number)}</b>
-          <small style="display:block;color:#667085">
-            ${esc((j.created_at||"").slice(0,10))}
-          </small>
-        </td>
-
-        <td>
-          ${esc(j.customers?.full_name||"Customer")}
-          <small style="display:block;color:#667085">
-            ${esc(j.customers?.mobile||"")}
-          </small>
-        </td>
-
-        <td>
-          ${esc([j.brand,j.model,j.device_type]
-            .filter(Boolean).join(" ")||"—")}
-        </td>
-
-        <td>
-          <select data-job-status="${esc(j.id)}">
-            ${statuses.map(s=>
-              `<option value="${esc(s)}"
-                ${s===j.status?"selected":""}>
-                ${esc(s)}
-              </option>`
-            ).join("")}
-          </select>
-        </td>
-
-        <td>${money(j.estimate_amount)}</td>
-        <td>${money(j.advance_amount)}</td>
-        <td>${money(j.balance_amount)}</td>
-
-        <td>
-          <div class="job-action-wrap">
-            <button class="btn-small btn-edit-job"
-                    data-job-edit="${esc(j.id)}">
-              ✎ Edit
-            </button>
-            <button class="btn-small"
-                    data-job-print="${esc(j.id)}">
-              🖨 Print
-            </button>
-            <button class="btn-small"
-                    data-job-est="${esc(j.id)}">
-              ₹ Estimate
-            </button>
-            <button class="btn-small"
-                    data-job-pay="${esc(j.id)}">
-              💳 Payment
-            </button>
-            <button class="btn-small"
-                    data-job-complete="${esc(j.id)}">
-              ✓ Complete
-            </button>
-            <button class="btn-small btn-delete"
-                    data-job-delete="${esc(j.id)}">
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    `).join("") ||
-    '<tr><td colspan="8">No service job cards.</td></tr>';
-
-    document.querySelectorAll("[data-job-status]")
-      .forEach(x=>x.onchange=async()=>{
-        const r=await sb.from("service_jobs")
-          .update({status:x.value})
-          .eq("id",x.dataset.jobStatus);
-
-        if(r.error)alert(r.error.message);
-        else loadJobs();
-      });
-
-    document.querySelectorAll("[data-job-edit]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobEdit));
-        if(j)editJob(j);
-      });
-
-    document.querySelectorAll("[data-job-print]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobPrint));
-        if(j)printJob(j,j.customers);
-      });
-
-    document.querySelectorAll("[data-job-est]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobEst));
-        if(j)editEstimate(j);
-      });
-
-    document.querySelectorAll("[data-job-pay]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobPay));
-        if(j)addPayment(j);
-      });
-
-    document.querySelectorAll("[data-job-complete]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobComplete));
-        if(j)completeJob(j);
-      });
-
-    document.querySelectorAll("[data-job-delete]")
-      .forEach(b=>b.onclick=()=>{
-        const j=rows.find(x=>String(x.id)===String(b.dataset.jobDelete));
-        if(j)deleteJob(j);
-      });
-  }
-
-  function modal(title,body,saveText,handler){
-    const m=document.createElement("div");
-    m.style.cssText=
-      "position:fixed;inset:0;z-index:99999;background:rgba(4,21,45,.58);display:flex;align-items:center;justify-content:center;padding:18px";
-
-    m.innerHTML=`
-      <div style="width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px">
-        <h2 style="margin:0 0 16px">${title}</h2>
-        ${body}
-        <div style="display:flex;gap:10px;margin-top:18px">
-          <button class="btn primary" id="mSave">${saveText}</button>
-          <button class="btn secondary" id="mCancel">Cancel</button>
-        </div>
-        <div id="mMsg" class="status"></div>
-      </div>
-    `;
-
-    document.body.appendChild(m);
-
-    m.querySelector("#mCancel").onclick=()=>m.remove();
-    m.onclick=e=>{if(e.target===m)m.remove()};
-
-    m.querySelector("#mSave").onclick=async()=>{
-      try{
-        await handler(m);
-        m.remove();
-        await loadJobs();
-      }catch(e){
-        m.querySelector("#mMsg").textContent=
-          e.message||String(e);
-        m.querySelector("#mMsg").style.color="#b42318";
-      }
-    };
-
-    return m;
-  }
-
-  function editJob(j){
-    if(!j)return;
-
-    const customerOptions = customers.map(c =>
-      `<option value="${esc(c.id)}" ${String(c.id)===String(j.customer_id)?"selected":""}>
-        ${esc(c.full_name||"Customer")} — ${esc(c.mobile||"")}
-      </option>`
-    ).join("");
-
-    modal(
-      "Edit Service Job Card",
-      `<div class="job-form-grid">
-        <label class="field wide">
-          Customer
-          <select id="eCustomer">
-            <option value="">Select customer</option>
-            ${customerOptions}
-          </select>
-        </label>
-
-        <label class="field">
-          Device Type
-          <input id="eDevice" value="${esc(j.device_type||"")}">
-        </label>
-        <label class="field">
-          Brand
-          <input id="eBrand" value="${esc(j.brand||"")}">
-        </label>
-        <label class="field">
-          Model
-          <input id="eModel" value="${esc(j.model||"")}">
-        </label>
-        <label class="field">
-          Serial Number
-          <input id="eSerial" value="${esc(j.serial_number||"")}">
-        </label>
-        <label class="field">
-          Technician ID
-          <input id="eTech" value="${esc(j.technician_id||"")}">
-        </label>
-        <label class="field">
-          Priority
-          <select id="ePriority">
-            ${["Normal","Low","High","Urgent"].map(x=>`<option ${x===(j.priority||"Normal")?"selected":""}>${x}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          Status
-          <select id="eStatus">
-            ${statuses.map(x=>`<option value="${esc(x)}" ${x===(j.status||"Received")?"selected":""}>${esc(x)}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          Expected Delivery
-          <input id="eDelivery" type="date" value="${esc((j.expected_delivery||"").slice(0,10))}">
-        </label>
-        <label class="field wide">
-          Accessories
-          <input id="eAccessories" value="${esc(j.accessories||"")}" placeholder="Charger, bag, cable, etc.">
-        </label>
-        <label class="field wide">
-          Complaint
-          <textarea id="eComplaint" rows="3">${esc(j.complaint||"")}</textarea>
-        </label>
-        <label class="field wide">
-          Diagnosis
-          <textarea id="eDiagnosis" rows="2">${esc(j.diagnosis||"")}</textarea>
-        </label>
-        <label class="field">
-          Estimate Amount
-          <input id="eEstimate" type="number" min="0" step="0.01" value="${Number(j.estimate_amount||0)}">
-        </label>
-        <label class="field">
-          Advance / Paid
-          <input id="eAdvance" type="number" min="0" step="0.01" value="${Number(j.advance_amount||0)}">
-        </label>
-        <label class="field">
-          Final Amount
-          <input id="eFinal" type="number" min="0" step="0.01" value="${Number(j.final_amount||0)}">
-        </label>
-        <label class="field wide">
-          Notes
-          <textarea id="eNotes" rows="2">${esc(j.notes||"")}</textarea>
-        </label>
-      </div>`,
-      "Save Changes",
-      async m=>{
-        const estimate=Math.max(0,Number(m.querySelector("#eEstimate").value||0));
-        const advance=Math.max(0,Number(m.querySelector("#eAdvance").value||0));
-        const finalAmount=Math.max(0,Number(m.querySelector("#eFinal").value||0));
-        const balance=Math.max(0,(finalAmount>0?finalAmount:estimate)-advance);
-        const customerId=m.querySelector("#eCustomer").value||null;
-        if(!customerId)throw new Error("Please select a customer.");
-
-        const r=await sb.from("service_jobs").update({
-          customer_id:customerId,
-          device_type:m.querySelector("#eDevice").value.trim()||null,
-          brand:m.querySelector("#eBrand").value.trim()||null,
-          model:m.querySelector("#eModel").value.trim()||null,
-          serial_number:m.querySelector("#eSerial").value.trim()||null,
-          technician_id:m.querySelector("#eTech").value.trim()||null,
-          priority:m.querySelector("#ePriority").value,
-          status:m.querySelector("#eStatus").value,
-          expected_delivery:m.querySelector("#eDelivery").value||null,
-          accessories:m.querySelector("#eAccessories").value.trim()||null,
-          complaint:m.querySelector("#eComplaint").value.trim()||null,
-          diagnosis:m.querySelector("#eDiagnosis").value.trim()||null,
-          estimate_amount:estimate,
-          advance_amount:advance,
-          final_amount:finalAmount,
-          balance_amount:balance,
-          notes:m.querySelector("#eNotes").value.trim()||null,
-          updated_at:new Date().toISOString()
-        }).eq("id",j.id);
-
-        if(r.error)throw r.error;
-      }
-    );
-  }
-
-  function editEstimate(j){
-    if(!j)return;
-
-    modal(
-      "Add / Update Estimate",
-      `<label class="field">
-        Estimate Amount
-        <input id="mAmount" type="number" min="0" step="0.01"
-               value="${Number(j.estimate_amount||0)}">
-      </label>
-      <p class="muted">
-        Estimate can be added or changed after the job card is created.
-      </p>`,
-      "Save Estimate",
-      async m=>{
-        const amount=Math.max(
-          0,Number(m.querySelector("#mAmount").value||0)
-        );
-        const paid=Number(j.advance_amount||0);
-
-        const r=await sb.from("service_jobs")
-          .update({
-            estimate_amount:amount,
-            balance_amount:Math.max(0,amount-paid)
-          })
-          .eq("id",j.id);
-
-        if(r.error)throw r.error;
-      }
-    );
-  }
-
-  function addPayment(j){
-    if(!j)return;
-
-    modal(
-      "Add Job Payment",
-      `<div class="grid">
-        <label class="field">
-          Payment Amount
-          <input id="mPay" type="number" min="0.01" step="0.01">
-        </label>
-
-        <label class="field">
-          Payment Date
-          <input id="mDate" type="date" value="${today()}">
-        </label>
-
-        <label class="field">
-          Method
-          <select id="mMethod">
-            <option>Cash</option>
-            <option>UPI</option>
-            <option>Card</option>
-            <option>Bank Transfer</option>
-            <option>Other</option>
-          </select>
-        </label>
-
-        <label class="field">
-          Reference
-          <input id="mRef" value="${esc(j.job_number)}">
-        </label>
-
-        <label class="field wide">
-          Notes
-          <textarea id="mNotes" rows="2">Service Job ${esc(j.job_number)}</textarea>
-        </label>
-      </div>`,
-      "Save Payment",
-      async m=>{
-        const amount=Number(
-          m.querySelector("#mPay").value||0
-        );
-
-        if(amount<=0)
-          throw new Error("Enter a valid payment amount.");
-
-        const customerId=j.customer_id;
-
-        if(!customerId)
-          throw new Error("This job has no customer linked.");
-
-        const p=await sb.from("payments").insert({
-          customer_id:customerId,
-          payment_date:m.querySelector("#mDate").value||today(),
-          amount,
-          payment_method:m.querySelector("#mMethod").value,
-          reference_number:
-            m.querySelector("#mRef").value.trim()||j.job_number,
-          notes:
-            m.querySelector("#mNotes").value.trim()||null
-        });
-
-        if(p.error)throw p.error;
-
-        const paid=
-          Number(j.advance_amount||0)+amount;
-
-        const balance=Math.max(
-          0,
-          Number(j.estimate_amount||0)-paid
-        );
-
-        const u=await sb.from("service_jobs")
-          .update({
-            advance_amount:paid,
-            balance_amount:balance
-          })
-          .eq("id",j.id);
-
-        if(u.error)throw u.error;
-      }
-    );
-  }
-
-  async function completeJob(j){
-    if(!j)return;
-
-    if(!confirm(
-      `Mark ${j.job_number} as Work Completed?`
-    ))return;
-
-    const r=await sb.from("service_jobs")
-      .update({status:"Work Completed"})
-      .eq("id",j.id);
-
-    if(r.error)alert(r.error.message);
-    else loadJobs();
-  }
-
-  async function deleteJob(j){
-    if(!j)return;
-
-    if(!confirm(
-      `Delete job card ${j.job_number}? This cannot be undone.`
-    ))return;
-
-    const r=await sb.from("service_jobs")
-      .delete()
-      .eq("id",j.id);
-
-    if(r.error)alert(r.error.message);
-    else loadJobs();
-  }
-
-  document.getElementById("smNew").onclick=async()=>{
-    resetForm();
-    await loadCustomers();
-    formEl.style.display="block";
-    mobileEl.focus();
-  };
-
-  document.getElementById("smCancel").onclick=()=>{
-    formEl.style.display="none";
-    resetForm();
-  };
-
-  document.getElementById("smSave").onclick=async()=>{
-    try{
-      msg("Checking customer…");
-
-      const mobile=mobileEl.value.trim();
-
-      if(!/^\d{10}$/.test(mobile)){
-        throw new Error(
-          "Enter a valid 10-digit customer mobile number."
-        );
-      }
-
-      let customerId=null;
-      let loginInfo=null;
-
-      const selected=customerEl.value;
-
-      if(selected && selected!=="__new__"){
-        customerId=selected;
-      }else{
-        const name=newNameEl.value.trim();
-
-        if(!name){
-          throw new Error(
-            "Enter the new customer name."
-          );
-        }
-
-        msg("Creating customer and login account…");
-
-        loginInfo=await createCustomerWithLogin(
-          name,mobile
-        );
-
-        customerId=loginInfo.id;
-      }
-
-      const job=
-        "SRV-"+new Date().getFullYear()+"-"+
-        Date.now().toString().slice(-6);
-
-      const payload={
-        job_number:job,
-        customer_id:customerId,
-        device_type:
-          document.getElementById("smDevice").value.trim()||null,
-        brand:
-          document.getElementById("smBrand").value.trim()||null,
-        model:
-          document.getElementById("smModel").value.trim()||null,
-        serial_number:
-          document.getElementById("smSerial").value.trim()||null,
-        technician_id:
-          document.getElementById("smTech").value.trim()||null,
-        priority:
-          document.getElementById("smPriority").value,
-        status:"Received",
-        complaint:
-          document.getElementById("smComplaint").value.trim()||null,
-        notes:
-          document.getElementById("smNotes").value.trim()||null,
-        estimate_amount:0,
-        advance_amount:0,
-        final_amount:0,
-        balance_amount:0
-      };
-
-      msg("Creating job card…");
-
-      const r=await sb.from("service_jobs")
-        .insert(payload);
-
-      if(r.error)throw r.error;
-
-      formEl.style.display="none";
-      resetForm();
-      await loadCustomers();
-      await loadJobs();
-
-      if(loginInfo?.loginCreated){
-        loginBox.innerHTML=`
-          <div class="job-login-box">
-            <strong>Customer login created successfully.</strong><br>
-            Login Mobile:
-            <code>${esc(loginInfo.mobile)}</code><br>
-            Temporary Password:
-            <code>${esc(loginInfo.password)}</code><br>
-            <span style="font-size:12px">
-              Customer can login using the mobile number and this
-              temporary password.
-            </span>
-          </div>
-        `;
-
-        alert(
-          "Job card created successfully.\\n\\n"+
-          "Customer Login Mobile: "+loginInfo.mobile+
-          "\\nTemporary Password: "+loginInfo.password
-        );
-      }else{
-        alert("Job card created: "+job);
-      }
-
-    }catch(e){
-      console.error("Service job creation:",e);
-      msg(e.message||String(e),true);
-    }
-  };
-
-  await loadCustomers();
-  await loadJobs();
-
+  async function updateStatus(j,status){if(!IS_ADMIN&&String(j.technician_id||'')!==String(me.id)){notice('Only the assigned staff can update this job.',true);return}if(!IS_ADMIN&&['Work Completed','Delivered'].includes(j.status)){notice('This job is already completed. Admin can make further changes.',true);return}const notes=prompt('Status note / work update:',j.notes||'');if(notes===null)return;const patch={status,notes:notes.trim()||null,updated_at:nowISO(),status_history:addHistory(j,status,notes,me)};if(status==='Work Completed'){patch.completed_at=nowISO();patch.completed_by=me.id}const r=await sb.from('service_jobs').update(patch).eq('id',j.id);if(r.error)notice(r.error.message,true);else{notice(`Status updated to ${status}.`);await loadJobs()}}
+  async function takeJob(j){if(IS_ADMIN||j.technician_id)return;if(!confirm(`Take ${j.job_number} as your work?`))return;const patch={technician_id:me.id,updated_at:nowISO(),status_history:addHistory(j,j.status,'Job taken by '+roleName(me),me)};const r=await sb.from('service_jobs').update(patch).eq('id',j.id);if(r.error)notice(r.error.message,true);else{notice(`Job assigned to ${roleName(me)}.`);await loadJobs()}}
+  async function completeJob(j){if(!IS_ADMIN&&String(j.technician_id||'')!==String(me.id)){notice('Only the assigned staff can complete this job.',true);return}if(['Work Completed','Delivered'].includes(j.status)){notice('Job is already completed.');return}const notes=prompt('Final work completion note:',j.notes||'');if(notes===null)return;if(!confirm(`Mark ${j.job_number} as Work Completed?`))return;const patch={status:'Work Completed',notes:notes.trim()||null,completed_at:nowISO(),completed_by:me.id,updated_at:nowISO(),status_history:addHistory(j,'Work Completed',notes,me)};const r=await sb.from('service_jobs').update(patch).eq('id',j.id);if(r.error)notice(r.error.message,true);else{notice(`${j.job_number} marked Work Completed.`);await loadJobs()}}
+  async function deleteJob(j){if(!IS_ADMIN){notice('Delete is available only to Admin.',true);return}if(!confirm(`Delete ${j.job_number}? This cannot be undone.`))return;const r=await sb.from('service_jobs').delete().eq('id',j.id);if(r.error)notice(r.error.message,true);else{notice(`${j.job_number} deleted.`);await loadJobs()}}
+  function printJob(j){const c=customers.find(x=>String(x.id)===String(j.customer_id))||j.customers||{};const assigned=staffList.find(x=>String(x.id)===String(j.technician_id));const logo=new URL('../assets/itech-logo.png',location.href).href;const hist=historyOf(j);const w=window.open('','_blank','width=900,height=1000');if(!w){alert('Please allow pop-ups to print the Job Card.');return}const timeline=hist.length?hist.map(x=>`<tr><td>${esc(x.status||'')}</td><td>${esc(x.by_name||'')}</td><td>${x.at?new Date(x.at).toLocaleString('en-IN'):''}</td><td>${esc(x.notes||'—')}</td></tr>`).join(''):`<tr><td colspan="4">No status history recorded.</td></tr>`;w.document.write(`<!doctype html><html><head><title>${esc(j.job_number)} - Service Job Card</title><style>@page{size:A4;margin:10mm}body{font-family:Arial,sans-serif;color:#142f50;margin:0}.head{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #123f72;padding-bottom:10px}.logo{width:150px;height:auto;object-fit:contain}.right{text-align:right}.title{font-size:20px;font-weight:800}.muted{color:#687a91;font-size:11px}.box{border:1px solid #d8e1ec;border-radius:8px;padding:10px;margin-top:10px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.label{font-size:9px;color:#6b7c90;text-transform:uppercase}.value{font-weight:700;margin-top:2px;font-size:12px}.total{font-size:16px;font-weight:800}.note{white-space:pre-wrap;font-size:11px}.timeline{width:100%;border-collapse:collapse;font-size:10px}.timeline th,.timeline td{border:1px solid #dfe5ec;padding:5px;text-align:left;vertical-align:top}.timeline th{background:#f4f7fb}.sign{height:55px;border-bottom:1px solid #888}.foot{text-align:center;margin-top:14px;font-size:10px;color:#65758a}@media print{button{display:none}}</style></head><body><div class="head"><div><img class="logo" src="${esc(logo)}"><div class="muted">Govt. Sub Treasury Road, Nedumangad</div><div>7736929233 · 8943165951 · itnedumangad@gmail.com</div></div><div class="right"><div class="title">SERVICE JOB CARD</div><b>${esc(j.job_number)}</b><div class="muted">Created: ${j.created_at?new Date(j.created_at).toLocaleString('en-IN'):''}</div></div></div><div class="box grid"><div><div class="label">Customer</div><div class="value">${esc(c.full_name||'Customer')}</div></div><div><div class="label">Mobile</div><div class="value">${esc(c.mobile||'')}</div></div><div><div class="label">Device</div><div class="value">${esc(j.device_type||'—')}</div></div><div><div class="label">Brand / Model</div><div class="value">${esc([j.brand,j.model].filter(Boolean).join(' / ')||'—')}</div></div><div><div class="label">Serial Number</div><div class="value">${esc(j.serial_number||'—')}</div></div><div><div class="label">Assigned Staff</div><div class="value">${esc(assigned?.full_name||'Unassigned')}</div></div><div><div class="label">Priority</div><div class="value">${esc(j.priority||'Normal')}</div></div><div><div class="label">Current Status</div><div class="value">${esc(j.status||'Received')}</div></div></div><div class="box"><div class="label">Complaint</div><div class="note">${esc(j.complaint||'—')}</div></div><div class="box"><div class="label">Current Notes</div><div class="note">${esc(j.notes||'—')}</div></div><div class="box grid"><div><div class="label">Estimate</div><div class="total">${money(j.estimate_amount)}</div></div><div><div class="label">Paid</div><div class="total">${money(j.advance_amount)}</div></div><div><div class="label">Balance</div><div class="total">${money(j.balance_amount)}</div></div><div><div class="label">Final Amount</div><div class="total">${money(j.final_amount)}</div></div></div><div class="box"><div class="label">Work Status & Notes History</div><table class="timeline"><thead><tr><th>Status</th><th>Staff</th><th>Date / Time</th><th>Notes</th></tr></thead><tbody>${timeline}</tbody></table></div><div class="box grid"><div><div class="label">Customer Signature</div><div class="sign"></div></div><div><div class="label">Authorized Signature</div><div class="sign"></div></div></div><div class="foot"><b>iTech IT Solutions</b> · Your Trust Our Service · @itechndd</div><script>setTimeout(()=>window.print(),300)<\/script></body></html>`);w.document.close()}
+  function render(){const q=($('jobSearch').value||'').trim().toLowerCase(),f=$('jobFilter').value;let list=jobs.filter(j=>{const text=[j.job_number,j.customers?.full_name,j.customers?.mobile,j.device_type,j.brand,j.model,j.serial_number].join(' ').toLowerCase();if(q&&!text.includes(q))return false;if(f==='open'&&['Work Completed','Delivered','Cancelled'].includes(j.status))return false;if(f==='done'&&!['Work Completed','Delivered'].includes(j.status))return false;if(f==='unassigned'&&j.technician_id)return false;if(f==='mine'&&String(j.technician_id||'')!==String(me.id))return false;return true});$('statTotal').textContent=jobs.length;$('statOpen').textContent=jobs.filter(j=>!['Work Completed','Delivered','Cancelled'].includes(j.status)).length;$('statDone').textContent=jobs.filter(j=>['Work Completed','Delivered'].includes(j.status)).length;$('statBalance').textContent=money(jobs.reduce((a,j)=>a+Number(j.balance_amount||0),0));if(!list.length){$('jobRows').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px">No service job cards found.</td></tr>';return}$('jobRows').innerHTML=list.map(j=>{const staff=staffList.find(x=>String(x.id)===String(j.technician_id));const last=lastHistory(j);const isDone=['Work Completed','Delivered'].includes(j.status);const canEdit=IS_ADMIN||(!isDone&&String(j.technician_id||'')===String(me.id));const canComplete=!isDone&&(IS_ADMIN||String(j.technician_id||'')===String(me.id));return `<tr><td><div class="job-no">${esc(j.job_number)}</div><div class="muted">${j.created_at?new Date(j.created_at).toLocaleDateString('en-IN'):''}</div></td><td><b>${esc(j.customers?.full_name||'Customer')}</b><div class="muted">${esc(j.customers?.mobile||'')}</div></td><td><b>${esc(j.device_type||'—')}</b><div class="muted">${esc([j.brand,j.model].filter(Boolean).join(' / '))}</div><div class="muted">SN: ${esc(j.serial_number||'—')}</div></td><td>${staff?`<div class="assigned">${esc(roleName(staff))}</div><div class="muted">${esc(staff.mobile||'')}</div>`:`<span class="unassigned">Unassigned</span>`}</td><td><span class="status-pill ${statusClass(j.status)}">${esc(j.status||'Received')}</span>${j.completed_at?`<div class="muted">Completed ${new Date(j.completed_at).toLocaleString('en-IN')}</div>`:''}</td><td class="history-mini"><b>${esc(last.status||j.status||'Received')}</b><div>${esc(last.notes||'No note')}</div><div class="muted">${esc(last.by_name||'')} ${last.at?'· '+new Date(last.at).toLocaleString('en-IN'):''}</div></td><td><div><b>${money(j.final_amount>0?j.final_amount:j.estimate_amount)}</b></div><div class="muted">Paid ${money(j.advance_amount)}</div><div class="muted">Bal ${money(j.balance_amount)}</div></td><td><div class="job-actions">${!IS_ADMIN&&!j.technician_id?`<button class="btn-small take" data-take="${esc(j.id)}">Take Job</button>`:''}<button class="btn-small edit" data-edit="${esc(j.id)}" ${canEdit?'':'disabled'}>✎ Edit</button><button class="btn-small print" data-print="${esc(j.id)}">🖨 Print</button>${canComplete?`<button class="btn-small complete" data-complete="${esc(j.id)}">✓ Complete</button>`:''}${IS_ADMIN?`<button class="btn-small delete" data-delete="${esc(j.id)}">Delete</button>`:''}</div></td></tr>`}).join('');
+    document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const j=jobs.find(x=>String(x.id)===String(b.dataset.edit));if(j)editJob(j)});document.querySelectorAll('[data-print]').forEach(b=>b.onclick=()=>{const j=jobs.find(x=>String(x.id)===String(b.dataset.print));if(j)printJob(j)});document.querySelectorAll('[data-complete]').forEach(b=>b.onclick=()=>{const j=jobs.find(x=>String(x.id)===String(b.dataset.complete));if(j)completeJob(j)});document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{const j=jobs.find(x=>String(x.id)===String(b.dataset.delete));if(j)deleteJob(j)});document.querySelectorAll('[data-take]').forEach(b=>b.onclick=()=>{const j=jobs.find(x=>String(x.id)===String(b.dataset.take));if(j)takeJob(j)});}
+  async function loadJobs(){const r=await sb.from('service_jobs').select('*,customers(full_name,mobile)').order('created_at',{ascending:false}).limit(200);if(r.error){$('jobRows').innerHTML=`<tr><td colspan="8">${esc(r.error.message)}</td></tr>`;return}jobs=r.data||[];render()}
+  $('newJobBtn').onclick=()=>newJob();$('refreshJobs').onclick=()=>loadJobs();$('jobSearch').oninput=render;$('jobFilter').onchange=render;
+  try{await loadMe();await loadPeople();await loadJobs()}catch(e){notice(e.message||String(e),true)}
 })();
 </script>
-
-<script>
-(async()=>{
-  const ok=await requireAdmin();
-  if(!ok)return;
-  const rowsEl=document.getElementById("serviceRows"), searchEl=document.getElementById("search");
-  let services=[];
-  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-  const money=v=>"₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const statusBox=(msg,error=false)=>{let x=document.getElementById("serviceCatalogStatus");if(!x){x=document.createElement("div");x.id="serviceCatalogStatus";x.style.cssText="margin:0 0 12px;padding:10px 12px;border-radius:9px;font-size:13px;";document.getElementById("serviceCatalog").prepend(x)}x.textContent=msg;x.style.background=error?"#fff0f0":"#effbf4";x.style.color=error?"#b42318":"#087a42";setTimeout(()=>x.remove(),3500)};
-  function render(){
-    const term=(searchEl.value||"").trim().toLowerCase();
-    const list=services.filter(s=>(s.service_name||"").toLowerCase().includes(term)||(s.category||"").toLowerCase().includes(term));
-    if(!list.length){rowsEl.innerHTML='<tr><td colspan="6" class="empty-state">No services found.</td></tr>';return;}
-    rowsEl.innerHTML=list.map(s=>`<tr><td><strong>${esc(s.service_name)}</strong>${s.description?`<div style="font-size:12px;color:#777;margin-top:4px">${esc(s.description)}</div>`:""}</td><td>${esc(s.category||"—")}</td><td class="service-price">${money(s.price)}</td><td>${s.gst_enabled?`${Number(s.gst_percent||0)}%`:"No GST"}</td><td>${s.status==="active"?'<span class="active-badge">Active</span>':'<span class="inactive-badge">Inactive</span>'}</td><td><div class="action-buttons"><button class="btn-small btn-edit" data-edit="${s.id}">Edit</button><button class="btn-small btn-status" data-status-id="${s.id}">${s.status==="active"?"Disable":"Enable"}</button><button class="btn-small btn-delete" data-delete="${s.id}">Delete</button></div></td></tr>`).join("");
-    rowsEl.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editService(b.dataset.edit));
-    rowsEl.querySelectorAll("[data-status-id]").forEach(b=>b.onclick=()=>toggleStatus(b.dataset.statusId));
-    rowsEl.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteService(b.dataset.delete));
-  }
-  async function load(){const r=await sb.from("services").select("*").order("service_name");if(r.error){rowsEl.innerHTML=`<tr><td colspan="6">${esc(r.error.message)}</td></tr>`;return}services=r.data||[];render();}
-  function editService(id){
-    const s=services.find(x=>String(x.id)===String(id));if(!s)return;
-    const modal=document.createElement("div");modal.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(4,21,45,.58);display:flex;align-items:center;justify-content:center;padding:20px";
-    modal.innerHTML=`<div style="width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px"><h2 style="margin:0 0 15px">Edit Service</h2><div class="service-form-grid"><label class="field">Service Name<input id="esName" value="${esc(s.service_name)}"></label><label class="field">Category<select id="esCat"><option value="">Select category</option><option>Computer</option><option>Laptop</option><option>Printer</option><option>Networking</option><option>CCTV</option><option>Software</option><option>Online Service</option><option>Printing</option><option>Scanning</option><option>Other</option></select></label><label class="field full">Description<input id="esDesc" value="${esc(s.description||"")}"></label><label class="field">Service Price<input id="esPrice" type="number" min="0" step="0.01" value="${Number(s.price||0)}"></label><label class="field">GST<select id="esGst"><option value="no">No GST</option><option value="yes">GST</option></select></label><label class="field">GST Percentage<select id="esPct"><option>5</option><option>12</option><option>18</option><option>28</option></select></label><label class="field full">Status<select id="esStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></label></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn primary" id="esSave">Save Changes</button><button class="btn secondary" id="esCancel">Cancel</button></div><div id="esMsg" class="status"></div></div>`;
-    document.body.appendChild(modal);
-    modal.querySelector("#esCat").value=s.category||"";modal.querySelector("#esGst").value=s.gst_enabled?"yes":"no";modal.querySelector("#esPct").value=String(s.gst_percent||18);modal.querySelector("#esStatus").value=s.status||"active";
-    modal.querySelector("#esCancel").onclick=()=>modal.remove();
-    modal.onclick=e=>{if(e.target===modal)modal.remove()};
-    modal.querySelector("#esSave").onclick=async()=>{const name=modal.querySelector("#esName").value.trim();if(!name){modal.querySelector("#esMsg").textContent="Enter service name.";return}const gst=modal.querySelector("#esGst").value==="yes";const r=await sb.from("services").update({service_name:name,category:modal.querySelector("#esCat").value||null,description:modal.querySelector("#esDesc").value.trim()||null,price:Number(modal.querySelector("#esPrice").value||0),gst_enabled:gst,gst_percent:gst?Number(modal.querySelector("#esPct").value):0,status:modal.querySelector("#esStatus").value,updated_at:new Date().toISOString()}).eq("id",id);if(r.error){modal.querySelector("#esMsg").textContent=r.error.message;return}modal.remove();await load();statusBox("Service updated successfully.")};
-  }
-  async function toggleStatus(id){const s=services.find(x=>String(x.id)===String(id));if(!s)return;const r=await sb.from("services").update({status:s.status==="active"?"inactive":"active",updated_at:new Date().toISOString()}).eq("id",id);if(r.error){statusBox(r.error.message,true);return}await load();statusBox("Service status updated.")}
-  async function deleteService(id){const s=services.find(x=>String(x.id)===String(id));if(!s||!confirm(`Delete "${s.service_name}"?`))return;const r=await sb.from("services").delete().eq("id",id);if(r.error){statusBox(r.error.message,true);return}await load();statusBox("Service deleted.")}
-  searchEl.addEventListener("input",render);
-  await load();
-})();
-</script>
-<footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
-</div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
-})();
-</script>
-<script id="itech-mobile-navigation">
-(function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
-
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
-
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
-
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
-})();
-</script>
-</body>
-</html>
+<footer class="site-footer unified-site-footer"><div class="footer-brand"><img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"></div><p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p><p class="footer-contact">7736929233 · 8943165951</p><p class="footer-email">itnedumangad@gmail.com</p><p class="footer-social">@itechndd</p><p class="footer-tagline">Your Trust Our Service</p></footer>
+<script>(()=>{const current=location.pathname.split('/').pop()||'dashboard.html';document.querySelectorAll('.sidebar nav a').forEach(a=>{if((a.getAttribute('href')||'').split('/').pop()===current)a.classList.add('active')})})();</script>
+<script id="itech-mobile-navigation">(function(){const header=document.querySelector('.dash-header'),sidebar=document.querySelector('.sidebar');if(!header||!sidebar||document.getElementById('uiMobileMenuBtn'))return;const btn=document.createElement('button');btn.id='uiMobileMenuBtn';btn.className='ui-mobile-menu-btn';btn.type='button';btn.setAttribute('aria-label','Open menu');btn.innerHTML='☰';const overlay=document.createElement('div');overlay.className='ui-mobile-overlay';const close=document.createElement('button');close.className='ui-mobile-close';close.type='button';close.innerHTML='×';sidebar.prepend(close);document.body.appendChild(overlay);const brand=header.querySelector('.brand');if(brand)brand.parentNode.insertBefore(btn,brand.nextSibling);else header.insertBefore(btn,header.firstChild);const open=()=>{sidebar.classList.add('ui-open');overlay.classList.add('open');document.body.style.overflow='hidden'},shut=()=>{sidebar.classList.remove('ui-open');overlay.classList.remove('open');document.body.style.overflow=''};btn.onclick=open;close.onclick=shut;overlay.onclick=shut;sidebar.querySelectorAll('a').forEach(a=>a.onclick=shut);document.addEventListener('keydown',e=>{if(e.key==='Escape')shut()})})();</script>
+</body></html>

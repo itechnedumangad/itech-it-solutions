@@ -1,81 +1,96 @@
 <!DOCTYPE html>
-
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>My Services | iTech Customer</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><style>.customer-card{background:#fff;border:1px solid #e3ebf5;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(17,50,91,.07)}.customer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.customer-stat{background:#f8fbff;border:1px solid #e0e9f4;border-radius:14px;padding:17px}.customer-stat small{display:block;color:#71819b;font-weight:700}.customer-stat strong{display:block;font-size:25px;margin-top:8px;color:#10284b}@media(max-width:900px){.customer-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.customer-grid{grid-template-columns:1fr}}</style><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Services | iTech Customer</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<link href="../css/unified-dashboard.css" rel="stylesheet"/>
+<link href="../css/dashboard-shell.css" rel="stylesheet"/>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/>
+<style>
+body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%)}
+.service-page-card{background:#fff;border:1px solid #dce7f3;border-radius:18px;padding:20px;box-shadow:0 12px 32px rgba(17,50,91,.08);position:relative;overflow:hidden}
+.service-page-card:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#071c3b,#0d5aa7,#ff8a1f)}
+.service-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.service-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.service-chip{padding:6px 10px;border-radius:999px;background:#f2f6fb;border:1px solid #dbe5ef;color:#52657d;font-size:10px;font-weight:900}
+.service-list{display:grid;gap:14px;margin-top:16px}
+.service-card{border:1px solid #dce7f3;border-radius:16px;background:#fbfdff;padding:16px;box-shadow:0 5px 18px rgba(17,50,91,.05)}
+.service-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.job-number{font-size:15px;font-weight:900;color:#10284b}
+.device-line{font-size:12px;color:#5f7289;margin-top:4px}
+.status-pill{padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid}
+.received{background:#f3f6fa;color:#53657b;border-color:#d7e0ea}.progress{background:#eef6ff;color:#0d5aa7;border-color:#cfe0f3}.ready{background:#fff6e8;color:#a85d00;border-color:#ffd9a8}.completed{background:#eaf9f0;color:#087443;border-color:#bfe8cf}.cancelled{background:#fff0f0;color:#b42318;border-color:#ffcaca}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.detail{background:#fff;border:1px solid #e5ebf2;border-radius:10px;padding:9px}.detail small{display:block;font-size:9px;color:#7a8ba0;font-weight:800;text-transform:uppercase}.detail b{display:block;font-size:11px;color:#173250;margin-top:3px;overflow-wrap:anywhere}
+.note{margin-top:10px;padding:10px 12px;background:#fff;border-left:3px solid #ff8a1f;border-radius:8px;color:#53677e;font-size:11px;line-height:1.5;white-space:pre-wrap}
+.history{margin-top:12px}.history summary{cursor:pointer;color:#0d5aa7;font-size:11px;font-weight:900}.timeline{display:grid;gap:7px;margin-top:8px}.event{padding:9px;border:1px solid #e3eaf2;border-radius:9px;background:#fff}.event strong{font-size:10px;color:#173250}.event div{font-size:10px;color:#71819b;margin-top:3px}
+.empty{padding:35px 20px;text-align:center;border:1px dashed #cbd8e8;border-radius:13px;color:#71819b;font-size:12px;background:#fbfdff}
+@media(max-width:900px){.detail-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.service-page-card{padding:15px}.detail-grid{grid-template-columns:1fr 1fr}}@media(max-width:430px){.detail-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="dash-header">
+<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/></a>
+<a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a>
+</header>
+<div class="dash-layout">
+<aside class="sidebar"><nav>
+<a href="dashboard.html">Dashboard</a>
 <a href="products.html">My Products</a>
 <a href="services.html" class="active">My Services</a>
 <a href="payments.html">Payments</a>
 <a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
 <a href="customer-bill.html">Customer Bill</a>
 <a href="register-product.html">Register Product</a>
-<a href="change-password.html">Change Password</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>My Services</h1></div></div><section class="customer-card"><div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Service</th><th>Device</th><th>Status</th><th>Details</th></tr></thead><tbody id="rows"><tr><td colspan="5">Loading...</td></tr></tbody></table></div></section><div class="status" data-status=""></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const a=await requireCustomer();if(!a)return;const c=await sb.from("customers").select("id").eq("auth_user_id",a.session.user.id).single();if(c.error)return showStatus(c.error.message,true);const r=await sb.from("service_requests").select("*").eq("customer_id",c.data.id).order("created_at",{ascending:false});if(r.error)return showStatus(r.error.message,true);const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");document.getElementById("rows").innerHTML=(r.data||[]).length?(r.data||[]).map(x=>`<tr><td>${x.created_at?new Date(x.created_at).toLocaleDateString("en-IN"):"—"}</td><td><b>${esc(x.service_name||x.service||x.category||"Service Request")}</b></td><td>${esc(x.device||x.device_name||x.brand_model||"—")}</td><td>${esc(x.status||"Submitted")}</td><td>${esc(x.problem||x.description||x.message||"")}</td></tr>`).join(""):`<tr><td colspan="5">No service requests found.</td></tr>`})()</script>
-<footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
-</div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
+<a href="change-password.html">Change Password</a>
+</nav></aside>
+<main class="dash-main">
+<div class="toolbar"><div><p class="eyebrow">CUSTOMER PORTAL</p><h1>My Services</h1><p class="muted">Live service job-card updates from iTech IT Solutions.</p></div></div>
+<section class="service-page-card">
+<div class="service-head"><div><h2 style="margin:0">🛠️ My Service Job Cards</h2><p class="muted" id="summary" style="margin:6px 0 0">Loading your service records…</p></div><button class="btn secondary" id="refresh" type="button">↻ Refresh</button></div>
+<div class="service-summary" id="chips"></div>
+<div class="service-list" id="serviceRows"><div class="empty">Loading service updates…</div></div>
+</section>
+<div class="status" data-status=""></div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script>
+<script>
+(async()=>{
+ const auth=await requireCustomer(); if(!auth)return;
+ const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+ const money=v=>"₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const date=v=>{if(!v)return"—";const d=new Date(v);return Number.isNaN(d.getTime())?"—":d.toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})};
+ const statusClass=s=>{s=String(s||"").toLowerCase();if(s.includes("completed")||s.includes("delivered"))return"completed";if(s.includes("cancel"))return"cancelled";if(s.includes("ready"))return"ready";if(s.includes("repair")||s.includes("progress")||s.includes("working"))return"progress";return"received"};
+ const customer=await sb.from("customers").select("id").eq("auth_user_id",auth.session.user.id).single();
+ if(customer.error){showStatus(customer.error.message,true);return}
+ const customerId=customer.data.id, rows=document.getElementById("serviceRows"), summary=document.getElementById("summary"), chips=document.getElementById("chips");
+ function render(data){
+   const list=data||[], completed=list.filter(x=>["work completed","delivered"].includes(String(x.status||"").toLowerCase())).length;
+   const open=list.length-completed, balance=list.reduce((a,x)=>a+Number(x.balance_amount||0),0);
+   summary.textContent=list.length?`${list.length} service job card${list.length===1?"":"s"} linked to your account.`:"No service job cards have been created for your account yet.";
+   chips.innerHTML=list.length?`<span class="service-chip">🛠️ ${list.length} Total</span><span class="service-chip">🔧 ${open} Open</span><span class="service-chip">✅ ${completed} Completed</span><span class="service-chip">₹ ${balance.toLocaleString("en-IN",{minimumFractionDigits:2})} Balance</span>`:"";
+   if(!list.length){rows.innerHTML='<div class="empty">No service job cards found. Once iTech creates a job card for your account, it will appear here automatically.</div>';return}
+   rows.innerHTML=list.map(j=>{
+     const hist=Array.isArray(j.status_history)?j.status_history:[], last=hist.length?hist[hist.length-1]:null;
+     const staff=last?.by_name||"Assigned by iTech";
+     const history=hist.length?hist.slice().reverse().map(h=>`<div class="event"><strong>${esc(h.status||"Update")}</strong><div>${esc(h.by_name||"iTech Staff")} · ${esc(date(h.at))}</div>${h.notes?`<div>${esc(h.notes)}</div>`:""}</div>`).join(""):'<div class="event"><div>No status history recorded yet.</div></div>';
+     return `<article class="service-card"><div class="service-top"><div><div class="job-number">${esc(j.job_number||"Service Job")}</div><div class="device-line">${esc([j.device_type,j.brand,j.model].filter(Boolean).join(" • ")||"Device details not available")}</div></div><span class="status-pill ${statusClass(j.status)}">${esc(j.status||"Received")}</span></div>
+     <div class="detail-grid"><div class="detail"><small>Assigned / Updated By</small><b>${esc(staff)}</b></div><div class="detail"><small>Serial Number</small><b>${esc(j.serial_number||"—")}</b></div><div class="detail"><small>Estimate</small><b>${money(j.estimate_amount)}</b></div><div class="detail"><small>Balance</small><b>${money(j.balance_amount)}</b></div><div class="detail"><small>Priority</small><b>${esc(j.priority||"Normal")}</b></div><div class="detail"><small>Created</small><b>${esc(date(j.created_at))}</b></div><div class="detail"><small>Expected Delivery</small><b>${esc(j.expected_delivery?new Date(j.expected_delivery+"T00:00:00").toLocaleDateString("en-IN"):"—")}</b></div><div class="detail"><small>Completed</small><b>${esc(j.completed_at?date(j.completed_at):"—")}</b></div></div>
+     ${j.complaint?`<div class="note"><b>Complaint:</b> ${esc(j.complaint)}</div>`:""}${j.diagnosis?`<div class="note"><b>Diagnosis:</b> ${esc(j.diagnosis)}</div>`:""}${j.notes?`<div class="note"><b>Latest Update:</b> ${esc(j.notes)}</div>`:""}
+     <details class="history"><summary>View work status & notes history (${hist.length})</summary><div class="timeline">${history}</div></details></article>`;
+   }).join("");
+ }
+ async function load(){const r=await sb.from("service_jobs").select("id,job_number,device_type,brand,model,serial_number,status,priority,expected_delivery,complaint,diagnosis,notes,estimate_amount,advance_amount,final_amount,balance_amount,status_history,completed_at,created_at,updated_at").eq("customer_id",customerId).order("created_at",{ascending:false});if(r.error){rows.innerHTML=`<div class="empty" style="color:#a62b2b">${esc(r.error.message)}</div>`;return}render(r.data||[])}
+ document.getElementById("refresh").onclick=load; await load();
+ try{sb.channel("customer-service-live-"+customerId).on("postgres_changes",{event:"*",schema:"public",table:"service_jobs",filter:"customer_id=eq."+customerId},load).subscribe()}catch(e){console.warn(e)}
 })();
 </script>
-<script id="itech-mobile-navigation">
-(function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
-
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
-
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
-
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
-})();
-</script>
+<footer class="site-footer unified-site-footer"><div class="footer-brand"><img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/></div><p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p><p class="footer-contact">7736929233 · 8943165951</p><p class="footer-email">itnedumangad@gmail.com</p><p class="footer-social">@itechndd</p><p class="footer-tagline">Your Trust Our Service</p></footer>
+<script id="itech-mobile-navigation">(function(){const h=document.querySelector(".dash-header"),s=document.querySelector(".sidebar");if(!h||!s||document.getElementById("uiMobileMenuBtn"))return;const b=document.createElement("button");b.id="uiMobileMenuBtn";b.className="ui-mobile-menu-btn";b.type="button";b.setAttribute("aria-label","Open menu");b.innerHTML="☰";const o=document.createElement("div");o.className="ui-mobile-overlay";const c=document.createElement("button");c.className="ui-mobile-close";c.type="button";c.setAttribute("aria-label","Close menu");c.innerHTML="×";s.prepend(c);document.body.appendChild(o);const br=h.querySelector(".brand");if(br&&br.parentNode)br.parentNode.insertBefore(b,br.nextSibling);else h.insertBefore(b,h.firstChild);function open(){s.classList.add("ui-open");o.classList.add("open");document.body.style.overflow="hidden"}function close(){s.classList.remove("ui-open");o.classList.remove("open");document.body.style.overflow=""}b.onclick=open;c.onclick=close;o.onclick=close;s.querySelectorAll("a").forEach(a=>a.onclick=close);document.addEventListener("keydown",e=>{if(e.key==="Escape")close()})})();</script>
 </body></html>

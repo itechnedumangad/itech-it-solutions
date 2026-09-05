@@ -179,7 +179,27 @@
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/>
+<style>
+/* ===== Service Job Cards ===== */
+.job-card-panel{margin-top:20px}
+.job-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.job-form-grid .wide{grid-column:1/-1}
+.job-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.job-status-msg{min-height:22px;margin-top:12px;font-size:13px;font-weight:700}
+.job-table-wrap{overflow-x:auto}
+.job-action-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.job-action-wrap .btn-small{white-space:nowrap}
+.job-login-box{margin-top:14px;padding:13px 15px;border:1px solid #b7e5c9;border-radius:12px;background:#effbf4;color:#176b3b}
+.job-login-box strong{color:#0b6134}
+.job-login-box code{background:#fff;padding:3px 7px;border-radius:6px;border:1px solid #dceee3}
+@media(max-width:800px){
+  .job-form-grid{grid-template-columns:1fr}
+  .job-form-grid .wide{grid-column:auto}
+}
+</style>
+
+</head>
 <body>
 <header class="dash-header">
 <a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
@@ -213,7 +233,7 @@
 <div>
 <p class="eyebrow">SERVICE MANAGEMENT</p>
 <h1>Services</h1>
-<p>Manage your shop services and service charges.</p>
+<p>Manage your shop services, service job cards and customer service records.</p>
 </div>
 </div>
 <!-- SERVICES LIST -->
@@ -253,7 +273,889 @@ Loading services...
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script><script src="../js/service-management.js"></script><script src="../js/global-search.js"></script>
+<script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
+
+<script>
+/* =========================================================
+   iTech SERVICE JOB CARDS
+   Corrected: New Customer -> Customer record + Login account
+   Login identifier: mobile number
+   Internal auth email: mobile@itech.local
+   ========================================================= */
+(async()=>{
+  const ok=await requireAdmin();
+  if(!ok)return;
+
+  const main=document.querySelector("main.dash-main");
+  const catalog=document.getElementById("serviceCatalog");
+  if(!main)return;
+
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+
+  const money=v=>"₹"+Number(v||0).toLocaleString("en-IN",{
+    minimumFractionDigits:2,maximumFractionDigits:2
+  });
+
+  const today=()=>new Date().toISOString().slice(0,10);
+
+  const statuses=[
+    "Received","Diagnosis","Estimate Sent","Approved","Repairing",
+    "Testing","Waiting Parts","Ready for Delivery","Work Completed",
+    "Delivered","Cancelled"
+  ];
+
+  const sec=document.createElement("section");
+  sec.className="panel job-card-panel";
+  sec.id="itechServiceJobs";
+
+  sec.innerHTML=`
+    <div class="toolbar">
+      <div>
+        <p class="eyebrow">JOB CARDS</p>
+        <h2>Service Job Cards</h2>
+        <p class="muted">Create and manage service job cards from this screen.</p>
+      </div>
+      <button class="btn primary" id="smNew">＋ New Job Card</button>
+    </div>
+
+    <div id="smForm" class="form" style="display:none">
+      <div class="job-form-grid">
+
+        <label class="field">
+          Customer Mobile
+          <input id="smMobile" inputmode="tel" maxlength="10"
+                 placeholder="10 digit mobile">
+        </label>
+
+        <label class="field">
+          Customer
+          <select id="smCustomer">
+            <option value="">Select existing customer</option>
+            <option value="__new__">＋ New Customer — enter name below</option>
+          </select>
+        </label>
+
+        <label class="field wide" id="smNewNameWrap" style="display:none">
+          New Customer Name
+          <input id="smNewName" placeholder="Enter customer name">
+        </label>
+
+        <label class="field">
+          Device Type
+          <input id="smDevice" placeholder="Desktop / Laptop / Printer">
+        </label>
+
+        <label class="field">
+          Brand
+          <input id="smBrand" placeholder="Brand">
+        </label>
+
+        <label class="field">
+          Model
+          <input id="smModel" placeholder="Model">
+        </label>
+
+        <label class="field">
+          Serial Number
+          <input id="smSerial" placeholder="Serial number">
+        </label>
+
+        <label class="field">
+          Technician ID
+          <input id="smTech" placeholder="Optional">
+        </label>
+
+        <label class="field">
+          Priority
+          <select id="smPriority">
+            <option>Normal</option>
+            <option>Low</option>
+            <option>High</option>
+            <option>Urgent</option>
+          </select>
+        </label>
+
+        <label class="field wide">
+          Complaint
+          <textarea id="smComplaint" rows="3"
+                    placeholder="Customer complaint / problem"></textarea>
+        </label>
+
+        <label class="field wide">
+          Notes
+          <textarea id="smNotes" rows="2"
+                    placeholder="Additional notes"></textarea>
+        </label>
+
+      </div>
+
+      <div class="job-actions">
+        <button class="btn primary" id="smSave">Create Job Card</button>
+        <button class="btn secondary" id="smCancel">Cancel</button>
+      </div>
+
+      <div class="job-status-msg" id="smStatus"></div>
+      <div id="smLoginBox"></div>
+    </div>
+
+    <div class="table-scroll job-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Job Card</th>
+            <th>Customer</th>
+            <th>Device</th>
+            <th>Status</th>
+            <th>Estimate</th>
+            <th>Paid</th>
+            <th>Balance</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="smRows">
+          <tr><td colspan="8">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  if(catalog) main.insertBefore(sec,catalog);
+  else main.appendChild(sec);
+
+  const customerEl=document.getElementById("smCustomer");
+  const mobileEl=document.getElementById("smMobile");
+  const newWrap=document.getElementById("smNewNameWrap");
+  const newNameEl=document.getElementById("smNewName");
+  const statusEl=document.getElementById("smStatus");
+  const loginBox=document.getElementById("smLoginBox");
+  const formEl=document.getElementById("smForm");
+  const rowsEl=document.getElementById("smRows");
+
+  let customers=[];
+
+  function msg(text,error=false){
+    statusEl.textContent=text||"";
+    statusEl.style.color=error?"#b42318":"#087a42";
+  }
+
+  function generatedPassword(){
+    const raw=(crypto?.randomUUID?.()||Math.random().toString(36).slice(2))
+      .replace(/-/g,"").slice(0,8);
+    return "IT@"+raw+"#";
+  }
+
+  async function loadCustomers(){
+    const r=await sb.from("customers")
+      .select("id,full_name,mobile,auth_user_id")
+      .eq("status","active")
+      .order("full_name");
+
+    if(r.error){
+      msg(r.error.message,true);
+      return;
+    }
+
+    customers=r.data||[];
+
+    customerEl.innerHTML=
+      '<option value="">Select existing customer</option>'+
+      '<option value="__new__">＋ New Customer — enter name below</option>'+
+      customers.map(c=>
+        `<option value="${esc(c.id)}" data-mobile="${esc(c.mobile||"")}">
+          ${esc(c.full_name||"Customer")} — ${esc(c.mobile||"")}
+        </option>`
+      ).join("");
+  }
+
+  customerEl.onchange=()=>{
+    const isNew=customerEl.value==="__new__";
+    newWrap.style.display=isNew?"block":"none";
+
+    if(isNew){
+      loginBox.innerHTML="";
+      mobileEl.value="";
+      newNameEl.value="";
+      newNameEl.focus();
+      return;
+    }
+
+    const opt=customerEl.selectedOptions[0];
+    if(opt?.dataset.mobile) mobileEl.value=opt.dataset.mobile;
+    loginBox.innerHTML="";
+  };
+
+  mobileEl.addEventListener("input",()=>{
+    mobileEl.value=mobileEl.value.replace(/\D/g,"").slice(0,10);
+    const v=mobileEl.value;
+
+    const c=customers.find(x=>
+      String(x.mobile||"").replace(/\D/g,"")===v
+    );
+
+    if(c && customerEl.value!==c.id){
+      customerEl.value=c.id;
+      newWrap.style.display="none";
+    }
+  });
+
+  /*
+    IMPORTANT FIX:
+    New customer creation now uses the already deployed
+    create-customer Edge Function used by Add Customer.
+    This creates the Supabase Auth account safely without
+    replacing/logging out the current admin session.
+  */
+  async function createCustomerWithLogin(name,mobile){
+    const existing=await sb.from("customers")
+      .select("id,full_name,mobile,auth_user_id")
+      .eq("mobile",mobile)
+      .maybeSingle();
+
+    if(existing.error) throw existing.error;
+
+    if(existing.data){
+      if(existing.data.auth_user_id){
+        return {
+          id:existing.data.id,
+          loginCreated:false,
+          existing:true,
+          message:"Existing customer selected."
+        };
+      }
+
+      throw new Error(
+        "This mobile number already belongs to a customer, but that customer has no login account. Please create the login from Add Customer first."
+      );
+    }
+
+    const {data:{session}}=await sb.auth.getSession();
+
+    if(!session){
+      throw new Error(
+        "Admin session expired. Please login again."
+      );
+    }
+
+    const email=mobile+"@itech.local";
+    const password=generatedPassword();
+
+    const payload={
+      full_name:name,
+      mobile:mobile,
+      whatsapp:mobile,
+      email:email,
+      password:password,
+      address:"",
+      opening_balance:0
+    };
+
+    const response=await fetch(
+      `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":`Bearer ${session.access_token}`
+        },
+        body:JSON.stringify(payload)
+      }
+    );
+
+    const json=await response.json().catch(()=>({}));
+
+    if(!response.ok){
+      throw new Error(
+        json.error ||
+        json.message ||
+        "Customer login account creation failed."
+      );
+    }
+
+    /*
+      Fetch the customer created by the Edge Function.
+      This avoids depending on a particular response JSON shape.
+    */
+    let created=null;
+
+    for(let i=0;i<5;i++){
+      const q=await sb.from("customers")
+        .select("id,full_name,mobile,auth_user_id")
+        .eq("mobile",mobile)
+        .maybeSingle();
+
+      if(!q.error && q.data){
+        created=q.data;
+        if(created.auth_user_id)break;
+      }
+
+      await new Promise(resolve=>setTimeout(resolve,250));
+    }
+
+    if(!created){
+      throw new Error(
+        "Login account was created, but the customer record could not be found. Please check Customers."
+      );
+    }
+
+    if(!created.auth_user_id){
+      throw new Error(
+        "Customer record was created, but it is not linked to the login account. Please check the create-customer function."
+      );
+    }
+
+    return {
+      id:created.id,
+      loginCreated:true,
+      existing:false,
+      email,
+      password,
+      mobile
+    };
+  }
+
+  function resetForm(){
+    [
+      "smMobile","smNewName","smDevice","smBrand","smModel",
+      "smSerial","smTech","smComplaint","smNotes"
+    ].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.value="";
+    });
+
+    document.getElementById("smPriority").value="Normal";
+    customerEl.value="";
+    newWrap.style.display="none";
+    statusEl.textContent="";
+    loginBox.innerHTML="";
+  }
+
+  function printJob(j,c){
+    const w=window.open(
+      "","_blank","width=900,height=1000"
+    );
+
+    if(!w){
+      alert("Please allow pop-ups to print the job card.");
+      return;
+    }
+
+    const now=new Date(
+      j.created_at||Date.now()
+    ).toLocaleString("en-IN");
+
+    w.document.write(`
+      <!doctype html>
+      <html>
+      <head>
+        <title>${esc(j.job_number)} - Job Card</title>
+        <style>
+          @page{size:A4;margin:12mm}
+          body{font-family:Arial,sans-serif;color:#13294b;margin:0}
+          .head{display:flex;justify-content:space-between;border-bottom:3px solid #123f72;padding-bottom:12px}
+          .logo{font-size:24px;font-weight:800}
+          .orange{color:#f58220}
+          .muted{color:#667085}
+          .box{border:1px solid #d8e1ec;border-radius:8px;padding:12px;margin-top:14px}
+          .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+          .label{font-size:11px;color:#667085;text-transform:uppercase}
+          .value{font-weight:700;margin-top:3px}
+          .title{font-size:20px;font-weight:800}
+          .total{font-size:18px;font-weight:800}
+          .sign{height:70px;border-bottom:1px solid #999}
+          .foot{margin-top:22px;text-align:center;font-size:11px;color:#667085}
+          @media print{button{display:none}}
+        </style>
+      </head>
+      <body>
+        <div class="head">
+          <div>
+            <div class="logo">iTech <span class="orange">IT Solutions</span></div>
+            <div class="muted">Govt. Sub Treasury Road, Nedumangad</div>
+            <div>7736929233 · 8943165951 · itnedumangad@gmail.com</div>
+          </div>
+          <div style="text-align:right">
+            <div class="title">SERVICE JOB CARD</div>
+            <div><b>${esc(j.job_number)}</b></div>
+            <div class="muted">Created: ${esc(now)}</div>
+          </div>
+        </div>
+
+        <div class="box grid">
+          <div><div class="label">Customer</div><div class="value">${esc(c?.full_name||"Customer")}</div></div>
+          <div><div class="label">Mobile</div><div class="value">${esc(c?.mobile||"")}</div></div>
+          <div><div class="label">Device</div><div class="value">${esc(j.device_type||"—")}</div></div>
+          <div><div class="label">Brand / Model</div><div class="value">${esc([j.brand,j.model].filter(Boolean).join(" / ")||"—")}</div></div>
+          <div><div class="label">Serial Number</div><div class="value">${esc(j.serial_number||"—")}</div></div>
+          <div><div class="label">Priority</div><div class="value">${esc(j.priority||"Normal")}</div></div>
+          <div><div class="label">Status</div><div class="value">${esc(j.status||"Received")}</div></div>
+        </div>
+
+        <div class="box">
+          <div class="label">Complaint</div>
+          <div style="margin-top:6px;white-space:pre-wrap">${esc(j.complaint||"—")}</div>
+        </div>
+
+        <div class="box">
+          <div class="label">Notes</div>
+          <div style="margin-top:6px;white-space:pre-wrap">${esc(j.notes||"—")}</div>
+        </div>
+
+        <div class="box grid">
+          <div><div class="label">Estimate</div><div class="total">${money(j.estimate_amount)}</div></div>
+          <div><div class="label">Paid</div><div class="total">${money(j.advance_amount)}</div></div>
+          <div><div class="label">Balance</div><div class="total">${money(j.balance_amount)}</div></div>
+        </div>
+
+        <div class="box grid">
+          <div><div class="label">Customer Signature</div><div class="sign"></div></div>
+          <div><div class="label">Authorized Signature</div><div class="sign"></div></div>
+        </div>
+
+        <div class="foot">
+          Your Trust Our Service · @itechndd
+        </div>
+
+        <script>
+          setTimeout(()=>window.print(),250);
+        <\/script>
+      </body>
+      </html>
+    `);
+
+    w.document.close();
+  }
+
+  async function loadJobs(){
+    const r=await sb.from("service_jobs")
+      .select("*,customers(full_name,mobile)")
+      .order("created_at",{ascending:false})
+      .limit(100);
+
+    if(r.error){
+      rowsEl.innerHTML=
+        `<tr><td colspan="8">${esc(r.error.message)}</td></tr>`;
+      return;
+    }
+
+    const rows=r.data||[];
+
+    rowsEl.innerHTML=rows.map(j=>`
+      <tr>
+        <td>
+          <b>${esc(j.job_number)}</b>
+          <small style="display:block;color:#667085">
+            ${esc((j.created_at||"").slice(0,10))}
+          </small>
+        </td>
+
+        <td>
+          ${esc(j.customers?.full_name||"Customer")}
+          <small style="display:block;color:#667085">
+            ${esc(j.customers?.mobile||"")}
+          </small>
+        </td>
+
+        <td>
+          ${esc([j.brand,j.model,j.device_type]
+            .filter(Boolean).join(" ")||"—")}
+        </td>
+
+        <td>
+          <select data-job-status="${esc(j.id)}">
+            ${statuses.map(s=>
+              `<option value="${esc(s)}"
+                ${s===j.status?"selected":""}>
+                ${esc(s)}
+              </option>`
+            ).join("")}
+          </select>
+        </td>
+
+        <td>${money(j.estimate_amount)}</td>
+        <td>${money(j.advance_amount)}</td>
+        <td>${money(j.balance_amount)}</td>
+
+        <td>
+          <div class="job-action-wrap">
+            <button class="btn-small"
+                    data-job-print="${esc(j.id)}">
+              🖨 Print
+            </button>
+            <button class="btn-small"
+                    data-job-est="${esc(j.id)}">
+              ₹ Estimate
+            </button>
+            <button class="btn-small"
+                    data-job-pay="${esc(j.id)}">
+              💳 Payment
+            </button>
+            <button class="btn-small"
+                    data-job-complete="${esc(j.id)}">
+              ✓ Complete
+            </button>
+            <button class="btn-small btn-delete"
+                    data-job-delete="${esc(j.id)}">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join("") ||
+    '<tr><td colspan="8">No service job cards.</td></tr>';
+
+    document.querySelectorAll("[data-job-status]")
+      .forEach(x=>x.onchange=async()=>{
+        const r=await sb.from("service_jobs")
+          .update({status:x.value})
+          .eq("id",x.dataset.jobStatus);
+
+        if(r.error)alert(r.error.message);
+        else loadJobs();
+      });
+
+    document.querySelectorAll("[data-job-print]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobPrint));
+        if(j)printJob(j,j.customers);
+      });
+
+    document.querySelectorAll("[data-job-est]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobEst));
+        if(j)editEstimate(j);
+      });
+
+    document.querySelectorAll("[data-job-pay]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobPay));
+        if(j)addPayment(j);
+      });
+
+    document.querySelectorAll("[data-job-complete]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobComplete));
+        if(j)completeJob(j);
+      });
+
+    document.querySelectorAll("[data-job-delete]")
+      .forEach(b=>b.onclick=()=>{
+        const j=rows.find(x=>String(x.id)===String(b.dataset.jobDelete));
+        if(j)deleteJob(j);
+      });
+  }
+
+  function modal(title,body,saveText,handler){
+    const m=document.createElement("div");
+    m.style.cssText=
+      "position:fixed;inset:0;z-index:99999;background:rgba(4,21,45,.58);display:flex;align-items:center;justify-content:center;padding:18px";
+
+    m.innerHTML=`
+      <div style="width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px">
+        <h2 style="margin:0 0 16px">${title}</h2>
+        ${body}
+        <div style="display:flex;gap:10px;margin-top:18px">
+          <button class="btn primary" id="mSave">${saveText}</button>
+          <button class="btn secondary" id="mCancel">Cancel</button>
+        </div>
+        <div id="mMsg" class="status"></div>
+      </div>
+    `;
+
+    document.body.appendChild(m);
+
+    m.querySelector("#mCancel").onclick=()=>m.remove();
+    m.onclick=e=>{if(e.target===m)m.remove()};
+
+    m.querySelector("#mSave").onclick=async()=>{
+      try{
+        await handler(m);
+        m.remove();
+        await loadJobs();
+      }catch(e){
+        m.querySelector("#mMsg").textContent=
+          e.message||String(e);
+        m.querySelector("#mMsg").style.color="#b42318";
+      }
+    };
+
+    return m;
+  }
+
+  function editEstimate(j){
+    if(!j)return;
+
+    modal(
+      "Add / Update Estimate",
+      `<label class="field">
+        Estimate Amount
+        <input id="mAmount" type="number" min="0" step="0.01"
+               value="${Number(j.estimate_amount||0)}">
+      </label>
+      <p class="muted">
+        Estimate can be added or changed after the job card is created.
+      </p>`,
+      "Save Estimate",
+      async m=>{
+        const amount=Math.max(
+          0,Number(m.querySelector("#mAmount").value||0)
+        );
+        const paid=Number(j.advance_amount||0);
+
+        const r=await sb.from("service_jobs")
+          .update({
+            estimate_amount:amount,
+            balance_amount:Math.max(0,amount-paid)
+          })
+          .eq("id",j.id);
+
+        if(r.error)throw r.error;
+      }
+    );
+  }
+
+  function addPayment(j){
+    if(!j)return;
+
+    modal(
+      "Add Job Payment",
+      `<div class="grid">
+        <label class="field">
+          Payment Amount
+          <input id="mPay" type="number" min="0.01" step="0.01">
+        </label>
+
+        <label class="field">
+          Payment Date
+          <input id="mDate" type="date" value="${today()}">
+        </label>
+
+        <label class="field">
+          Method
+          <select id="mMethod">
+            <option>Cash</option>
+            <option>UPI</option>
+            <option>Card</option>
+            <option>Bank Transfer</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Reference
+          <input id="mRef" value="${esc(j.job_number)}">
+        </label>
+
+        <label class="field wide">
+          Notes
+          <textarea id="mNotes" rows="2">Service Job ${esc(j.job_number)}</textarea>
+        </label>
+      </div>`,
+      "Save Payment",
+      async m=>{
+        const amount=Number(
+          m.querySelector("#mPay").value||0
+        );
+
+        if(amount<=0)
+          throw new Error("Enter a valid payment amount.");
+
+        const customerId=j.customer_id;
+
+        if(!customerId)
+          throw new Error("This job has no customer linked.");
+
+        const p=await sb.from("payments").insert({
+          customer_id:customerId,
+          payment_date:m.querySelector("#mDate").value||today(),
+          amount,
+          payment_method:m.querySelector("#mMethod").value,
+          reference_number:
+            m.querySelector("#mRef").value.trim()||j.job_number,
+          notes:
+            m.querySelector("#mNotes").value.trim()||null
+        });
+
+        if(p.error)throw p.error;
+
+        const paid=
+          Number(j.advance_amount||0)+amount;
+
+        const balance=Math.max(
+          0,
+          Number(j.estimate_amount||0)-paid
+        );
+
+        const u=await sb.from("service_jobs")
+          .update({
+            advance_amount:paid,
+            balance_amount:balance
+          })
+          .eq("id",j.id);
+
+        if(u.error)throw u.error;
+      }
+    );
+  }
+
+  async function completeJob(j){
+    if(!j)return;
+
+    if(!confirm(
+      `Mark ${j.job_number} as Work Completed?`
+    ))return;
+
+    const r=await sb.from("service_jobs")
+      .update({status:"Work Completed"})
+      .eq("id",j.id);
+
+    if(r.error)alert(r.error.message);
+    else loadJobs();
+  }
+
+  async function deleteJob(j){
+    if(!j)return;
+
+    if(!confirm(
+      `Delete job card ${j.job_number}? This cannot be undone.`
+    ))return;
+
+    const r=await sb.from("service_jobs")
+      .delete()
+      .eq("id",j.id);
+
+    if(r.error)alert(r.error.message);
+    else loadJobs();
+  }
+
+  document.getElementById("smNew").onclick=async()=>{
+    resetForm();
+    await loadCustomers();
+    formEl.style.display="block";
+    mobileEl.focus();
+  };
+
+  document.getElementById("smCancel").onclick=()=>{
+    formEl.style.display="none";
+    resetForm();
+  };
+
+  document.getElementById("smSave").onclick=async()=>{
+    try{
+      msg("Checking customer…");
+
+      const mobile=mobileEl.value.trim();
+
+      if(!/^\d{10}$/.test(mobile)){
+        throw new Error(
+          "Enter a valid 10-digit customer mobile number."
+        );
+      }
+
+      let customerId=null;
+      let loginInfo=null;
+
+      const selected=customerEl.value;
+
+      if(selected && selected!=="__new__"){
+        customerId=selected;
+      }else{
+        const name=newNameEl.value.trim();
+
+        if(!name){
+          throw new Error(
+            "Enter the new customer name."
+          );
+        }
+
+        msg("Creating customer and login account…");
+
+        loginInfo=await createCustomerWithLogin(
+          name,mobile
+        );
+
+        customerId=loginInfo.id;
+      }
+
+      const job=
+        "SRV-"+new Date().getFullYear()+"-"+
+        Date.now().toString().slice(-6);
+
+      const payload={
+        job_number:job,
+        customer_id:customerId,
+        device_type:
+          document.getElementById("smDevice").value.trim()||null,
+        brand:
+          document.getElementById("smBrand").value.trim()||null,
+        model:
+          document.getElementById("smModel").value.trim()||null,
+        serial_number:
+          document.getElementById("smSerial").value.trim()||null,
+        technician_id:
+          document.getElementById("smTech").value.trim()||null,
+        priority:
+          document.getElementById("smPriority").value,
+        status:"Received",
+        complaint:
+          document.getElementById("smComplaint").value.trim()||null,
+        notes:
+          document.getElementById("smNotes").value.trim()||null,
+        estimate_amount:0,
+        advance_amount:0,
+        final_amount:0,
+        balance_amount:0
+      };
+
+      msg("Creating job card…");
+
+      const r=await sb.from("service_jobs")
+        .insert(payload);
+
+      if(r.error)throw r.error;
+
+      formEl.style.display="none";
+      resetForm();
+      await loadCustomers();
+      await loadJobs();
+
+      if(loginInfo?.loginCreated){
+        loginBox.innerHTML=`
+          <div class="job-login-box">
+            <strong>Customer login created successfully.</strong><br>
+            Login Mobile:
+            <code>${esc(loginInfo.mobile)}</code><br>
+            Temporary Password:
+            <code>${esc(loginInfo.password)}</code><br>
+            <span style="font-size:12px">
+              Customer can login using the mobile number and this
+              temporary password.
+            </span>
+          </div>
+        `;
+
+        alert(
+          "Job card created successfully.\\n\\n"+
+          "Customer Login Mobile: "+loginInfo.mobile+
+          "\\nTemporary Password: "+loginInfo.password
+        );
+      }else{
+        alert("Job card created: "+job);
+      }
+
+    }catch(e){
+      console.error("Service job creation:",e);
+      msg(e.message||String(e),true);
+    }
+  };
+
+  await loadCustomers();
+  await loadJobs();
+
+})();
+</script>
+
 <script>
 (async()=>{
   const ok=await requireAdmin();

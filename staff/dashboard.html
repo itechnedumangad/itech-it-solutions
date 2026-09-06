@@ -335,6 +335,41 @@ body{
 \n.ins-dash-card{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}\n.ins-dash-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.ins-dash-head h2{margin:0;color:#10284b;font-size:20px}.ins-dash-head p{margin:4px 0 0;color:#71819b;font-size:12px}\n.ins-dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ins-dash-stat{padding:13px;border:1px solid #e0e9f4;border-radius:13px;background:#f8fbff}.ins-dash-stat small{display:block;color:#71819b;font-weight:800}.ins-dash-stat strong{display:block;margin-top:5px;font-size:22px;color:#10284b}.ins-dash-note{margin-top:12px;padding:11px 12px;border-radius:11px;background:#eef6ff;color:#244a78;font-size:12px}\n@media(max-width:800px){.ins-dash-grid{grid-template-columns:repeat(2,1fr)}.ins-dash-head{align-items:flex-start;flex-direction:column}}\n@media(max-width:520px){.ins-dash-grid{grid-template-columns:1fr}}\n</style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+
+<style>
+/* ===== Staff Quick Entry: compact calendar + reminder ===== */
+.entry-date-inline{display:inline-flex;align-items:center;flex:0 0 auto}
+.entry-date-inline input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.entry-date-inline button{
+  width:30px;height:30px;border:1px solid #d9e4f0;border-radius:9px;
+  background:#f7fbff;cursor:pointer;font-size:15px;display:inline-flex;
+  align-items:center;justify-content:center;transition:.2s
+}
+.entry-date-inline button:hover{background:#eef5ff;transform:translateY(-1px)}
+.entry-date-inline button:active{transform:scale(.96)}
+
+.quick-reminder-overlay{
+  position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;
+  background:rgba(5,18,40,.74);backdrop-filter:blur(7px);padding:20px
+}
+.quick-reminder-overlay.show{display:flex}
+.quick-reminder-card{
+  width:min(430px,92vw);background:#fff;border-radius:24px;padding:28px 24px 22px;
+  text-align:center;box-shadow:0 28px 80px rgba(0,0,0,.30);
+  animation:staffReminderPop .28s ease-out
+}
+.quick-reminder-icon{
+  width:66px;height:66px;margin:0 auto 14px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;background:#fff4e6;font-size:34px
+}
+.quick-reminder-card h3{margin:0;color:#10284b;font-size:21px}
+.quick-reminder-card p{margin:9px 0 18px;color:#71819b;font-size:13px;line-height:1.5}
+.quick-reminder-progress{height:4px;border-radius:999px;background:#e8eef6;overflow:hidden}
+.quick-reminder-progress span{display:block;width:100%;height:100%;background:#ff8a16;transform-origin:left}
+.quick-reminder-overlay.show .quick-reminder-progress span{animation:staffReminderProgress 2s linear}
+@keyframes staffReminderPop{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes staffReminderProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+</style>
 <link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
 <body>
 <header class="dash-header">
@@ -385,7 +420,13 @@ body{
 <div class="entry-main">
 <div class="customer-paid">
 <div class="field customer-picker">
-<label>Customer / Cash Sale <span style="color:#e33">*</span></label>
+<label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+  <span>Customer / Cash Sale <span style="color:#e33">*</span></span>
+  <span class="entry-date-inline">
+    <input id="entryDate" type="date" aria-label="Entry date">
+    <button type="button" id="entryDateBtn" aria-label="Select entry date" title="Select entry date">📅</button>
+  </span>
+</label>
 <div class="customer-input-wrap">
 <input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
 <button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
@@ -492,6 +533,8 @@ body{
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
   const today=new Date().toISOString().slice(0,10);
   const $=id=>document.getElementById(id);
+
+  function selectedEntryDate(){ return $("entryDate")?.value || today; }
 
   let customers=[];
   let selectedBalance=0;
@@ -655,13 +698,22 @@ body{
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
 
+    const entryDate=selectedEntryDate();
     const [b,w,p]=await Promise.all([
       sb.from("customer_balances").select("*").eq("id",id).single(),
-      sb.from("today_work_report").select("total_amount").eq("customer_id",id),
-      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",today)
+      sb.from("daily_work_entries").select("e_filing,e_payment,print_amount,scanning,other_works,discount,extra_entries")
+        .eq("customer_id",id).eq("work_date",entryDate),
+      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",entryDate)
     ]);
     if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
-    selectedTodayWork=(w.data||[]).reduce((s,r)=>s+Number(r.total_amount||0),0);
+    selectedTodayWork=(w.data||[]).reduce((s,r)=>{
+      const base=["e_filing","e_payment","print_amount","scanning","other_works"]
+        .reduce((x,k)=>x+Number(r[k]||0),0);
+      const extra=Array.isArray(r.extra_entries)
+        ? r.extra_entries.reduce((x,row)=>x+Object.values(row||{}).reduce((a,v)=>a+Number(v||0),0),0)
+        : 0;
+      return s+Math.max(base+extra-Number(r.discount||0),0);
+    },0);
     selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
 
     $("oldBalance").textContent=money(selectedBalance);
@@ -686,11 +738,24 @@ body{
     ["paidAmount","discount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
     if($("balanceAmount"))$("balanceAmount").value="0";
     $("description").value="";
+    if($("entryDate")) $("entryDate").value=today;
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
   }
+  $("entryDate")?.addEventListener("change",async()=>{
+    if($("customer").value) await loadCustomerSummary($("customer").value);
+    updateTotals();
+  });
+
+  $("entryDateBtn")?.addEventListener("click",()=>{
+    const input=$("entryDate");
+    if(!input)return;
+    try{ if(typeof input.showPicker==="function") input.showPicker(); else input.click(); }
+    catch(_){ input.click(); }
+  });
+
   $("clearBtn").addEventListener("click",clearForm);
 
   /*
@@ -711,6 +776,7 @@ body{
 
     try{
       const desc=$("description").value.trim();
+      const entryDate=selectedEntryDate();
 
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
@@ -728,7 +794,8 @@ body{
           paid_amount:paid,
           balance_amount:Math.max(work-paid,0),
           entry_type:isCashSale?"cash_sale":"customer",
-          extra_entries:extraEntries.length?extraEntries:null
+          extra_entries:extraEntries.length?extraEntries:null,
+          work_date:entryDate
         };
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
@@ -740,7 +807,7 @@ body{
         const pr=await sb.from("payments").insert({
           customer_id:isCashSale?null:customerId,
           amount:paid,
-          payment_date:today,
+          payment_date:entryDate,
           payment_method:"Cash",
           reference_note:"Dashboard Quick Entry"
         });
@@ -908,6 +975,18 @@ Your Trust Our Service`;
     $("enquiries").textContent=enq.count||0;
   }
 
+  if($("entryDate")) $("entryDate").value=today;
+
+  const quickReminder=$("quickReminderOverlay");
+  function showQuickReminder(){
+    if(!quickReminder || document.visibilityState!=="visible") return;
+    quickReminder.classList.remove("show");
+    void quickReminder.offsetWidth;
+    quickReminder.classList.add("show");
+    setTimeout(()=>quickReminder.classList.remove("show"),2000);
+  }
+  setInterval(showQuickReminder,30*60*1000);
+
   await Promise.all([
     loadCustomers(),
     refreshDashboard(),
@@ -983,5 +1062,15 @@ Your Trust Our Service`;
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 })();
 </script>
+
+<div class="quick-reminder-overlay" id="quickReminderOverlay" aria-hidden="true">
+  <div class="quick-reminder-card" role="dialog" aria-modal="true">
+    <div class="quick-reminder-icon">⏰</div>
+    <h3>Quick Entry Reminder</h3>
+    <p>30 minutes aayi. Quick Daily Work-il enthenkilum update cheyyan maranno?</p>
+    <div class="quick-reminder-progress"><span></span></div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -504,39 +504,45 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
 <link href="../css/itech-final-ui.css" rel="stylesheet"/>
-<style id="customer-service-jobcard-style">
+
+<style id="customer-service-live-style">
 .csj-section{position:relative;overflow:hidden}
-.csj-section:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#071c3b,#0d5aa7,#ff8a1f)}
+.csj-section:before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,#071c3b,#0d5aa7,#ff8a1f)}
 .csj-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.csj-list{display:grid;gap:12px;margin-top:15px}
-.csj-card{border:1px solid #dce7f3;border-radius:15px;background:#f9fbfe;padding:15px;box-shadow:0 5px 16px rgba(17,50,91,.05);transition:.2s ease}
-.csj-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,50,91,.09)}
+.csj-actions{display:flex;gap:8px;flex-wrap:wrap}
+.csj-list{display:grid;gap:14px;margin-top:15px}
+.csj-card{border:1px solid #dce7f3;border-radius:17px;background:linear-gradient(145deg,#fff,#f7fbff);padding:16px;box-shadow:0 8px 24px rgba(17,50,91,.07);transition:.22s ease}
+.csj-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(17,50,91,.11)}
 .csj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-.csj-job{font-size:14px;font-weight:900;color:#10284b}
+.csj-job{font-size:15px;font-weight:950;color:#10284b;letter-spacing:.1px}
 .csj-device{font-size:12px;color:#52657d;margin-top:4px}
-.csj-status{padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid}
-.csj-status.received,.csj-status.pending{background:#f3f6fa;color:#53657b;border-color:#d7e0ea}
-.csj-status.progress,.csj-status.repairing{background:#eef6ff;color:#0d5aa7;border-color:#cfe0f3}
-.csj-status.ready{background:#fff6e8;color:#a85d00;border-color:#ffd9a8}
+.csj-status{padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid;white-space:nowrap}
+.csj-status.received,.csj-status.pending,.csj-status.diagnosis{background:#f3f6fa;color:#53657b;border-color:#d7e0ea}
+.csj-status.progress,.csj-status.repairing,.csj-status.approved,.csj-status.testing,.csj-status.waiting{background:#eef6ff;color:#0d5aa7;border-color:#cfe0f3}
+.csj-status.estimate,.csj-status.ready{background:#fff6e8;color:#a85d00;border-color:#ffd9a8}
 .csj-status.completed,.csj-status.delivered{background:#eaf9f0;color:#087443;border-color:#bfe8cf}
 .csj-status.cancelled{background:#fff0f0;color:#b42318;border-color:#ffcaca}
+.csj-progress{height:7px;background:#e8eef5;border-radius:999px;overflow:hidden;margin-top:14px}
+.csj-progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#071c3b,#0d5aa7,#ff8a1f);transition:width .45s ease}
 .csj-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:13px}
-.csj-field{background:#fff;border:1px solid #e4ebf3;border-radius:10px;padding:9px}
+.csj-field{background:#fff;border:1px solid #e4ebf3;border-radius:11px;padding:10px}
 .csj-field small{display:block;color:#7a8ba0;font-size:9px;font-weight:800;text-transform:uppercase}
 .csj-field b{display:block;color:#173250;font-size:11px;margin-top:3px;overflow-wrap:anywhere}
-.csj-note{margin-top:10px;padding:10px 12px;border-left:3px solid #ff8a1f;background:#fff;border-radius:8px;color:#52657d;font-size:11px;line-height:1.5;white-space:pre-wrap}
-.csj-history{margin-top:11px}
+.csj-note{margin-top:10px;padding:10px 12px;border-left:3px solid #ff8a1f;background:#fff;border-radius:9px;color:#52657d;font-size:11px;line-height:1.5;white-space:pre-wrap}
+.csj-history{margin-top:12px}
 .csj-history summary{cursor:pointer;color:#0d5aa7;font-size:11px;font-weight:900}
-.csj-timeline{display:grid;gap:7px;margin-top:8px}
-.csj-event{padding:9px 10px;border:1px solid #e4ebf3;border-radius:9px;background:#fff}
+.csj-timeline{display:grid;gap:8px;margin-top:9px}
+.csj-event{padding:10px;border:1px solid #e4ebf3;border-radius:10px;background:#fff}
 .csj-event strong{font-size:10px;color:#173250}
-.csj-event div{font-size:10px;color:#6e8096;margin-top:3px}
+.csj-event div{font-size:10px;color:#6e8096;margin-top:3px;line-height:1.45}
 .csj-empty,.csj-loading,.csj-error{padding:22px;text-align:center;border:1px dashed #cbd8e8;border-radius:12px;color:#71819b;font-size:12px;background:#fbfdff}
 .csj-error{color:#a62b2b;background:#fff7f7;border-color:#e8b4b4}
+.csj-updated{font-size:10px;color:#8a99aa;margin-top:8px;text-align:right}
 @media(max-width:900px){.csj-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.csj-head{align-items:flex-start}.csj-grid{grid-template-columns:1fr 1fr}.csj-card{padding:12px}}
-@media(max-width:430px){.csj-grid{grid-template-columns:1fr}.csj-status{font-size:9px}}
+@media(max-width:600px){.csj-head{align-items:flex-start}.csj-actions{width:100%}.csj-actions .btn{flex:1;text-align:center}.csj-grid{grid-template-columns:1fr 1fr}.csj-card{padding:12px}.csj-status{font-size:9px}}
+@media(max-width:430px){.csj-grid{grid-template-columns:1fr}.csj-job{font-size:14px}}
 </style>
+
 
 </head>
 <body>
@@ -693,7 +699,7 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
       <h2 style="margin:0">🛠️ My Service Job Cards</h2>
       <p class="muted" id="customerServiceSummary" style="margin:6px 0 0">Your service work and latest updates.</p>
     </div>
-    <a class="btn secondary" href="services.html">View All Services</a>
+    <div class="csj-actions"><button class="btn secondary" id="customerServiceRefresh" type="button">↻ Refresh</button><a class="btn secondary" href="services.html">View All Services</a></div>
   </div>
   <div class="csj-list" id="customerServicePreview">
     <div class="csj-loading">Loading service updates…</div>
@@ -1063,89 +1069,135 @@ body{background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);}
         }
 
         /* --------------------------------
-           CUSTOMER SERVICE JOB CARDS
+           CUSTOMER SERVICE JOB CARDS — LIVE
         -------------------------------- */
         const serviceSection = document.getElementById("customerServiceSection");
         const servicePreview = document.getElementById("customerServicePreview");
         const serviceSummary = document.getElementById("customerServiceSummary");
+        const serviceRefresh = document.getElementById("customerServiceRefresh");
+        let customerServiceJobs = [];
+
+        const SERVICE_STATUSES = [
+          "Received","Diagnosis","Estimate Sent","Approved","Repairing",
+          "Testing","Waiting Parts","Ready for Delivery","Work Completed","Delivered","Cancelled"
+        ];
 
         function serviceStatusClass(value){
-          const s=String(value||"").toLowerCase();
+          const s=String(value||"Received").toLowerCase();
           if(s.includes("completed")) return "completed";
           if(s.includes("delivered")) return "delivered";
           if(s.includes("cancel")) return "cancelled";
           if(s.includes("ready")) return "ready";
-          if(s.includes("repair") || s.includes("progress") || s.includes("working")) return "progress";
+          if(s.includes("estimate")) return "estimate";
+          if(s.includes("repair")) return "repairing";
+          if(s.includes("approved")) return "approved";
+          if(s.includes("testing")) return "testing";
+          if(s.includes("waiting")) return "waiting";
+          if(s.includes("diagnosis")) return "diagnosis";
+          if(s.includes("progress") || s.includes("working")) return "progress";
           if(s.includes("pending")) return "pending";
           return "received";
         }
         function serviceMoney(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});}
         function serviceDate(v){if(!v)return "—";const x=new Date(v);return Number.isNaN(x.getTime())?"—":x.toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});}
         function serviceHistory(job){return Array.isArray(job.status_history)?job.status_history:[];}
+        function statusProgress(status){
+          const s=String(status||"Received");
+          if(s==="Cancelled") return 0;
+          const i=SERVICE_STATUSES.indexOf(s);
+          return i<0?8:Math.round((i/(SERVICE_STATUSES.length-2))*100);
+        }
+        function latestUpdate(job){
+          const h=serviceHistory(job);
+          return h.length?h[h.length-1]:{status:job.status||"Received",notes:job.notes||"",at:job.updated_at||job.created_at,by_name:"iTech Staff"};
+        }
 
         function renderCustomerServices(list){
           if(!serviceSection || !servicePreview)return;
-          if(!list.length){serviceSection.style.display="none";return;}
+          customerServiceJobs=list||[];
+          if(!customerServiceJobs.length){
+            serviceSection.style.display="none";
+            return;
+          }
           serviceSection.style.display="";
-          if(serviceSummary)serviceSummary.textContent=`${list.length} service job card${list.length===1?"":"s"} linked to your account. Updates appear automatically.`;
-
-          servicePreview.innerHTML=list.slice(0,5).map(job=>{
+          if(serviceSummary) serviceSummary.textContent=`${customerServiceJobs.length} service job card${customerServiceJobs.length===1?"":"s"} linked to your account • live status updates`;
+          servicePreview.innerHTML=customerServiceJobs.slice(0,5).map(job=>{
             const hist=serviceHistory(job);
-            const latest=hist.length?hist[hist.length-1]:null;
+            const last=latestUpdate(job);
             const status=job.status||"Received";
-            const staff=job.assigned_staff_name||latest?.by_name||"Assigned by iTech";
-            const done=["work completed","delivered"].includes(String(status).toLowerCase());
-            const historyHtml=hist.length?hist.slice().reverse().map(h=>`
+            const done=["Work Completed","Delivered"].includes(status);
+            const assigned=job.technician_name || job.assigned_staff_name || (job.technician_id ? "Assigned technician" : "Not assigned yet");
+            const historyHtml=hist.length ? hist.slice().reverse().map(h=>`
               <div class="csj-event">
                 <strong>${escText(h.status||"Update")}</strong>
                 <div>${escText(h.by_name||"iTech Staff")} · ${escText(serviceDate(h.at))}</div>
                 ${h.notes?`<div>${escText(h.notes)}</div>`:""}
-              </div>`).join(""):`<div class="csj-event"><div>No status history recorded yet.</div></div>`;
+              </div>`).join("") : `<div class="csj-event"><div>No status history recorded yet.</div></div>`;
             return `<article class="csj-card">
               <div class="csj-top">
-                <div><div class="csj-job">${escText(job.job_number||"Service Job")}</div>
+                <div><div class="csj-job">🛠️ ${escText(job.job_number||"Service Job")}</div>
                 <div class="csj-device">${escText([job.device_type,job.brand,job.model].filter(Boolean).join(" • ")||"Device details not available")}</div></div>
                 <span class="csj-status ${serviceStatusClass(status)}">${escText(status)}</span>
               </div>
+              <div class="csj-progress" title="Service progress"><span style="width:${statusProgress(status)}%"></span></div>
               <div class="csj-grid">
-                <div class="csj-field"><small>Assigned Staff</small><b>${escText(staff)}</b></div>
+                <div class="csj-field"><small>Assigned Staff</small><b>👨‍🔧 ${escText(assigned)}</b></div>
                 <div class="csj-field"><small>Serial Number</small><b>${escText(job.serial_number||"—")}</b></div>
                 <div class="csj-field"><small>Estimate</small><b>${serviceMoney(job.estimate_amount)}</b></div>
                 <div class="csj-field"><small>Balance</small><b>${serviceMoney(job.balance_amount)}</b></div>
               </div>
               ${job.complaint?`<div class="csj-note"><b>Complaint:</b> ${escText(job.complaint)}</div>`:""}
               ${job.diagnosis?`<div class="csj-note"><b>Diagnosis:</b> ${escText(job.diagnosis)}</div>`:""}
-              ${job.notes?`<div class="csj-note"><b>Latest Update:</b> ${escText(job.notes)}</div>`:""}
+              ${(last.notes||job.notes)?`<div class="csj-note"><b>Latest Staff Update:</b> ${escText(last.notes||job.notes)}</div>`:""}
               <div style="margin-top:9px;font-size:10px;color:#71819b">
-                Created: ${escText(serviceDate(job.created_at))}
+                Last update: ${escText(serviceDate(last.at||job.updated_at||job.created_at))} · ${escText(last.by_name||"iTech Staff")}
                 ${job.expected_delivery?` · Expected: ${escText(new Date(job.expected_delivery+"T00:00:00").toLocaleDateString("en-IN"))}`:""}
                 ${done&&job.completed_at?` · Completed: ${escText(serviceDate(job.completed_at))}`:""}
               </div>
               <details class="csj-history">
-                <summary>View work status & notes history (${hist.length})</summary>
+                <summary>View complete work status & notes history (${hist.length})</summary>
                 <div class="csj-timeline">${historyHtml}</div>
               </details>
+              <div class="csj-updated">🔄 Automatically refreshes while this page is open</div>
             </article>`;
           }).join("");
-          if(list.length>5)servicePreview.insertAdjacentHTML("beforeend",`<a class="ci-more" href="services.html">+ ${list.length-5} more service job${list.length-5===1?"":"s"}</a>`);
+          if(customerServiceJobs.length>5)servicePreview.insertAdjacentHTML("beforeend",`<a class="ci-more" href="services.html">+ ${customerServiceJobs.length-5} more service job${customerServiceJobs.length-5===1?"":"s"}</a>`);
         }
 
         async function loadCustomerServices(){
+          if(!servicePreview)return;
           const result=await sb.from("service_jobs")
-            .select("id,job_number,device_type,brand,model,serial_number,status,priority,expected_delivery,complaint,diagnosis,notes,estimate_amount,advance_amount,final_amount,balance_amount,status_history,completed_at,created_at,updated_at")
+            .select("id,job_number,device_type,brand,model,serial_number,technician_id,status,priority,expected_delivery,complaint,diagnosis,notes,estimate_amount,advance_amount,final_amount,balance_amount,status_history,completed_at,created_at,updated_at")
             .eq("customer_id",customerId)
             .order("created_at",{ascending:false});
-          if(result.error){console.error("Customer service jobs error:",result.error);if(serviceSection)serviceSection.style.display="none";return;}
-          renderCustomerServices(result.data||[]);
+          if(result.error){
+            console.error("Customer service jobs error:",result.error);
+            serviceSection.style.display="none";
+            return;
+          }
+          const jobs=result.data||[];
+          // Resolve staff names from history when available; no staff directory is exposed to customers.
+          jobs.forEach(job=>{
+            const h=serviceHistory(job);
+            const named=h.slice().reverse().find(x=>x.by_name && x.by_name!=="iTech Staff");
+            job.technician_name=named?.by_name||null;
+          });
+          renderCustomerServices(jobs);
         }
+
+        if(serviceRefresh) serviceRefresh.addEventListener("click",loadCustomerServices);
         await loadCustomerServices();
 
+        // Supabase Realtime, when enabled for service_jobs.
         try{
           sb.channel("customer-service-jobs-"+customerId)
-            .on("postgres_changes",{event:"*",schema:"public",table:"service_jobs",filter:"customer_id=eq."+customerId},
-              async()=>{await loadCustomerServices();})
+            .on("postgres_changes",{event:"*",schema:"public",table:"service_jobs",filter:"customer_id=eq."+customerId},async()=>{await loadCustomerServices();})
             .subscribe();
         }catch(serviceRealtimeError){console.warn("Customer service realtime unavailable:",serviceRealtimeError);}
+
+        // Safe fallback: refresh periodically even when Realtime is not enabled.
+        const servicePoll=setInterval(()=>{ if(document.visibilityState!=="hidden") loadCustomerServices(); },15000);
+        window.addEventListener("beforeunload",()=>clearInterval(servicePoll),{once:true});
 
         /* --------------------------------
            UPDATE STAT CARDS

@@ -1029,7 +1029,7 @@ body{
         const pr=await sb.from("payments").insert({
           customer_id:isCashSale?null:customerId,
           amount:paid,
-          payment_date:today,
+          payment_date:entryDate,
           payment_method:"Cash",
           reference_note:"Dashboard Quick Entry"
         });

@@ -738,7 +738,7 @@ body{
   const ok=await requireAdmin(); if(!ok)return;
 
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const today=new Date().toISOString().slice(0,10);
+  const today=(()=>{const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,"0"); const day=String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`;})();
   const $=id=>document.getElementById(id);
 
   function selectedEntryDate(){
@@ -1020,8 +1020,14 @@ body{
           extra_entries:extraEntries.length?extraEntries:null
         };
 
-        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id,work_date").single();
         if(ins.error) throw ins.error;
+        // Some older DB triggers/defaults may fall back to today's date.
+        // Force the selected Quick Entry date after insert as a safety check.
+        if(ins.data?.id && String(ins.data.work_date||"") !== entryDate){
+          const fix=await sb.from("daily_work_entries").update({work_date:entryDate}).eq("id",ins.data.id);
+          if(fix.error) throw fix.error;
+        }
 
       }
 
@@ -1032,8 +1038,13 @@ body{
           payment_date:entryDate,
           payment_method:"Cash",
           reference_note:"Dashboard Quick Entry"
-        });
+        }).select("id,payment_date").single();
         if(pr.error) throw pr.error;
+        // Safety check: make absolutely sure the selected date is stored.
+        if(pr.data?.id && String(pr.data.payment_date||"") !== entryDate){
+          const fix=await sb.from("payments").update({payment_date:entryDate}).eq("id",pr.data.id);
+          if(fix.error) throw fix.error;
+        }
       }
 
       status("Transaction saved successfully.");
@@ -1203,6 +1214,38 @@ Your Trust Our Service`;
     loadWhatsAppReminders()
   ]);
   updateTotals();
+})();
+</script>
+<script id="itech-last-five-date-fix">
+/* Last 5 Transactions: show the selected WORK DATE, not created_at. */
+(async()=>{
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  const money=n=>"₹"+Number(n||0).toFixed(2);
+  async function renderLastFive(){
+    const host=document.getElementById("qwLastFive");
+    if(!host) return;
+    try{
+      const r=await sb.from("daily_work_entries")
+        .select("id,customer_id,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount,balance_amount,entry_type,description,work_date,created_at,customers(full_name,mobile)")
+        .order("created_at",{ascending:false}).limit(5);
+      if(r.error) throw r.error;
+      const rows=r.data||[];
+      if(!rows.length){host.innerHTML='<div class="qw-last-empty">No transactions recorded yet.</div>';return;}
+      host.innerHTML=rows.map(x=>{
+        const c=x.customers||{};
+        const name=x.entry_type==="cash_sale"?"Cash Sale":(c.full_name||"Customer");
+        const work=Number(x.e_filing||0)+Number(x.e_payment||0)+Number(x.print_amount||0)+Number(x.scanning||0)+Number(x.other_works||0);
+        const net=Math.max(work-Number(x.discount||0),0);
+        const paid=Number(x.paid_amount||0);
+        const bal=Number(x.balance_amount??Math.max(net-paid,0));
+        const d=x.work_date?new Date(String(x.work_date)+"T00:00:00"):null;
+        const dt=d&&!Number.isNaN(d.getTime())?d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):"";
+        return `<div class="qw-last-row"><div class="qw-last-main"><strong>${esc(name)}</strong><span>Entry Date: ${esc(dt)}</span></div><div class="qw-last-values"><span>Work <b>${money(net)}</b></span><span>Paid <b>${money(paid)}</b></span><span>Balance <b>${money(bal)}</b></span></div></div>`;
+      }).join("");
+    }catch(e){console.error("Last five date fix:",e);}
+  }
+  const boot=()=>{renderLastFive(); window.addEventListener("itech:work-saved",renderLastFive);};
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,150)); else setTimeout(boot,150);
 })();
 </script>
 <footer class="site-footer unified-site-footer">

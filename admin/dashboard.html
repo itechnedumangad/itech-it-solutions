@@ -138,7 +138,11 @@ body{
 .field textarea{height:70px;padding-top:11px;resize:vertical}
 .customer-picker{position:relative}
 .customer-input-wrap{position:relative}
-.customer-input-wrap input{padding-right:42px}
+.customer-input-wrap input{padding-left:42px;padding-right:42px}
+.entry-date-btn{position:absolute;left:7px;top:7px;width:31px;height:31px;border:0;border-radius:8px;background:#eef5ff;color:#17345b;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;box-shadow:0 1px 2px rgba(16,40,75,.08)}
+.entry-date-btn:hover{background:#e3efff;transform:translateY(-1px)}
+.entry-date-hidden{position:absolute!important;left:0!important;bottom:0!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;border:0!important}
+
 .customer-clear{
   position:absolute;right:7px;top:4px;width:36px;height:36px;border:0;
   border-radius:8px;background:transparent;color:#8392a8;font-size:22px;
@@ -436,7 +440,7 @@ body{
   <div class="quick-update-reminder-card" role="alertdialog" aria-live="assertive">
     <div class="quick-update-reminder-icon">⏰</div>
     <h2>Quick Update Reminder</h2>
-    <p> Quick Daily Work- ല്‍ എന്തെങ്കിലും എന്‍ട്രി അപ്ഡേറ്റ് ചെയ്യാന്‍ മറന്നോ..?</p>
+    <p>30 minutes aayi. Quick Daily Work-il enthenkilum entry update cheyyan maranno?</p>
     <div class="quick-update-reminder-progress"><span></span></div>
     <button class="quick-update-reminder-close" id="quickUpdateReminderClose" type="button">Close</button>
   </div>
@@ -507,8 +511,10 @@ body{
 <div class="field customer-picker">
 <label>Customer / Cash Sale <span style="color:#e33">*</span></label>
 <div class="customer-input-wrap">
+<button aria-label="Change entry date" class="entry-date-btn" id="entryDateBtn" title="Entry date" type="button">📅</button>
 <input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
 <button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
+<input aria-hidden="true" class="entry-date-hidden" id="entryDate" tabindex="-1" type="date"/>
 </div>
 <div aria-label="Customer suggestions" class="customer-suggestions" id="customerSuggestions" role="listbox"></div>
 <input id="customer" type="hidden" value=""/>
@@ -516,10 +522,6 @@ body{
 <div class="field">
 <label>Paid Amount Today</label>
 <input id="paidAmount" min="0" placeholder="Enter amount" step="0.01" type="number"/>
-</div>
-<div class="field">
-<label>Entry Date <span style="color:#e33">*</span></label>
-<input id="entryDate" type="date"/>
 </div>
 </div>
 <div class="amount-grid">
@@ -744,6 +746,22 @@ body{
   }
 
   if($("entryDate")) $("entryDate").value=today;
+  function syncEntryDateButton(){
+    const d=$("entryDate")?.value || today;
+    const btn=$("entryDateBtn");
+    if(btn){
+      const parts=d.split("-");
+      const label=parts.length===3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : d;
+      btn.title=`Entry date: ${label}`;
+      btn.setAttribute("aria-label",`Entry date ${label}`);
+    }
+  }
+  syncEntryDateButton();
+  $("entryDateBtn")?.addEventListener("click",()=>{
+    const input=$("entryDate");
+    if(!input) return;
+    try{ if(typeof input.showPicker === "function") input.showPicker(); else input.click(); }catch(e){ input.click(); }
+  });
 
   let customers=[];
   let selectedBalance=0;
@@ -938,6 +956,7 @@ body{
     $(id).addEventListener("input",updateTotals);
   });
   $("entryDate")?.addEventListener("change",()=>{
+    syncEntryDateButton();
     const id=$("customer").value;
     if(id) loadCustomerSummary(id);
     updateTotals();
@@ -953,6 +972,7 @@ body{
     if($("balanceAmount"))$("balanceAmount").value="0";
     $("description").value="";
     if($("entryDate")) $("entryDate").value=today;
+    syncEntryDateButton();
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);

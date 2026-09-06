@@ -242,6 +242,8 @@ body{
   .bottom-row{grid-template-columns:1fr}
 }
 @media(max-width:850px){
+  .customer-paid{grid-template-columns:1fr 1fr}
+  .customer-paid .field:first-child{grid-column:1/-1}
   .sidebar{width:210px!important}
   .kpis{grid-template-columns:repeat(2,1fr)!important}
   .amount-grid{grid-template-columns:repeat(2,1fr)}
@@ -283,6 +285,46 @@ body{
 .wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
 @media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
 @media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
+
+/* ===== 30 Minute Quick Entry Reminder ===== */
+.quick-update-reminder{
+  position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;
+  background:rgba(3,16,36,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.quick-update-reminder.show{display:flex;animation:reminderFade .18s ease}
+.quick-update-reminder-card{
+  width:min(560px,calc(100vw - 30px));padding:32px 26px;text-align:center;
+  background:linear-gradient(145deg,#fff,#f4f8ff);border:1px solid rgba(255,255,255,.8);
+  border-radius:26px;box-shadow:0 28px 80px rgba(0,0,0,.28);
+  animation:reminderPop .25s cubic-bezier(.2,.8,.2,1);
+}
+.quick-update-reminder-icon{
+  width:74px;height:74px;margin:0 auto 15px;border-radius:22px;display:flex;
+  align-items:center;justify-content:center;font-size:38px;
+  background:linear-gradient(135deg,#ffb14a,#ff7c00);box-shadow:0 12px 28px rgba(255,126,0,.28);
+}
+.quick-update-reminder-card h2{margin:0;color:#071d3d;font-size:24px;font-weight:900}
+.quick-update-reminder-card p{margin:9px auto 0;max-width:440px;color:#667892;font-size:14px;line-height:1.55}
+.quick-update-reminder-progress{
+  width:100%;height:5px;margin-top:22px;border-radius:999px;background:#e5ebf4;overflow:hidden
+}
+.quick-update-reminder-progress span{
+  display:block;width:100%;height:100%;transform-origin:left center;
+  background:linear-gradient(90deg,#1769e0,#ff8a16);
+  animation:reminderProgress 2s linear forwards;
+}
+.quick-update-reminder-close{
+  margin-top:16px;border:0;background:transparent;color:#1769e0;font-weight:800;font-size:12px;
+  cursor:pointer;opacity:.8;
+}
+@keyframes reminderFade{from{opacity:0}to{opacity:1}}
+@keyframes reminderPop{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes reminderProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(max-width:620px){
+  .quick-update-reminder-card{padding:27px 19px;border-radius:22px}
+  .quick-update-reminder-card h2{font-size:20px}
+  .quick-update-reminder-icon{width:64px;height:64px;font-size:32px}
+}
 
 </style>
 <link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
@@ -390,6 +432,15 @@ body{
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
 <link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
 <body>
+<div class="quick-update-reminder" id="quickUpdateReminder" aria-hidden="true">
+  <div class="quick-update-reminder-card" role="alertdialog" aria-live="assertive">
+    <div class="quick-update-reminder-icon">⏰</div>
+    <h2>Quick Update Reminder</h2>
+    <p>30 minutes aayi. Quick Daily Work-il enthenkilum entry update cheyyan maranno?</p>
+    <div class="quick-update-reminder-progress"><span></span></div>
+    <button class="quick-update-reminder-close" id="quickUpdateReminderClose" type="button">Close</button>
+  </div>
+</div>
 <header class="dash-header">
 <a class="brand" href="dashboard.html">
 <img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/>
@@ -465,6 +516,10 @@ body{
 <div class="field">
 <label>Paid Amount Today</label>
 <input id="paidAmount" min="0" placeholder="Enter amount" step="0.01" type="number"/>
+</div>
+<div class="field">
+<label>Entry Date <span style="color:#e33">*</span></label>
+<input id="entryDate" type="date"/>
 </div>
 </div>
 <div class="amount-grid">
@@ -684,6 +739,12 @@ body{
   const today=new Date().toISOString().slice(0,10);
   const $=id=>document.getElementById(id);
 
+  function selectedEntryDate(){
+    return $("entryDate")?.value || today;
+  }
+
+  if($("entryDate")) $("entryDate").value=today;
+
   let customers=[];
   let selectedBalance=0;
   let selectedTodayWork=0;
@@ -846,13 +907,22 @@ body{
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
 
+    const entryDate=selectedEntryDate();
     const [b,w,p]=await Promise.all([
       sb.from("customer_balances").select("*").eq("id",id).single(),
-      sb.from("today_work_report").select("total_amount").eq("customer_id",id),
-      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",today)
+      sb.from("daily_work_entries").select("*").eq("customer_id",id).eq("work_date",entryDate),
+      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",entryDate)
     ]);
     if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
-    selectedTodayWork=(w.data||[]).reduce((s,r)=>s+Number(r.total_amount||0),0);
+    selectedTodayWork=(w.data||[]).reduce((s,r)=>{
+      const gross=["e_filing","e_payment","print_amount","scanning","other_works"]
+        .reduce((a,k)=>a+Number(r[k]||0),0);
+      const extras=Array.isArray(r.extra_entries)
+        ? r.extra_entries.reduce((a,row)=>a+Object.values(row||{}).reduce((x,v)=>x+Number(v||0),0),0)
+        : 0;
+      const discount=Number(r.discount||0);
+      return s+Math.max(gross+extras-discount,0);
+    },0);
     selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
 
     $("oldBalance").textContent=money(selectedBalance);
@@ -867,6 +937,11 @@ body{
   ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
     $(id).addEventListener("input",updateTotals);
   });
+  $("entryDate")?.addEventListener("change",()=>{
+    const id=$("customer").value;
+    if(id) loadCustomerSummary(id);
+    updateTotals();
+  });
 
   function clearForm(){
     $("customer").value="";
@@ -877,6 +952,7 @@ body{
     ["paidAmount","discount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
     if($("balanceAmount"))$("balanceAmount").value="0";
     $("description").value="";
+    if($("entryDate")) $("entryDate").value=today;
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
@@ -902,6 +978,7 @@ body{
 
     try{
       const desc=$("description").value.trim();
+      const entryDate=selectedEntryDate();
 
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
@@ -909,6 +986,7 @@ body{
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
         const payload={
           customer_id:isCashSale?null:customerId,
+          work_date:entryDate,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
           print_amount:sumField("print_amount"),
@@ -1174,5 +1252,45 @@ Your Trust Our Service`;
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 })();
 </script>
+
+<script id="itech-30-minute-update-reminder">
+(function(){
+  const overlay=document.getElementById("quickUpdateReminder");
+  const closeBtn=document.getElementById("quickUpdateReminderClose");
+  if(!overlay) return;
+
+  let timer=null, hideTimer=null;
+
+  function hideReminder(){
+    overlay.classList.remove("show");
+    overlay.setAttribute("aria-hidden","true");
+    if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
+  }
+
+  function showReminder(){
+    if(document.hidden) return;
+    overlay.classList.remove("show");
+    void overlay.offsetWidth;
+    const bar=overlay.querySelector(".quick-update-reminder-progress span");
+    if(bar){
+      bar.style.animation="none";
+      void bar.offsetWidth;
+      bar.style.animation="reminderProgress 2s linear forwards";
+    }
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden","false");
+    hideTimer=setTimeout(hideReminder,2000);
+  }
+
+  closeBtn?.addEventListener("click",hideReminder);
+  overlay.addEventListener("click",e=>{
+    if(e.target===overlay) hideReminder();
+  });
+
+  // First reminder after 30 minutes, then every 30 minutes while this dashboard stays open.
+  timer=setInterval(showReminder,30*60*1000);
+})();
+</script>
+
 </body>
 </html>

@@ -790,7 +790,109 @@ tbody tr:hover{
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
 <link href="../css/itech-final-ui.css" rel="stylesheet"/><style id="itech-staff-points-css">
 .isp-wrap{margin-top:20px}.isp-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.isp-head h2{margin:0}.isp-head p{margin:4px 0 0}.isp-btn{border:1px solid #d9e3ef;background:#f5f9ff;color:#164b8f;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer}.isp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}.isp-staff{border:1px solid #dfe8f4;border-radius:14px;padding:14px;background:#fff}.isp-name{font-weight:900;color:#10284b}.isp-total{font-size:28px;font-weight:950;color:#1769e0;margin:7px 0}.isp-total small{font-size:11px;color:#71819b}.isp-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.isp-mini div{background:#f6f9fd;border-radius:9px;padding:8px;font-size:10px;color:#71819b}.isp-mini b{display:block;color:#183555;font-size:12px;margin-top:3px}.isp-history{margin-top:10px;max-height:180px;overflow:auto;border-top:1px solid #edf2f7}.isp-row{display:grid;grid-template-columns:1fr auto;gap:3px;padding:8px 2px;border-bottom:1px solid #edf2f7;font-size:11px}.isp-row small{grid-column:1/3;color:#91a0b0}.isp-points{color:#0b8a50;font-weight:900}.isp-service-list{display:grid;gap:8px}.isp-job{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid #e1e8f0;border-radius:11px;padding:10px}.isp-job-title{font-weight:800;color:#183555;font-size:12px}.isp-job-meta{font-size:10px;color:#71819b;margin-top:3px}.isp-empty{padding:16px;text-align:center;color:#71819b}.isp-error{padding:12px;border-radius:10px;background:#fff0f0;color:#b42318;font-size:12px}@media(max-width:600px){.isp-head{align-items:flex-start}.isp-mini{grid-template-columns:1fr}.isp-job{grid-template-columns:1fr}.isp-job .isp-btn{width:100%}}
-</style></head>
+</style>
+<style id="itech-points-edit-css">
+.isp-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.isp-row-main{
+  min-width:0;
+  display:grid;
+  grid-template-columns:auto auto;
+  gap:4px 10px;
+  align-items:center;
+}
+.isp-row-main small{
+  grid-column:1 / -1;
+}
+.isp-edit-point{
+  flex:0 0 auto;
+  border:1px solid #cbd8ea;
+  background:#fff;
+  color:#1455a3;
+  border-radius:8px;
+  padding:6px 10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.isp-edit-point:hover{
+  background:#eef5ff;
+}
+@media(max-width:640px){
+  .isp-row{align-items:flex-start;}
+  .isp-row-main{
+    grid-template-columns:1fr;
+    gap:2px;
+  }
+  .isp-edit-point{
+    padding:6px 8px;
+    font-size:12px;
+  }
+}
+</style>
+
+
+<style id="itech-points-payment-css">
+.isp-payment-summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin:8px 0;
+}
+.isp-payment-summary > div{
+  background:#f5f8fc;
+  border:1px solid #e2eaf4;
+  border-radius:8px;
+  padding:7px 9px;
+}
+.isp-payment-summary span{
+  display:block;
+  font-size:10px;
+  color:#72819a;
+}
+.isp-payment-summary b{
+  display:block;
+  margin-top:2px;
+  font-size:14px;
+}
+.isp-pay-point{
+  width:100%;
+  border:0;
+  border-radius:9px;
+  padding:9px 12px;
+  margin:2px 0 8px;
+  background:#168447;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+.isp-pay-point:hover{filter:brightness(.96);}
+.isp-paid-badge{
+  width:100%;
+  box-sizing:border-box;
+  border-radius:9px;
+  padding:9px 12px;
+  margin:2px 0 8px;
+  background:#e8f7ee;
+  color:#147a42;
+  font-weight:800;
+  text-align:center;
+}
+.isp-row-paid{
+  color:#147a42;
+  font-weight:700;
+}
+@media(max-width:640px){
+  .isp-payment-summary{
+    gap:6px;
+  }
+}
+</style>
+
+</head>
 <body>
 <!-- =========================================================
      HEADER
@@ -2078,6 +2180,73 @@ await loadStaff();
     return Array.isArray(result.staff) ? result.staff : [];
   }
 
+  async function editStaffPoint(pointId, currentPoints){
+
+    const value = prompt(
+      "Edit points amount:",
+      String(currentPoints ?? 0)
+    );
+
+    if(value === null) return false;
+
+    const points = Number(value);
+
+    if(!Number.isFinite(points) || points < 0){
+      alert("Please enter a valid points amount.");
+      return false;
+    }
+
+    const result = await sb.rpc(
+      "admin_update_staff_point",
+      {
+        p_point_id: pointId,
+        p_points: points
+      }
+    );
+
+    if(result.error){
+      throw result.error;
+    }
+
+    return true;
+  }
+
+  async function payStaffPoints(staffId, outstanding){
+
+    const value = prompt(
+      `Enter amount paid for points (1 Point = ₹1).\nOutstanding: ₹${fmt(outstanding)}`,
+      String(outstanding)
+    );
+
+    if(value === null) return false;
+
+    const amount = Number(value);
+
+    if(!Number.isFinite(amount) || amount <= 0){
+      alert("Please enter a valid payment amount.");
+      return false;
+    }
+
+    if(amount > Number(outstanding) + 0.0001){
+      alert("Payment cannot be greater than the outstanding points amount.");
+      return false;
+    }
+
+    const result = await sb.rpc(
+      "admin_pay_staff_points",
+      {
+        p_staff_id: staffId,
+        p_amount: amount
+      }
+    );
+
+    if(result.error){
+      throw result.error;
+    }
+
+    return true;
+  }
+
   async function loadPoints(){
 
     const body=$("ispStaffBody");
@@ -2121,6 +2290,8 @@ await loadStaff();
           yesterday:0,
           month:0,
           total:0,
+          paid:0,
+          balance:0,
           history:[]
         };
 
@@ -2136,8 +2307,10 @@ await loadStaff();
         if(!person) return;
 
         const points=Number(row.points || 0);
+        const paid=Number(row.paid_points || 0);
 
         person.total += points;
+        person.paid += paid;
 
         if(String(row.work_date || '')===today){
           person.today += points;
@@ -2153,6 +2326,10 @@ await loadStaff();
 
         person.history.push(row);
 
+      });
+
+      Object.values(map).forEach(person=>{
+        person.balance=Math.max(person.total-person.paid,0);
       });
 
       /*
@@ -2198,6 +2375,41 @@ await loadStaff();
                 <small>POINTS</small>
               </div>
 
+              <div class="isp-payment-summary">
+
+                <div>
+                  <span>Paid</span>
+                  <b>₹${fmt(person.paid)}</b>
+                </div>
+
+                <div>
+                  <span>Balance</span>
+                  <b>₹${fmt(person.balance)}</b>
+                </div>
+
+              </div>
+
+              ${
+                person.balance > 0
+                ?
+                `
+                  <button
+                    class="isp-pay-point"
+                    type="button"
+                    data-staff-id="${esc(person.id)}"
+                    data-outstanding="${esc(person.balance)}"
+                  >
+                    💰 Pay Points
+                  </button>
+                `
+                :
+                `
+                  <div class="isp-paid-badge">
+                    ✓ Paid
+                  </div>
+                `
+              }
+
               <div class="isp-mini">
 
                 <div>
@@ -2232,27 +2444,54 @@ await loadStaff();
 
                       <div class="isp-row">
 
-                        <span>
-                          ${esc(row.point_type || "Points")}
-                        </span>
+                        <div class="isp-row-main">
 
-                        <b class="isp-points">
-                          +${fmt(row.points)}
-                        </b>
+                          <span>
+                            ${esc(row.point_type || "Points")}
+                          </span>
 
-                        <small>
-
-                          ${esc(row.work_date || "")}
+                          <b class="isp-points">
+                            +${fmt(row.points)}
+                          </b>
 
                           ${
-                            row.description
+                            Number(row.paid_points || 0) > 0
                             ?
-                            " · " + esc(row.description)
+                            `<small class="isp-row-paid">Paid ₹${fmt(row.paid_points)}</small>`
                             :
                             ""
                           }
 
-                        </small>
+                          <small>
+                            ${esc(row.work_date || "")}
+
+                            ${
+                              row.description
+                              ?
+                              " · " + esc(row.description)
+                              :
+                              ""
+                            }
+                          </small>
+
+                        </div>
+
+                        ${
+                          row.id
+                          ?
+                          `
+                            <button
+                              class="isp-edit-point"
+                              type="button"
+                              data-point-id="${esc(row.id)}"
+                              data-point-value="${esc(row.points || 0)}"
+                            >
+                              ✏️ Edit
+                            </button>
+                          `
+                          :
+                          ""
+                        }
 
                       </div>
 
@@ -2278,6 +2517,82 @@ await loadStaff();
         </div>
 
       `;
+
+      body
+        .querySelectorAll(".isp-edit-point")
+        .forEach(button => {
+
+          button.addEventListener("click", async function(){
+
+            button.disabled = true;
+
+            try{
+
+              const changed = await editStaffPoint(
+                button.dataset.pointId,
+                button.dataset.pointValue
+              );
+
+              if(changed){
+                await loadPoints();
+              }
+
+            }catch(error){
+
+              console.error(error);
+
+              alert(
+                error?.message ||
+                "Unable to update points."
+              );
+
+            }finally{
+
+              button.disabled = false;
+
+            }
+
+          });
+
+        });
+
+      body
+        .querySelectorAll(".isp-pay-point")
+        .forEach(button => {
+
+          button.addEventListener("click", async function(){
+
+            button.disabled = true;
+
+            try{
+
+              const changed = await payStaffPoints(
+                button.dataset.staffId,
+                Number(button.dataset.outstanding || 0)
+              );
+
+              if(changed){
+                await loadPoints();
+              }
+
+            }catch(error){
+
+              console.error(error);
+
+              alert(
+                error?.message ||
+                "Unable to record points payment."
+              );
+
+            }finally{
+
+              button.disabled = false;
+
+            }
+
+          });
+
+        });
 
     }
     catch(error){
@@ -2334,6 +2649,22 @@ await loadStaff();
       }
 
       const staff=await getManagedStaff();
+
+      const servicePointsResult=await sb
+        .from("staff_points")
+        .select("source_id,points,paid_points")
+        .eq("source_type","service_job");
+
+      if(servicePointsResult.error){
+        throw servicePointsResult.error;
+      }
+
+      const servicePointMap=Object.fromEntries(
+        (servicePointsResult.data || []).map(row=>[
+          String(row.source_id),
+          Number(row.points || 0)
+        ])
+      );
 
       const names={};
 
@@ -2404,7 +2735,14 @@ await loadStaff();
                 type="button"
                 data-job="${esc(job.id)}"
               >
-                ⭐ Award / Update
+                ${
+                  Object.prototype.hasOwnProperty.call(
+                    servicePointMap,
+                    String(job.id)
+                  )
+                  ? "✏️ Edit"
+                  : "⭐ Award"
+                }
               </button>
 
             </div>
@@ -2421,9 +2759,24 @@ await loadStaff();
 
           button.onclick=async function(){
 
+            const hasExisting =
+              Object.prototype.hasOwnProperty.call(
+                servicePointMap,
+                String(button.dataset.job)
+              );
+
+            const existingPoints =
+              hasExisting
+              ? servicePointMap[String(button.dataset.job)]
+              : null;
+
             const value=prompt(
-              "Enter points for this service job:",
-              "10"
+              hasExisting
+                ? "Edit points for this service job:"
+                : "Enter points for this service job:",
+              hasExisting
+                ? String(existingPoints)
+                : "10"
             );
 
             if(value===null) return;

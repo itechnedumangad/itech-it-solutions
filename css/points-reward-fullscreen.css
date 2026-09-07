@@ -1,0 +1,39 @@
+
+/* Points reward - fullscreen overlay */
+#itechPointsRewardOverlay{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  min-height:100vh !important;
+  z-index:2147483647 !important;
+  display:none;
+  place-items:center;
+  overflow:hidden !important;
+  background:rgba(255,255,255,.97);
+  padding:24px;
+  box-sizing:border-box;
+}
+#itechPointsRewardOverlay.is-open{display:grid !important}
+#itechPointsRewardOverlay .ipr-card{
+  width:min(92vw,520px);
+  max-height:calc(100dvh - 48px);
+  overflow:auto;
+  box-sizing:border-box;
+  text-align:center;
+  border-radius:28px;
+  padding:34px 24px;
+  background:#fff;
+  border:1px solid #dce6f0;
+  box-shadow:0 24px 80px rgba(16,40,75,.22);
+  animation:iprPop .35s ease both;
+}
+#itechPointsRewardOverlay .ipr-star{font-size:54px;line-height:1}
+#itechPointsRewardOverlay .ipr-title{font-size:clamp(22px,5vw,34px);font-weight:900;margin:12px 0 6px;color:#10284b}
+#itechPointsRewardOverlay .ipr-points{font-size:clamp(48px,13vw,88px);line-height:1;font-weight:1000;color:#0d5aa7;margin:10px 0}
+#itechPointsRewardOverlay .ipr-sub{font-size:14px;color:#64758a}
+@keyframes iprPop{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  #itechPointsRewardOverlay{padding:14px}
+  #itechPointsRewardOverlay .ipr-card{width:calc(100vw - 28px);max-height:calc(100dvh - 28px);padding:28px 18px;border-radius:22px}
+}

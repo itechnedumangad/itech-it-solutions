@@ -2171,13 +2171,65 @@ await loadStaff();
 
   /*
    * IMPORTANT:
-   * Staff names/IDs come from the same Staff Management Edge Function
-   * already used by this page. This prevents customer profiles from
-   * appearing and keeps the ID used for points equal to the staff account ID.
+   * The staff-management Edge Function returns the Supabase Auth user ID
+   * for a staff account, while staff_points.staff_id references
+   * public.profiles.id. Resolve the Auth ID to the matching profile ID
+   * before using it for points/payments.
    */
   async function getManagedStaff(){
     const result=await callStaffFunction("list");
-    return Array.isArray(result.staff) ? result.staff : [];
+    const managed=Array.isArray(result.staff) ? result.staff : [];
+
+    if(!managed.length) return [];
+
+    const profilesResult=await sb
+      .from("profiles")
+      .select("id,auth_user_id,full_name,mobile,email,role")
+      .eq("role","staff");
+
+    if(profilesResult.error){
+      throw profilesResult.error;
+    }
+
+    const profiles=profilesResult.data || [];
+
+    return managed.map(person=>{
+      const personId=String(person.id || "");
+      const personUserId=String(person.user_id || "");
+      const personAuthId=String(person.auth_user_id || "");
+      const personEmail=String(person.email || "").trim().toLowerCase();
+
+      const profile=profiles.find(p=>{
+        const pid=String(p.id || "");
+        const auid=String(p.auth_user_id || "");
+        const email=String(p.email || "").trim().toLowerCase();
+
+        return (personId && (pid===personId || auid===personId))
+          || (personUserId && (pid===personUserId || auid===personUserId))
+          || (personAuthId && (pid===personAuthId || auid===personAuthId))
+          || (personEmail && email && email===personEmail);
+      });
+
+      if(!profile){
+        return person;
+      }
+
+      /*
+       * id MUST be public.profiles.id here because staff_points.staff_id
+       * references profiles.id. Keep the Auth ID separately for fallback
+       * matching and other staff-management operations.
+       */
+      return {
+        ...person,
+        id:profile.id,
+        profile_id:profile.id,
+        user_id:profile.auth_user_id || person.user_id || person.id || null,
+        auth_user_id:profile.auth_user_id || person.auth_user_id || person.id || null,
+        full_name:profile.full_name || person.full_name || "Staff",
+        mobile:profile.mobile || person.mobile || "",
+        email:profile.email || person.email || ""
+      };
+    });
   }
 
   async function editStaffPoint(pointId, currentPoints){

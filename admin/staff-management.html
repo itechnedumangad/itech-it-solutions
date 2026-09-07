@@ -2040,16 +2040,16 @@ await loadStaff();
     `;
 
     try{
+      /*
+       * IMPORTANT: profiles also contains customer profiles. The Staff
+       * Management Edge Function already returns only real staff accounts,
+       * so use that trusted source here as well.
+       */
+      const staffListResult = await callStaffFunction('list');
+      const staffOnly = Array.isArray(staffListResult?.staff)
+        ? staffListResult.staff.filter(person => person && person.id)
+        : [];
 
-      /* Get all staff accounts. */
-      const staffResult = await sb
-        .from('profiles')
-        .select('id,full_name,role')
-        .order('full_name', {ascending:true});
-
-      if(staffResult.error){
-        throw staffResult.error;
-      }
 
       /*
        * First try the secure Admin RPC.
@@ -2103,20 +2103,7 @@ await loadStaff();
         rows = direct.data || [];
 
       }
-
-      const staff = (staffResult.data || [])
-        .filter(person => {
-
-          const role =
-            String(person.role || '')
-              .toLowerCase();
-
-          return role !== 'admin' &&
-                 role !== 'administrator';
-
-        });
-
-
+      /* staffOnly is already guaranteed to contain staff accounts only. */
       const today = localISO();
 
       const yesterday = previousISO();
@@ -2126,7 +2113,7 @@ await loadStaff();
 
       const map = {};
 
-      staff.forEach(person => {
+      staffOnly.forEach(person => {
 
         map[person.id] = {
 
@@ -2196,7 +2183,7 @@ await loadStaff();
         Object.values(map);
 
 
-      if(!list.length){
+      if(!staffOnly.length){
 
         body.innerHTML = `
           <div class="isp-empty">
@@ -2399,34 +2386,18 @@ await loadStaff();
         throw jobsResult.error;
 
       }
+      /* Use the same staff-only source for assigned staff names. */
+      const staffListResult = await callStaffFunction('list');
+      const staffAccounts = Array.isArray(staffListResult?.staff)
+        ? staffListResult.staff
+        : [];
 
-
-      const staffResult =
-        await sb
-          .from('profiles')
-          .select(
-            'id,full_name,email'
-          );
-
-
-      if(staffResult.error){
-
-        throw staffResult.error;
-
-      }
-
-
-      const names =
-        Object.fromEntries(
-          (staffResult.data || [])
-            .map(person => [
-
-              person.id,
-
-              person.full_name || 'Staff'
-
-            ])
-        );
+      const names = Object.fromEntries(
+        staffAccounts.map(person => [
+          person.id,
+          person.full_name || 'Staff'
+        ])
+      );
 
 
       const jobs =

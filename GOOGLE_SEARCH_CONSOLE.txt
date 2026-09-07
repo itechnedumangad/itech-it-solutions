@@ -1,8 +1,0 @@
-Google Search Console setup
-
-1. Add the Domain property: itnedumangad.online
-2. Verify ownership using the DNS TXT record Google provides.
-3. Submit: https://itnedumangad.online/sitemap.xml
-4. Inspect the homepage and important public pages and use Request Indexing.
-
-Do not put a guessed verification token into the site. If Google gives you an HTML meta tag, add that exact tag to the <head> of index.html.

@@ -2246,40 +2246,84 @@ await loadStaff();
     return true;
   }
 
-  async function payStaffPoints(staffId, outstanding){
+  async function payStaffPoints(staffId){
 
-    const value = prompt(
-      `Enter amount paid for points (1 Point = ₹1).\nOutstanding: ₹${fmt(outstanding)}`,
-      String(outstanding)
-    );
+    try{
 
-    if(value === null) return false;
+      /* Always read the latest balance directly from the database. */
+      const { data: rows, error: readError } = await sb
+        .from("staff_points")
+        .select("points, paid_points")
+        .eq("staff_id", staffId);
 
-    const amount = Number(value);
-
-    if(!Number.isFinite(amount) || amount <= 0){
-      alert("Please enter a valid payment amount.");
-      return false;
-    }
-
-    if(amount > Number(outstanding) + 0.0001){
-      alert("Payment cannot be greater than the outstanding points amount.");
-      return false;
-    }
-
-    const result = await sb.rpc(
-      "admin_pay_staff_points",
-      {
-        p_staff_id: staffId,
-        p_amount: amount
+      if(readError){
+        throw readError;
       }
-    );
 
-    if(result.error){
-      throw result.error;
+      const totalPoints=(rows || []).reduce(
+        (sum,row)=>sum+Number(row.points || 0),
+        0
+      );
+
+      const totalPaid=(rows || []).reduce(
+        (sum,row)=>sum+Number(row.paid_points || 0),
+        0
+      );
+
+      const outstanding=Math.max(totalPoints-totalPaid,0);
+
+      if(outstanding<=0.0001){
+        alert("There are no outstanding points for this staff member.");
+        await loadPoints();
+        return false;
+      }
+
+      const value=prompt(
+        `Enter amount paid for points (1 Point = ₹1).\nOutstanding: ₹${fmt(outstanding)}`,
+        String(outstanding)
+      );
+
+      if(value===null) return false;
+
+      const amount=Number(value);
+
+      if(!Number.isFinite(amount) || amount<=0){
+        alert("Please enter a valid payment amount.");
+        return false;
+      }
+
+      if(amount>outstanding+0.0001){
+        alert(`Payment cannot exceed outstanding points.\n\nOutstanding: ₹${fmt(outstanding)}`);
+        return false;
+      }
+
+      const result=await sb.rpc(
+        "admin_pay_staff_points",
+        {
+          p_staff_id:staffId,
+          p_amount:amount
+        }
+      );
+
+      if(result.error){
+        throw result.error;
+      }
+
+      alert(`Payment recorded successfully: ₹${fmt(amount)}`);
+      await loadPoints();
+      return true;
+
+    }catch(error){
+
+      console.error("Pay Points Error:",error);
+
+      alert(
+        error?.message ||
+        "Unable to record points payment."
+      );
+
+      return false;
     }
-
-    return true;
   }
 
   async function loadPoints(){
@@ -2298,7 +2342,25 @@ await loadStaff();
         return;
       }
 
-      const pointsResult=await sb.rpc("get_staff_points_admin");
+      /* Read point rows directly so paid_points/balance are always current. */
+      const pointsResult=await sb
+        .from("staff_points")
+        .select(`
+          id,
+          staff_id,
+          points,
+          paid_points,
+          point_type,
+          source_type,
+          source_id,
+          work_date,
+          description,
+          paid_at,
+          paid_by,
+          created_at
+        `)
+        .order("work_date",{ascending:false})
+        .order("created_at",{ascending:false});
 
       if(pointsResult.error){
         throw pointsResult.error;
@@ -2606,8 +2668,7 @@ await loadStaff();
             try{
 
               const changed = await payStaffPoints(
-                button.dataset.staffId,
-                Number(button.dataset.outstanding || 0)
+                button.dataset.staffId
               );
 
               if(changed){

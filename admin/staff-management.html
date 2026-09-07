@@ -2044,7 +2044,7 @@ await loadStaff();
       /* Get all staff accounts. */
       const staffResult = await sb
         .from('profiles')
-        .select('id,full_name,email,role')
+        .select('id,full_name,role')
         .order('full_name', {ascending:true});
 
       if(staffResult.error){
@@ -2133,12 +2133,10 @@ await loadStaff();
           id: person.id,
 
           name:
-            person.full_name ||
-            person.email ||
-            'Staff',
+            person.full_name || 'Staff',
 
           email:
-            person.email || '',
+            '',
 
           today: 0,
 
@@ -2425,9 +2423,7 @@ await loadStaff();
 
               person.id,
 
-              person.full_name ||
-              person.email ||
-              'Staff'
+              person.full_name || 'Staff'
 
             ])
         );

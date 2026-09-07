@@ -2024,6 +2024,49 @@ await loadStaff();
     return localISO(d);
   }
 
+  function getSupabaseURL(){
+    if(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL){
+      return window.APP_CONFIG.SUPABASE_URL;
+    }
+    throw new Error("Supabase configuration not found. Please check js/config.js.");
+  }
+
+  async function callStaffFunction(action,payload={}){
+    const {data:{session}}=await sb.auth.getSession();
+
+    if(!session || !session.access_token){
+      throw new Error("Admin login session expired. Please login again.");
+    }
+
+    const response=await fetch(
+      `${getSupabaseURL()}/functions/v1/staff-management`,
+      {
+        method:"POST",
+        headers:{
+          "Authorization":"Bearer "+session.access_token,
+          "Content-Type":"application/json",
+          "apikey":window.APP_CONFIG?.SUPABASE_ANON_KEY || ""
+        },
+        body:JSON.stringify({
+          action,
+          ...payload
+        })
+      }
+    );
+
+    const result=await response.json().catch(()=>({}));
+
+    if(!response.ok || !result.success){
+      throw new Error(
+        result.message ||
+        result.error ||
+        "Staff management request failed."
+      );
+    }
+
+    return result;
+  }
+
   /*
    * IMPORTANT:
    * Staff names/IDs come from the same Staff Management Edge Function

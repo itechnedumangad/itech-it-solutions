@@ -2027,6 +2027,27 @@ await loadStaff();
     return localISO(d);
   }
 
+  async function pointsCallStaffFunction(action,payload={}){
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session || !session.access_token) throw new Error('Admin login session expired. Please login again.');
+    const supabaseURL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || '';
+    if(!supabaseURL) throw new Error('Supabase configuration not found.');
+    const response = await fetch(`${supabaseURL}/functions/v1/staff-management`,{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+session.access_token,
+        'Content-Type':'application/json',
+        'apikey':(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_ANON_KEY) || ''
+      },
+      body:JSON.stringify({action,...payload})
+    });
+    const result = await response.json().catch(()=>({}));
+    if(!response.ok || !result.success){
+      throw new Error(result.message || result.error || 'Staff management request failed.');
+    }
+    return result;
+  }
+
   async function loadPoints(){
 
     const body = $('ispStaffBody');
@@ -2045,7 +2066,7 @@ await loadStaff();
        * Management Edge Function already returns only real staff accounts,
        * so use that trusted source here as well.
        */
-      const staffListResult = await callStaffFunction('list');
+      const staffListResult = await pointsCallStaffFunction('list');
       const staffOnly = Array.isArray(staffListResult?.staff)
         ? staffListResult.staff.filter(person => person && person.id)
         : [];
@@ -2387,7 +2408,7 @@ await loadStaff();
 
       }
       /* Use the same staff-only source for assigned staff names. */
-      const staffListResult = await callStaffFunction('list');
+      const staffListResult = await pointsCallStaffFunction('list');
       const staffAccounts = Array.isArray(staffListResult?.staff)
         ? staffListResult.staff
         : [];

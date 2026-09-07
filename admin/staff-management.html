@@ -1993,34 +1993,680 @@ await loadStaff();
 </script>
 <script id="itech-staff-points-script">
 (async function(){
-  const $=id=>document.getElementById(id);
-  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  const pts=v=>Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const isoToday=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
-  const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+
+  const $ = id => document.getElementById(id);
+
+  const esc = value => String(value ?? '').replace(
+    /[&<>"']/g,
+    m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+    }[m])
+  );
+
+  const pointsFormat = value => Number(value || 0).toLocaleString(
+    'en-IN',
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }
+  );
+
+  function localISO(date = new Date()){
+    const d = new Date(date);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0,10);
+  }
+
+  function previousISO(){
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return localISO(d);
+  }
+
   async function loadPoints(){
-    const body=$('ispStaffBody'); if(!body)return;
-    const [pr,rr]=await Promise.all([
-      sb.from('profiles').select('id,full_name,email,role').in('role',['staff','admin','administrator']).order('full_name'),
-      sb.from('staff_points').select('staff_id,points,point_type,source_type,source_id,work_date,description,created_at').order('work_date',{ascending:false}).order('created_at',{ascending:false}).limit(5000)
-    ]);
-    if(pr.error||rr.error){body.innerHTML='<div class="isp-error">Unable to load points. Run the Staff Points SQL migration once in Supabase.</div>';return}
-    const staff=pr.data||[], rows=rr.data||[], t=isoToday(), y=yesterday(), now=new Date();
-    const map={}; staff.filter(x=>String(x.role).toLowerCase()!=='admin'&&String(x.role).toLowerCase()!=='administrator').forEach(x=>map[x.id]={...x,total:0,today:0,yesterday:0,month:0,rows:[]});
-    rows.forEach(r=>{if(!map[r.staff_id])return;const x=map[r.staff_id],v=Number(r.points||0);x.total+=v;x.rows.push(r);if(r.work_date===t)x.today+=v;if(r.work_date===y)x.yesterday+=v;if(String(r.work_date||'').slice(0,7)===t.slice(0,7))x.month+=v});
-    const list=Object.values(map);
-    body.innerHTML=list.length?'<div class="isp-grid">'+list.map(x=>`<div class="isp-staff"><div class="isp-name">${esc(x.full_name||x.email||'Staff')}</div><div class="isp-total">${pts(x.total)} <small>POINTS</small></div><div class="isp-mini"><div>Today<b>${pts(x.today)}</b></div><div>Yesterday<b>${pts(x.yesterday)}</b></div><div>This Month<b>${pts(x.month)}</b></div></div><details><summary style="margin-top:10px;cursor:pointer;font-size:11px;font-weight:800">Points History</summary><div class="isp-history">${x.rows.length?x.rows.slice(0,80).map(r=>`<div class="isp-row"><span>${esc(r.point_type)}</span><b class="isp-points">+${pts(r.points)}</b><small>${esc(r.work_date)}${r.description?' · '+esc(r.description):''}</small></div>`).join(''):'<div class="isp-empty">No points yet.</div>'}</div></details></div>`).join('')+'</div>':'<div class="isp-empty">No staff accounts found.</div>';
+
+    const body = $('ispStaffBody');
+
+    if(!body) return;
+
+    body.innerHTML = `
+      <div class="isp-empty">
+        Loading points...
+      </div>
+    `;
+
+    try{
+
+      /* Get all staff accounts. */
+      const staffResult = await sb
+        .from('profiles')
+        .select('id,full_name,email,role')
+        .order('full_name', {ascending:true});
+
+      if(staffResult.error){
+        throw staffResult.error;
+      }
+
+      /*
+       * First try the secure Admin RPC.
+       * If the RPC is not installed yet, try the normal table query.
+       * This makes the page easier to diagnose instead of always showing
+       * the old generic migration message.
+       */
+      let pointsResult = await sb.rpc(
+        'get_staff_points_admin'
+      );
+
+      let rows = [];
+
+      if(!pointsResult.error){
+
+        rows = pointsResult.data || [];
+
+      }else{
+
+        console.warn(
+          'get_staff_points_admin failed:',
+          pointsResult.error
+        );
+
+        const direct = await sb
+          .from('staff_points')
+          .select(
+            'staff_id,points,point_type,source_type,source_id,work_date,description,created_at'
+          )
+          .order(
+            'work_date',
+            {ascending:false}
+          )
+          .order(
+            'created_at',
+            {ascending:false}
+          )
+          .limit(5000);
+
+        if(direct.error){
+
+          throw new Error(
+            'Admin points access failed: ' +
+            (pointsResult.error?.message || '') +
+            ' | Direct table access: ' +
+            (direct.error?.message || '')
+          );
+
+        }
+
+        rows = direct.data || [];
+
+      }
+
+      const staff = (staffResult.data || [])
+        .filter(person => {
+
+          const role =
+            String(person.role || '')
+              .toLowerCase();
+
+          return role !== 'admin' &&
+                 role !== 'administrator';
+
+        });
+
+
+      const today = localISO();
+
+      const yesterday = previousISO();
+
+      const month = today.slice(0,7);
+
+
+      const map = {};
+
+      staff.forEach(person => {
+
+        map[person.id] = {
+
+          id: person.id,
+
+          name:
+            person.full_name ||
+            person.email ||
+            'Staff',
+
+          email:
+            person.email || '',
+
+          today: 0,
+
+          yesterday: 0,
+
+          month: 0,
+
+          total: 0,
+
+          history: []
+
+        };
+
+      });
+
+
+      rows.forEach(row => {
+
+        const person =
+          map[row.staff_id];
+
+        if(!person) return;
+
+        const value =
+          Number(row.points || 0);
+
+        person.total += value;
+
+        if(
+          String(row.work_date || '') ===
+          today
+        ){
+          person.today += value;
+        }
+
+        if(
+          String(row.work_date || '') ===
+          yesterday
+        ){
+          person.yesterday += value;
+        }
+
+        if(
+          String(row.work_date || '')
+            .slice(0,7) ===
+          month
+        ){
+          person.month += value;
+        }
+
+        person.history.push(row);
+
+      });
+
+
+      const list =
+        Object.values(map);
+
+
+      if(!list.length){
+
+        body.innerHTML = `
+          <div class="isp-empty">
+            No staff accounts found.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      body.innerHTML = `
+
+        <div class="isp-grid">
+
+          ${list.map(person => `
+
+            <div class="isp-staff">
+
+              <div class="isp-name">
+                ${esc(person.name)}
+              </div>
+
+
+              <div class="isp-total">
+                ${pointsFormat(person.total)}
+                <small>POINTS</small>
+              </div>
+
+
+              <div class="isp-mini">
+
+                <div>
+                  <span>Today</span>
+                  <b>
+                    ${pointsFormat(person.today)}
+                  </b>
+                </div>
+
+                <div>
+                  <span>Yesterday</span>
+                  <b>
+                    ${pointsFormat(person.yesterday)}
+                  </b>
+                </div>
+
+                <div>
+                  <span>This Month</span>
+                  <b>
+                    ${pointsFormat(person.month)}
+                  </b>
+                </div>
+
+              </div>
+
+
+              <details>
+
+                <summary>
+                  Points History
+                </summary>
+
+                <div class="isp-history">
+
+                  ${
+                    person.history.length
+
+                    ?
+
+                    person.history
+                      .slice(0,100)
+                      .map(row => `
+
+                        <div class="isp-row">
+
+                          <span>
+                            ${esc(
+                              row.point_type ||
+                              'Points'
+                            )}
+                          </span>
+
+                          <b class="isp-points">
+                            +${pointsFormat(row.points)}
+                          </b>
+
+                          <small>
+                            ${esc(row.work_date || '')}
+
+                            ${
+                              row.description
+                              ?
+                              ' · ' +
+                              esc(row.description)
+                              :
+                              ''
+                            }
+                          </small>
+
+                        </div>
+
+                      `)
+                      .join('')
+
+                    :
+
+                    `
+                      <div class="isp-empty">
+                        No points yet.
+                      </div>
+                    `
+                  }
+
+                </div>
+
+              </details>
+
+            </div>
+
+          `).join('')}
+
+        </div>
+
+      `;
+
+    }
+    catch(error){
+
+      console.error(
+        'Staff Points Error:',
+        error
+      );
+
+      body.innerHTML = `
+
+        <div class="isp-error">
+
+          Unable to load staff points.
+
+          <br><br>
+
+          <small>
+            ${esc(
+              error?.message ||
+              'Unknown database error'
+            )}
+          </small>
+
+        </div>
+
+      `;
+
+    }
+
   }
+
+
   async function loadJobs(){
-    const body=$('ispJobsBody'); if(!body)return;
-    const [jr,pr]=await Promise.all([sb.from('service_jobs').select('id,job_number,device_type,brand,model,status,technician_id,created_at').order('created_at',{ascending:false}).limit(300),sb.from('profiles').select('id,full_name,email').in('role',['staff','admin','administrator'])]);
-    if(jr.error){body.innerHTML='<div class="isp-error">Unable to load service jobs.</div>';return}
-    const names=Object.fromEntries((pr.data||[]).map(x=>[x.id,x.full_name||x.email||'Staff'])); const jobs=jr.data||[];
-    body.innerHTML=jobs.length?'<div class="isp-service-list">'+jobs.map(j=>`<div class="isp-job"><div><div class="isp-job-title">${esc(j.job_number||'Service Job')} · ${esc(j.device_type||'Device')}</div><div class="isp-job-meta">${esc([j.brand,j.model,j.status].filter(Boolean).join(' · '))} · Assigned: ${esc(names[j.technician_id]||'Not assigned')}</div></div><button class="isp-btn" type="button" data-job="${esc(j.id)}">⭐ Award / Update</button></div>`).join('')+'</div>':'<div class="isp-empty">No service jobs found.</div>';
-    body.querySelectorAll('[data-job]').forEach(b=>b.onclick=async()=>{const v=prompt('Enter points for this service job:', '10');if(v===null)return;const n=Number(v);if(!Number.isFinite(n)||n<0){alert('Enter a valid points value.');return}const r=await sb.rpc('award_service_job_points',{p_job_id:b.dataset.job,p_points:n});if(r.error){alert(r.error.message||'Unable to save points.');return}alert('Service job points saved: '+pts(r.data));await loadPoints();});
+
+    const body =
+      $('ispJobsBody');
+
+    if(!body) return;
+
+
+    body.innerHTML = `
+      <div class="isp-empty">
+        Loading service jobs...
+      </div>
+    `;
+
+
+    try{
+
+      const jobsResult =
+        await sb
+          .from('service_jobs')
+          .select(
+            `
+              id,
+              job_number,
+              device_type,
+              brand,
+              model,
+              status,
+              technician_id,
+              created_at
+            `
+          )
+          .order(
+            'created_at',
+            {ascending:false}
+          )
+          .limit(300);
+
+
+      if(jobsResult.error){
+
+        throw jobsResult.error;
+
+      }
+
+
+      const staffResult =
+        await sb
+          .from('profiles')
+          .select(
+            'id,full_name,email'
+          );
+
+
+      if(staffResult.error){
+
+        throw staffResult.error;
+
+      }
+
+
+      const names =
+        Object.fromEntries(
+          (staffResult.data || [])
+            .map(person => [
+
+              person.id,
+
+              person.full_name ||
+              person.email ||
+              'Staff'
+
+            ])
+        );
+
+
+      const jobs =
+        jobsResult.data || [];
+
+
+      if(!jobs.length){
+
+        body.innerHTML = `
+          <div class="isp-empty">
+            No service jobs found.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      body.innerHTML = `
+
+        <div class="isp-service-list">
+
+          ${jobs.map(job => `
+
+            <div class="isp-job">
+
+              <div>
+
+                <div class="isp-job-title">
+
+                  ${esc(
+                    job.job_number ||
+                    'Service Job'
+                  )}
+
+                  ·
+
+                  ${esc(
+                    job.device_type ||
+                    'Device'
+                  )}
+
+                </div>
+
+
+                <div class="isp-job-meta">
+
+                  ${esc(
+                    [
+                      job.brand,
+                      job.model,
+                      job.status
+                    ]
+                    .filter(Boolean)
+                    .join(' · ')
+                  )}
+
+                  · Assigned:
+
+                  ${esc(
+                    names[job.technician_id] ||
+                    'Not assigned'
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <button
+                class="isp-btn"
+                type="button"
+                data-job="${esc(job.id)}"
+              >
+                ⭐ Award / Update
+              </button>
+
+            </div>
+
+          `).join('')}
+
+        </div>
+
+      `;
+
+
+      body
+        .querySelectorAll('[data-job]')
+        .forEach(button => {
+
+          button.onclick = async function(){
+
+            const value =
+              prompt(
+                'Enter points for this service job:',
+                '10'
+              );
+
+
+            if(value === null){
+
+              return;
+
+            }
+
+
+            const number =
+              Number(value);
+
+
+            if(
+              !Number.isFinite(number) ||
+              number < 0
+            ){
+
+              alert(
+                'Enter a valid points value.'
+              );
+
+              return;
+
+            }
+
+
+            button.disabled = true;
+
+
+            try{
+
+              const result =
+                await sb.rpc(
+                  'award_service_job_points',
+                  {
+                    p_job_id:
+                      button.dataset.job,
+
+                    p_points:
+                      number
+                  }
+                );
+
+
+              if(result.error){
+
+                throw result.error;
+
+              }
+
+
+              alert(
+                'Service job points saved: ' +
+                pointsFormat(result.data)
+              );
+
+
+              await loadPoints();
+
+            }
+            catch(error){
+
+              console.error(error);
+
+              alert(
+                error?.message ||
+                'Unable to save points.'
+              );
+
+            }
+            finally{
+
+              button.disabled = false;
+
+            }
+
+          };
+
+        });
+
+    }
+    catch(error){
+
+      console.error(
+        'Service Job Points Error:',
+        error
+      );
+
+      body.innerHTML = `
+
+        <div class="isp-error">
+
+          Unable to load service jobs.
+
+          <br><br>
+
+          <small>
+            ${esc(
+              error?.message ||
+              'Unknown database error'
+            )}
+          </small>
+
+        </div>
+
+      `;
+
+    }
+
   }
-  $('ispRefresh')?.addEventListener('click',()=>{loadPoints();loadJobs()});
-  await loadPoints(); await loadJobs();
+
+
+  const refresh =
+    $('ispRefresh');
+
+
+  if(refresh){
+
+    refresh.addEventListener(
+      'click',
+      async function(){
+
+        await loadPoints();
+
+        await loadJobs();
+
+      }
+    );
+
+  }
+
+
+  await loadPoints();
+
+  await loadJobs();
+
+
 })();
 </script></body>
 </html>

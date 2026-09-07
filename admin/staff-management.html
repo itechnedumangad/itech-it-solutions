@@ -2406,8 +2406,12 @@ await loadStaff();
               </div>
 
               <div class="isp-total">
-                ${fmt(person.total)}
-                <small>POINTS</small>
+                ${fmt(person.balance)}
+                <small>POINTS BALANCE</small>
+              </div>
+
+              <div style="font-size:11px;color:#71819b;margin-top:2px">
+                Total earned: <b style="color:#183555">${fmt(person.total)} pts</b>
               </div>
 
               <div class="isp-payment-summary">

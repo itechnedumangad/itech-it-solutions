@@ -2179,56 +2179,39 @@ await loadStaff();
   async function getManagedStaff(){
     const result=await callStaffFunction("list");
     const managed=Array.isArray(result.staff) ? result.staff : [];
-
     if(!managed.length) return [];
 
+    /* profiles.auth_user_id does not exist in this project.
+       staff_points.staff_id references public.profiles.id. */
     const profilesResult=await sb
       .from("profiles")
-      .select("id,auth_user_id,full_name,mobile,email,role")
+      .select("id,full_name,mobile,role")
       .eq("role","staff");
-
-    if(profilesResult.error){
-      throw profilesResult.error;
-    }
+    if(profilesResult.error) throw profilesResult.error;
 
     const profiles=profilesResult.data || [];
-
     return managed.map(person=>{
       const personId=String(person.id || "");
       const personUserId=String(person.user_id || "");
-      const personAuthId=String(person.auth_user_id || "");
-      const personEmail=String(person.email || "").trim().toLowerCase();
-
+      const personMobile=String(person.mobile || "").replace(/\D/g,"");
+      const personName=String(person.full_name || "").trim().toLowerCase();
       const profile=profiles.find(p=>{
         const pid=String(p.id || "");
-        const auid=String(p.auth_user_id || "");
-        const email=String(p.email || "").trim().toLowerCase();
-
-        return (personId && (pid===personId || auid===personId))
-          || (personUserId && (pid===personUserId || auid===personUserId))
-          || (personAuthId && (pid===personAuthId || auid===personAuthId))
-          || (personEmail && email && email===personEmail);
+        const mobile=String(p.mobile || "").replace(/\D/g,"");
+        const name=String(p.full_name || "").trim().toLowerCase();
+        return (personId && pid===personId)
+          || (personUserId && pid===personUserId)
+          || (personMobile && mobile && mobile===personMobile)
+          || (personName && name && name===personName);
       });
-
-      if(!profile){
-        return person;
-      }
-
-      /*
-       * id MUST be public.profiles.id here because staff_points.staff_id
-       * references profiles.id. Keep the Auth ID separately for fallback
-       * matching and other staff-management operations.
-       */
-      return {
+      return profile ? {
         ...person,
         id:profile.id,
         profile_id:profile.id,
-        user_id:profile.auth_user_id || person.user_id || person.id || null,
-        auth_user_id:profile.auth_user_id || person.auth_user_id || person.id || null,
+        user_id:person.user_id || person.id || null,
         full_name:profile.full_name || person.full_name || "Staff",
-        mobile:profile.mobile || person.mobile || "",
-        email:profile.email || person.email || ""
-      };
+        mobile:profile.mobile || person.mobile || ""
+      } : {...person, profile_id:person.id || null};
     });
   }
 
@@ -2349,7 +2332,6 @@ await loadStaff();
 
         if(person.id) map[String(person.id)]=item;
         if(person.user_id) map[String(person.user_id)]=item;
-        if(person.auth_user_id) map[String(person.auth_user_id)]=item;
       });
 
       rows.forEach(row=>{
@@ -2396,7 +2378,8 @@ await loadStaff();
         const item =
           map[String(person.id)] ||
           map[String(person.user_id)] ||
-          map[String(person.auth_user_id)];
+          map[String(person.user_id)] ||
+          map[String(person.id)];
 
         if(!item || seen.has(item)) return;
 
@@ -2726,7 +2709,6 @@ await loadStaff();
 
         if(person.id) names[String(person.id)]=name;
         if(person.user_id) names[String(person.user_id)]=name;
-        if(person.auth_user_id) names[String(person.auth_user_id)]=name;
 
       });
 

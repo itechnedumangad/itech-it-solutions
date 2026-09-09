@@ -1,33 +1,95 @@
 <!DOCTYPE html>
-
-<html><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Computer &amp; IT Services in Nedumangad | iTech IT Solutions</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/><link href="../css/public-polish.css" rel="stylesheet"/>
-<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/>
-<!-- SEO START: metadata only; existing design/CSS/JS preserved -->
-<meta name="description" content="Explore computer service, CCTV, IT support, vehicle insurance and other services from iTech IT Solutions, Nedumangad.">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Computer & IT Services in Nedumangad | iTech IT Solutions</title>
+<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/unified-dashboard.css"><link rel="stylesheet" href="../css/public-polish.css"><link rel="stylesheet" href="../css/mobile-app-ready.css"><link rel="stylesheet" href="../css/itech-final-ui.css">
+<meta name="description" content="Explore computer, laptop, printer, CCTV, networking, online works, vehicle insurance and IT services from iTech IT Solutions, Nedumangad.">
 <link rel="canonical" href="https://itnedumangad.online/pages/services.html">
-<meta property="og:title" content="Computer &amp; IT Services in Nedumangad | iTech IT Solutions">
-<meta property="og:description" content="Explore computer service, CCTV, IT support, vehicle insurance and other services from iTech IT Solutions, Nedumangad.">
-<meta property="og:url" content="https://itnedumangad.online/pages/services.html">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="iTech IT Solutions">
-<meta property="og:image" content="https://itnedumangad.online/assets/itech-logo.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Computer &amp; IT Services in Nedumangad | iTech IT Solutions">
-<meta name="twitter:description" content="Explore computer service, CCTV, IT support, vehicle insurance and other services from iTech IT Solutions, Nedumangad.">
-<meta name="twitter:image" content="https://itnedumangad.online/assets/itech-logo.png">
-<!-- SEO END -->
 
-</head><body><header class="site-header"><div class="nav-wrap"><a class="brand" href="../index.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><button class="menu" id="menu">☰</button><nav class="nav" id="nav"><a href="../index.html">Home</a><a href="services.html">Services</a><a href="works.html">Our Works</a><a href="enquiry.html">Enquiry</a><a href="service-register.html">Service</a><a href="product-register.html">Product</a><a href="login.html">Login</a></nav></div></header><section class="page-hero"><p class="eyebrow">iTech IT Solutions</p><h1>Services</h1><p>Computer service, CCTV, insurance and IT related works.</p></section><main class="container"><div class="grid"><article class="card"><div class="icon">💻</div><h3>Computer Service</h3><p class="muted">Desktop, laptop and software support.</p><a class="btn primary" href="enquiry.html">Enquire</a></article><article class="card"><div class="icon">📹</div><h3>CCTV Installation</h3><p class="muted">Installation and networking support.</p><a class="btn primary" href="enquiry.html">Enquire</a></article><article class="card"><div class="icon">🚗</div><h3>Vehicle Insurance</h3><p class="muted">Insurance enquiry and renewal.</p><a class="btn primary" href="enquiry.html">Enquire</a></article><article class="card"><div class="icon">🛠️</div><h3>Other IT Related Works</h3><p class="muted">Networking, printing and other IT works.</p><a class="btn primary" href="enquiry.html">Enquire</a></article></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/site.js"></script>
-<footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
-</div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
+<style>
+.services-page{padding:18px 0 55px}
+.services-intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+.intro-kicker{margin:0 0 6px;color:#f28a16;font-size:10px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase}
+.intro-copy h2{margin:0;color:#102a4c;font-size:25px}.intro-copy p{max-width:720px;margin:8px 0 0;color:#70839c;font-size:13px;line-height:1.65}
+.service-count{padding:10px 14px;border:1px solid #dce6f1;border-radius:999px;background:#fff;color:#607792;font-size:11px;font-weight:800;white-space:nowrap}
+.service-count strong{color:#176fe5}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.service-card{position:relative;display:flex;flex-direction:column;min-height:300px;padding:20px;overflow:hidden;border:1px solid #dce6f1;border-radius:19px;background:#fff;box-shadow:0 11px 28px rgba(18,43,75,.07);transition:.18s}
+.service-card:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#176fe5,#f28a16)}
+.service-card:hover{transform:translateY(-5px);box-shadow:0 18px 38px rgba(18,43,75,.12)}
+.service-icon-box{width:53px;height:53px;display:grid;place-items:center;border-radius:15px;background:#f1f6ff;border:1px solid #dce9f7;font-size:27px;margin-bottom:14px}
+.service-tag{align-self:flex-start;margin-bottom:7px;padding:5px 8px;border-radius:999px;background:#fff5e8;color:#d97809;font-size:8px;font-weight:900;letter-spacing:.7px;text-transform:uppercase}
+.service-card h3{margin:0;color:#102a4c;font-size:17px;line-height:1.3}
+.service-card p{margin:8px 0 0;color:#70839c;font-size:11.5px;line-height:1.6}
+.service-list{list-style:none;margin:12px 0 16px;padding:0}.service-list li{color:#58708d;font-size:10.5px;margin:5px 0}.service-list li:before{content:"✓";color:#176fe5;font-weight:900;margin-right:6px}
+.service-actions{display:flex;gap:8px;margin-top:auto}.service-actions a{flex:1;text-align:center;text-decoration:none;padding:10px 7px;border-radius:9px;font-size:10.5px;font-weight:900}
+.service-primary{color:#fff;background:linear-gradient(135deg,#176fe5,#3159f5);box-shadow:0 7px 16px rgba(37,99,235,.18)}.service-secondary{color:#244768;background:#f6f9fd;border:1px solid #dbe5ef}
+.quick-strip{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quick-card{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid #dce6f1;border-radius:15px;background:#fff;box-shadow:0 8px 22px rgba(15,35,65,.05)}
+.quick-icon{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:11px;background:#eef5ff;font-size:19px}.quick-card strong{display:block;color:#173554;font-size:11px}.quick-card span{display:block;margin-top:3px;color:#7a8ca4;font-size:9.5px;line-height:1.4}
+.service-note{margin-top:20px;padding:17px 19px;border-radius:15px;background:linear-gradient(135deg,#f4f8ff,#fffaf3);border:1px solid #dce7f3;display:flex;align-items:center;justify-content:space-between;gap:18px}.service-note strong{color:#173554;font-size:13px}.service-note p{margin:4px 0 0;color:#71839b;font-size:10.5px}.note-btn{padding:10px 15px;border-radius:9px;background:#102e56;color:#fff;text-decoration:none;font-size:10.5px;font-weight:900;white-space:nowrap}
+@media(max-width:1050px){.service-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:800px){.service-grid{grid-template-columns:repeat(2,1fr)}.quick-strip{grid-template-columns:1fr}.services-intro{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.service-grid{grid-template-columns:1fr}.service-card{min-height:0}.service-note{align-items:stretch;flex-direction:column}.note-btn{text-align:center}.intro-copy h2{font-size:21px}}
+</style>
+</head><body>
+
+<header class="site-header"><div class="nav-wrap"><a class="brand" href="../index.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"></a><button class="menu" id="menu">☰</button><nav class="nav" id="nav"><a href="../index.html">Home</a><a href="services.html">Services</a><a href="works.html">Our Works</a><a href="enquiry.html">Enquiry</a><a href="service-register.html">Service</a><a href="product-register.html">Product</a><a href="login.html">Login</a></nav></div></header>
+
+<section class="page-hero"><p class="eyebrow">iTech IT Solutions</p><h1>Services</h1><p>Professional computer, CCTV, networking, insurance and IT support services in Nedumangad.</p></section>
+
+<main class="container services-page">
+<section class="services-intro"><div class="intro-copy"><p class="intro-kicker">What We Do</p><h2>Complete IT & Digital Services</h2><p>From computer and laptop service to CCTV installation, networking, online works and vehicle insurance, iTech IT Solutions provides practical solutions for homes, businesses and institutions.</p></div><div class="service-count"><strong>8</strong> service categories</div></section>
+
+<section class="service-grid"><article class="service-card">
+<div class="service-icon-box">💻</div><span class="service-tag">Computer</span>
+<h3>Computer Service</h3><p>Desktop, software and operating system support.</p>
+<ul class="service-list"><li>Desktop service</li><li>Windows & software support</li><li>System setup & maintenance</li></ul>
+<div class="service-actions"><a class="service-primary" href="service-register.html">Register Service</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">🖥️</div><span class="service-tag">Laptop</span>
+<h3>Laptop Service</h3><p>Laptop troubleshooting, software setup and maintenance support.</p>
+<ul class="service-list"><li>Laptop diagnosis</li><li>Software & OS support</li><li>Performance troubleshooting</li></ul>
+<div class="service-actions"><a class="service-primary" href="service-register.html">Register Service</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">🖨️</div><span class="service-tag">Printer</span>
+<h3>Printer Service</h3><p>Printer installation, connectivity and office printing support.</p>
+<ul class="service-list"><li>Printer installation</li><li>Driver & connectivity setup</li><li>Office printer support</li></ul>
+<div class="service-actions"><a class="service-primary" href="service-register.html">Register Service</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">📹</div><span class="service-tag">Security</span>
+<h3>CCTV Installation</h3><p>CCTV installation and networking support for homes, offices and shops.</p>
+<ul class="service-list"><li>Camera installation</li><li>DVR / NVR setup</li><li>Remote viewing & networking</li></ul>
+<div class="service-actions"><a class="service-primary" href="enquiry.html">Get Enquiry</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">🌐</div><span class="service-tag">Networking</span>
+<h3>Networking & Wi-Fi</h3><p>Network setup and connectivity support for homes, shops and offices.</p>
+<ul class="service-list"><li>Router & Wi-Fi setup</li><li>LAN networking</li><li>Connectivity troubleshooting</li></ul>
+<div class="service-actions"><a class="service-primary" href="enquiry.html">Get Enquiry</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">📝</div><span class="service-tag">Online Works</span>
+<h3>Online & Digital Works</h3><p>Printing, scanning, online applications and digital document support.</p>
+<ul class="service-list"><li>Online application support</li><li>Printing & scanning</li><li>Digital document works</li></ul>
+<div class="service-actions"><a class="service-primary" href="enquiry.html">Get Enquiry</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">🚗</div><span class="service-tag">Insurance</span>
+<h3>Vehicle Insurance</h3><p>Vehicle insurance enquiry and renewal assistance.</p>
+<ul class="service-list"><li>Insurance enquiry</li><li>Renewal assistance</li><li>Vehicle policy support</li></ul>
+<div class="service-actions"><a class="service-primary" href="enquiry.html">Get Enquiry</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article><article class="service-card">
+<div class="service-icon-box">🛠️</div><span class="service-tag">IT Support</span>
+<h3>Other IT Related Works</h3><p>Technical support for installations, setup and other IT requirements.</p>
+<ul class="service-list"><li>Computer & printer setup</li><li>IT installation support</li><li>Other technical works</li></ul>
+<div class="service-actions"><a class="service-primary" href="enquiry.html">Get Enquiry</a><a class="service-secondary" href="enquiry.html">Details</a></div>
+</article></section>
+
+<section class="quick-strip">
+<div class="quick-card"><div class="quick-icon">⚡</div><div><strong>Quick Service Registration</strong><span>Register your computer, laptop or printer for service online.</span></div></div>
+<div class="quick-card"><div class="quick-icon">💬</div><div><strong>Easy Enquiry</strong><span>Send your requirement and our team can contact you.</span></div></div>
+<div class="quick-card"><div class="quick-icon">🤝</div><div><strong>Customer Support</strong><span>Professional IT support from iTech IT Solutions, Nedumangad.</span></div></div>
+</section>
+
+<section class="service-note"><div><strong>Need a service that is not listed?</strong><p>Tell us what you need. We will review your requirement and get back to you.</p></div><a class="note-btn" href="enquiry.html">Send an Enquiry →</a></section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/site.js"></script>
+
+<footer class="site-footer unified-site-footer"><div class="footer-brand"><img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"></div><p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p><p class="footer-contact">7736929233 · 8943165951</p><p class="footer-email">itnedumangad@gmail.com</p><p class="footer-social">@itechndd</p><p class="footer-tagline">Your Trust Our Service</p></footer>
 </body></html>

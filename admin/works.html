@@ -13,33 +13,46 @@
 <title>Our Works | iTech Admin</title>
 
 
-<!-- Dashboard CSS -->
-
 <link
-  rel="stylesheet"
   href="../css/style.css"
+  rel="stylesheet"
 >
 
 <link
-  rel="stylesheet"
   href="../css/dashboard.css"
+  rel="stylesheet"
 >
 
 <link
-  rel="stylesheet"
   href="../css/unified-dashboard.css"
+  rel="stylesheet"
 >
 
 <link
-  rel="stylesheet"
   href="../css/dashboard-shell.css"
+  rel="stylesheet"
+>
+
+<link
+  href="../css/ui-enhancements.css"
+  rel="stylesheet"
+>
+
+<link
+  href="../css/mobile-app-ready.css"
+  rel="stylesheet"
+>
+
+<link
+  href="../css/itech-final-ui.css"
+  rel="stylesheet"
 >
 
 
 <style>
 
 /* =========================================================
-   PAGE
+   OUR WORKS PAGE
 ========================================================= */
 
 .works-page{
@@ -49,7 +62,7 @@
 
 
 /* =========================================================
-   FORM GRID
+   ADD WORK FORM
 ========================================================= */
 
 .works-form-grid{
@@ -69,12 +82,12 @@
 }
 
 
-.field{
+.works-field{
   min-width:0;
 }
 
 
-.field label{
+.works-field label{
 
   display:block;
 
@@ -89,45 +102,34 @@
 }
 
 
-.field input,
-.field textarea{
+.works-field input,
+.works-field textarea{
 
   width:100%;
 
   box-sizing:border-box;
 
-  border:1px solid #d6e0ec;
+  padding:12px 13px;
+
+  border:1px solid #d5dfed;
 
   border-radius:10px;
 
-  padding:12px 13px;
+  background:#fff;
+
+  color:#10284b;
 
   font-family:inherit;
 
   font-size:14px;
 
-  color:#10284b;
-
-  background:#fff;
-
   outline:none;
 
-  transition:.2s;
-
 }
 
 
-.field textarea{
-
-  resize:vertical;
-
-  min-height:110px;
-
-}
-
-
-.field input:focus,
-.field textarea:focus{
+.works-field input:focus,
+.works-field textarea:focus{
 
   border-color:#2864e8;
 
@@ -138,15 +140,168 @@
 }
 
 
+.works-field textarea{
+
+  resize:vertical;
+
+  min-height:110px;
+
+}
+
+
 /* =========================================================
-   BUTTONS
+   PHOTO UPLOAD
+========================================================= */
+
+.image-upload-box{
+
+  margin-top:8px;
+
+  border:2px dashed #cdd9e8;
+
+  border-radius:14px;
+
+  padding:20px;
+
+  background:#f8fbff;
+
+  text-align:center;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+
+.image-upload-box:hover{
+
+  border-color:#2864e8;
+
+  background:#f3f7ff;
+
+}
+
+
+.image-upload-icon{
+
+  font-size:32px;
+
+  margin-bottom:7px;
+
+}
+
+
+.image-upload-text{
+
+  font-size:13px;
+
+  font-weight:800;
+
+  color:#17365f;
+
+}
+
+
+.image-upload-sub{
+
+  margin-top:4px;
+
+  font-size:11px;
+
+  color:#71819b;
+
+}
+
+
+#workImage{
+
+  display:none;
+
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+.image-preview-wrap{
+
+  display:none;
+
+  position:relative;
+
+  width:100%;
+
+  max-width:500px;
+
+  margin-top:14px;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+  background:#f1f5f9;
+
+  border:1px solid #dbe4ef;
+
+}
+
+
+.image-preview-wrap.show{
+
+  display:block;
+
+}
+
+
+#imagePreview{
+
+  width:100%;
+
+  max-height:300px;
+
+  object-fit:cover;
+
+  display:block;
+
+}
+
+
+.remove-preview{
+
+  position:absolute;
+
+  top:10px;
+
+  right:10px;
+
+  width:34px;
+
+  height:34px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:rgba(0,0,0,.70);
+
+  color:#fff;
+
+  font-size:18px;
+
+  cursor:pointer;
+
+}
+
+
+/* =========================================================
+   ACTIONS
 ========================================================= */
 
 .works-actions{
 
   display:flex;
-
-  align-items:center;
 
   gap:10px;
 
@@ -173,10 +328,6 @@
 }
 
 
-/* =========================================================
-   STATUS
-========================================================= */
-
 #workStatus{
 
   margin-top:12px;
@@ -202,11 +353,11 @@
 
   box-sizing:border-box;
 
-  border:1px solid #d6e0ec;
+  padding:11px 13px;
+
+  border:1px solid #d5dfed;
 
   border-radius:10px;
-
-  padding:11px 13px;
 
   font-size:13px;
 
@@ -227,7 +378,7 @@
 
 
 /* =========================================================
-   WORK CARDS
+   WORK GRID
 ========================================================= */
 
 .works-grid{
@@ -237,12 +388,16 @@
   grid-template-columns:
     repeat(3,minmax(0,1fr));
 
-  gap:16px;
+  gap:18px;
 
 }
 
 
 .work-card{
+
+  min-width:0;
+
+  overflow:hidden;
 
   background:#fff;
 
@@ -250,16 +405,12 @@
 
   border-radius:16px;
 
-  padding:18px;
-
-  box-sizing:border-box;
-
-  min-width:0;
+  box-shadow:
+    0 4px 16px
+    rgba(20,50,90,.05);
 
   transition:
-
     transform .2s ease,
-
     box-shadow .2s ease;
 
 }
@@ -267,22 +418,50 @@
 
 .work-card:hover{
 
-  transform:translateY(-2px);
+  transform:translateY(-3px);
 
   box-shadow:
-    0 10px 28px
-    rgba(18,48,88,.10);
+    0 12px 30px
+    rgba(20,50,90,.11);
 
 }
 
 
-.work-icon{
+/* =========================================================
+   WORK IMAGE
+========================================================= */
 
-  width:42px;
+.work-image{
 
-  height:42px;
+  width:100%;
 
-  border-radius:12px;
+  aspect-ratio:16/9;
+
+  overflow:hidden;
+
+  background:#eef3f8;
+
+}
+
+
+.work-image img{
+
+  width:100%;
+
+  height:100%;
+
+  object-fit:cover;
+
+  display:block;
+
+}
+
+
+.work-no-image{
+
+  width:100%;
+
+  aspect-ratio:16/9;
 
   display:flex;
 
@@ -290,11 +469,25 @@
 
   justify-content:center;
 
-  background:#eef4ff;
+  background:
+    linear-gradient(
+      135deg,
+      #edf4ff,
+      #f7faff
+    );
 
-  font-size:21px;
+  font-size:44px;
 
-  margin-bottom:12px;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.work-card-content{
+
+  padding:17px;
 
 }
 
@@ -303,11 +496,11 @@
 
   margin:0 0 8px;
 
-  color:#10284b;
-
   font-size:17px;
 
   line-height:1.35;
+
+  color:#10284b;
 
   word-break:break-word;
 
@@ -318,7 +511,9 @@
 
   display:inline-block;
 
-  padding:5px 9px;
+  margin-bottom:10px;
+
+  padding:5px 10px;
 
   border-radius:999px;
 
@@ -329,8 +524,6 @@
   font-size:11px;
 
   font-weight:800;
-
-  margin-bottom:10px;
 
 }
 
@@ -371,7 +564,7 @@
 
 .work-action-btn{
 
-  border:1px solid #d7e0eb;
+  border:1px solid #d6e0eb;
 
   background:#fff;
 
@@ -414,14 +607,14 @@
 
 
 /* =========================================================
-   EMPTY / LOADING
+   EMPTY
 ========================================================= */
 
 .works-empty{
 
   grid-column:1/-1;
 
-  padding:40px 20px;
+  padding:45px 20px;
 
   text-align:center;
 
@@ -437,8 +630,8 @@
 
 
 /* =========================================================
-   UNIFIED FOOTER
-   Same dashboard footer style
+   FOOTER
+   SAME UNIFIED DASHBOARD FOOTER
 ========================================================= */
 
 .unified-site-footer{
@@ -490,18 +683,6 @@
 
 
 .unified-site-footer
-.footer-brand{
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-}
-
-
-.unified-site-footer
 .footer-logo{
 
   width:50px;
@@ -513,8 +694,6 @@
   display:block;
 
   flex:0 0 auto;
-
-  margin:0;
 
 }
 
@@ -595,10 +774,10 @@
 
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE
 ========================================================= */
 
-@media(max-width:1000px){
+@media(max-width:1050px){
 
   .works-grid{
 
@@ -636,9 +815,9 @@
 
   }
 
-  .toolbar{
+  .works-actions .btn{
 
-    gap:14px;
+    width:100%;
 
   }
 
@@ -659,6 +838,7 @@
 
   }
 
+
   .unified-site-footer p{
 
     white-space:normal;
@@ -666,6 +846,7 @@
     text-align:center;
 
   }
+
 
   .unified-site-footer
   .footer-tagline{
@@ -687,22 +868,13 @@
 
 @media(max-width:480px){
 
-  .works-actions{
+  .work-card-content{
 
-    flex-direction:column;
-
-    align-items:stretch;
+    padding:14px;
 
   }
 
-  .works-actions
-  .btn{
 
-    width:100%;
-
-  }
-
-  .work-actions
   .work-action-btn{
 
     flex:1;
@@ -720,10 +892,11 @@
 
 
 <!-- =========================================================
-     HEADER
+     HEADER — SAME ADMIN DASHBOARD
 ========================================================= -->
 
 <header class="dash-header">
+
 
   <a
     class="brand"
@@ -731,9 +904,9 @@
   >
 
     <img
+      alt="iTech IT Solutions"
       class="brand-logo"
       src="../assets/itech-logo.png"
-      alt="iTech IT Solutions"
     >
 
   </a>
@@ -741,21 +914,89 @@
 
   <div class="header-actions">
 
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notification-wrap">
+
+      <button
+        aria-label="Notifications"
+        class="notification-btn"
+        id="notificationBtn"
+        title="Notifications"
+        type="button"
+      >
+
+        🔔
+
+        <span
+          class="notification-count"
+          id="notificationCount"
+          style="display:none"
+        >
+          0
+        </span>
+
+      </button>
+
+
+      <div
+        class="notification-panel"
+        id="notificationPanel"
+      >
+
+        <div class="notification-head">
+
+          <strong>
+            Notifications
+          </strong>
+
+          <button
+            id="markAllRead"
+            type="button"
+          >
+            Mark all read
+          </button>
+
+        </div>
+
+
+        <div
+          class="notification-list"
+          id="notificationList"
+        >
+
+          <div class="notification-empty">
+            Loading notifications…
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADMIN -->
+
     <span
       class="user-chip"
-      id="adminName"
+      data-admin-name
     >
       Admin
     </span>
 
 
+    <!-- LOGOUT -->
+
     <a
       class="btn secondary"
-      href="../pages/login.html"
       data-logout
+      href="../pages/login.html"
     >
       Logout
     </a>
+
 
   </div>
 
@@ -764,14 +1005,14 @@
 
 
 <!-- =========================================================
-     LAYOUT
+     DASHBOARD LAYOUT
 ========================================================= -->
 
 <div class="dash-layout">
 
 
 <!-- =========================================================
-     SIDEBAR
+     SIDEBAR — SAME ADMIN DASHBOARD
 ========================================================= -->
 
 <aside class="sidebar">
@@ -866,9 +1107,7 @@
 <main class="dash-main works-page">
 
 
-<!-- =========================================================
-     PAGE TITLE
-========================================================= -->
+<!-- PAGE TITLE -->
 
 <div class="toolbar">
 
@@ -883,7 +1122,7 @@
     </h1>
 
     <p class="muted">
-      Add and manage completed projects and services.
+      Add and manage your completed works and projects.
     </p>
 
   </div>
@@ -901,6 +1140,7 @@
   style="margin-bottom:20px"
 >
 
+
   <div
     class="toolbar"
     style="margin-bottom:18px"
@@ -913,7 +1153,7 @@
       </h2>
 
       <p class="muted">
-        Add a completed project to the Our Works showcase.
+        Add project details and a photo.
       </p>
 
     </div>
@@ -923,6 +1163,7 @@
 
 
   <form id="workForm">
+
 
     <input
       type="hidden"
@@ -935,7 +1176,7 @@
 
       <!-- TITLE -->
 
-      <div class="field">
+      <div class="works-field">
 
         <label for="workTitle">
 
@@ -946,6 +1187,7 @@
           </span>
 
         </label>
+
 
         <input
           id="workTitle"
@@ -961,11 +1203,12 @@
 
       <!-- CATEGORY -->
 
-      <div class="field">
+      <div class="works-field">
 
         <label for="workCategory">
           Category
         </label>
+
 
         <input
           id="workCategory"
@@ -980,11 +1223,12 @@
 
       <!-- DESCRIPTION -->
 
-      <div class="field works-full">
+      <div class="works-field works-full">
 
         <label for="workDescription">
           Description
         </label>
+
 
         <textarea
           id="workDescription"
@@ -995,11 +1239,79 @@
       </div>
 
 
+
+      <!-- PHOTO -->
+
+      <div class="works-field works-full">
+
+        <label>
+          Work Photo
+        </label>
+
+
+        <label
+          class="image-upload-box"
+          for="workImage"
+        >
+
+          <div class="image-upload-icon">
+            📷
+          </div>
+
+
+          <div class="image-upload-text">
+            Click to choose a photo
+          </div>
+
+
+          <div class="image-upload-sub">
+            JPG, PNG or WEBP · Maximum 5 MB
+          </div>
+
+        </label>
+
+
+        <input
+          id="workImage"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+        >
+
+
+        <div
+          class="image-preview-wrap"
+          id="imagePreviewBox"
+        >
+
+          <img
+            id="imagePreview"
+            src=""
+            alt="Work photo preview"
+          >
+
+
+          <button
+            class="remove-preview"
+            id="removeImage"
+            type="button"
+            aria-label="Remove image"
+          >
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+
     </div>
 
 
 
+    <!-- ACTIONS -->
+
     <div class="works-actions">
+
 
       <button
         class="btn primary"
@@ -1018,6 +1330,7 @@
       >
         Cancel
       </button>
+
 
     </div>
 
@@ -1040,6 +1353,7 @@
 
 <section class="panel">
 
+
   <div
     class="toolbar"
     style="margin-bottom:18px"
@@ -1052,7 +1366,7 @@
       </h2>
 
       <p class="muted">
-        Works stored in Supabase.
+        Manage works shown on the website.
       </p>
 
     </div>
@@ -1081,6 +1395,7 @@
 
   </div>
 
+
 </section>
 
 
@@ -1091,17 +1406,18 @@
 
 
 <!-- =========================================================
-     FOOTER
+     FOOTER — SAME ADMIN DASHBOARD
 ========================================================= -->
 
 <footer class="site-footer unified-site-footer">
 
+
   <div class="footer-brand">
 
     <img
-      src="../assets/itech-logo.png"
       alt="iTech IT Solutions"
       class="footer-logo"
+      src="../assets/itech-logo.png"
     >
 
   </div>
@@ -1131,6 +1447,7 @@
     Your Trust Our Service
   </p>
 
+
 </footer>
 
 
@@ -1150,46 +1467,43 @@
 
 
 <!-- =========================================================
-     WORKS APPLICATION
+     OUR WORKS JS
 ========================================================= -->
 
 <script>
 
 (async function(){
 
-  "use strict";
+"use strict";
 
 
-  /* =======================================================
-     ADMIN AUTH
-  ======================================================= */
+/* =========================================================
+   ADMIN AUTH
+========================================================= */
 
-  const admin =
-    await requireAdmin();
+const admin =
+  await requireAdmin();
 
-  if(!admin){
+if(!admin){
 
-    return;
+  return;
 
-  }
-
-
-
-  /* =======================================================
-     HELPERS
-  ======================================================= */
-
-  const $ =
-    function(id){
-
-      return document.getElementById(id);
-
-    };
+}
 
 
-  function escapeHtml(value){
 
-    return String(value ?? "")
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ =
+  id =>
+    document.getElementById(id);
+
+
+const escapeHtml =
+  value =>
+    String(value ?? "")
       .replace(
         /&/g,
         "&amp;"
@@ -1211,217 +1525,270 @@
         "&#039;"
       );
 
-  }
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let works = [];
+
+let selectedImageFile = null;
+
+let currentImageUrl = "";
 
 
 
-  /* =======================================================
-     ADMIN NAME
-  ======================================================= */
+/* =========================================================
+   ADMIN NAME
+========================================================= */
 
-  try{
+try{
 
-    const user =
-      admin.user ||
-      admin;
-
-
-    const name =
-      user?.user_metadata?.full_name ||
-      user?.user_metadata?.name ||
-      user?.email ||
-      "Admin";
+  const user =
+    admin.user ||
+    admin;
 
 
-    $("adminName").textContent =
-      name;
-
-  }catch(error){
-
-    console.log(
-      "Admin name:",
-      error
-    );
-
-  }
+  const name =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email ||
+    "Admin";
 
 
+  document
+    .querySelector(
+      "[data-admin-name]"
+    )
+    .textContent =
+    name;
 
-  /* =======================================================
-     DATA
-  ======================================================= */
+}catch(error){
 
-  let works = [];
+  console.log(
+    "Admin name error:",
+    error
+  );
+
+}
 
 
 
-  /* =======================================================
-     STATUS
-  ======================================================= */
+/* =========================================================
+   STATUS
+========================================================= */
 
-  function showStatus(
-    message,
-    error = false
-  ){
+function showStatus(
+  message,
+  error=false
+){
 
-    const element =
-      $("workStatus");
-
-
-    element.textContent =
-      message;
+  const element =
+    $("workStatus");
 
 
-    element.style.color =
-      error
-        ? "#b42318"
-        : "#15803d";
-
-  }
+  element.textContent =
+    message;
 
 
+  element.style.color =
+    error
+      ? "#b42318"
+      : "#15803d";
 
-  function clearStatus(){
-
-    $("workStatus")
-      .textContent = "";
-
-  }
+}
 
 
 
-  /* =======================================================
-     LOAD WORKS
-  ======================================================= */
+/* =========================================================
+   LOAD WORKS
+========================================================= */
 
-  async function loadWorks(){
+async function loadWorks(){
 
-    $("cards").innerHTML =
-      `
-      <div class="works-empty">
-        Loading works...
-      </div>
-      `;
+  $("cards").innerHTML = `
 
+    <div class="works-empty">
+      Loading works...
+    </div>
 
-    const result =
-      await sb
-        .from("work_showcase")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending:false
-          }
-        );
+  `;
 
 
-    if(result.error){
-
-      console.error(
-        "Works loading error:",
-        result.error
+  const result =
+    await sb
+      .from("work_showcase")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
       );
 
 
-      $("cards").innerHTML =
-        `
-        <div class="works-empty">
-          Unable to load works.<br><br>
-          ${escapeHtml(
-            result.error.message
-          )}
-        </div>
-        `;
+  if(result.error){
 
-
-      return;
-
-    }
-
-
-    works =
-      result.data || [];
-
-
-    renderWorks(
-      works
+    console.error(
+      result.error
     );
+
+
+    $("cards").innerHTML = `
+
+      <div class="works-empty">
+
+        Unable to load works.
+
+        <br><br>
+
+        ${escapeHtml(
+          result.error.message
+        )}
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  works =
+    result.data || [];
+
+
+  renderWorks(
+    works
+  );
+
+}
+
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderWorks(
+  data
+){
+
+  if(!data.length){
+
+    $("cards").innerHTML = `
+
+      <div class="works-empty">
+
+        <div
+          style="
+            font-size:42px;
+            margin-bottom:10px;
+          "
+        >
+          🛠️
+        </div>
+
+        <strong>
+          No works available
+        </strong>
+
+        <div
+          style="
+            margin-top:6px;
+            font-size:12px;
+          "
+        >
+          Add your first completed work above.
+        </div>
+
+      </div>
+
+    `;
+
+    return;
 
   }
 
 
 
-  /* =======================================================
-     RENDER WORKS
-  ======================================================= */
-
-  function renderWorks(
+  $("cards").innerHTML =
     data
-  ){
-
-    if(!data.length){
-
-      $("cards").innerHTML =
-        `
-        <div class="works-empty">
-
-          <div
-            style="
-              font-size:32px;
-              margin-bottom:10px;
-            "
-          >
-            🛠️
-          </div>
-
-          No works available.
-
-        </div>
-        `;
-
-      return;
-
-    }
+      .map(
+        work => {
 
 
-
-    $("cards").innerHTML =
-      data
-        .map(
-          function(work){
-
-            const title =
-              work.title ||
-              work.name ||
-              work.project_name ||
-              "Project";
+          const title =
+            work.title ||
+            work.name ||
+            work.project_name ||
+            "Project";
 
 
-            const category =
-              work.category ||
-              "";
+          const category =
+            work.category ||
+            "";
 
 
-            const description =
-              work.description ||
-              work.details ||
-              "";
+          const description =
+            work.description ||
+            work.details ||
+            "";
 
 
-            return `
+          const image =
+            work.image_url
+              ?
 
-              <article
-                class="work-card"
+              `
+
+              <div class="work-image">
+
+                <img
+                  src="${escapeHtml(
+                    work.image_url
+                  )}"
+                  alt="${escapeHtml(
+                    title
+                  )}"
+                  loading="lazy"
+                >
+
+              </div>
+
+              `
+
+              :
+
+              `
+
+              <div class="work-no-image">
+                🛠️
+              </div>
+
+              `;
+
+
+
+          return `
+
+            <article
+              class="work-card"
+            >
+
+              ${image}
+
+
+              <div
+                class="work-card-content"
               >
 
-                <div class="work-icon">
-                  🛠️
-                </div>
-
-
                 <h3>
-                  ${escapeHtml(title)}
+                  ${escapeHtml(
+                    title
+                  )}
                 </h3>
 
 
@@ -1431,9 +1798,15 @@
                   ?
 
                   `
-                  <div class="work-category">
-                    ${escapeHtml(category)}
+
+                  <div
+                    class="work-category"
+                  >
+                    ${escapeHtml(
+                      category
+                    )}
                   </div>
+
                   `
 
                   :
@@ -1445,7 +1818,9 @@
                 <p
                   class="work-description"
                 >
-                  ${escapeHtml(description)}
+                  ${escapeHtml(
+                    description
+                  )}
                 </p>
 
 
@@ -1456,7 +1831,9 @@
                   <button
                     type="button"
                     class="work-action-btn"
-                    data-edit="${escapeHtml(work.id)}"
+                    data-edit="${escapeHtml(
+                      work.id
+                    )}"
                   >
                     ✏️ Edit
                   </button>
@@ -1465,310 +1842,525 @@
                   <button
                     type="button"
                     class="work-action-btn delete"
-                    data-delete="${escapeHtml(work.id)}"
+                    data-delete="${escapeHtml(
+                      work.id
+                    )}"
                   >
                     🗑️ Delete
                   </button>
 
                 </div>
 
-              </article>
+              </div>
 
-            `;
+            </article>
 
-          }
-        )
-        .join("");
+          `;
 
-
-
-    /* EDIT */
-
-    $("cards")
-      .querySelectorAll(
-        "[data-edit]"
+        }
       )
-      .forEach(
-        function(button){
+      .join("");
 
-          button.addEventListener(
-            "click",
-            function(){
 
-              editWork(
-                button.dataset.edit
-              );
 
-            }
-          );
+  /* EDIT */
 
-        }
-      );
+  document
+    .querySelectorAll(
+      "[data-edit]"
+    )
+    .forEach(
+      button => {
 
+        button.onclick =
+          () =>
+            editWork(
+              button.dataset.edit
+            );
 
-
-    /* DELETE */
-
-    $("cards")
-      .querySelectorAll(
-        "[data-delete]"
-      )
-      .forEach(
-        function(button){
-
-          button.addEventListener(
-            "click",
-            function(){
-
-              deleteWork(
-                button.dataset.delete
-              );
-
-            }
-          );
-
-        }
-      );
-
-  }
-
-
-
-  /* =======================================================
-     RESET FORM
-  ======================================================= */
-
-  function resetForm(){
-
-    $("workForm")
-      .reset();
-
-
-    $("editId")
-      .value = "";
-
-
-    $("workFormTitle")
-      .textContent =
-      "Add New Work";
-
-
-    $("saveWorkBtn")
-      .textContent =
-      "+ Add Work";
-
-
-    $("cancelEditBtn")
-      .hidden = true;
-
-
-    clearStatus();
-
-  }
-
-
-
-  /* =======================================================
-     EDIT WORK
-  ======================================================= */
-
-  function editWork(
-    id
-  ){
-
-    const work =
-      works.find(
-        function(item){
-
-          return String(item.id) ===
-            String(id);
-
-        }
-      );
-
-
-    if(!work){
-
-      return;
-
-    }
-
-
-    $("editId")
-      .value =
-      work.id;
-
-
-    $("workTitle")
-      .value =
-      work.title ||
-      work.name ||
-      work.project_name ||
-      "";
-
-
-    $("workCategory")
-      .value =
-      work.category ||
-      "";
-
-
-    $("workDescription")
-      .value =
-      work.description ||
-      work.details ||
-      "";
-
-
-    $("workFormTitle")
-      .textContent =
-      "Edit Work";
-
-
-    $("saveWorkBtn")
-      .textContent =
-      "Save Changes";
-
-
-    $("cancelEditBtn")
-      .hidden = false;
-
-
-    window.scrollTo({
-
-      top:0,
-
-      behavior:"smooth"
-
-    });
-
-  }
-
-
-
-  /* =======================================================
-     DELETE WORK
-  ======================================================= */
-
-  async function deleteWork(
-    id
-  ){
-
-    const confirmed =
-      window.confirm(
-        "Are you sure you want to delete this work?"
-      );
-
-
-    if(!confirmed){
-
-      return;
-
-    }
-
-
-    showStatus(
-      "Deleting..."
+      }
     );
 
 
-    const result =
-      await sb
-        .from("work_showcase")
-        .delete()
-        .eq(
-          "id",
-          id
+
+  /* DELETE */
+
+  document
+    .querySelectorAll(
+      "[data-delete]"
+    )
+    .forEach(
+      button => {
+
+        button.onclick =
+          () =>
+            deleteWork(
+              button.dataset.delete
+            );
+
+      }
+    );
+
+}
+
+
+
+/* =========================================================
+   IMAGE SELECT
+========================================================= */
+
+$("workImage")
+  .addEventListener(
+    "change",
+    function(){
+
+      const file =
+        this.files?.[0];
+
+
+      if(!file){
+
+        return;
+
+      }
+
+
+      if(
+        ![
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ]
+        .includes(
+          file.type
+        )
+      ){
+
+        alert(
+          "Please select JPG, PNG or WEBP image."
+        );
+
+        this.value = "";
+
+        return;
+
+      }
+
+
+      if(
+        file.size >
+        5 * 1024 * 1024
+      ){
+
+        alert(
+          "Image size must be below 5 MB."
+        );
+
+        this.value = "";
+
+        return;
+
+      }
+
+
+      selectedImageFile =
+        file;
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(){
+
+          $("imagePreview")
+            .src =
+            reader.result;
+
+
+          $("imagePreviewBox")
+            .classList
+            .add("show");
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
+
+
+/* =========================================================
+   REMOVE IMAGE PREVIEW
+========================================================= */
+
+$("removeImage")
+  .addEventListener(
+    "click",
+    function(){
+
+      selectedImageFile =
+        null;
+
+
+      $("workImage")
+        .value =
+        "";
+
+
+      $("imagePreview")
+        .src =
+        "";
+
+
+      $("imagePreviewBox")
+        .classList
+        .remove("show");
+
+    }
+  );
+
+
+
+/* =========================================================
+   RESET FORM
+========================================================= */
+
+function resetForm(){
+
+  $("workForm")
+    .reset();
+
+
+  $("editId")
+    .value =
+    "";
+
+
+  $("workFormTitle")
+    .textContent =
+    "Add New Work";
+
+
+  $("saveWorkBtn")
+    .textContent =
+    "+ Add Work";
+
+
+  $("cancelEditBtn")
+    .hidden =
+    true;
+
+
+  selectedImageFile =
+    null;
+
+
+  currentImageUrl =
+    "";
+
+
+  $("imagePreview")
+    .src =
+    "";
+
+
+  $("imagePreviewBox")
+    .classList
+    .remove("show");
+
+
+  $("workStatus")
+    .textContent =
+    "";
+
+}
+
+
+
+/* =========================================================
+   EDIT WORK
+========================================================= */
+
+function editWork(
+  id
+){
+
+  const work =
+    works.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if(!work){
+
+    return;
+
+  }
+
+
+  $("editId")
+    .value =
+    work.id;
+
+
+  $("workTitle")
+    .value =
+    work.title ||
+    work.name ||
+    work.project_name ||
+    "";
+
+
+  $("workCategory")
+    .value =
+    work.category ||
+    "";
+
+
+  $("workDescription")
+    .value =
+    work.description ||
+    work.details ||
+    "";
+
+
+  currentImageUrl =
+    work.image_url ||
+    "";
+
+
+  selectedImageFile =
+    null;
+
+
+  $("workImage")
+    .value =
+    "";
+
+
+  if(currentImageUrl){
+
+    $("imagePreview")
+      .src =
+      currentImageUrl;
+
+
+    $("imagePreviewBox")
+      .classList
+      .add("show");
+
+  }
+
+  else{
+
+    $("imagePreview")
+      .src =
+      "";
+
+
+    $("imagePreviewBox")
+      .classList
+      .remove("show");
+
+  }
+
+
+  $("workFormTitle")
+    .textContent =
+    "Edit Work";
+
+
+  $("saveWorkBtn")
+    .textContent =
+    "Save Changes";
+
+
+  $("cancelEditBtn")
+    .hidden =
+    false;
+
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
+
+  });
+
+}
+
+
+
+/* =========================================================
+   UPLOAD IMAGE
+========================================================= */
+
+async function uploadImage(){
+
+  if(!selectedImageFile){
+
+    return currentImageUrl ||
+      null;
+
+  }
+
+
+  const extension =
+    selectedImageFile
+      .name
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+
+  const fileName =
+    `${crypto.randomUUID()}.${extension}`;
+
+
+  const filePath =
+    `works/${fileName}`;
+
+
+
+  const upload =
+    await sb.storage
+      .from("work-images")
+      .upload(
+        filePath,
+        selectedImageFile,
+        {
+
+          cacheControl:
+            "3600",
+
+          upsert:
+            false,
+
+          contentType:
+            selectedImageFile.type
+
+        }
+      );
+
+
+  if(upload.error){
+
+    throw upload.error;
+
+  }
+
+
+
+  const publicUrl =
+    sb.storage
+      .from("work-images")
+      .getPublicUrl(
+        filePath
+      );
+
+
+  return (
+    publicUrl
+      ?.data
+      ?.publicUrl
+    ||
+    null
+  );
+
+}
+
+
+
+/* =========================================================
+   SAVE WORK
+========================================================= */
+
+$("workForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      const id =
+        $("editId")
+          .value
+          .trim();
+
+
+      const title =
+        $("workTitle")
+          .value
+          .trim();
+
+
+      const category =
+        $("workCategory")
+          .value
+          .trim();
+
+
+      const description =
+        $("workDescription")
+          .value
+          .trim();
+
+
+
+      if(!title){
+
+        showStatus(
+          "Work / Project Title is required.",
+          true
         );
 
 
-    if(result.error){
-
-      console.error(
-        "Delete error:",
-        result.error
-      );
+        $("workTitle")
+          .focus();
 
 
-      showStatus(
-        result.error.message,
-        true
-      );
+        return;
 
-
-      return;
-
-    }
-
-
-    showStatus(
-      "Work deleted successfully."
-    );
-
-
-    await loadWorks();
-
-  }
+      }
 
 
 
-  /* =======================================================
-     FORM SUBMIT
-  ======================================================= */
-
-  $("workForm")
-    .addEventListener(
-      "submit",
-      async function(event){
-
-        event.preventDefault();
+      const button =
+        $("saveWorkBtn");
 
 
-        clearStatus();
+      button.disabled =
+        true;
 
 
-        const id =
-          $("editId")
-            .value
-            .trim();
-
-
-        const title =
-          $("workTitle")
-            .value
-            .trim();
-
-
-        const category =
-          $("workCategory")
-            .value
-            .trim();
-
-
-        const description =
-          $("workDescription")
-            .value
-            .trim();
+      button.textContent =
+        id
+          ? "Saving..."
+          : "Adding...";
 
 
 
-        /* REQUIRED */
-
-        if(!title){
-
-          showStatus(
-            "Work / Project Title is required.",
-            true
-          );
-
-          $("workTitle")
-            .focus();
-
-          return;
-
-        }
+      try{
 
 
+        /* IMAGE */
+
+        const imageUrl =
+          await uploadImage();
+
+
+
+        /* PAYLOAD */
 
         const payload = {
 
@@ -1776,27 +2368,17 @@
             title,
 
           category:
-            category || null,
+            category ||
+            null,
 
           description:
-            description || null
+            description ||
+            null,
+
+          image_url:
+            imageUrl
 
         };
-
-
-
-        const button =
-          $("saveWorkBtn");
-
-
-        button.disabled =
-          true;
-
-
-        button.textContent =
-          id
-            ? "Saving..."
-            : "Adding...";
 
 
 
@@ -1804,16 +2386,16 @@
 
 
 
-        /* =================================================
-           UPDATE
-        ================================================= */
+        /* UPDATE */
 
         if(id){
 
           result =
             await sb
               .from("work_showcase")
-              .update(payload)
+              .update(
+                payload
+              )
               .eq(
                 "id",
                 id
@@ -1822,9 +2404,7 @@
         }
 
 
-        /* =================================================
-           INSERT
-        ================================================= */
+        /* INSERT */
 
         else{
 
@@ -1839,58 +2419,20 @@
 
 
 
-        button.disabled =
-          false;
-
-
-
-        /* =================================================
-           ERROR
-        ================================================= */
-
         if(result.error){
 
-          console.error(
-            "Save work error:",
-            result.error
-          );
-
-
-          button.textContent =
-            id
-              ? "Save Changes"
-              : "+ Add Work";
-
-
-          showStatus(
-            result.error.message,
-            true
-          );
-
-
-          return;
+          throw result.error;
 
         }
 
 
 
-        /* =================================================
-           SUCCESS
-        ================================================= */
-
         showStatus(
-
           id
-
-            ?
-
-            "Work updated successfully."
-
-            :
-
-            "Work added successfully."
-
+            ? "Work updated successfully."
+            : "Work added successfully."
         );
+
 
 
         resetForm();
@@ -1898,90 +2440,175 @@
 
         await loadWorks();
 
-      }
-    );
-
-
-
-  /* =======================================================
-     CANCEL EDIT
-  ======================================================= */
-
-  $("cancelEditBtn")
-    .addEventListener(
-      "click",
-      function(){
-
-        resetForm();
 
       }
-    );
+
+      catch(error){
+
+        console.error(
+          "Work save error:",
+          error
+        );
 
 
-
-  /* =======================================================
-     SEARCH
-  ======================================================= */
-
-  $("search")
-    .addEventListener(
-      "input",
-      function(event){
-
-        const query =
-          event.target
-            .value
-            .toLowerCase()
-            .trim();
-
-
-        if(!query){
-
-          renderWorks(
-            works
-          );
-
-          return;
-
-        }
-
-
-        const filtered =
-          works.filter(
-            function(work){
-
-              return Object
-                .values(work)
-                .some(
-                  function(value){
-
-                    return String(
-                      value ?? ""
-                    )
-                    .toLowerCase()
-                    .includes(query);
-
-                  }
-                );
-
-            }
-          );
-
-
-        renderWorks(
-          filtered
+        showStatus(
+          error.message ||
+          "Unable to save work.",
+          true
         );
 
       }
+
+      finally{
+
+        button.disabled =
+          false;
+
+
+        if(
+          !$("editId").value
+        ){
+
+          button.textContent =
+            "+ Add Work";
+
+        }
+
+      }
+
+    }
+  );
+
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+$("cancelEditBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      resetForm();
+
+    }
+  );
+
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function deleteWork(
+  id
+){
+
+  if(
+    !confirm(
+      "Are you sure you want to delete this work?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+
+  showStatus(
+    "Deleting..."
+  );
+
+
+  const result =
+    await sb
+      .from("work_showcase")
+      .delete()
+      .eq(
+        "id",
+        id
+      );
+
+
+  if(result.error){
+
+    showStatus(
+      result.error.message,
+      true
     );
 
+    return;
 
+  }
 
-  /* =======================================================
-     INITIAL LOAD
-  ======================================================= */
 
   await loadWorks();
+
+}
+
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+$("search")
+  .addEventListener(
+    "input",
+    function(event){
+
+      const query =
+        event.target
+          .value
+          .toLowerCase()
+          .trim();
+
+
+      if(!query){
+
+        renderWorks(
+          works
+        );
+
+        return;
+
+      }
+
+
+      const filtered =
+        works.filter(
+          work =>
+            Object
+              .values(work)
+              .some(
+                value =>
+                  String(
+                    value ?? ""
+                  )
+                  .toLowerCase()
+                  .includes(
+                    query
+                  )
+              )
+        );
+
+
+      renderWorks(
+        filtered
+      );
+
+    }
+  );
+
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+await loadWorks();
 
 
 })();
@@ -2002,7 +2629,8 @@
     location.pathname
       .split("/")
       .pop()
-      || "dashboard.html";
+      ||
+    "dashboard.html";
 
 
   document
@@ -2010,14 +2638,15 @@
       ".sidebar nav a"
     )
     .forEach(
-      function(link){
+      link => {
 
         const href =
           (
             link.getAttribute(
               "href"
             )
-            || ""
+            ||
+            ""
           )
           .split("?")[0]
           .split("#")[0];
@@ -2029,15 +2658,10 @@
             .pop();
 
 
-        if(
+        link.classList.toggle(
+          "active",
           file === current
-        ){
-
-          link.classList.add(
-            "active"
-          );
-
-        }
+        );
 
       }
     );
@@ -2081,7 +2705,6 @@
   }
 
 
-
   const btn =
     document.createElement(
       "button"
@@ -2110,7 +2733,6 @@
     "☰";
 
 
-
   const overlay =
     document.createElement(
       "div"
@@ -2119,7 +2741,6 @@
 
   overlay.className =
     "ui-mobile-overlay";
-
 
 
   const close =
@@ -2146,7 +2767,6 @@
     "×";
 
 
-
   sidebar.prepend(
     close
   );
@@ -2155,7 +2775,6 @@
   document.body.appendChild(
     overlay
   );
-
 
 
   const brand =
@@ -2186,22 +2805,22 @@
   }
 
 
-
   function openMenu(){
 
     sidebar.classList.add(
       "ui-open"
     );
 
+
     overlay.classList.add(
       "open"
     );
+
 
     document.body.style.overflow =
       "hidden";
 
   }
-
 
 
   function closeMenu(){
@@ -2210,15 +2829,16 @@
       "ui-open"
     );
 
+
     overlay.classList.remove(
       "open"
     );
+
 
     document.body.style.overflow =
       "";
 
   }
-
 
 
   btn.addEventListener(
@@ -2242,20 +2862,17 @@
   sidebar
     .querySelectorAll("a")
     .forEach(
-      function(link){
-
+      link =>
         link.addEventListener(
           "click",
           closeMenu
-        );
-
-      }
+        )
     );
 
 
   document.addEventListener(
     "keydown",
-    function(event){
+    event => {
 
       if(
         event.key === "Escape"
@@ -2274,4 +2891,5 @@
 
 
 </body>
+
 </html>

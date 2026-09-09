@@ -1,79 +1,106 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Works | iTech Admin</title>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Our Works | iTech Admin</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><style>
-.modern-panel{background:#fff;border:1px solid #e3ebf5;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(17,50,91,.07)} .modern-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:18px 0} .modern-stat{background:#fff;border:1px solid #e3ebf5;border-radius:17px;padding:18px;box-shadow:0 8px 24px rgba(17,50,91,.06)} .modern-stat small{display:block;color:#71819b;font-weight:700;margin-bottom:7px} .modern-stat strong{font-size:26px;color:#10284b} .toolbar h1{margin-bottom:4px} .filter{padding:11px 13px;border:1px solid #d8e2ef;border-radius:10px;width:min(360px,100%)} .tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#2458b8;font-size:11px;font-weight:800} .status-select{padding:8px;border:1px solid #d8e2ef;border-radius:8px;background:#fff} .mini-btn{border:0;border-radius:8px;padding:8px 10px;font-weight:750;cursor:pointer;font-size:11px} .mini-primary{background:#2563eb;color:#fff} .mini-green{background:#16a34a;color:#fff} .mini-red{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2} @media(max-width:900px){.modern-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:600px){.modern-grid{grid-template-columns:1fr}}
-</style><style>.work-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.work-form-grid label{display:block;font-weight:700;margin-bottom:6px}.work-form-grid input,.work-form-grid textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d8e2ef;border-radius:10px;font:inherit}.work-form-grid .full{grid-column:1/-1}.work-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}#workStatus{margin-top:10px}@media(max-width:600px){.work-form-grid{grid-template-columns:1fr}.work-form-grid .full{grid-column:auto}.work-actions .btn{width:100%}}</style><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet">
+<link href="../css/dashboard.css" rel="stylesheet">
+<link href="../css/unified-dashboard.css" rel="stylesheet">
+<link href="../css/dashboard-shell.css" rel="stylesheet">
+
 <style>
-/* ===== Unified iTech Footer - ordered layout ===== */
-.unified-site-footer{
+.works-form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.works-form-grid .works-full{
+  grid-column:1/-1;
+}
+
+.works-form-grid input,
+.works-form-grid textarea{
   width:100%;
-  margin-top:32px;
-  padding:28px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
-  color:#fff;
-  border-radius:18px 18px 0 0;
+  box-sizing:border-box;
+}
+
+.works-actions,
+.works-card-actions{
   display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:7px;
-  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
 }
-.unified-site-footer .footer-logo{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto 4px;
+
+.works-mini{
+  border:1px solid #d6dfeb;
+  border-radius:8px;
+  padding:8px 12px;
+  background:#fff;
+  cursor:pointer;
+  font-weight:700;
 }
-.unified-site-footer p{
-  margin:0;
-  line-height:1.45;
+
+.works-mini.danger{
+  color:#b42318;
+  border-color:#f2c8c5;
 }
-.unified-site-footer .footer-address{
-  font-size:12px;
-  font-weight:600;
-  color:#dce7f8;
-}
-.unified-site-footer .footer-contact{
-  font-size:13px;
-  font-weight:800;
-  color:#fff;
-}
-.unified-site-footer .footer-email{
-  font-size:12px;
-  color:#dce7f8;
-}
-.unified-site-footer .footer-social{
-  font-size:12px;
-  font-weight:800;
-  color:#ff9a25;
-}
-.unified-site-footer .footer-tagline{
-  margin-top:7px;
-  padding-top:9px;
-  width:min(360px,90%);
-  border-top:1px solid rgba(255,255,255,.16);
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.4px;
-  color:#fff;
-}
-@media(max-width:620px){
-  .unified-site-footer{
-    margin-top:22px;
-    padding:24px 14px 20px;
-    border-radius:14px 14px 0 0;
+
+@media(max-width:700px){
+  .works-form-grid{
+    grid-template-columns:1fr;
   }
-  .unified-site-footer .footer-logo{
-    width:52px;height:52px;
+
+  .works-form-grid .works-full{
+    grid-column:auto;
+  }
+
+  .works-actions .btn{
+    width:100%;
+  }
+
+  #search{
+    min-width:0 !important;
+    width:100%;
+    box-sizing:border-box;
   }
 }
 </style>
-<link href="../css/ui-enhancements.css" rel="stylesheet"/>
-<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><div class="header-actions"><span class="user-chip" data-admin-name="">Admin</span><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></div></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+</head>
+
+<body>
+
+<header class="dash-header">
+  <a class="brand" href="dashboard.html">
+    <img
+      alt="iTech IT Solutions"
+      class="brand-logo"
+      src="../assets/itech-logo.png"
+    >
+  </a>
+
+  <div class="header-actions">
+    <span class="user-chip" data-admin-name="">Admin</span>
+
+    <a
+      class="btn secondary"
+      data-logout
+      href="../pages/login.html"
+    >
+      Logout
+    </a>
+  </div>
+</header>
+
+
+<div class="dash-layout">
+
+<aside class="sidebar">
+<nav>
+<a href="dashboard.html">Dashboard</a>
 <a href="customers.html">Customers</a>
 <a href="add-customer.html">+ Add Customer</a>
 <a href="daily-work.html">Daily Work</a>
@@ -90,265 +117,914 @@
 <a href="works.html" class="active">Our Works</a>
 <a href="activities.html">📋 Staff Activities</a>
 <a href="staff-management.html">👥 Staff Management</a>
-<a href="messages.html">Messages</a></nav></aside><main class="dash-main">
-<div class="toolbar"><div><p class="eyebrow">WORK SHOWCASE</p><h1>Our Works</h1></div></div>
-<section class="modern-panel" style="margin-bottom:20px">
-<div class="section-title"><div><h2 id="workFormTitle">Add New Work</h2><p class="muted">Add completed projects or service work.</p></div></div>
-<form id="workForm"><input id="editId" type="hidden"/>
-<div class="work-form-grid">
-<div><label>Work / Project Title *</label><input id="workTitle" required placeholder="e.g. Office Computer Setup"/></div>
-<div><label>Category</label><input id="workCategory" placeholder="e.g. Computer Service"/></div>
-<div class="full"><label>Description</label><textarea id="workDescription" rows="4" placeholder="Describe the completed work..."></textarea></div>
+<a href="messages.html">Messages</a>
+</nav>
+</aside>
+
+
+<main class="dash-main">
+
+<div class="toolbar">
+  <div>
+    <p class="eyebrow">WORK SHOWCASE</p>
+    <h1>Our Works</h1>
+  </div>
 </div>
-<div class="work-actions"><button class="btn primary" id="saveWorkBtn" type="submit">+ Add Work</button><button class="btn secondary" id="cancelEditBtn" type="button" style="display:none">Cancel Edit</button></div>
-<div class="status" id="workStatus"></div></form></section>
-<section class="modern-panel"><div class="section-title"><div><h2>Existing Works</h2><p class="muted">Works stored in Supabase.</p></div><input class="filter" id="search" placeholder="Search works..."/></div>
-<div class="grid" id="cards"><p class="muted">Loading...</p></div></section></main><footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+
+
+<!-- ADD / EDIT WORK -->
+
+<section class="panel" style="margin-bottom:20px">
+
+  <div class="toolbar" style="margin-bottom:15px">
+
+    <div>
+      <h2 id="workFormTitle">
+        Add New Work
+      </h2>
+
+      <p class="muted">
+        Add a completed project to the Our Works showcase.
+      </p>
+    </div>
+
+  </div>
+
+
+  <form id="workForm">
+
+    <input
+      id="editId"
+      type="hidden"
+    >
+
+
+    <div class="works-form-grid">
+
+      <div class="field">
+
+        <label for="workTitle">
+          Work / Project Title
+          <span style="color:#d33">*</span>
+        </label>
+
+        <input
+          id="workTitle"
+          required
+          placeholder="e.g. Office Computer Setup"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="workCategory">
+          Category
+        </label>
+
+        <input
+          id="workCategory"
+          placeholder="e.g. Computer Service"
+        >
+
+      </div>
+
+
+      <div class="field works-full">
+
+        <label for="workDescription">
+          Description
+        </label>
+
+        <textarea
+          id="workDescription"
+          rows="4"
+          placeholder="Describe the completed work..."
+        ></textarea>
+
+      </div>
+
+    </div>
+
+
+    <div class="works-actions">
+
+      <button
+        class="btn primary"
+        id="saveWorkBtn"
+        type="submit"
+      >
+        + Add Work
+      </button>
+
+
+      <button
+        class="btn secondary"
+        id="cancelEditBtn"
+        type="button"
+        hidden
+      >
+        Cancel
+      </button>
+
+    </div>
+
+
+    <div
+      class="status"
+      id="workStatus"
+    ></div>
+
+  </form>
+
+</section>
+
+
+
+<!-- EXISTING WORKS -->
+
+<section class="panel">
+
+  <div
+    class="toolbar"
+    style="margin-bottom:15px"
+  >
+
+    <div>
+
+      <h2>
+        Existing Works
+      </h2>
+
+      <p class="muted">
+        Works stored in Supabase.
+      </p>
+
+    </div>
+
+
+    <input
+      class="filter"
+      id="search"
+      placeholder="Search works..."
+      style="min-width:240px"
+    >
+
+  </div>
+
+
+  <div
+    class="grid"
+    id="cards"
+  >
+    <p class="muted">
+      Loading...
+    </p>
+  </div>
+
+</section>
+
+</main>
+
 </div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+
+
+<script>
+
+(async()=>{
+
+  const a = await requireAdmin();
+
+  if(!a) return;
+
+
+  const $ = id =>
+    document.getElementById(id);
+
+
+  const esc = value =>
+    String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+
+
+  let rows = [];
+
+
+  function msg(text,bad=false){
+
+    const el = $("workStatus");
+
+    el.textContent = text || "";
+
+    el.style.color =
+      bad
+        ? "#b42318"
+        : "#15803d";
+
+  }
+
+
+
+  async function loadWorks(){
+
+    const result =
+      await sb
+        .from("work_showcase")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(result.error){
+
+      $("cards").innerHTML =
+        "<p class='muted'>" +
+        "Unable to load works: " +
+        esc(result.error.message) +
+        "</p>";
+
+      return;
+    }
+
+
+    rows = result.data || [];
+
+    render(rows);
+
+  }
+
+
+
+  function render(data){
+
+    $("cards").innerHTML =
+      data.length
+
+      ?
+
+      data.map(x => `
+
+        <article
+          class="card"
+          style="padding:18px"
+        >
+
+          <div class="icon">
+            🛠️
+          </div>
+
+
+          <h3>
+            ${esc(
+              x.title ||
+              x.name ||
+              x.project_name ||
+              "Project"
+            )}
+          </h3>
+
+
+          ${
+            x.category
+
+            ?
+
+            `
+            <div
+              class="tag"
+              style="
+                display:inline-block;
+                margin:6px 0
+              "
+            >
+              ${esc(x.category)}
+            </div>
+            `
+
+            :
+
+            ""
+          }
+
+
+          <p class="muted">
+            ${esc(
+              x.description ||
+              x.details ||
+              ""
+            )}
+          </p>
+
+
+          <div class="works-card-actions">
+
+            <button
+              class="works-mini"
+              data-edit="${esc(x.id)}"
+              type="button"
+            >
+              Edit
+            </button>
+
+
+            <button
+              class="works-mini danger"
+              data-delete="${esc(x.id)}"
+              type="button"
+            >
+              Delete
+            </button>
+
+          </div>
+
+        </article>
+
+      `).join("")
+
+      :
+
+      "<p class='muted'>No works available.</p>";
+
+
+    $("cards")
+      .querySelectorAll("[data-edit]")
+      .forEach(button => {
+
+        button.onclick = () =>
+          editWork(button.dataset.edit);
+
+      });
+
+
+    $("cards")
+      .querySelectorAll("[data-delete]")
+      .forEach(button => {
+
+        button.onclick = () =>
+          deleteWork(button.dataset.delete);
+
+      });
+
+  }
+
+
+
+  function resetForm(){
+
+    $("workForm").reset();
+
+    $("editId").value = "";
+
+    $("workFormTitle").textContent =
+      "Add New Work";
+
+    $("saveWorkBtn").textContent =
+      "+ Add Work";
+
+    $("cancelEditBtn").hidden =
+      true;
+
+    msg("");
+
+  }
+
+
+
+  function editWork(id){
+
+    const work =
+      rows.find(
+        row =>
+          String(row.id) === String(id)
+      );
+
+
+    if(!work) return;
+
+
+    $("editId").value =
+      work.id;
+
+
+    $("workTitle").value =
+      work.title ||
+      work.name ||
+      work.project_name ||
+      "";
+
+
+    $("workCategory").value =
+      work.category ||
+      "";
+
+
+    $("workDescription").value =
+      work.description ||
+      work.details ||
+      "";
+
+
+    $("workFormTitle").textContent =
+      "Edit Work";
+
+
+    $("saveWorkBtn").textContent =
+      "Save Changes";
+
+
+    $("cancelEditBtn").hidden =
+      false;
+
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+
+  }
+
+
+
+  async function deleteWork(id){
+
+    if(
+      !confirm(
+        "Delete this work?"
+      )
+    ){
+      return;
+    }
+
+
+    const result =
+      await sb
+        .from("work_showcase")
+        .delete()
+        .eq("id",id);
+
+
+    if(result.error){
+
+      msg(
+        result.error.message,
+        true
+      );
+
+      return;
+    }
+
+
+    await loadWorks();
+
+  }
+
+
+
+  $("cancelEditBtn").onclick =
+    resetForm;
+
+
+
+  $("workForm").onsubmit =
+    async event => {
+
+      event.preventDefault();
+
+
+      const id =
+        $("editId").value.trim();
+
+
+      const payload = {
+
+        title:
+          $("workTitle")
+            .value
+            .trim(),
+
+        category:
+          $("workCategory")
+            .value
+            .trim() || null,
+
+        description:
+          $("workDescription")
+            .value
+            .trim() || null
+
+      };
+
+
+      if(!payload.title){
+
+        msg(
+          "Work title is required.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      const button =
+        $("saveWorkBtn");
+
+
+      button.disabled = true;
+
+
+      const result =
+        id
+
+        ?
+
+        await sb
+          .from("work_showcase")
+          .update(payload)
+          .eq("id",id)
+
+        :
+
+        await sb
+          .from("work_showcase")
+          .insert(payload);
+
+
+      button.disabled = false;
+
+
+      if(result.error){
+
+        msg(
+          result.error.message,
+          true
+        );
+
+        return;
+
+      }
+
+
+      resetForm();
+
+      await loadWorks();
+
+    };
+
+
+
+  $("search").oninput =
+    event => {
+
+      const query =
+        event.target
+          .value
+          .toLowerCase()
+          .trim();
+
+
+      const filtered =
+        query
+
+        ?
+
+        rows.filter(
+          work =>
+            Object.values(work)
+              .some(
+                value =>
+                  String(
+                    value ?? ""
+                  )
+                  .toLowerCase()
+                  .includes(query)
+              )
+        )
+
+        :
+
+        rows;
+
+
+      render(filtered);
+
+    };
+
+
+
+  await loadWorks();
+
 })();
+
 </script>
-<script id="itech-mobile-navigation">
+
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+
+  <div class="footer-brand">
+
+    <img
+      alt="iTech IT Solutions"
+      class="footer-logo"
+      src="../assets/itech-logo.png"
+    >
+
+  </div>
+
+  <p>
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+  <p>
+    7736929233 · 8943165951
+  </p>
+
+  <p>
+    itnedumangad@gmail.com
+  </p>
+
+  <p>
+    @itechndd
+  </p>
+
+  <p>
+    Your Trust Our Service
+  </p>
+
+</footer>
+
+
+<script>
+
+(() => {
+
+  const current =
+    location.pathname
+      .split("/")
+      .pop()
+      || "dashboard.html";
+
+
+  document
+    .querySelectorAll(
+      ".sidebar nav a"
+    )
+    .forEach(link => {
+
+      const href =
+        (
+          link.getAttribute("href")
+          || ""
+        )
+        .split("?")[0]
+        .split("#")[0];
+
+
+      const file =
+        href
+          .split("/")
+          .pop();
+
+
+      if(file === current){
+
+        link.classList.add(
+          "active"
+        );
+
+      }
+
+    });
+
+})();
+
+</script>
+
+
+<!-- MOBILE MENU -->
+
+<script>
+
 (function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
 
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
+  const header =
+    document.querySelector(
+      ".dash-header"
+    );
 
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
+  const sidebar =
+    document.querySelector(
+      ".sidebar"
+    );
 
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
+
+  if(
+    !header ||
+    !sidebar ||
+    document.getElementById(
+      "uiMobileMenuBtn"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const btn =
+    document.createElement(
+      "button"
+    );
+
+
+  btn.id =
+    "uiMobileMenuBtn";
+
+
+  btn.className =
+    "ui-mobile-menu-btn";
+
+
+  btn.type =
+    "button";
+
+
+  btn.setAttribute(
+    "aria-label",
+    "Open menu"
+  );
+
+
+  btn.innerHTML =
+    "☰";
+
+
+  const overlay =
+    document.createElement(
+      "div"
+    );
+
+
+  overlay.className =
+    "ui-mobile-overlay";
+
+
+  const close =
+    document.createElement(
+      "button"
+    );
+
+
+  close.className =
+    "ui-mobile-close";
+
+
+  close.type =
+    "button";
+
+
+  close.setAttribute(
+    "aria-label",
+    "Close menu"
+  );
+
+
+  close.innerHTML =
+    "×";
+
 
   sidebar.prepend(close);
-  document.body.appendChild(overlay);
 
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
+  document.body.appendChild(
+    overlay
+  );
+
+
+  const brand =
+    header.querySelector(
+      ".brand"
+    );
+
+
+  if(
+    brand &&
+    brand.parentNode
+  ){
+
+    brand.parentNode.insertBefore(
+      btn,
+      brand.nextSibling
+    );
+
+  }else{
+
+    header.insertBefore(
+      btn,
+      header.firstChild
+    );
+
+  }
+
 
   function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
+
+    sidebar.classList.add(
+      "ui-open"
+    );
+
+    overlay.classList.add(
+      "open"
+    );
+
+    document.body.style.overflow =
+      "hidden";
+
   }
+
+
   function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
+
+    sidebar.classList.remove(
+      "ui-open"
+    );
+
+    overlay.classList.remove(
+      "open"
+    );
+
+    document.body.style.overflow =
+      "";
+
   }
 
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+
+  btn.addEventListener(
+    "click",
+    openMenu
+  );
+
+
+  close.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  overlay.addEventListener(
+    "click",
+    closeMenu
+  );
+
+
+  sidebar
+    .querySelectorAll("a")
+    .forEach(link =>
+      link.addEventListener(
+        "click",
+        closeMenu
+      )
+    );
+
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key === "Escape"
+      ){
+
+        closeMenu();
+
+      }
+
+    }
+  );
+
 })();
+
 </script>
-</body></html<script>
-(async()=>{const a=await requireAdmin();if(!a)return;let rows=[];const $=id=>document.getElementById(id);const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");const status=(m,b=false)=>{const e=$("workStatus");e.textContent=m;e.style.color=b?"#dc2626":"#15803d"};
-async function load(){const r=await sb.from("work_showcase").select("*").order("created_at",{ascending:false});if(r.error){$("cards").innerHTML="<p class='muted'>Unable to load works: "+esc(r.error.message)+"</p>";return}rows=r.data||[];render(rows)}
-function render(d){$("cards").innerHTML=d.length?d.map(x=>`<article class="card" style="padding:18px"><div class="icon">🛠️</div><h3>${esc(x.title||x.name||x.project_name||"Project")}</h3><p class="muted">${esc(x.description||x.details||"")}</p>${x.category?`<span class="tag">${esc(x.category)}</span>`:""}<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="mini-btn mini-primary" type="button" onclick="editWork('${esc(x.id)}')">Edit</button><button class="mini-btn mini-red" type="button" onclick="deleteWork('${esc(x.id)}')">Delete</button></div></article>`).join(""):"<p class='muted'>No works available.</p>"}
-window.editWork=id=>{const x=rows.find(r=>String(r.id)===String(id));if(!x)return;$("editId").value=x.id;$("workTitle").value=x.title||x.name||x.project_name||"";$("workCategory").value=x.category||"";$("workDescription").value=x.description||x.details||"";$("workFormTitle").textContent="Edit Work";$("saveWorkBtn").textContent="Save Changes";$("cancelEditBtn").style.display="";window.scrollTo({top:0,behavior:"smooth"})};
-$("cancelEditBtn").onclick=()=>{$("workForm").reset();$("editId").value="";$("workFormTitle").textContent="Add New Work";$("saveWorkBtn").textContent="+ Add Work";$("cancelEditBtn").style.display="none";status("")};
-window.deleteWork=async id=>{if(!confirm("Delete this work?"))return;const r=await sb.from("work_showcase").delete().eq("id",id);if(r.error){alert(r.error.message);return}load()};
-$("workForm").onsubmit=async e=>{e.preventDefault();const id=$("editId").value.trim(),payload={title:$("workTitle").value.trim(),description:$("workDescription").value.trim()||null,category:$("workCategory").value.trim()||null};if(!payload.title){status("Work title is required.",true);return}$("saveWorkBtn").disabled=true;const r=id?await sb.from("work_showcase").update(payload).eq("id",id):await sb.from("work_showcase").insert(payload);$("saveWorkBtn").disabled=false;if(r.error){status(r.error.message,true);return}status(id?"Work updated successfully.":"Work added successfully.");$("workForm").reset();$("editId").value="";$("workFormTitle").textContent="Add New Work";$("saveWorkBtn").textContent="+ Add Work";$("cancelEditBtn").style.display="none";load()};
-$("search").oninput=e=>{const q=e.target.value.toLowerCase();render(rows.filter(x=>Object.values(x).some(v=>String(v??"").toLowerCase().includes(q))))};await load()})();
-</script>E html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Our Works | iTech Admin</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><style>
-.modern-panel{background:#fff;border:1px solid #e3ebf5;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(17,50,91,.07)} .modern-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:18px 0} .modern-stat{background:#fff;border:1px solid #e3ebf5;border-radius:17px;padding:18px;box-shadow:0 8px 24px rgba(17,50,91,.06)} .modern-stat small{display:block;color:#71819b;font-weight:700;margin-bottom:7px} .modern-stat strong{font-size:26px;color:#10284b} .toolbar h1{margin-bottom:4px} .filter{padding:11px 13px;border:1px solid #d8e2ef;border-radius:10px;width:min(360px,100%)} .tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#2458b8;font-size:11px;font-weight:800} .status-select{padding:8px;border:1px solid #d8e2ef;border-radius:8px;background:#fff} .mini-btn{border:0;border-radius:8px;padding:8px 10px;font-weight:750;cursor:pointer;font-size:11px} .mini-primary{background:#2563eb;color:#fff} .mini-green{background:#16a34a;color:#fff} .mini-red{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2} @media(max-width:900px){.modern-grid{grid-template-columns:repeat(2,1fr)}} @media(max-width:600px){.modern-grid{grid-template-columns:1fr}}
-</style><style>.work-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.work-form-grid label{display:block;font-weight:700;margin-bottom:6px}.work-form-grid input,.work-form-grid textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d8e2ef;border-radius:10px;font:inherit}.work-form-grid .full{grid-column:1/-1}.work-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}#workStatus{margin-top:10px}@media(max-width:600px){.work-form-grid{grid-template-columns:1fr}.work-form-grid .full{grid-column:auto}.work-actions .btn{width:100%}}</style><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
-<style>
-/* ===== Unified iTech Footer - ordered layout ===== */
-.unified-site-footer{
-  width:100%;
-  margin-top:32px;
-  padding:28px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
-  color:#fff;
-  border-radius:18px 18px 0 0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:7px;
-  box-shadow:0 -6px 22px rgba(7,28,59,.10);
-}
-.unified-site-footer .footer-logo{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto 4px;
-}
-.unified-site-footer p{
-  margin:0;
-  line-height:1.45;
-}
-.unified-site-footer .footer-address{
-  font-size:12px;
-  font-weight:600;
-  color:#dce7f8;
-}
-.unified-site-footer .footer-contact{
-  font-size:13px;
-  font-weight:800;
-  color:#fff;
-}
-.unified-site-footer .footer-email{
-  font-size:12px;
-  color:#dce7f8;
-}
-.unified-site-footer .footer-social{
-  font-size:12px;
-  font-weight:800;
-  color:#ff9a25;
-}
-.unified-site-footer .footer-tagline{
-  margin-top:7px;
-  padding-top:9px;
-  width:min(360px,90%);
-  border-top:1px solid rgba(255,255,255,.16);
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.4px;
-  color:#fff;
-}
-@media(max-width:620px){
-  .unified-site-footer{
-    margin-top:22px;
-    padding:24px 14px 20px;
-    border-radius:14px 14px 0 0;
-  }
-  .unified-site-footer .footer-logo{
-    width:52px;height:52px;
-  }
-}
-</style>
-<link href="../css/ui-enhancements.css" rel="stylesheet"/>
-<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/></head><body><header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><div class="header-actions"><span class="user-chip" data-admin-name="">Admin</span><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></div></header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
-<a href="customers.html">Customers</a>
-<a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html">Daily Work</a>
-<a href="payments.html">Payments</a>
-<a href="reports.html">Reports</a>
-<a href="customer-bill.html">Customer Bill</a>
-<a href="services.html">Services</a>
-<a href="products.html">Products</a>
-<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
-<a href="enquiries.html">Enquiries</a>
-<a href="techshore-admin.html">📝 Techshore Quiz</a>
-<a href="amc.html">AMC</a>
-<a href="offers.html">Offers</a>
-<a href="works.html" class="active">Our Works</a>
-<a href="activities.html">📋 Staff Activities</a>
-<a href="staff-management.html">👥 Staff Management</a>
-<a href="messages.html">Messages</a></nav></aside><main class="dash-main">
-<div class="toolbar"><div><p class="eyebrow">WORK SHOWCASE</p><h1>Our Works</h1></div></div>
-<section class="modern-panel" style="margin-bottom:20px">
-<div class="section-title"><div><h2 id="workFormTitle">Add New Work</h2><p class="muted">Add completed projects or service work.</p></div></div>
-<form id="workForm"><input id="editId" type="hidden"/>
-<div class="work-form-grid">
-<div><label>Work / Project Title *</label><input id="workTitle" required placeholder="e.g. Office Computer Setup"/></div>
-<div><label>Category</label><input id="workCategory" placeholder="e.g. Computer Service"/></div>
-<div class="full"><label>Description</label><textarea id="workDescription" rows="4" placeholder="Describe the completed work..."></textarea></div>
-</div>
-<div class="work-actions"><button class="btn primary" id="saveWorkBtn" type="submit">+ Add Work</button><button class="btn secondary" id="cancelEditBtn" type="button" style="display:none">Cancel Edit</button></div>
-<div class="status" id="workStatus"></div></form></section>
-<section class="modern-panel"><div class="section-title"><div><h2>Existing Works</h2><p class="muted">Works stored in Supabase.</p></div><input class="filter" id="search" placeholder="Search works..."/></div>
-<div class="grid" id="cards"><p class="muted">Loading...</p></div></section></main><footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
-</div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
-</footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
-})();
-</script>
-<script id="itech-mobile-navigation">
-(function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
-
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
-
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
-
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
-})();
-</script>
-</body></html>
+</body>
+</html>

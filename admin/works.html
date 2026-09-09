@@ -1536,6 +1536,7 @@ let works = [];
 let selectedImageFile = null;
 
 let currentImageUrl = "";
+let removeCurrentImage = false;
 
 
 
@@ -1966,6 +1967,7 @@ $("workImage")
       selectedImageFile =
         file;
 
+      removeCurrentImage = false;
 
       const reader =
         new FileReader();
@@ -2007,16 +2009,15 @@ $("removeImage")
       selectedImageFile =
         null;
 
+      removeCurrentImage = true;
 
       $("workImage")
         .value =
         "";
 
-
       $("imagePreview")
         .src =
         "";
-
 
       $("imagePreviewBox")
         .classList
@@ -2064,6 +2065,7 @@ function resetForm(){
   currentImageUrl =
     "";
 
+  removeCurrentImage = false;
 
   $("imagePreview")
     .src =
@@ -2136,6 +2138,7 @@ function editWork(
     work.image_url ||
     "";
 
+  removeCurrentImage = false;
 
   selectedImageFile =
     null;
@@ -2206,6 +2209,10 @@ function editWork(
 
 async function uploadImage(){
 
+  if(removeCurrentImage && !selectedImageFile){
+    return null;
+  }
+
   if(!selectedImageFile){
 
     return currentImageUrl ||
@@ -2254,7 +2261,22 @@ async function uploadImage(){
 
   if(upload.error){
 
-    throw upload.error;
+    const message =
+      upload.error.message ||
+      "Unable to upload the work photo.";
+
+    if(
+      /bucket|not found|row-level security|permission|policy/i
+        .test(message)
+    ){
+      throw new Error(
+        "Photo upload failed. Check that the Supabase Storage bucket " +
+        '"work-images" exists, is public, and has an upload policy for admins. ' +
+        message
+      );
+    }
+
+    throw new Error(message);
 
   }
 
@@ -2358,8 +2380,6 @@ $("workForm")
         const imageUrl =
           await uploadImage();
 
-
-
         /* PAYLOAD */
 
         const payload = {
@@ -2421,7 +2441,27 @@ $("workForm")
 
         if(result.error){
 
-          throw result.error;
+          const message =
+            result.error.message ||
+            "Unable to save work.";
+
+          if(/image_url.*column|column.*image_url|schema cache/i.test(message)){
+            throw new Error(
+              "Database is missing the image_url column. " +
+              "Run the supplied work_showcase setup SQL in Supabase. " +
+              message
+            );
+          }
+
+          if(/row-level security|violates row-level security|policy/i.test(message)){
+            throw new Error(
+              "Supabase blocked this save with Row Level Security. " +
+              "Run the supplied admin policy SQL in Supabase. " +
+              message
+            );
+          }
+
+          throw new Error(message);
 
         }
 
@@ -2464,15 +2504,10 @@ $("workForm")
         button.disabled =
           false;
 
-
-        if(
-          !$("editId").value
-        ){
-
-          button.textContent =
-            "+ Add Work";
-
-        }
+        button.textContent =
+          $("editId").value
+            ? "Save Changes"
+            : "+ Add Work";
 
       }
 

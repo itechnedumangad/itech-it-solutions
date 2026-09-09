@@ -1,144 +1,913 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
 <title>Our Works | iTech Admin</title>
 
-<link href="../css/style.css" rel="stylesheet">
-<link href="../css/dashboard.css" rel="stylesheet">
-<link href="../css/unified-dashboard.css" rel="stylesheet">
-<link href="../css/dashboard-shell.css" rel="stylesheet">
+
+<!-- Dashboard CSS -->
+
+<link
+  rel="stylesheet"
+  href="../css/style.css"
+>
+
+<link
+  rel="stylesheet"
+  href="../css/dashboard.css"
+>
+
+<link
+  rel="stylesheet"
+  href="../css/unified-dashboard.css"
+>
+
+<link
+  rel="stylesheet"
+  href="../css/dashboard-shell.css"
+>
+
 
 <style>
-.works-form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
 
-.works-form-grid .works-full{
-  grid-column:1/-1;
-}
+/* =========================================================
+   PAGE
+========================================================= */
 
-.works-form-grid input,
-.works-form-grid textarea{
+.works-page{
   width:100%;
   box-sizing:border-box;
 }
 
-.works-actions,
-.works-card-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:14px;
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.works-form-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap:16px;
+
 }
 
-.works-mini{
-  border:1px solid #d6dfeb;
-  border-radius:8px;
-  padding:8px 12px;
+
+.works-full{
+  grid-column:1/-1;
+}
+
+
+.field{
+  min-width:0;
+}
+
+
+.field label{
+
+  display:block;
+
+  margin-bottom:7px;
+
+  font-size:13px;
+
+  font-weight:800;
+
+  color:#17365f;
+
+}
+
+
+.field input,
+.field textarea{
+
+  width:100%;
+
+  box-sizing:border-box;
+
+  border:1px solid #d6e0ec;
+
+  border-radius:10px;
+
+  padding:12px 13px;
+
+  font-family:inherit;
+
+  font-size:14px;
+
+  color:#10284b;
+
   background:#fff;
+
+  outline:none;
+
+  transition:.2s;
+
+}
+
+
+.field textarea{
+
+  resize:vertical;
+
+  min-height:110px;
+
+}
+
+
+.field input:focus,
+.field textarea:focus{
+
+  border-color:#2864e8;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(40,100,232,.10);
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.works-actions{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+  margin-top:16px;
+
+}
+
+
+.works-actions button{
+
   cursor:pointer;
+
+}
+
+
+.works-actions button:disabled{
+
+  opacity:.6;
+
+  cursor:not-allowed;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+#workStatus{
+
+  margin-top:12px;
+
+  min-height:20px;
+
+  font-size:13px;
+
   font-weight:700;
+
 }
 
-.works-mini.danger{
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.works-search{
+
+  width:260px;
+
+  max-width:100%;
+
+  box-sizing:border-box;
+
+  border:1px solid #d6e0ec;
+
+  border-radius:10px;
+
+  padding:11px 13px;
+
+  font-size:13px;
+
+  outline:none;
+
+}
+
+
+.works-search:focus{
+
+  border-color:#2864e8;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(40,100,232,.10);
+
+}
+
+
+/* =========================================================
+   WORK CARDS
+========================================================= */
+
+.works-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap:16px;
+
+}
+
+
+.work-card{
+
+  background:#fff;
+
+  border:1px solid #e1e8f1;
+
+  border-radius:16px;
+
+  padding:18px;
+
+  box-sizing:border-box;
+
+  min-width:0;
+
+  transition:
+
+    transform .2s ease,
+
+    box-shadow .2s ease;
+
+}
+
+
+.work-card:hover{
+
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 10px 28px
+    rgba(18,48,88,.10);
+
+}
+
+
+.work-icon{
+
+  width:42px;
+
+  height:42px;
+
+  border-radius:12px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  background:#eef4ff;
+
+  font-size:21px;
+
+  margin-bottom:12px;
+
+}
+
+
+.work-card h3{
+
+  margin:0 0 8px;
+
+  color:#10284b;
+
+  font-size:17px;
+
+  line-height:1.35;
+
+  word-break:break-word;
+
+}
+
+
+.work-category{
+
+  display:inline-block;
+
+  padding:5px 9px;
+
+  border-radius:999px;
+
+  background:#fff2df;
+
+  color:#c66a00;
+
+  font-size:11px;
+
+  font-weight:800;
+
+  margin-bottom:10px;
+
+}
+
+
+.work-description{
+
+  margin:0;
+
+  color:#71819b;
+
+  font-size:13px;
+
+  line-height:1.6;
+
+  white-space:pre-wrap;
+
+  word-break:break-word;
+
+}
+
+
+.work-actions{
+
+  display:flex;
+
+  gap:8px;
+
+  flex-wrap:wrap;
+
+  margin-top:15px;
+
+  padding-top:14px;
+
+  border-top:1px solid #edf1f6;
+
+}
+
+
+.work-action-btn{
+
+  border:1px solid #d7e0eb;
+
+  background:#fff;
+
+  color:#17365f;
+
+  border-radius:8px;
+
+  padding:8px 12px;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+}
+
+
+.work-action-btn:hover{
+
+  background:#f5f8fc;
+
+}
+
+
+.work-action-btn.delete{
+
   color:#b42318;
+
   border-color:#f2c8c5;
+
 }
 
-@media(max-width:700px){
+
+.work-action-btn.delete:hover{
+
+  background:#fff5f4;
+
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.works-empty{
+
+  grid-column:1/-1;
+
+  padding:40px 20px;
+
+  text-align:center;
+
+  color:#71819b;
+
+  border:1px dashed #d5dfeb;
+
+  border-radius:14px;
+
+  background:#fafcff;
+
+}
+
+
+/* =========================================================
+   UNIFIED FOOTER
+   Same dashboard footer style
+========================================================= */
+
+.unified-site-footer{
+
+  width:100% !important;
+
+  max-width:none !important;
+
+  margin:0;
+
+  padding:22px 28px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #071c3b,
+      #0d2d5a
+    );
+
+  color:#fff;
+
+  border-radius:0;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.08);
+
+  display:flex;
+
+  flex-direction:row;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:18px;
+
+  text-align:center;
+
+  box-shadow:
+    0 -5px 18px
+    rgba(5,27,57,.10);
+
+  min-height:92px;
+
+  box-sizing:border-box;
+
+}
+
+
+.unified-site-footer
+.footer-brand{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+
+.unified-site-footer
+.footer-logo{
+
+  width:50px;
+
+  height:50px;
+
+  object-fit:contain;
+
+  display:block;
+
+  flex:0 0 auto;
+
+  margin:0;
+
+}
+
+
+.unified-site-footer p{
+
+  margin:0;
+
+  line-height:1.45;
+
+  white-space:nowrap;
+
+}
+
+
+.unified-site-footer
+.footer-address{
+
+  font-size:12px;
+
+  font-weight:600;
+
+  color:#dce7f8;
+
+}
+
+
+.unified-site-footer
+.footer-contact{
+
+  font-size:13px;
+
+  font-weight:800;
+
+  color:#fff;
+
+}
+
+
+.unified-site-footer
+.footer-email{
+
+  font-size:12px;
+
+  color:#dce7f8;
+
+}
+
+
+.unified-site-footer
+.footer-social{
+
+  font-size:12px;
+
+  font-weight:800;
+
+  color:#ff9a25;
+
+}
+
+
+.unified-site-footer
+.footer-tagline{
+
+  padding-left:18px;
+
+  border-left:
+    1px solid
+    rgba(255,255,255,.18);
+
+  font-size:12px;
+
+  font-weight:800;
+
+  color:#fff;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:1000px){
+
+  .works-grid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+  }
+
+}
+
+
+@media(max-width:750px){
+
   .works-form-grid{
+
     grid-template-columns:1fr;
+
   }
 
-  .works-form-grid .works-full{
+  .works-full{
+
     grid-column:auto;
+
   }
 
-  .works-actions .btn{
-    width:100%;
+  .works-grid{
+
+    grid-template-columns:1fr;
+
   }
 
-  #search{
-    min-width:0 !important;
+  .works-search{
+
     width:100%;
-    box-sizing:border-box;
+
   }
+
+  .toolbar{
+
+    gap:14px;
+
+  }
+
 }
+
+
+@media(max-width:800px){
+
+  .unified-site-footer{
+
+    flex-direction:column;
+
+    gap:8px;
+
+    padding:20px 16px;
+
+    min-height:auto;
+
+  }
+
+  .unified-site-footer p{
+
+    white-space:normal;
+
+    text-align:center;
+
+  }
+
+  .unified-site-footer
+  .footer-tagline{
+
+    padding-left:0;
+
+    padding-top:8px;
+
+    border-left:0;
+
+    border-top:
+      1px solid
+      rgba(255,255,255,.18);
+
+  }
+
+}
+
+
+@media(max-width:480px){
+
+  .works-actions{
+
+    flex-direction:column;
+
+    align-items:stretch;
+
+  }
+
+  .works-actions
+  .btn{
+
+    width:100%;
+
+  }
+
+  .work-actions
+  .work-action-btn{
+
+    flex:1;
+
+  }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
 <header class="dash-header">
-  <a class="brand" href="dashboard.html">
+
+  <a
+    class="brand"
+    href="dashboard.html"
+  >
+
     <img
-      alt="iTech IT Solutions"
       class="brand-logo"
       src="../assets/itech-logo.png"
+      alt="iTech IT Solutions"
     >
+
   </a>
 
+
   <div class="header-actions">
-    <span class="user-chip" data-admin-name="">Admin</span>
+
+    <span
+      class="user-chip"
+      id="adminName"
+    >
+      Admin
+    </span>
+
 
     <a
       class="btn secondary"
-      data-logout
       href="../pages/login.html"
+      data-logout
     >
       Logout
     </a>
+
   </div>
+
 </header>
 
 
+
+<!-- =========================================================
+     LAYOUT
+========================================================= -->
+
 <div class="dash-layout">
 
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
 <aside class="sidebar">
+
 <nav>
-<a href="dashboard.html">Dashboard</a>
-<a href="customers.html">Customers</a>
-<a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html">Daily Work</a>
-<a href="payments.html">Payments</a>
-<a href="reports.html">Reports</a>
-<a href="customer-bill.html">Customer Bill</a>
-<a href="services.html">Services</a>
-<a href="products.html">Products</a>
-<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
-<a href="enquiries.html">Enquiries</a>
-<a href="techshore-admin.html">📝 Techshore Quiz</a>
-<a href="amc.html">AMC</a>
-<a href="offers.html">Offers</a>
-<a href="works.html" class="active">Our Works</a>
-<a href="activities.html">📋 Staff Activities</a>
-<a href="staff-management.html">👥 Staff Management</a>
-<a href="messages.html">Messages</a>
+
+  <a href="dashboard.html">
+    Dashboard
+  </a>
+
+  <a href="customers.html">
+    Customers
+  </a>
+
+  <a href="add-customer.html">
+    + Add Customer
+  </a>
+
+  <a href="daily-work.html">
+    Daily Work
+  </a>
+
+  <a href="payments.html">
+    Payments
+  </a>
+
+  <a href="reports.html">
+    Reports
+  </a>
+
+  <a href="customer-bill.html">
+    Customer Bill
+  </a>
+
+  <a href="services.html">
+    Services
+  </a>
+
+  <a href="products.html">
+    Products
+  </a>
+
+  <a href="vehicle-insurance.html">
+    🚗 Vehicle Insurance
+  </a>
+
+  <a href="enquiries.html">
+    Enquiries
+  </a>
+
+  <a href="techshore-admin.html">
+    📝 Techshore Quiz
+  </a>
+
+  <a href="amc.html">
+    AMC
+  </a>
+
+  <a href="offers.html">
+    Offers
+  </a>
+
+  <a
+    href="works.html"
+    class="active"
+  >
+    Our Works
+  </a>
+
+  <a href="activities.html">
+    📋 Staff Activities
+  </a>
+
+  <a href="staff-management.html">
+    👥 Staff Management
+  </a>
+
+  <a href="messages.html">
+    Messages
+  </a>
+
 </nav>
+
 </aside>
 
 
-<main class="dash-main">
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="dash-main works-page">
+
+
+<!-- =========================================================
+     PAGE TITLE
+========================================================= -->
 
 <div class="toolbar">
+
   <div>
-    <p class="eyebrow">WORK SHOWCASE</p>
-    <h1>Our Works</h1>
+
+    <p class="eyebrow">
+      WORK SHOWCASE
+    </p>
+
+    <h1>
+      Our Works
+    </h1>
+
+    <p class="muted">
+      Add and manage completed projects and services.
+    </p>
+
   </div>
+
 </div>
 
 
-<!-- ADD / EDIT WORK -->
 
-<section class="panel" style="margin-bottom:20px">
+<!-- =========================================================
+     ADD WORK
+========================================================= -->
 
-  <div class="toolbar" style="margin-bottom:15px">
+<section
+  class="panel"
+  style="margin-bottom:20px"
+>
+
+  <div
+    class="toolbar"
+    style="margin-bottom:18px"
+  >
 
     <div>
+
       <h2 id="workFormTitle">
         Add New Work
       </h2>
@@ -146,36 +915,51 @@
       <p class="muted">
         Add a completed project to the Our Works showcase.
       </p>
+
     </div>
 
   </div>
 
 
+
   <form id="workForm">
 
     <input
-      id="editId"
       type="hidden"
+      id="editId"
     >
 
 
     <div class="works-form-grid">
 
+
+      <!-- TITLE -->
+
       <div class="field">
 
         <label for="workTitle">
+
           Work / Project Title
-          <span style="color:#d33">*</span>
+
+          <span style="color:#d33">
+            *
+          </span>
+
         </label>
 
         <input
           id="workTitle"
+          type="text"
           required
+          autocomplete="off"
           placeholder="e.g. Office Computer Setup"
         >
 
       </div>
 
+
+
+      <!-- CATEGORY -->
 
       <div class="field">
 
@@ -185,11 +969,16 @@
 
         <input
           id="workCategory"
+          type="text"
+          autocomplete="off"
           placeholder="e.g. Computer Service"
         >
 
       </div>
 
+
+
+      <!-- DESCRIPTION -->
 
       <div class="field works-full">
 
@@ -205,7 +994,9 @@
 
       </div>
 
+
     </div>
+
 
 
     <div class="works-actions">
@@ -232,9 +1023,10 @@
 
 
     <div
-      class="status"
       id="workStatus"
+      aria-live="polite"
     ></div>
+
 
   </form>
 
@@ -242,13 +1034,15 @@
 
 
 
-<!-- EXISTING WORKS -->
+<!-- =========================================================
+     EXISTING WORKS
+========================================================= -->
 
 <section class="panel">
 
   <div
     class="toolbar"
-    style="margin-bottom:15px"
+    style="margin-bottom:18px"
   >
 
     <div>
@@ -265,73 +1059,221 @@
 
 
     <input
-      class="filter"
+      class="works-search"
       id="search"
+      type="search"
       placeholder="Search works..."
-      style="min-width:240px"
+      autocomplete="off"
     >
 
   </div>
 
 
+
   <div
-    class="grid"
+    class="works-grid"
     id="cards"
   >
-    <p class="muted">
-      Loading...
-    </p>
+
+    <div class="works-empty">
+      Loading works...
+    </div>
+
   </div>
 
 </section>
+
 
 </main>
 
 </div>
 
 
-<!-- SUPABASE -->
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="site-footer unified-site-footer">
+
+  <div class="footer-brand">
+
+    <img
+      src="../assets/itech-logo.png"
+      alt="iTech IT Solutions"
+      class="footer-logo"
+    >
+
+  </div>
+
+
+  <p class="footer-address">
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+
+  <p class="footer-contact">
+    7736929233 · 8943165951
+  </p>
+
+
+  <p class="footer-email">
+    itnedumangad@gmail.com
+  </p>
+
+
+  <p class="footer-social">
+    @itechndd
+  </p>
+
+
+  <p class="footer-tagline">
+    Your Trust Our Service
+  </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     SUPABASE
+========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="../js/config.js"></script>
+
 <script src="../js/supabase.js"></script>
+
 <script src="../js/auth.js"></script>
 
 
+
+<!-- =========================================================
+     WORKS APPLICATION
+========================================================= -->
+
 <script>
 
-(async()=>{
+(async function(){
 
-  const a = await requireAdmin();
-
-  if(!a) return;
+  "use strict";
 
 
-  const $ = id =>
-    document.getElementById(id);
+  /* =======================================================
+     ADMIN AUTH
+  ======================================================= */
+
+  const admin =
+    await requireAdmin();
+
+  if(!admin){
+
+    return;
+
+  }
 
 
-  const esc = value =>
-    String(value ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#039;");
+
+  /* =======================================================
+     HELPERS
+  ======================================================= */
+
+  const $ =
+    function(id){
+
+      return document.getElementById(id);
+
+    };
 
 
-  let rows = [];
+  function escapeHtml(value){
+
+    return String(value ?? "")
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
 
 
-  function msg(text,bad=false){
 
-    const el = $("workStatus");
+  /* =======================================================
+     ADMIN NAME
+  ======================================================= */
 
-    el.textContent = text || "";
+  try{
 
-    el.style.color =
-      bad
+    const user =
+      admin.user ||
+      admin;
+
+
+    const name =
+      user?.user_metadata?.full_name ||
+      user?.user_metadata?.name ||
+      user?.email ||
+      "Admin";
+
+
+    $("adminName").textContent =
+      name;
+
+  }catch(error){
+
+    console.log(
+      "Admin name:",
+      error
+    );
+
+  }
+
+
+
+  /* =======================================================
+     DATA
+  ======================================================= */
+
+  let works = [];
+
+
+
+  /* =======================================================
+     STATUS
+  ======================================================= */
+
+  function showStatus(
+    message,
+    error = false
+  ){
+
+    const element =
+      $("workStatus");
+
+
+    element.textContent =
+      message;
+
+
+    element.style.color =
+      error
         ? "#b42318"
         : "#15803d";
 
@@ -339,7 +1281,28 @@
 
 
 
+  function clearStatus(){
+
+    $("workStatus")
+      .textContent = "";
+
+  }
+
+
+
+  /* =======================================================
+     LOAD WORKS
+  ======================================================= */
+
   async function loadWorks(){
+
+    $("cards").innerHTML =
+      `
+      <div class="works-empty">
+        Loading works...
+      </div>
+      `;
+
 
     const result =
       await sb
@@ -355,241 +1318,392 @@
 
     if(result.error){
 
-      $("cards").innerHTML =
-        "<p class='muted'>" +
-        "Unable to load works: " +
-        esc(result.error.message) +
-        "</p>";
-
-      return;
-    }
-
-
-    rows = result.data || [];
-
-    render(rows);
-
-  }
-
-
-
-  function render(data){
-
-    $("cards").innerHTML =
-      data.length
-
-      ?
-
-      data.map(x => `
-
-        <article
-          class="card"
-          style="padding:18px"
-        >
-
-          <div class="icon">
-            🛠️
-          </div>
-
-
-          <h3>
-            ${esc(
-              x.title ||
-              x.name ||
-              x.project_name ||
-              "Project"
-            )}
-          </h3>
-
-
-          ${
-            x.category
-
-            ?
-
-            `
-            <div
-              class="tag"
-              style="
-                display:inline-block;
-                margin:6px 0
-              "
-            >
-              ${esc(x.category)}
-            </div>
-            `
-
-            :
-
-            ""
-          }
-
-
-          <p class="muted">
-            ${esc(
-              x.description ||
-              x.details ||
-              ""
-            )}
-          </p>
-
-
-          <div class="works-card-actions">
-
-            <button
-              class="works-mini"
-              data-edit="${esc(x.id)}"
-              type="button"
-            >
-              Edit
-            </button>
-
-
-            <button
-              class="works-mini danger"
-              data-delete="${esc(x.id)}"
-              type="button"
-            >
-              Delete
-            </button>
-
-          </div>
-
-        </article>
-
-      `).join("")
-
-      :
-
-      "<p class='muted'>No works available.</p>";
-
-
-    $("cards")
-      .querySelectorAll("[data-edit]")
-      .forEach(button => {
-
-        button.onclick = () =>
-          editWork(button.dataset.edit);
-
-      });
-
-
-    $("cards")
-      .querySelectorAll("[data-delete]")
-      .forEach(button => {
-
-        button.onclick = () =>
-          deleteWork(button.dataset.delete);
-
-      });
-
-  }
-
-
-
-  function resetForm(){
-
-    $("workForm").reset();
-
-    $("editId").value = "";
-
-    $("workFormTitle").textContent =
-      "Add New Work";
-
-    $("saveWorkBtn").textContent =
-      "+ Add Work";
-
-    $("cancelEditBtn").hidden =
-      true;
-
-    msg("");
-
-  }
-
-
-
-  function editWork(id){
-
-    const work =
-      rows.find(
-        row =>
-          String(row.id) === String(id)
+      console.error(
+        "Works loading error:",
+        result.error
       );
 
 
-    if(!work) return;
+      $("cards").innerHTML =
+        `
+        <div class="works-empty">
+          Unable to load works.<br><br>
+          ${escapeHtml(
+            result.error.message
+          )}
+        </div>
+        `;
 
 
-    $("editId").value =
+      return;
+
+    }
+
+
+    works =
+      result.data || [];
+
+
+    renderWorks(
+      works
+    );
+
+  }
+
+
+
+  /* =======================================================
+     RENDER WORKS
+  ======================================================= */
+
+  function renderWorks(
+    data
+  ){
+
+    if(!data.length){
+
+      $("cards").innerHTML =
+        `
+        <div class="works-empty">
+
+          <div
+            style="
+              font-size:32px;
+              margin-bottom:10px;
+            "
+          >
+            🛠️
+          </div>
+
+          No works available.
+
+        </div>
+        `;
+
+      return;
+
+    }
+
+
+
+    $("cards").innerHTML =
+      data
+        .map(
+          function(work){
+
+            const title =
+              work.title ||
+              work.name ||
+              work.project_name ||
+              "Project";
+
+
+            const category =
+              work.category ||
+              "";
+
+
+            const description =
+              work.description ||
+              work.details ||
+              "";
+
+
+            return `
+
+              <article
+                class="work-card"
+              >
+
+                <div class="work-icon">
+                  🛠️
+                </div>
+
+
+                <h3>
+                  ${escapeHtml(title)}
+                </h3>
+
+
+                ${
+                  category
+
+                  ?
+
+                  `
+                  <div class="work-category">
+                    ${escapeHtml(category)}
+                  </div>
+                  `
+
+                  :
+
+                  ""
+                }
+
+
+                <p
+                  class="work-description"
+                >
+                  ${escapeHtml(description)}
+                </p>
+
+
+                <div
+                  class="work-actions"
+                >
+
+                  <button
+                    type="button"
+                    class="work-action-btn"
+                    data-edit="${escapeHtml(work.id)}"
+                  >
+                    ✏️ Edit
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="work-action-btn delete"
+                    data-delete="${escapeHtml(work.id)}"
+                  >
+                    🗑️ Delete
+                  </button>
+
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+
+    /* EDIT */
+
+    $("cards")
+      .querySelectorAll(
+        "[data-edit]"
+      )
+      .forEach(
+        function(button){
+
+          button.addEventListener(
+            "click",
+            function(){
+
+              editWork(
+                button.dataset.edit
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+
+    /* DELETE */
+
+    $("cards")
+      .querySelectorAll(
+        "[data-delete]"
+      )
+      .forEach(
+        function(button){
+
+          button.addEventListener(
+            "click",
+            function(){
+
+              deleteWork(
+                button.dataset.delete
+              );
+
+            }
+          );
+
+        }
+      );
+
+  }
+
+
+
+  /* =======================================================
+     RESET FORM
+  ======================================================= */
+
+  function resetForm(){
+
+    $("workForm")
+      .reset();
+
+
+    $("editId")
+      .value = "";
+
+
+    $("workFormTitle")
+      .textContent =
+      "Add New Work";
+
+
+    $("saveWorkBtn")
+      .textContent =
+      "+ Add Work";
+
+
+    $("cancelEditBtn")
+      .hidden = true;
+
+
+    clearStatus();
+
+  }
+
+
+
+  /* =======================================================
+     EDIT WORK
+  ======================================================= */
+
+  function editWork(
+    id
+  ){
+
+    const work =
+      works.find(
+        function(item){
+
+          return String(item.id) ===
+            String(id);
+
+        }
+      );
+
+
+    if(!work){
+
+      return;
+
+    }
+
+
+    $("editId")
+      .value =
       work.id;
 
 
-    $("workTitle").value =
+    $("workTitle")
+      .value =
       work.title ||
       work.name ||
       work.project_name ||
       "";
 
 
-    $("workCategory").value =
+    $("workCategory")
+      .value =
       work.category ||
       "";
 
 
-    $("workDescription").value =
+    $("workDescription")
+      .value =
       work.description ||
       work.details ||
       "";
 
 
-    $("workFormTitle").textContent =
+    $("workFormTitle")
+      .textContent =
       "Edit Work";
 
 
-    $("saveWorkBtn").textContent =
+    $("saveWorkBtn")
+      .textContent =
       "Save Changes";
 
 
-    $("cancelEditBtn").hidden =
-      false;
+    $("cancelEditBtn")
+      .hidden = false;
 
 
     window.scrollTo({
+
       top:0,
+
       behavior:"smooth"
+
     });
 
   }
 
 
 
-  async function deleteWork(id){
+  /* =======================================================
+     DELETE WORK
+  ======================================================= */
 
-    if(
-      !confirm(
-        "Delete this work?"
-      )
-    ){
+  async function deleteWork(
+    id
+  ){
+
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this work?"
+      );
+
+
+    if(!confirmed){
+
       return;
+
     }
+
+
+    showStatus(
+      "Deleting..."
+    );
 
 
     const result =
       await sb
         .from("work_showcase")
         .delete()
-        .eq("id",id);
+        .eq(
+          "id",
+          id
+        );
 
 
     if(result.error){
 
-      msg(
+      console.error(
+        "Delete error:",
+        result.error
+      );
+
+
+      showStatus(
         result.error.message,
         true
       );
 
+
       return;
+
     }
+
+
+    showStatus(
+      "Work deleted successfully."
+    );
 
 
     await loadWorks();
@@ -598,182 +1712,287 @@
 
 
 
-  $("cancelEditBtn").onclick =
-    resetForm;
+  /* =======================================================
+     FORM SUBMIT
+  ======================================================= */
+
+  $("workForm")
+    .addEventListener(
+      "submit",
+      async function(event){
+
+        event.preventDefault();
 
 
-
-  $("workForm").onsubmit =
-    async event => {
-
-      event.preventDefault();
+        clearStatus();
 
 
-      const id =
-        $("editId").value.trim();
+        const id =
+          $("editId")
+            .value
+            .trim();
 
 
-      const payload = {
-
-        title:
+        const title =
           $("workTitle")
             .value
-            .trim(),
+            .trim();
 
-        category:
+
+        const category =
           $("workCategory")
             .value
-            .trim() || null,
+            .trim();
 
-        description:
+
+        const description =
           $("workDescription")
             .value
-            .trim() || null
-
-      };
+            .trim();
 
 
-      if(!payload.title){
 
-        msg(
-          "Work title is required.",
-          true
+        /* REQUIRED */
+
+        if(!title){
+
+          showStatus(
+            "Work / Project Title is required.",
+            true
+          );
+
+          $("workTitle")
+            .focus();
+
+          return;
+
+        }
+
+
+
+        const payload = {
+
+          title:
+            title,
+
+          category:
+            category || null,
+
+          description:
+            description || null
+
+        };
+
+
+
+        const button =
+          $("saveWorkBtn");
+
+
+        button.disabled =
+          true;
+
+
+        button.textContent =
+          id
+            ? "Saving..."
+            : "Adding...";
+
+
+
+        let result;
+
+
+
+        /* =================================================
+           UPDATE
+        ================================================= */
+
+        if(id){
+
+          result =
+            await sb
+              .from("work_showcase")
+              .update(payload)
+              .eq(
+                "id",
+                id
+              );
+
+        }
+
+
+        /* =================================================
+           INSERT
+        ================================================= */
+
+        else{
+
+          result =
+            await sb
+              .from("work_showcase")
+              .insert(
+                payload
+              );
+
+        }
+
+
+
+        button.disabled =
+          false;
+
+
+
+        /* =================================================
+           ERROR
+        ================================================= */
+
+        if(result.error){
+
+          console.error(
+            "Save work error:",
+            result.error
+          );
+
+
+          button.textContent =
+            id
+              ? "Save Changes"
+              : "+ Add Work";
+
+
+          showStatus(
+            result.error.message,
+            true
+          );
+
+
+          return;
+
+        }
+
+
+
+        /* =================================================
+           SUCCESS
+        ================================================= */
+
+        showStatus(
+
+          id
+
+            ?
+
+            "Work updated successfully."
+
+            :
+
+            "Work added successfully."
+
         );
 
-        return;
+
+        resetForm();
+
+
+        await loadWorks();
 
       }
+    );
 
 
-      const button =
-        $("saveWorkBtn");
+
+  /* =======================================================
+     CANCEL EDIT
+  ======================================================= */
+
+  $("cancelEditBtn")
+    .addEventListener(
+      "click",
+      function(){
+
+        resetForm();
+
+      }
+    );
 
 
-      button.disabled = true;
+
+  /* =======================================================
+     SEARCH
+  ======================================================= */
+
+  $("search")
+    .addEventListener(
+      "input",
+      function(event){
+
+        const query =
+          event.target
+            .value
+            .toLowerCase()
+            .trim();
 
 
-      const result =
-        id
+        if(!query){
 
-        ?
+          renderWorks(
+            works
+          );
 
-        await sb
-          .from("work_showcase")
-          .update(payload)
-          .eq("id",id)
+          return;
 
-        :
-
-        await sb
-          .from("work_showcase")
-          .insert(payload);
+        }
 
 
-      button.disabled = false;
+        const filtered =
+          works.filter(
+            function(work){
+
+              return Object
+                .values(work)
+                .some(
+                  function(value){
+
+                    return String(
+                      value ?? ""
+                    )
+                    .toLowerCase()
+                    .includes(query);
+
+                  }
+                );
+
+            }
+          );
 
 
-      if(result.error){
-
-        msg(
-          result.error.message,
-          true
+        renderWorks(
+          filtered
         );
 
-        return;
-
       }
-
-
-      resetForm();
-
-      await loadWorks();
-
-    };
+    );
 
 
 
-  $("search").oninput =
-    event => {
-
-      const query =
-        event.target
-          .value
-          .toLowerCase()
-          .trim();
-
-
-      const filtered =
-        query
-
-        ?
-
-        rows.filter(
-          work =>
-            Object.values(work)
-              .some(
-                value =>
-                  String(
-                    value ?? ""
-                  )
-                  .toLowerCase()
-                  .includes(query)
-              )
-        )
-
-        :
-
-        rows;
-
-
-      render(filtered);
-
-    };
-
-
+  /* =======================================================
+     INITIAL LOAD
+  ======================================================= */
 
   await loadWorks();
+
 
 })();
 
 </script>
 
 
-<!-- FOOTER -->
 
-<footer class="site-footer">
-
-  <div class="footer-brand">
-
-    <img
-      alt="iTech IT Solutions"
-      class="footer-logo"
-      src="../assets/itech-logo.png"
-    >
-
-  </div>
-
-  <p>
-    Govt. Sub Treasury Road, Nedumangad
-  </p>
-
-  <p>
-    7736929233 · 8943165951
-  </p>
-
-  <p>
-    itnedumangad@gmail.com
-  </p>
-
-  <p>
-    @itechndd
-  </p>
-
-  <p>
-    Your Trust Our Service
-  </p>
-
-</footer>
-
+<!-- =========================================================
+     ACTIVE SIDEBAR
+========================================================= -->
 
 <script>
 
@@ -790,39 +2009,48 @@
     .querySelectorAll(
       ".sidebar nav a"
     )
-    .forEach(link => {
+    .forEach(
+      function(link){
 
-      const href =
-        (
-          link.getAttribute("href")
-          || ""
-        )
-        .split("?")[0]
-        .split("#")[0];
-
-
-      const file =
-        href
-          .split("/")
-          .pop();
+        const href =
+          (
+            link.getAttribute(
+              "href"
+            )
+            || ""
+          )
+          .split("?")[0]
+          .split("#")[0];
 
 
-      if(file === current){
+        const file =
+          href
+            .split("/")
+            .pop();
 
-        link.classList.add(
-          "active"
-        );
+
+        if(
+          file === current
+        ){
+
+          link.classList.add(
+            "active"
+          );
+
+        }
 
       }
-
-    });
+    );
 
 })();
 
 </script>
 
 
-<!-- MOBILE MENU -->
+
+<!-- =========================================================
+     MOBILE NAVIGATION
+========================================================= -->
 
 <script>
 
@@ -832,6 +2060,7 @@
     document.querySelector(
       ".dash-header"
     );
+
 
   const sidebar =
     document.querySelector(
@@ -850,6 +2079,7 @@
     return;
 
   }
+
 
 
   const btn =
@@ -880,6 +2110,7 @@
     "☰";
 
 
+
   const overlay =
     document.createElement(
       "div"
@@ -888,6 +2119,7 @@
 
   overlay.className =
     "ui-mobile-overlay";
+
 
 
   const close =
@@ -914,11 +2146,16 @@
     "×";
 
 
-  sidebar.prepend(close);
+
+  sidebar.prepend(
+    close
+  );
+
 
   document.body.appendChild(
     overlay
   );
+
 
 
   const brand =
@@ -937,7 +2174,9 @@
       brand.nextSibling
     );
 
-  }else{
+  }
+
+  else{
 
     header.insertBefore(
       btn,
@@ -945,6 +2184,7 @@
     );
 
   }
+
 
 
   function openMenu(){
@@ -963,6 +2203,7 @@
   }
 
 
+
   function closeMenu(){
 
     sidebar.classList.remove(
@@ -977,6 +2218,7 @@
       "";
 
   }
+
 
 
   btn.addEventListener(
@@ -999,17 +2241,21 @@
 
   sidebar
     .querySelectorAll("a")
-    .forEach(link =>
-      link.addEventListener(
-        "click",
-        closeMenu
-      )
+    .forEach(
+      function(link){
+
+        link.addEventListener(
+          "click",
+          closeMenu
+        );
+
+      }
     );
 
 
   document.addEventListener(
     "keydown",
-    event => {
+    function(event){
 
       if(
         event.key === "Escape"
@@ -1025,6 +2271,7 @@
 })();
 
 </script>
+
 
 </body>
 </html>

@@ -1,33 +1,1166 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enquiry | iTech IT Solutions</title>
 
-<html><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Enquiry | iTech IT Solutions Nedumangad</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/><link href="../css/public-polish.css" rel="stylesheet"/>
-<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/>
-<!-- SEO START: metadata only; existing design/CSS/JS preserved -->
-<meta name="description" content="Send an enquiry to iTech IT Solutions for computer service, CCTV, IT support, insurance and related services.">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<link rel="canonical" href="https://itnedumangad.online/pages/enquiry.html">
-<meta property="og:title" content="Enquiry | iTech IT Solutions Nedumangad">
-<meta property="og:description" content="Send an enquiry to iTech IT Solutions for computer service, CCTV, IT support, insurance and related services.">
-<meta property="og:url" content="https://itnedumangad.online/pages/enquiry.html">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="iTech IT Solutions">
-<meta property="og:image" content="https://itnedumangad.online/assets/itech-logo.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Enquiry | iTech IT Solutions Nedumangad">
-<meta name="twitter:description" content="Send an enquiry to iTech IT Solutions for computer service, CCTV, IT support, insurance and related services.">
-<meta name="twitter:image" content="https://itnedumangad.online/assets/itech-logo.png">
-<!-- SEO END -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/unified-dashboard.css">
+<link rel="stylesheet" href="../css/public-polish.css">
+<link rel="stylesheet" href="../css/mobile-app-ready.css">
+<link rel="stylesheet" href="../css/itech-final-ui.css">
 
-</head><body><header class="site-header"><div class="nav-wrap"><a class="brand" href="../index.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><button class="menu" id="menu">☰</button><nav class="nav" id="nav"><a href="../index.html">Home</a><a href="services.html">Services</a><a href="works.html">Our Works</a><a href="enquiry.html">Enquiry</a><a href="service-register.html">Service</a><a href="product-register.html">Product</a><a href="login.html">Login</a></nav></div></header><section class="page-hero"><p class="eyebrow">iTech IT Solutions</p><h1>Enquiry</h1><p>Computer Service, Vehicle Insurance, CCTV, Other IT and AMC enquiries.</p></section><main class="container"><div class="two"><form class="panel form" id="enquiryForm"><label class="field">Name<input name="name" required=""/></label><label class="field">Mobile / WhatsApp<input name="mobile" required=""/></label><label class="field">Type<select name="category"><option>Computer Service</option><option>Vehicle Insurance</option><option>CCTV Installation</option><option>Other IT Related Works</option><option>AMC Enquiry</option></select></label><label class="field">Message<textarea name="message" rows="6"></textarea></label><button class="btn primary">Submit Enquiry</button><div id="formStatus"></div></form><div class="panel"><div class="icon">🔧</div><h2>AMC Enquiry</h2><p class="muted">Regular support for computers, printers, CCTV and networking.</p></div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/site.js"></script>
+<style>
+/* =========================================================
+   ENQUIRY PAGE ONLY
+   Existing public HEADER + FOOTER are kept unchanged.
+   ========================================================= */
+
+.enquiry-page{
+  background:#f5f8fc;
+  min-height:560px;
+  color:#173354;
+}
+
+/* HERO */
+.enquiry-hero{
+  position:relative;
+  overflow:hidden;
+  padding:72px 20px 64px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 90% 12%,rgba(255,154,37,.18),transparent 25%),
+    radial-gradient(circle at 8% 90%,rgba(39,117,239,.22),transparent 28%),
+    linear-gradient(115deg,#06234a 0%,#0b3766 55%,#104b70 100%);
+}
+.enquiry-hero:before,
+.enquiry-hero:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+.enquiry-hero:before{
+  width:330px;height:330px;
+  right:-125px;top:-190px;
+  background:rgba(255,255,255,.07);
+}
+.enquiry-hero:after{
+  width:230px;height:230px;
+  left:-145px;bottom:-155px;
+  background:rgba(255,154,37,.09);
+}
+.enquiry-hero-inner{
+  width:min(1120px,100%);
+  margin:auto;
+  position:relative;
+  z-index:1;
+}
+.enquiry-eyebrow{
+  margin:0 0 10px;
+  color:#ff9a25;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.enquiry-hero h1{
+  margin:0;
+  font-size:clamp(38px,6vw,62px);
+  line-height:1;
+  letter-spacing:-1.8px;
+}
+.enquiry-hero p{
+  max-width:720px;
+  margin:18px 0 0;
+  color:#dbe9f8;
+  font-size:16px;
+  line-height:1.7;
+}
+.hero-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:26px;
+}
+.hero-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 13px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(8px);
+  font-size:12px;
+  font-weight:800;
+}
+.hero-pill b{
+  display:grid;
+  place-items:center;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:#fff;
+  color:#0b3766;
+}
+
+/* MAIN */
+.enquiry-content{
+  width:min(1120px,100%);
+  margin:auto;
+  padding:34px 20px 62px;
+}
+
+/* SERVICE SELECTOR */
+.section-heading{
+  margin-bottom:18px;
+}
+.section-heading .eyebrow{
+  margin:0 0 7px;
+  color:#f07f00;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.7px;
+}
+.section-heading h2{
+  margin:0;
+  color:#102d52;
+  font-size:27px;
+}
+.section-heading p{
+  margin:7px 0 0;
+  color:#71829b;
+  line-height:1.6;
+  font-size:13px;
+}
+
+.service-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;
+  margin-bottom:30px;
+}
+.service-choice{
+  position:relative;
+  border:1px solid #dfe7f1;
+  border-radius:17px;
+  background:#fff;
+  padding:17px 15px;
+  cursor:pointer;
+  text-align:left;
+  box-shadow:0 7px 22px rgba(14,42,76,.055);
+  transition:.22s ease;
+}
+.service-choice:hover{
+  transform:translateY(-3px);
+  border-color:#9bbce9;
+  box-shadow:0 13px 28px rgba(14,42,76,.10);
+}
+.service-choice.active{
+  border-color:#2875eb;
+  box-shadow:0 0 0 3px rgba(39,117,239,.10),0 13px 28px rgba(14,42,76,.10);
+  background:linear-gradient(180deg,#fff,#f7fbff);
+}
+.service-choice.active:after{
+  content:"✓";
+  position:absolute;
+  right:10px;
+  top:10px;
+  width:22px;height:22px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#2775ef;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+}
+.service-icon{
+  width:44px;height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:#edf5ff;
+  font-size:22px;
+  margin-bottom:11px;
+}
+.service-choice:nth-child(2) .service-icon{background:#eefaf7}
+.service-choice:nth-child(3) .service-icon{background:#fff5e8}
+.service-choice:nth-child(4) .service-icon{background:#f2efff}
+.service-choice:nth-child(5) .service-icon{background:#fff0f4}
+.service-choice:nth-child(6) .service-icon{background:#edf8ff}
+.service-choice:nth-child(7) .service-icon{background:#fff6ec}
+.service-choice:nth-child(8) .service-icon{background:#f1f4f8}
+.service-choice h3{
+  margin:0;
+  color:#173354;
+  font-size:14px;
+  line-height:1.35;
+}
+.service-choice p{
+  margin:5px 0 0;
+  color:#7a8ba2;
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* FORM + CONTACT */
+.enquiry-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(290px,.8fr);
+  gap:22px;
+  align-items:start;
+}
+.form-card,
+.contact-card{
+  border:1px solid #dfe7f1;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 10px 30px rgba(14,42,76,.07);
+}
+.form-card{
+  padding:25px;
+}
+.contact-card{
+  overflow:hidden;
+}
+.card-head{
+  padding:22px 23px 17px;
+  border-bottom:1px solid #edf1f6;
+}
+.card-head h2{
+  margin:0;
+  color:#102d52;
+  font-size:21px;
+}
+.card-head p{
+  margin:6px 0 0;
+  color:#71829b;
+  font-size:12px;
+  line-height:1.6;
+}
+.form-body{
+  padding:22px 23px 24px;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:17px;
+}
+.field{
+  min-width:0;
+}
+.field.full{
+  grid-column:1/-1;
+}
+.field label{
+  display:block;
+  margin-bottom:7px;
+  color:#18385d;
+  font-size:12px;
+  font-weight:850;
+}
+.field label span{
+  color:#ed5b45;
+}
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid #d7e1ed;
+  border-radius:12px;
+  background:#fbfdff;
+  color:#173354;
+  font:inherit;
+  font-size:13px;
+  outline:none;
+  transition:.18s ease;
+}
+.field input,
+.field select{
+  height:46px;
+  padding:0 13px;
+}
+.field textarea{
+  min-height:125px;
+  padding:12px 13px;
+  resize:vertical;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#6da3ef;
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(39,117,239,.09);
+}
+.helper{
+  margin:6px 0 0;
+  color:#8a98aa;
+  font-size:10px;
+  line-height:1.5;
+}
+
+/* CONDITIONAL DETAILS */
+.extra-panel{
+  display:none;
+  grid-column:1/-1;
+  border:1px solid #e1eaf4;
+  border-radius:15px;
+  padding:15px;
+  background:linear-gradient(135deg,#f8fbff,#fff);
+}
+.extra-panel.show{
+  display:block;
+}
+.extra-title{
+  margin:0 0 12px;
+  color:#173354;
+  font-size:12px;
+  font-weight:900;
+}
+.extra-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+/* BUTTON */
+.form-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+}
+.submit-btn{
+  flex:1;
+  min-height:48px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#2775ef,#1255c5);
+  color:#fff;
+  cursor:pointer;
+  font:inherit;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 9px 20px rgba(39,117,239,.22);
+  transition:.2s ease;
+}
+.submit-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 25px rgba(39,117,239,.28);
+}
+.submit-btn:disabled{
+  cursor:wait;
+  opacity:.7;
+  transform:none;
+}
+.clear-btn{
+  min-height:48px;
+  padding:0 18px;
+  border:1px solid #d8e2ee;
+  border-radius:13px;
+  background:#fff;
+  color:#294566;
+  cursor:pointer;
+  font:inherit;
+  font-size:12px;
+  font-weight:850;
+}
+
+/* MESSAGE */
+.form-message{
+  display:none;
+  margin-top:15px;
+  padding:12px 14px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.5;
+  font-weight:750;
+}
+.form-message.show{display:block}
+.form-message.success{
+  color:#166534;
+  background:#ecfdf3;
+  border:1px solid #b9edcf;
+}
+.form-message.error{
+  color:#a32929;
+  background:#fff1f1;
+  border:1px solid #ffcaca;
+}
+
+/* CONTACT SIDE */
+.contact-hero{
+  padding:25px 23px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(255,154,37,.18),transparent 30%),
+    linear-gradient(145deg,#082b57,#0b4771);
+}
+.contact-icon{
+  width:52px;height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.13);
+  font-size:25px;
+  margin-bottom:15px;
+}
+.contact-hero h2{
+  margin:0;
+  font-size:21px;
+}
+.contact-hero p{
+  margin:7px 0 0;
+  color:#d9e7f7;
+  font-size:12px;
+  line-height:1.6;
+}
+.contact-list{
+  padding:7px 23px 18px;
+}
+.contact-item{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:15px 0;
+  border-bottom:1px solid #edf1f6;
+}
+.contact-item:last-child{border-bottom:0}
+.contact-item-icon{
+  width:35px;height:35px;
+  flex:0 0 35px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#eef5ff;
+  font-size:16px;
+}
+.contact-item strong{
+  display:block;
+  color:#173354;
+  font-size:12px;
+}
+.contact-item span,
+.contact-item a{
+  display:block;
+  margin-top:3px;
+  color:#74869d;
+  font-size:11px;
+  line-height:1.5;
+  text-decoration:none;
+}
+.contact-item a:hover{color:#176be0}
+.response-box{
+  margin:0 23px 23px;
+  padding:14px;
+  border-radius:13px;
+  background:#f7faff;
+  border:1px solid #e1eaf5;
+}
+.response-box strong{
+  display:block;
+  color:#173354;
+  font-size:12px;
+}
+.response-box p{
+  margin:5px 0 0;
+  color:#71829b;
+  font-size:11px;
+  line-height:1.55;
+}
+
+/* MOBILE */
+@media(max-width:950px){
+  .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .enquiry-layout{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .enquiry-hero{padding:54px 18px 50px}
+  .enquiry-content{padding:25px 14px 45px}
+  .enquiry-hero h1{font-size:43px}
+  .service-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .service-choice{padding:13px 11px}
+  .service-choice h3{font-size:12px}
+  .service-choice p{font-size:10px}
+  .service-icon{width:38px;height:38px;font-size:19px;margin-bottom:8px}
+  .form-card{padding:0}
+  .card-head{padding:19px 17px 15px}
+  .form-body{padding:18px 17px 20px}
+  .form-grid{grid-template-columns:1fr;gap:14px}
+  .field.full{grid-column:auto}
+  .extra-panel{grid-column:auto}
+  .extra-grid{grid-template-columns:1fr}
+  .form-actions{flex-direction:column}
+  .submit-btn,.clear-btn{width:100%}
+}
+@media(max-width:390px){
+  .service-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     EXISTING PUBLIC HEADER - KEPT AS IS
+     ========================================================= -->
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html">
+      <img
+        alt="iTech IT Solutions"
+        class="brand-logo"
+        src="../assets/itech-logo.png"
+      />
+    </a>
+
+    <button class="menu" id="menu" type="button" aria-label="Open menu">☰</button>
+
+    <nav class="nav" id="nav">
+      <a href="../index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="works.html">Our Works</a>
+      <a href="enquiry.html" aria-current="page">Enquiry</a>
+      <a href="service-register.html">Service</a>
+      <a href="product-register.html">Product</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- =========================================================
+     HERO
+     ========================================================= -->
+<section class="enquiry-hero">
+  <div class="enquiry-hero-inner">
+    <p class="enquiry-eyebrow">iTech IT Solutions • Customer Support</p>
+
+    <h1>How can we help?</h1>
+
+    <p>
+      Tell us what you need. Choose a service below and send your requirement
+      to our team. We handle computer service, CCTV, vehicle insurance,
+      online works, products, AMC and other IT requirements.
+    </p>
+
+    <div class="hero-pills">
+      <div class="hero-pill"><b>✓</b> Quick Response</div>
+      <div class="hero-pill"><b>⚙</b> Professional Support</div>
+      <div class="hero-pill"><b>★</b> Trusted Service</div>
+    </div>
+  </div>
+</section>
+
+
+<main class="enquiry-page">
+<section class="enquiry-content">
+
+  <!-- SERVICE SELECTOR -->
+  <div class="section-heading">
+    <p class="eyebrow">SELECT A SERVICE</p>
+    <h2>What do you need help with?</h2>
+    <p>Tap a service to automatically select it in the enquiry form.</p>
+  </div>
+
+  <div class="service-grid" id="serviceGrid">
+
+    <button type="button" class="service-choice active" data-service="Computer & Laptop Service">
+      <div class="service-icon">💻</div>
+      <h3>Computer & Laptop Service</h3>
+      <p>Repair, troubleshooting, software, OS and setup.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="CCTV Installation">
+      <div class="service-icon">📹</div>
+      <h3>CCTV Installation</h3>
+      <p>Camera installation, DVR/NVR and networking.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="Vehicle Insurance">
+      <div class="service-icon">🚗</div>
+      <h3>Vehicle Insurance</h3>
+      <p>New policy, renewal and insurance assistance.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="Online Works / Services">
+      <div class="service-icon">🌐</div>
+      <h3>Online Works / Services</h3>
+      <p>Online applications, e-services and digital assistance.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="Product Enquiry">
+      <div class="service-icon">🛒</div>
+      <h3>Product Enquiry</h3>
+      <p>Computers, laptops, printers, accessories and more.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="AMC">
+      <div class="service-icon">🔧</div>
+      <h3>AMC</h3>
+      <p>Regular maintenance and IT support for businesses.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="Printer Service">
+      <div class="service-icon">🖨️</div>
+      <h3>Printer Service</h3>
+      <p>Printer troubleshooting, service and support.</p>
+    </button>
+
+    <button type="button" class="service-choice" data-service="Other IT Service">
+      <div class="service-icon">🛠️</div>
+      <h3>Other IT Service</h3>
+      <p>Networking, installation and other requirements.</p>
+    </button>
+
+  </div>
+
+
+  <!-- FORM + CONTACT -->
+  <div class="enquiry-layout">
+
+    <section class="form-card">
+
+      <div class="card-head">
+        <h2>Send Your Enquiry</h2>
+        <p>Enter your details and briefly explain what you need.</p>
+      </div>
+
+      <div class="form-body">
+
+        <form id="enquiryForm" novalidate>
+
+          <div class="form-grid">
+
+            <div class="field">
+              <label for="name">Name <span>*</span></label>
+              <input
+                id="name"
+                type="text"
+                autocomplete="name"
+                placeholder="Your name"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="mobile">Mobile / WhatsApp <span>*</span></label>
+              <input
+                id="mobile"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                maxlength="15"
+                placeholder="10 digit mobile number"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="category">Enquiry Type <span>*</span></label>
+              <select id="category" required>
+                <option value="Computer & Laptop Service">Computer & Laptop Service</option>
+                <option value="CCTV Installation">CCTV Installation</option>
+                <option value="Vehicle Insurance">Vehicle Insurance</option>
+                <option value="Online Works / Services">Online Works / Services</option>
+                <option value="Product Enquiry">Product Enquiry</option>
+                <option value="AMC">AMC</option>
+                <option value="Printer Service">Printer Service</option>
+                <option value="Other IT Service">Other IT Service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="preferred">Preferred Contact</label>
+              <select id="preferred">
+                <option>WhatsApp</option>
+                <option>Phone Call</option>
+                <option>Either</option>
+              </select>
+            </div>
+
+
+            <!-- COMPUTER -->
+            <div class="extra-panel show" id="computerPanel">
+              <p class="extra-title">💻 Computer / Laptop Details <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="device">Device</label>
+                  <select id="device">
+                    <option value="">Select device</option>
+                    <option>Desktop Computer</option>
+                    <option>Laptop</option>
+                    <option>All-in-One PC</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="deviceBrand">Brand / Model</label>
+                  <input id="deviceBrand" type="text" placeholder="e.g. Dell Inspiron">
+                </div>
+              </div>
+            </div>
+
+
+            <!-- CCTV -->
+            <div class="extra-panel" id="cctvPanel">
+              <p class="extra-title">📹 CCTV Requirement <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="cameraCount">Approx. Cameras</label>
+                  <select id="cameraCount">
+                    <option value="">Select</option>
+                    <option>1–2 Cameras</option>
+                    <option>3–4 Cameras</option>
+                    <option>5–8 Cameras</option>
+                    <option>9+ Cameras</option>
+                    <option>Not sure</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="cctvPlace">Installation Place</label>
+                  <input id="cctvPlace" type="text" placeholder="Home / Office / Shop">
+                </div>
+              </div>
+            </div>
+
+
+            <!-- VEHICLE -->
+            <div class="extra-panel" id="vehiclePanel">
+              <p class="extra-title">🚗 Vehicle Insurance Details <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="vehicleNo">Vehicle Number</label>
+                  <input id="vehicleNo" type="text" placeholder="e.g. KL-01-AB-1234">
+                </div>
+                <div class="field">
+                  <label for="vehicleType">Vehicle Type</label>
+                  <select id="vehicleType">
+                    <option value="">Select</option>
+                    <option>Car</option>
+                    <option>Bike / Scooter</option>
+                    <option>Auto Rickshaw</option>
+                    <option>Commercial Vehicle</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- ONLINE -->
+            <div class="extra-panel" id="onlinePanel">
+              <p class="extra-title">🌐 Online Works Details <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="onlineType">Service Needed</label>
+                  <input id="onlineType" type="text" placeholder="e.g. Online application">
+                </div>
+                <div class="field">
+                  <label for="onlineRef">Reference / Other Info</label>
+                  <input id="onlineRef" type="text" placeholder="Optional">
+                </div>
+              </div>
+            </div>
+
+
+            <!-- PRODUCT -->
+            <div class="extra-panel" id="productPanel">
+              <p class="extra-title">🛒 Product Enquiry Details <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="productName">Product Needed</label>
+                  <input id="productName" type="text" placeholder="e.g. Laptop / Monitor / SSD">
+                </div>
+                <div class="field">
+                  <label for="productQty">Quantity</label>
+                  <input id="productQty" type="number" min="1" placeholder="1">
+                </div>
+              </div>
+            </div>
+
+
+            <!-- AMC -->
+            <div class="extra-panel" id="amcPanel">
+              <p class="extra-title">🔧 AMC Requirement <span style="font-weight:500;color:#8090a5">(optional)</span></p>
+              <div class="extra-grid">
+                <div class="field">
+                  <label for="amcFor">AMC For</label>
+                  <input id="amcFor" type="text" placeholder="Office / Shop / Institution">
+                </div>
+                <div class="field">
+                  <label for="amcDevices">Approx. Devices</label>
+                  <input id="amcDevices" type="text" placeholder="e.g. 10 computers + 2 printers">
+                </div>
+              </div>
+            </div>
+
+
+            <div class="field full">
+              <label for="message">Your Requirement <span>*</span></label>
+              <textarea
+                id="message"
+                placeholder="Describe the service, problem or product you are looking for..."
+                required
+              ></textarea>
+              <p class="helper">Please avoid sharing passwords, OTPs or other confidential information.</p>
+            </div>
+
+          </div>
+
+
+          <div class="form-actions">
+            <button id="submitBtn" class="submit-btn" type="submit">
+              Send Enquiry →
+            </button>
+            <button id="clearBtn" class="clear-btn" type="button">
+              Clear
+            </button>
+          </div>
+
+          <div id="formMessage" class="form-message"></div>
+
+        </form>
+
+      </div>
+    </section>
+
+
+    <!-- CONTACT CARD -->
+    <aside class="contact-card">
+
+      <div class="contact-hero">
+        <div class="contact-icon">iT</div>
+        <h2>iTech IT Solutions</h2>
+        <p>Professional IT support and technology services in Nedumangad.</p>
+      </div>
+
+      <div class="contact-list">
+
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <strong>Visit Us</strong>
+            <span>Govt. Sub Treasury Road, Nedumangad</span>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div>
+            <strong>Call / WhatsApp</strong>
+            <a href="tel:7736929233">7736929233</a>
+            <a href="tel:8943165951">8943165951</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div>
+            <strong>Email</strong>
+            <a href="mailto:itnedumangad@gmail.com">itnedumangad@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">📱</div>
+          <div>
+            <strong>Social</strong>
+            <span>@itechndd</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="response-box">
+        <strong>⚡ Quick response</strong>
+        <p>
+          Once your enquiry is submitted, our team can review the requirement
+          and contact you using the mobile number you provide.
+        </p>
+      </div>
+
+    </aside>
+
+  </div>
+
+</section>
+</main>
+
+
+<!-- =========================================================
+     EXISTING PUBLIC FOOTER - KEPT AS IS
+     ========================================================= -->
 <footer class="site-footer unified-site-footer">
-<div class="footer-brand">
-<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
-</div>
-<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
-<p class="footer-contact">7736929233 · 8943165951</p>
-<p class="footer-email">itnedumangad@gmail.com</p>
-<p class="footer-social">@itechndd</p>
-<p class="footer-tagline">Your Trust Our Service</p>
+
+  <div class="footer-brand">
+    <img
+      alt="iTech IT Solutions"
+      class="footer-logo"
+      src="../assets/itech-logo.png"
+    />
+  </div>
+
+  <p class="footer-address">
+    Govt. Sub Treasury Road, Nedumangad
+  </p>
+
+  <p class="footer-contact">
+    7736929233 · 8943165951
+  </p>
+
+  <p class="footer-email">
+    itnedumangad@gmail.com
+  </p>
+
+  <p class="footer-social">
+    @itechndd
+  </p>
+
+  <p class="footer-tagline">
+    Your Trust Our Service
+  </p>
+
 </footer>
-</body></html>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/site.js"></script>
+
+<script>
+(async function(){
+  "use strict";
+
+  const C = window.APP_CONFIG || {};
+  const key = C.SUPABASE_PUBLISHABLE_KEY || C.SUPABASE_ANON_KEY;
+
+  const form = document.getElementById("enquiryForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const messageBox = document.getElementById("formMessage");
+  const category = document.getElementById("category");
+  const serviceChoices = [...document.querySelectorAll(".service-choice")];
+
+  const panels = {
+    "Computer & Laptop Service": document.getElementById("computerPanel"),
+    "CCTV Installation": document.getElementById("cctvPanel"),
+    "Vehicle Insurance": document.getElementById("vehiclePanel"),
+    "Online Works / Services": document.getElementById("onlinePanel"),
+    "Product Enquiry": document.getElementById("productPanel"),
+    "AMC": document.getElementById("amcPanel")
+  };
+
+  function showMessage(text, type){
+    messageBox.textContent = text;
+    messageBox.className = "form-message show " + type;
+    messageBox.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+
+  function hideMessage(){
+    messageBox.textContent = "";
+    messageBox.className = "form-message";
+  }
+
+  function cleanPhone(value){
+    return String(value || "").replace(/\D/g,"");
+  }
+
+  function validPhone(value){
+    const p = cleanPhone(value);
+    return p.length >= 10 && p.length <= 15;
+  }
+
+  function setService(service){
+    category.value = service;
+
+    serviceChoices.forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.service === service);
+    });
+
+    Object.values(panels).forEach(panel => {
+      if(panel) panel.classList.remove("show");
+    });
+
+    if(panels[service]){
+      panels[service].classList.add("show");
+    }
+  }
+
+  serviceChoices.forEach(btn => {
+    btn.addEventListener("click", () => {
+      setService(btn.dataset.service || "Other IT Service");
+      document.getElementById("category").scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+    });
+  });
+
+  category.addEventListener("change", () => {
+    setService(category.value);
+  });
+
+  function extraDetails(service){
+    const lines = [];
+
+    if(service === "Computer & Laptop Service"){
+      const device = document.getElementById("device").value.trim();
+      const brand = document.getElementById("deviceBrand").value.trim();
+      if(device) lines.push("Device: " + device);
+      if(brand) lines.push("Brand/Model: " + brand);
+    }
+
+    if(service === "CCTV Installation"){
+      const count = document.getElementById("cameraCount").value.trim();
+      const place = document.getElementById("cctvPlace").value.trim();
+      if(count) lines.push("Approx. Cameras: " + count);
+      if(place) lines.push("Installation Place: " + place);
+    }
+
+    if(service === "Vehicle Insurance"){
+      const number = document.getElementById("vehicleNo").value.trim();
+      const type = document.getElementById("vehicleType").value.trim();
+      if(number) lines.push("Vehicle Number: " + number);
+      if(type) lines.push("Vehicle Type: " + type);
+    }
+
+    if(service === "Online Works / Services"){
+      const type = document.getElementById("onlineType").value.trim();
+      const ref = document.getElementById("onlineRef").value.trim();
+      if(type) lines.push("Online Service: " + type);
+      if(ref) lines.push("Reference/Info: " + ref);
+    }
+
+    if(service === "Product Enquiry"){
+      const product = document.getElementById("productName").value.trim();
+      const qty = document.getElementById("productQty").value.trim();
+      if(product) lines.push("Product Needed: " + product);
+      if(qty) lines.push("Quantity: " + qty);
+    }
+
+    if(service === "AMC"){
+      const amcFor = document.getElementById("amcFor").value.trim();
+      const devices = document.getElementById("amcDevices").value.trim();
+      if(amcFor) lines.push("AMC For: " + amcFor);
+      if(devices) lines.push("Approx. Devices: " + devices);
+    }
+
+    return lines;
+  }
+
+  function resetForm(){
+    form.reset();
+    setService("Computer & Laptop Service");
+    hideMessage();
+    document.getElementById("name").focus();
+  }
+
+  clearBtn.addEventListener("click", resetForm);
+
+  form.addEventListener("submit", async function(event){
+    event.preventDefault();
+    hideMessage();
+
+    if(!window.supabase || !C.SUPABASE_URL || !key){
+      showMessage("Unable to connect to the enquiry service. Please try again later.", "error");
+      return;
+    }
+
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const service = category.value.trim();
+    const preferred = document.getElementById("preferred").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if(name.length < 2){
+      showMessage("Please enter your name.", "error");
+      document.getElementById("name").focus();
+      return;
+    }
+
+    if(!validPhone(mobile)){
+      showMessage("Please enter a valid mobile / WhatsApp number.", "error");
+      document.getElementById("mobile").focus();
+      return;
+    }
+
+    if(!service){
+      showMessage("Please select an enquiry type.", "error");
+      return;
+    }
+
+    if(message.length < 5){
+      showMessage("Please describe your requirement.", "error");
+      document.getElementById("message").focus();
+      return;
+    }
+
+    const details = extraDetails(service);
+
+    const finalMessage = [
+      message,
+      details.length ? "\n\nAdditional Details:\n" + details.join("\n") : "",
+      preferred ? "\n\nPreferred Contact: " + preferred : ""
+    ].join("").trim();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending Enquiry...";
+
+    try{
+      const sb = window.supabase.createClient(C.SUPABASE_URL, key);
+
+      const result = await sb
+        .from("enquiries")
+        .insert({
+          name: name,
+          mobile: mobile,
+          category: service,
+          message: finalMessage,
+          status: "New"
+        });
+
+      if(result.error){
+        throw result.error;
+      }
+
+      showMessage(
+        "Your enquiry has been submitted successfully. Our team will contact you soon.",
+        "success"
+      );
+
+      form.reset();
+      setService("Computer & Laptop Service");
+
+      window.scrollTo({
+        top: document.querySelector(".enquiry-content").offsetTop - 20,
+        behavior:"smooth"
+      });
+
+    }catch(error){
+      console.error("Enquiry submit error:", error);
+
+      showMessage(
+        error?.message || "Unable to submit the enquiry. Please try again.",
+        "error"
+      );
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Send Enquiry →";
+    }
+  });
+
+  setService("Computer & Laptop Service");
+
+})();
+</script>
+
+</body>
+</html>

@@ -15,466 +15,226 @@
 
 <style>
 /* =========================================================
-   iTech ADMIN ENQUIRIES — ADVANCED
-   Existing dashboard shell/header/footer retained.
+   iTech ADMIN ENQUIRIES — PROFESSIONAL / ADVANCED
+   Header, sidebar and footer structure intentionally kept
+   compatible with the existing admin dashboard.
    ========================================================= */
 
-.enquiry-stats{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:15px;
-  margin:20px 0;
+.enq-page{max-width:1500px;margin:0 auto}
+.enq-hero{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  margin-bottom:20px
 }
-.enquiry-stat{
-  position:relative;
-  overflow:hidden;
-  background:#fff;
-  border:1px solid #e4ebf4;
-  border-radius:18px;
-  padding:19px;
-  box-shadow:0 10px 28px rgba(15,35,65,.07);
+.enq-hero h1{margin:0}
+.enq-hero .muted{margin:6px 0 0}
+.live-pill{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 12px;
+  border:1px solid #dce7f4;border-radius:999px;background:#fff;
+  color:#315375;font-size:11px;font-weight:800;white-space:nowrap;
+  box-shadow:0 7px 20px rgba(15,35,65,.05)
 }
-.enquiry-stat:after{
-  content:"";
-  position:absolute;
-  width:80px;height:80px;
-  right:-35px;bottom:-38px;
-  border-radius:50%;
-  background:rgba(39,117,239,.06);
-}
-.enquiry-stat small{
-  display:block;
-  color:#71809a;
-  font-weight:750;
-  margin-bottom:7px;
-  font-size:11px;
-}
-.enquiry-stat strong{
-  font-size:29px;
-  color:#102a4c;
-}
-.enquiry-stat:nth-child(1) strong{color:#f08a16}
-.enquiry-stat:nth-child(2) strong{color:#2563eb}
-.enquiry-stat:nth-child(3) strong{color:#7c3aed}
-.enquiry-stat:nth-child(4) strong{color:#16a34a}
-.enquiry-stat .stat-sub{
-  display:block;
-  margin-top:5px;
-  color:#91a0b3;
-  font-size:10px;
-}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 4px #dcfce7}
 
-/* TOP TOOLBAR */
-.enquiry-toolbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  margin:0 0 16px;
+/* Summary cards */
+.enq-stats{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:20px 0
 }
-.enquiry-toolbar-left{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
+.enq-stat{
+  position:relative;overflow:hidden;background:#fff;border:1px solid #e2eaf4;
+  border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,35,65,.065)
 }
-.search-box{
-  width:310px;
-  max-width:100%;
-  height:42px;
-  box-sizing:border-box;
-  padding:0 13px 0 38px;
-  border:1px solid #d7e1ed;
-  border-radius:11px;
-  outline:none;
-  background:#fff;
-  color:#173354;
-  font:inherit;
-  font-size:12px;
+.enq-stat:after{
+  content:"";position:absolute;width:86px;height:86px;right:-36px;bottom:-40px;
+  border-radius:50%;background:rgba(39,117,239,.06)
 }
-.search-wrap{
-  position:relative;
+.enq-stat small{display:block;color:#73839a;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.35px}
+.enq-stat strong{display:block;margin-top:6px;color:#102a4c;font-size:28px;line-height:1}
+.enq-stat span{display:block;margin-top:8px;color:#92a0b2;font-size:10px}
+.enq-stat.new strong{color:#f08a16}
+.enq-stat.contacted strong{color:#2563eb}
+.enq-stat.progress strong{color:#7c3aed}
+.enq-stat.closed strong{color:#16a34a}
+.enq-stat.total strong{color:#102a4c}
+
+/* Toolbar */
+.enq-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;margin-bottom:15px
 }
-.search-wrap .search-icon{
-  position:absolute;
-  left:13px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#8291a5;
-  font-size:15px;
-  pointer-events:none;
+.toolbar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1}
+.search-wrap{position:relative;min-width:290px;flex:1;max-width:430px}
+.search-wrap span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#8493a7}
+.search-box,.filter-select,.sort-select{
+  height:42px;border:1px solid #d7e1ed;border-radius:11px;background:#fff;
+  color:#294566;font:inherit;font-size:12px;outline:none;box-sizing:border-box
 }
-.filter-select{
-  height:42px;
-  border:1px solid #d7e1ed;
-  border-radius:11px;
-  padding:0 12px;
-  background:#fff;
-  color:#294566;
-  font:inherit;
-  font-size:12px;
-  font-weight:700;
-  outline:none;
-}
+.search-box{width:100%;padding:0 13px 0 37px}
+.filter-select,.sort-select{padding:0 12px;font-weight:750}
 .refresh-btn{
-  height:42px;
-  border:1px solid #d7e1ed;
-  border-radius:11px;
-  padding:0 14px;
-  background:#fff;
-  color:#294566;
-  cursor:pointer;
-  font:inherit;
-  font-size:12px;
-  font-weight:800;
+  height:42px;border:1px solid #d7e1ed;border-radius:11px;padding:0 14px;
+  background:#fff;color:#294566;cursor:pointer;font:inherit;font-size:12px;font-weight:850
 }
-.refresh-btn:hover{border-color:#91b5e6;background:#f8fbff}
+.refresh-btn:hover{background:#f7faff;border-color:#a8c4e8}
+.refresh-btn:disabled{opacity:.6;cursor:wait}
 
-/* PANEL */
-.enquiry-panel{
-  background:#fff;
-  border:1px solid #e4ebf4;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(15,35,65,.06);
-}
-.enquiry-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:15px;
-  margin-bottom:17px;
-}
-.enquiry-head h2{
-  margin:0;
-  color:#102a4c;
-}
-.enquiry-head p{
-  margin:5px 0 0;
-  font-size:12px;
-}
-.result-count{
-  padding:8px 11px;
-  border-radius:999px;
-  background:#f1f6fc;
-  color:#315375;
-  font-size:10px;
-  font-weight:850;
-  white-space:nowrap;
-}
-
-/* CATEGORY FILTERS */
+/* Category tabs */
 .category-tabs{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-bottom:17px;
+  display:flex;gap:7px;overflow-x:auto;padding:2px 1px 7px;margin-bottom:15px;
+  scrollbar-width:thin
 }
 .category-tab{
-  border:1px solid #dce5ef;
-  border-radius:999px;
-  padding:8px 11px;
-  background:#fff;
-  color:#46627e;
-  cursor:pointer;
-  font:inherit;
-  font-size:10px;
-  font-weight:800;
+  flex:0 0 auto;border:1px solid #dce5ef;border-radius:999px;padding:8px 11px;
+  background:#fff;color:#46627e;cursor:pointer;font:inherit;font-size:10px;font-weight:850
 }
 .category-tab:hover{border-color:#9bbbe6}
-.category-tab.active{
-  border-color:#2674e8;
-  background:#2674e8;
-  color:#fff;
+.category-tab.active{border-color:#2674e8;background:#2674e8;color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.18)}
+
+/* Main panel */
+.enq-panel{
+  background:#fff;border:1px solid #e2eaf4;border-radius:20px;
+  padding:19px;box-shadow:0 10px 30px rgba(15,35,65,.055)
+}
+.enq-panel-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px
+}
+.enq-panel-head h2{margin:0;color:#102a4c}
+.enq-panel-head p{margin:5px 0 0;font-size:11px}
+.result-count{
+  padding:8px 11px;border-radius:999px;background:#f1f6fc;color:#315375;
+  font-size:10px;font-weight:850;white-space:nowrap
 }
 
-/* TABLE */
-.table-scroll{overflow-x:auto}
-.enquiry-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  min-width:1120px;
+/* Table */
+.table-scroll{overflow:auto;border:1px solid #e7edf5;border-radius:13px}
+.enq-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1190px}
+.enq-table th{
+  position:sticky;top:0;z-index:2;background:#f5f8fc;color:#153052;text-align:left;
+  padding:12px 10px;border-bottom:1px solid #e2e8f0;font-size:9px;
+  text-transform:uppercase;letter-spacing:.45px
 }
-.enquiry-table th{
-  position:sticky;
-  top:0;
-  z-index:1;
-  background:#f5f8fc;
-  color:#153052;
-  text-align:left;
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:.35px;
-  padding:12px 10px;
-  border-bottom:1px solid #e2e8f0;
-}
-.enquiry-table th:first-child{border-radius:10px 0 0 0}
-.enquiry-table th:last-child{border-radius:0 10px 0 0}
-.enquiry-table td{
-  padding:13px 10px;
-  border-bottom:1px solid #edf1f6;
-  font-size:12px;
-  vertical-align:top;
-}
-.enquiry-table tbody tr:hover td{background:#fbfdff}
-.customer-name{
-  font-weight:850;
-  color:#102a4c;
-}
-.customer-mobile{
-  display:block;
-  margin-top:4px;
-  color:#7b8aa0;
-  font-size:11px;
-}
+.enq-table td{padding:12px 10px;border-bottom:1px solid #edf1f6;vertical-align:top;font-size:11px}
+.enq-table tbody tr:hover td{background:#fbfdff}
+.enq-table tbody tr:last-child td{border-bottom:0}
+
+.customer-cell{min-width:145px}
+.customer-name{font-weight:900;color:#102a4c}
+.customer-mobile{display:block;margin-top:4px;color:#7b8aa0;font-size:10px}
+.customer-mobile.clickable{color:#2563eb;cursor:pointer}
 .category{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:999px;
-  background:#eef4ff;
-  color:#2458b8;
-  font-weight:800;
-  font-size:9px;
-  line-height:1.3;
-}
-.message{
-  max-width:320px;
-  color:#526b87;
-  line-height:1.5;
-  white-space:pre-line;
-  word-break:break-word;
+  display:inline-block;padding:5px 8px;border-radius:999px;background:#eef4ff;
+  color:#2458b8;font-weight:850;font-size:9px;line-height:1.3
 }
 .message-preview{
-  display:-webkit-box;
-  -webkit-line-clamp:3;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
+  max-width:300px;color:#526b87;line-height:1.55;display:-webkit-box;
+  -webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word
 }
-.date-cell{
-  color:#71829b;
-  white-space:nowrap;
-  font-size:11px;
-}
+.date-cell{color:#71829b;white-space:nowrap;font-size:10px}
 .status-select{
-  min-width:112px;
-  border:1px solid #d6e0ec;
-  border-radius:8px;
-  padding:8px 7px;
-  background:#fff;
-  color:#173354;
-  font-weight:750;
-  font-size:11px;
-  outline:none;
+  min-width:116px;border:1px solid #d6e0ec;border-radius:8px;padding:8px 7px;
+  background:#fff;color:#173354;font-weight:750;font-size:10px;outline:none
 }
 .note-input{
-  width:190px;
-  min-height:56px;
-  box-sizing:border-box;
-  border:1px solid #d6e0ec;
-  border-radius:8px;
-  padding:8px;
-  resize:vertical;
-  background:#fff;
-  color:#173354;
-  font:12px inherit;
-  outline:none;
+  width:190px;min-height:55px;box-sizing:border-box;border:1px solid #d6e0ec;
+  border-radius:8px;padding:8px;resize:vertical;background:#fff;color:#173354;
+  font:11px inherit;outline:none
 }
-.note-input:focus,.status-select:focus{
-  border-color:#6da3ef;
-  box-shadow:0 0 0 3px rgba(39,117,239,.08);
+.status-select:focus,.note-input:focus{border-color:#6da3ef;box-shadow:0 0 0 3px rgba(39,117,239,.08)}
+.closed-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border-radius:8px;
+  background:#ecfdf3;color:#15803d;font-weight:850;font-size:10px
 }
-.actions{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  min-width:190px;
-}
+.actions{display:flex;gap:5px;flex-wrap:wrap;min-width:205px}
 .mini{
-  border:0;
-  border-radius:8px;
-  padding:8px 10px;
-  font-weight:800;
-  font-size:10px;
-  cursor:pointer;
-  transition:.15s ease;
+  border:0;border-radius:8px;padding:8px 9px;font-weight:850;font-size:9px;
+  cursor:pointer;transition:.15s ease
 }
 .mini:hover{transform:translateY(-1px)}
+.mini:disabled{opacity:.55;cursor:wait;transform:none}
+.view{background:#eef4ff;color:#2458b8;border:1px solid #d6e5ff}
 .save{background:#2563eb;color:#fff}
 .wa{background:#16a34a;color:#fff}
-.del{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2}
 .reopen{background:#f59e0b;color:#fff}
-.view{background:#eef4ff;color:#2458b8;border:1px solid #d6e5ff}
-.status-closed-badge{
-  display:inline-flex;
-  align-items:center;
-  padding:8px 11px;
-  border-radius:8px;
-  background:#ecfdf3;
-  color:#15803d;
-  font-weight:850;
-  font-size:11px;
-}
+.del{background:#fff0f0;color:#dc2626;border:1px solid #ffd2d2}
+.copy{background:#f6f8fb;color:#405a76;border:1px solid #e1e8f0}
 
-/* EMPTY / STATUS */
-.center{
-  padding:42px!important;
-  text-align:center;
-  color:#77879c;
+/* Status message */
+.page-status{
+  display:none;margin-top:12px;padding:10px 12px;border-radius:10px;
+  font-size:11px;font-weight:750
 }
-.status{
-  margin-top:13px;
-  display:none;
-  padding:10px 12px;
-  border-radius:10px;
-  font-size:11px;
-  font-weight:750;
-}
-.status.show{display:block}
-.status.ok{background:#ecfdf3;color:#166534;border:1px solid #b9edcf}
-.status.error{background:#fff1f1;color:#a32929;border:1px solid #ffcaca}
+.page-status.show{display:block}
+.page-status.ok{background:#ecfdf3;color:#166534;border:1px solid #b9edcf}
+.page-status.error{background:#fff1f1;color:#a32929;border:1px solid #ffcaca}
 
-/* DETAIL MODAL */
-.enquiry-modal{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:none;
-  place-items:center;
-  padding:18px;
-  background:rgba(4,20,42,.68);
-  backdrop-filter:blur(5px);
+/* Detail modal */
+.enq-modal{
+  position:fixed;inset:0;z-index:9999;display:none;place-items:center;padding:18px;
+  background:rgba(4,20,42,.68);backdrop-filter:blur(5px)
 }
-.enquiry-modal.open{display:grid}
-.enquiry-modal-card{
-  width:min(700px,100%);
-  max-height:90vh;
-  overflow:auto;
-  border-radius:20px;
-  background:#fff;
-  box-shadow:0 25px 70px rgba(0,0,0,.28);
+.enq-modal.open{display:grid}
+.modal-card{
+  width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:20px;background:#fff;
+  box-shadow:0 25px 70px rgba(0,0,0,.28)
 }
 .modal-top{
-  padding:20px 21px 15px;
-  border-bottom:1px solid #edf1f6;
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  align-items:flex-start;
+  padding:19px 21px 15px;border-bottom:1px solid #edf1f6;display:flex;
+  justify-content:space-between;gap:15px;align-items:flex-start
 }
-.modal-top h2{
-  margin:0;
-  color:#102a4c;
-  font-size:21px;
-}
-.modal-top p{
-  margin:5px 0 0;
-  color:#7a8ba1;
-  font-size:11px;
-}
+.modal-top h2{margin:0;color:#102a4c;font-size:21px}
+.modal-top p{margin:5px 0 0;color:#7a8ba1;font-size:11px}
 .modal-close{
-  width:36px;height:36px;
-  flex:0 0 36px;
-  border:0;
-  border-radius:50%;
-  background:#f1f5f9;
-  color:#294566;
-  cursor:pointer;
-  font-size:20px;
+  width:36px;height:36px;border:0;border-radius:50%;background:#f1f5f9;
+  color:#294566;cursor:pointer;font-size:20px
 }
 .modal-body{padding:20px 21px 22px}
-.detail-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .detail-box{
-  padding:13px;
-  border:1px solid #e4ebf4;
-  border-radius:12px;
-  background:#fafcff;
+  padding:13px;border:1px solid #e4ebf4;border-radius:12px;background:#fafcff
 }
 .detail-box.full{grid-column:1/-1}
 .detail-box small{
-  display:block;
-  color:#8392a5;
-  font-size:9px;
-  font-weight:850;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:5px;
+  display:block;color:#8392a5;font-size:9px;font-weight:850;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:5px
 }
-.detail-box strong{
-  color:#173354;
-  font-size:12px;
-  line-height:1.5;
-}
-.detail-message{
-  white-space:pre-line;
-  color:#506985;
-  font-size:12px;
-  line-height:1.7;
-}
+.detail-box strong{color:#173354;font-size:12px;line-height:1.5}
+.detail-message{white-space:pre-line;color:#506985;font-size:12px;line-height:1.7;word-break:break-word}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 
-/* FOOTER — same unified admin footer style */
+/* Footer — same unified admin footer style */
 .unified-site-footer{
-  width:100%;
-  margin-top:32px;
-  padding:28px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
-  color:#fff;
-  border-radius:18px 18px 0 0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:7px;
-  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+  width:100%;margin-top:32px;padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);color:#fff;border-radius:18px 18px 0 0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  gap:7px;box-shadow:0 -6px 22px rgba(7,28,59,.10)
 }
-.unified-site-footer .footer-logo{
-  width:58px;height:58px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto 4px;
-}
+.unified-site-footer .footer-logo{width:58px;height:58px;object-fit:contain;display:block;margin:0 auto 4px}
 .unified-site-footer p{margin:0;line-height:1.45}
 .unified-site-footer .footer-address{font-size:12px;font-weight:600;color:#dce7f8}
 .unified-site-footer .footer-contact{font-size:13px;font-weight:800;color:#fff}
 .unified-site-footer .footer-email{font-size:12px;color:#dce7f8}
 .unified-site-footer .footer-social{font-size:12px;font-weight:800;color:#ff9a25}
 .unified-site-footer .footer-tagline{
-  margin-top:7px;
-  padding-top:9px;
-  width:min(360px,90%);
-  border-top:1px solid rgba(255,255,255,.16);
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.4px;
-  color:#fff;
+  margin-top:7px;padding-top:9px;width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);font-size:12px;font-weight:800;
+  letter-spacing:.4px;color:#fff
 }
 
+@media(max-width:1100px){
+  .enq-stats{grid-template-columns:repeat(3,1fr)}
+}
 @media(max-width:900px){
-  .enquiry-stats{grid-template-columns:repeat(2,1fr)}
-  .enquiry-head{flex-direction:column}
-  .enquiry-toolbar{align-items:stretch}
-  .enquiry-toolbar-left{width:100%}
-  .search-wrap,.search-box{width:100%}
-  .filter-select{flex:1;min-width:170px}
+  .enq-hero{align-items:flex-start;flex-direction:column}
+  .enq-stats{grid-template-columns:repeat(2,1fr)}
+  .toolbar-left{width:100%}
+  .search-wrap{min-width:0;max-width:none;width:100%}
 }
 @media(max-width:600px){
-  .enquiry-stats{grid-template-columns:1fr}
-  .enquiry-panel{padding:14px}
-  .category-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
-  .category-tab{white-space:nowrap}
+  .enq-stats{grid-template-columns:1fr 1fr}
+  .enq-panel{padding:13px}
+  .enq-panel-head{align-items:flex-start;flex-direction:column}
   .detail-grid{grid-template-columns:1fr}
   .detail-box.full{grid-column:auto}
-  .unified-site-footer{
-    margin-top:22px;
-    padding:24px 14px 20px;
-    border-radius:14px 14px 0 0;
-  }
+  .unified-site-footer{margin-top:22px;padding:24px 14px 20px;border-radius:14px 14px 0 0}
   .unified-site-footer .footer-logo{width:52px;height:52px}
 }
 </style>
@@ -482,14 +242,11 @@
 
 <body>
 
-<!-- =========================================================
-     EXISTING ADMIN HEADER
-     ========================================================= -->
+<!-- EXISTING ADMIN HEADER — kept in the same style -->
 <header class="dash-header">
   <a class="brand" href="dashboard.html">
     <img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
   </a>
-
   <div class="header-actions">
     <span class="user-chip" data-admin-name="">Admin</span>
     <a class="btn secondary" href="../pages/login.html" data-logout>Logout</a>
@@ -522,272 +279,154 @@
     </nav>
   </aside>
 
-
   <main class="dash-main">
+    <div class="enq-page">
 
-    <div class="toolbar">
-      <div>
-        <p class="eyebrow">CUSTOMER COMMUNICATION</p>
-        <h1>Enquiries</h1>
-        <p class="muted">
-          Manage service enquiries, customer follow-ups and responses from one place.
-        </p>
-      </div>
-    </div>
-
-
-    <!-- STATS -->
-    <div class="enquiry-stats">
-      <div class="enquiry-stat">
-        <small>New Enquiries</small>
-        <strong id="newCount">0</strong>
-        <span class="stat-sub">Waiting for first response</span>
-      </div>
-
-      <div class="enquiry-stat">
-        <small>Contacted</small>
-        <strong id="contactedCount">0</strong>
-        <span class="stat-sub">Customer contacted</span>
-      </div>
-
-      <div class="enquiry-stat">
-        <small>In Progress</small>
-        <strong id="progressCount">0</strong>
-        <span class="stat-sub">Being handled</span>
-      </div>
-
-      <div class="enquiry-stat">
-        <small>Closed</small>
-        <strong id="closedCount">0</strong>
-        <span class="stat-sub">Completed enquiries</span>
-      </div>
-    </div>
-
-
-    <!-- TOOLBAR -->
-    <div class="enquiry-toolbar">
-
-      <div class="enquiry-toolbar-left">
-
-        <div class="search-wrap">
-          <span class="search-icon">⌕</span>
-          <input
-            class="search-box"
-            id="searchInput"
-            type="search"
-            placeholder="Search name, mobile, service or message..."
-            autocomplete="off"
-          >
-        </div>
-
-        <select id="statusFilter" class="filter-select">
-          <option value="all">All Status</option>
-          <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-
-        <button id="refreshBtn" class="refresh-btn" type="button">
-          ↻ Refresh
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- MAIN PANEL -->
-    <section class="enquiry-panel">
-
-      <div class="enquiry-head">
+      <div class="enq-hero">
         <div>
-          <h2>Customer Enquiries</h2>
-          <p class="muted">
-            Live enquiries submitted from the public Enquiry page.
-          </p>
+          <p class="eyebrow">CUSTOMER COMMUNICATION</p>
+          <h1>Enquiries</h1>
+          <p class="muted">Manage enquiries, follow-ups, customer contact and case status from one place.</p>
+        </div>
+        <div class="live-pill"><span class="live-dot"></span> Live Enquiry Inbox</div>
+      </div>
+
+      <!-- SUMMARY -->
+      <section class="enq-stats">
+        <div class="enq-stat new">
+          <small>New</small><strong id="newCount">0</strong><span>Awaiting first response</span>
+        </div>
+        <div class="enq-stat contacted">
+          <small>Contacted</small><strong id="contactedCount">0</strong><span>Customer contacted</span>
+        </div>
+        <div class="enq-stat progress">
+          <small>In Progress</small><strong id="progressCount">0</strong><span>Currently being handled</span>
+        </div>
+        <div class="enq-stat closed">
+          <small>Closed</small><strong id="closedCount">0</strong><span>Completed enquiries</span>
+        </div>
+        <div class="enq-stat total">
+          <small>Total</small><strong id="totalCount">0</strong><span>All enquiries received</span>
+        </div>
+      </section>
+
+      <!-- FILTER BAR -->
+      <div class="enq-toolbar">
+        <div class="toolbar-left">
+          <div class="search-wrap">
+            <span>⌕</span>
+            <input class="search-box" id="searchInput" type="search"
+              placeholder="Search name, mobile, service, requirement or note..." autocomplete="off">
+          </div>
+
+          <select id="statusFilter" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Closed">Closed</option>
+          </select>
+
+          <select id="sortFilter" class="sort-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name">Customer Name</option>
+          </select>
+
+          <button id="refreshBtn" class="refresh-btn" type="button">↻ Refresh</button>
+        </div>
+      </div>
+
+      <section class="enq-panel">
+        <div class="enq-panel-head">
+          <div>
+            <h2>Customer Enquiries</h2>
+            <p class="muted">Use the category filters for faster service-wise follow-up.</p>
+          </div>
+          <span class="result-count" id="resultCount">0 enquiries</span>
         </div>
 
-        <span class="result-count" id="resultCount">0 enquiries</span>
-      </div>
+        <!-- CATEGORY FILTER -->
+        <div class="category-tabs" id="categoryTabs">
+          <button class="category-tab active" data-category="all" type="button">All Services</button>
+          <button class="category-tab" data-category="Computer & Laptop Service" type="button">💻 Computer & Laptop</button>
+          <button class="category-tab" data-category="CCTV Installation" type="button">📹 CCTV</button>
+          <button class="category-tab" data-category="Vehicle Insurance" type="button">🚗 Vehicle Insurance</button>
+          <button class="category-tab" data-category="Online Works / Services" type="button">🌐 Online Works</button>
+          <button class="category-tab" data-category="Product Enquiry" type="button">🛒 Product</button>
+          <button class="category-tab" data-category="AMC" type="button">🔧 AMC</button>
+          <button class="category-tab" data-category="Printer Service" type="button">🖨️ Printer</button>
+          <button class="category-tab" data-category="Other IT Service" type="button">🛠️ Other IT</button>
+        </div>
 
+        <div class="table-scroll">
+          <table class="enq-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Requirement</th>
+                <th>Received</th>
+                <th>Status</th>
+                <th>Admin Note</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="enquiryBody">
+              <tr><td colspan="7" style="padding:45px;text-align:center;color:#77879c">Loading enquiries...</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-      <!-- CATEGORY FILTER -->
-      <div class="category-tabs" id="categoryTabs">
+        <div class="page-status" id="pageStatus"></div>
+      </section>
 
-        <button class="category-tab active" type="button" data-category="all">
-          All Services
-        </button>
-
-        <button class="category-tab" type="button" data-category="Computer & Laptop Service">
-          💻 Computer & Laptop
-        </button>
-
-        <button class="category-tab" type="button" data-category="CCTV Installation">
-          📹 CCTV
-        </button>
-
-        <button class="category-tab" type="button" data-category="Vehicle Insurance">
-          🚗 Vehicle Insurance
-        </button>
-
-        <button class="category-tab" type="button" data-category="Online Works / Services">
-          🌐 Online Works
-        </button>
-
-        <button class="category-tab" type="button" data-category="Product Enquiry">
-          🛒 Product
-        </button>
-
-        <button class="category-tab" type="button" data-category="AMC">
-          🔧 AMC
-        </button>
-
-        <button class="category-tab" type="button" data-category="Printer Service">
-          🖨️ Printer
-        </button>
-
-        <button class="category-tab" type="button" data-category="Other IT Service">
-          🛠️ Other IT
-        </button>
-
-      </div>
-
-
-      <div class="table-scroll">
-        <table class="enquiry-table">
-
-          <thead>
-            <tr>
-              <th>Customer</th>
-              <th>Service</th>
-              <th>Requirement</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Admin Note</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody id="enquiryBody">
-            <tr>
-              <td colspan="7" class="center">
-                Loading enquiries...
-              </td>
-            </tr>
-          </tbody>
-
-        </table>
-      </div>
-
-      <div class="status" data-status id="pageStatus"></div>
-
-    </section>
-
+    </div>
   </main>
 </div>
 
-
-<!-- =========================================================
-     ENQUIRY DETAIL MODAL
-     ========================================================= -->
-<div class="enquiry-modal" id="enquiryModal" aria-hidden="true">
-
-  <div class="enquiry-modal-card">
-
+<!-- DETAIL MODAL -->
+<div class="enq-modal" id="enquiryModal" aria-hidden="true">
+  <div class="modal-card">
     <div class="modal-top">
       <div>
         <h2 id="modalTitle">Enquiry Details</h2>
         <p id="modalSubtitle"></p>
       </div>
-
-      <button class="modal-close" id="modalClose" type="button" aria-label="Close">
-        ×
-      </button>
+      <button class="modal-close" id="modalClose" type="button">×</button>
     </div>
 
     <div class="modal-body">
-
       <div class="detail-grid">
-
-        <div class="detail-box">
-          <small>Customer</small>
-          <strong id="detailName">—</strong>
-        </div>
-
-        <div class="detail-box">
-          <small>Mobile / WhatsApp</small>
-          <strong id="detailMobile">—</strong>
-        </div>
-
-        <div class="detail-box">
-          <small>Enquiry Type</small>
-          <strong id="detailCategory">—</strong>
-        </div>
-
-        <div class="detail-box">
-          <small>Status</small>
-          <strong id="detailStatus">—</strong>
-        </div>
-
-        <div class="detail-box full">
-          <small>Requirement</small>
-          <div class="detail-message" id="detailMessage">—</div>
-        </div>
-
-        <div class="detail-box full">
-          <small>Admin Note</small>
-          <div class="detail-message" id="detailNote">—</div>
-        </div>
-
+        <div class="detail-box"><small>Customer</small><strong id="detailName">—</strong></div>
+        <div class="detail-box"><small>Mobile / WhatsApp</small><strong id="detailMobile">—</strong></div>
+        <div class="detail-box"><small>Enquiry Type</small><strong id="detailCategory">—</strong></div>
+        <div class="detail-box"><small>Status</small><strong id="detailStatus">—</strong></div>
+        <div class="detail-box full"><small>Requirement</small><div class="detail-message" id="detailMessage">—</div></div>
+        <div class="detail-box full"><small>Admin Note</small><div class="detail-message" id="detailNote">—</div></div>
       </div>
 
+      <div class="modal-actions">
+        <button class="mini wa" id="modalWa" type="button">WhatsApp Customer</button>
+        <button class="mini copy" id="modalCopy" type="button">Copy Mobile</button>
+        <button class="mini reopen" id="modalReopen" type="button" style="display:none">↻ Reopen</button>
+      </div>
     </div>
-
   </div>
-
 </div>
 
-
-<!-- =========================================================
-     EXISTING ADMIN FOOTER
-     ========================================================= -->
+<!-- EXISTING ADMIN FOOTER — kept in the same style -->
 <footer class="site-footer unified-site-footer">
-
   <div class="footer-brand">
-    <img
-      class="footer-logo"
-      src="../assets/itech-logo.png"
-      alt="iTech IT Solutions"
-    >
+    <img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions">
   </div>
-
-  <p class="footer-address">
-    Govt. Sub Treasury Road, Nedumangad
-  </p>
-
-  <p class="footer-contact">
-    7736929233 · 8943165951
-  </p>
-
-  <p class="footer-email">
-    itnedumangad@gmail.com
-  </p>
-
-  <p class="footer-social">
-    @itechndd
-  </p>
-
-  <p class="footer-tagline">
-    Your Trust Our Service
-  </p>
-
+  <p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+  <p class="footer-contact">7736929233 · 8943165951</p>
+  <p class="footer-email">itnedumangad@gmail.com</p>
+  <p class="footer-social">@itechndd</p>
+  <p class="footer-tagline">Your Trust Our Service</p>
 </footer>
 
-
-<!-- =========================================================
-     SCRIPTS
-     ========================================================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
@@ -795,640 +434,422 @@
 
 <script>
 (async()=>{
-
-  /* Admin-only page */
   const auth = await requireAdmin();
   if(!auth) return;
 
   const body = document.getElementById("enquiryBody");
   const search = document.getElementById("searchInput");
   const statusFilter = document.getElementById("statusFilter");
+  const sortFilter = document.getElementById("sortFilter");
   const resultCount = document.getElementById("resultCount");
   const pageStatus = document.getElementById("pageStatus");
   const refreshBtn = document.getElementById("refreshBtn");
 
   const modal = document.getElementById("enquiryModal");
   const modalClose = document.getElementById("modalClose");
+  const modalWa = document.getElementById("modalWa");
+  const modalCopy = document.getElementById("modalCopy");
+  const modalReopen = document.getElementById("modalReopen");
 
   let rows = [];
   let activeCategory = "all";
+  let modalItem = null;
 
   const $ = id => document.getElementById(id);
 
   function esc(v){
     return String(v ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;")
       .replace(/'/g,"&#039;");
   }
 
-  function showStatus(message,error=false){
-    pageStatus.textContent = message;
-    pageStatus.className = "status show " + (error ? "error" : "ok");
+  function norm(v){ return String(v ?? "").trim().toLowerCase(); }
+  function statusName(v){ return v || "New"; }
 
+  function showStatus(msg,error=false){
+    pageStatus.textContent = msg;
+    pageStatus.className = "page-status show " + (error ? "error" : "ok");
     clearTimeout(pageStatus._timer);
-    pageStatus._timer = setTimeout(()=>{
-      pageStatus.classList.remove("show");
-    },4500);
+    pageStatus._timer = setTimeout(()=>pageStatus.classList.remove("show"),4500);
   }
 
-  function statusName(value){
-    return value || "New";
-  }
-
-  function normalize(value){
-    return String(value ?? "").trim().toLowerCase();
-  }
-
-  function stats(data){
-
-    $("newCount").textContent =
-      data.filter(x => normalize(statusName(x.status)) === "new").length;
-
-    $("contactedCount").textContent =
-      data.filter(x => normalize(x.status) === "contacted").length;
-
-    $("progressCount").textContent =
-      data.filter(x => normalize(x.status) === "in progress").length;
-
-    $("closedCount").textContent =
-      data.filter(x => normalize(x.status) === "closed").length;
+  function updateStats(data){
+    $("newCount").textContent = data.filter(x=>norm(statusName(x.status))==="new").length;
+    $("contactedCount").textContent = data.filter(x=>norm(x.status)==="contacted").length;
+    $("progressCount").textContent = data.filter(x=>norm(x.status)==="in progress").length;
+    $("closedCount").textContent = data.filter(x=>norm(x.status)==="closed").length;
+    $("totalCount").textContent = data.length;
   }
 
   function filteredRows(){
-
     const q = search.value.trim().toLowerCase();
     const sf = statusFilter.value;
 
-    return rows.filter(x => {
-
-      const category = String(x.category || "General");
-
+    const result = rows.filter(x=>{
       const categoryMatch =
-        activeCategory === "all" ||
-        normalize(category) === normalize(activeCategory);
+        activeCategory==="all" || norm(x.category)===norm(activeCategory);
 
       const statusMatch =
-        sf === "all" ||
-        normalize(statusName(x.status)) === normalize(sf);
+        sf==="all" || norm(statusName(x.status))===norm(sf);
 
-      const searchText = [
-        x.name,
-        x.mobile,
-        x.category,
-        x.message,
-        x.status,
-        x.admin_note
+      const haystack = [
+        x.name,x.mobile,x.category,x.message,x.status,x.admin_note
       ].filter(Boolean).join(" ").toLowerCase();
 
-      const searchMatch = !q || searchText.includes(q);
-
-      return categoryMatch && statusMatch && searchMatch;
+      return categoryMatch && statusMatch && (!q || haystack.includes(q));
     });
+
+    if(sortFilter.value==="oldest"){
+      result.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+    }else if(sortFilter.value==="name"){
+      result.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+    }else{
+      result.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+    }
+
+    return result;
+  }
+
+  function categoryClass(v){
+    const n=norm(v);
+    if(n.includes("insurance")) return "background:#fff7ed;color:#c2410c";
+    if(n.includes("cctv")) return "background:#ecfeff;color:#0e7490";
+    if(n.includes("online")) return "background:#f5f3ff;color:#6d28d9";
+    if(n.includes("product")) return "background:#f0fdf4;color:#15803d";
+    if(n.includes("amc")) return "background:#fff7ed;color:#b45309";
+    return "";
   }
 
   function render(){
-
     const data = filteredRows();
-
-    resultCount.textContent =
-      data.length + (data.length === 1 ? " enquiry" : " enquiries");
+    resultCount.textContent = data.length + (data.length===1 ? " enquiry" : " enquiries");
 
     if(!data.length){
-      body.innerHTML = `
-        <tr>
-          <td colspan="7" class="center">
-            No enquiries found for the selected filters.
-          </td>
-        </tr>
-      `;
+      body.innerHTML = `<tr><td colspan="7" style="padding:48px;text-align:center;color:#77879c">
+        No enquiries found for the selected filters.
+      </td></tr>`;
       return;
     }
 
     body.innerHTML = data.map(x=>{
-
+      const status = statusName(x.status);
+      const closed = norm(status)==="closed";
       const date = x.created_at
-        ? new Date(x.created_at).toLocaleString("en-IN",{
-            dateStyle:"medium",
-            timeStyle:"short"
-          })
+        ? new Date(x.created_at).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})
         : "—";
 
-      const status = statusName(x.status);
-      const closed = normalize(status) === "closed";
-
       return `
-        <tr data-id="${esc(x.id)}">
+      <tr data-id="${esc(x.id)}">
+        <td class="customer-cell">
+          <div class="customer-name">${esc(x.name||"Unknown Customer")}</div>
+          <span class="customer-mobile clickable" data-copy="${esc(x.mobile||"")}">${esc(x.mobile||"No mobile")}</span>
+        </td>
 
-          <td>
-            <div class="customer-name">
-              ${esc(x.name || "Unknown Customer")}
-            </div>
-            <span class="customer-mobile">
-              ${esc(x.mobile || "No mobile")}
-            </span>
-          </td>
+        <td>
+          <span class="category" style="${categoryClass(x.category)}">${esc(x.category||"General")}</span>
+        </td>
 
-          <td>
-            <span class="category">
-              ${esc(x.category || "General")}
-            </span>
-          </td>
+        <td>
+          <div class="message-preview">${esc(x.message||"No requirement provided")}</div>
+        </td>
 
-          <td>
-            <div class="message message-preview">
-              ${esc(x.message || "No requirement provided")}
-            </div>
-          </td>
+        <td class="date-cell">${esc(date)}</td>
 
-          <td class="date-cell">
-            ${esc(date)}
-          </td>
+        <td>
+          ${closed
+            ? `<span class="closed-badge">✓ Closed</span>`
+            : `<select class="status-select">
+                <option ${status==="New"?"selected":""}>New</option>
+                <option ${status==="Contacted"?"selected":""}>Contacted</option>
+                <option ${status==="In Progress"?"selected":""}>In Progress</option>
+                <option ${status==="Closed"?"selected":""}>Closed</option>
+              </select>`
+          }
+        </td>
 
-          <td>
-            ${
-              closed
-              ? '<span class="status-closed-badge">✓ Closed</span>'
-              : `
-                <select class="status-select">
-                  <option ${status==="New" ? "selected" : ""}>New</option>
-                  <option ${status==="Contacted" ? "selected" : ""}>Contacted</option>
-                  <option ${status==="In Progress" ? "selected" : ""}>In Progress</option>
-                  <option ${status==="Closed" ? "selected" : ""}>Closed</option>
-                </select>
-              `
+        <td>
+          <textarea class="note-input" placeholder="Add follow-up note...">${esc(x.admin_note||"")}</textarea>
+        </td>
+
+        <td>
+          <div class="actions">
+            <button class="mini view" data-action="view" type="button">View</button>
+            ${closed
+              ? `<button class="mini reopen" data-action="reopen" type="button">↻ Reopen</button>`
+              : `<button class="mini save" data-action="save" type="button">Save</button>`
             }
-          </td>
-
-          <td>
-            <textarea
-              class="note-input"
-              placeholder="Admin note..."
-            >${esc(x.admin_note || "")}</textarea>
-          </td>
-
-          <td>
-            <div class="actions">
-
-              <button
-                class="mini view"
-                data-action="view"
-                type="button"
-              >
-                View
-              </button>
-
-              ${
-                closed
-                ? `
-                  <button
-                    class="mini reopen"
-                    data-action="reopen"
-                    type="button"
-                  >
-                    ↻ Reopen
-                  </button>
-                `
-                : `
-                  <button
-                    class="mini save"
-                    data-action="save"
-                    type="button"
-                  >
-                    Save
-                  </button>
-                `
-              }
-
-              ${
-                x.mobile
-                ? `
-                  <button
-                    class="mini wa"
-                    data-action="wa"
-                    type="button"
-                  >
-                    WhatsApp
-                  </button>
-                `
-                : ""
-              }
-
-              <button
-                class="mini del"
-                data-action="delete"
-                type="button"
-              >
-                Delete
-              </button>
-
-            </div>
-          </td>
-
-        </tr>
-      `;
-
+            ${x.mobile ? `<button class="mini wa" data-action="wa" type="button">WhatsApp</button>` : ""}
+            <button class="mini del" data-action="delete" type="button">Delete</button>
+          </div>
+        </td>
+      </tr>`;
     }).join("");
   }
 
   async function load(){
+    body.innerHTML = `<tr><td colspan="7" style="padding:45px;text-align:center;color:#77879c">Loading enquiries...</td></tr>`;
 
-    body.innerHTML = `
-      <tr>
-        <td colspan="7" class="center">
-          Loading enquiries...
-        </td>
-      </tr>
-    `;
-
-    const {data,error} = await sb
-      .from("enquiries")
+    const {data,error} = await sb.from("enquiries")
       .select("id,customer_id,name,mobile,category,message,status,admin_note,created_at")
       .order("created_at",{ascending:false});
 
     if(error){
-
-      console.error("Enquiries load error:",error);
-
-      body.innerHTML = `
-        <tr>
-          <td colspan="7" class="center">
-            ${esc(error.message)}
-          </td>
-        </tr>
-      `;
-
+      console.error(error);
+      body.innerHTML = `<tr><td colspan="7" style="padding:45px;text-align:center;color:#b42318">${esc(error.message)}</td></tr>`;
       showStatus(error.message,true);
       return;
     }
 
     rows = data || [];
-
-    stats(rows);
+    updateStats(rows);
     render();
   }
 
+  function openModal(item){
+    modalItem = item;
+    $("modalTitle").textContent = item.name || "Customer Enquiry";
+    $("modalSubtitle").textContent =
+      (item.category||"General")+" • "+
+      (item.created_at
+        ? new Date(item.created_at).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})
+        : "Date unavailable");
 
-  /* SEARCH / FILTER */
+    $("detailName").textContent = item.name || "—";
+    $("detailMobile").textContent = item.mobile || "—";
+    $("detailCategory").textContent = item.category || "General";
+    $("detailStatus").textContent = statusName(item.status);
+    $("detailMessage").textContent = item.message || "No requirement provided";
+    $("detailNote").textContent = item.admin_note || "No admin note";
+
+    modalReopen.style.display = norm(item.status)==="closed" ? "inline-block" : "none";
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+  }
+
+  function closeModal(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    modalItem = null;
+  }
+
   search.addEventListener("input",render);
   statusFilter.addEventListener("change",render);
+  sortFilter.addEventListener("change",render);
 
-  document
-    .querySelectorAll(".category-tab")
-    .forEach(btn => {
-
-      btn.addEventListener("click",()=>{
-
-        activeCategory = btn.dataset.category || "all";
-
-        document
-          .querySelectorAll(".category-tab")
-          .forEach(x=>x.classList.remove("active"));
-
-        btn.classList.add("active");
-
-        render();
-      });
-
+  document.querySelectorAll(".category-tab").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      activeCategory=btn.dataset.category||"all";
+      document.querySelectorAll(".category-tab").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      render();
     });
+  });
 
   refreshBtn.addEventListener("click",async()=>{
-
-    refreshBtn.disabled = true;
-    refreshBtn.textContent = "Refreshing...";
-
+    refreshBtn.disabled=true;
+    refreshBtn.textContent="Refreshing...";
     try{
       await load();
       showStatus("Enquiries refreshed.");
     }finally{
-      refreshBtn.disabled = false;
-      refreshBtn.textContent = "↻ Refresh";
+      refreshBtn.disabled=false;
+      refreshBtn.textContent="↻ Refresh";
     }
-
   });
 
-
-  /* TABLE ACTIONS */
   body.addEventListener("click",async event=>{
-
-    const btn = event.target.closest("[data-action]");
-    if(!btn) return;
-
-    const tr = btn.closest("tr");
-    if(!tr) return;
-
-    const id = tr.dataset.id;
-    const item = rows.find(x => String(x.id) === String(id));
-
-    if(!item) return;
-
-    const action = btn.dataset.action;
-
-
-    /* VIEW */
-    if(action === "view"){
-
-      $("modalTitle").textContent =
-        item.name || "Customer Enquiry";
-
-      $("modalSubtitle").textContent =
-        (item.category || "General") +
-        " • " +
-        (
-          item.created_at
-          ? new Date(item.created_at).toLocaleString("en-IN",{
-              dateStyle:"medium",
-              timeStyle:"short"
-            })
-          : "Date unavailable"
-        );
-
-      $("detailName").textContent =
-        item.name || "—";
-
-      $("detailMobile").textContent =
-        item.mobile || "—";
-
-      $("detailCategory").textContent =
-        item.category || "General";
-
-      $("detailStatus").textContent =
-        statusName(item.status);
-
-      $("detailMessage").textContent =
-        item.message || "No requirement provided";
-
-      $("detailNote").textContent =
-        item.admin_note || "No admin note";
-
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden","false");
-
+    const copyEl = event.target.closest("[data-copy]");
+    if(copyEl){
+      const value=copyEl.dataset.copy||"";
+      if(value){
+        try{ await navigator.clipboard.writeText(value); showStatus("Mobile number copied."); }
+        catch(e){ showStatus("Could not copy the number.",true); }
+      }
       return;
     }
 
+    const btn=event.target.closest("[data-action]");
+    if(!btn) return;
 
-    /* WHATSAPP */
-    if(action === "wa"){
+    const tr=btn.closest("tr");
+    if(!tr) return;
 
-      if(!item.mobile){
-        showStatus("Mobile number is missing.",true);
-        return;
-      }
+    const id=tr.dataset.id;
+    const item=rows.find(x=>String(x.id)===String(id));
+    if(!item) return;
 
-      const phone = String(item.mobile).replace(/\D/g,"");
+    const action=btn.dataset.action;
 
-      const message =
-`Hi ${item.name || "Customer"},
+    if(action==="view"){
+      openModal(item);
+      return;
+    }
+
+    if(action==="wa"){
+      if(!item.mobile){ showStatus("Mobile number is missing.",true); return; }
+      const phone=String(item.mobile).replace(/\D/g,"");
+      const msg=`Hi ${item.name||"Customer"},
 
 Thank you for contacting iTech IT Solutions.
 
-Enquiry Type: ${item.category || "General"}
+Enquiry Type: ${item.category||"General"}
 
 Requirement:
-${item.message || ""}
+${item.message||""}
 
 Regards,
 iTech IT Solutions`;
-
-      window.open(
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(message),
-        "_blank"
-      );
-
+      window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
       return;
     }
 
-
-    /* DELETE */
-    if(action === "delete"){
-
+    if(action==="delete"){
       if(!confirm("Delete this enquiry permanently?")) return;
-
-      btn.disabled = true;
-      btn.textContent = "Deleting...";
-
-      const {error} = await sb
-        .from("enquiries")
-        .delete()
-        .eq("id",id);
-
+      btn.disabled=true;
+      btn.textContent="Deleting...";
+      const {error}=await sb.from("enquiries").delete().eq("id",id);
       if(error){
-
-        btn.disabled = false;
-        btn.textContent = "Delete";
-
+        btn.disabled=false; btn.textContent="Delete";
         showStatus(error.message,true);
         return;
       }
-
       showStatus("Enquiry deleted successfully.");
       await load();
-
       return;
     }
 
-
-    /* REOPEN */
-    if(action === "reopen"){
-
+    if(action==="reopen"){
       if(!confirm("Reopen this closed enquiry?")) return;
+      btn.disabled=true;
+      btn.textContent="Reopening...";
+      const {error}=await sb.from("enquiries").update({status:"In Progress"}).eq("id",id);
+      if(error){
+        btn.disabled=false; btn.textContent="↻ Reopen";
+        showStatus(error.message,true);
+        return;
+      }
+      showStatus("Enquiry reopened and moved to In Progress.");
+      await load();
+      return;
+    }
 
-      btn.disabled = true;
-      btn.textContent = "Reopening...";
+    if(action==="save"){
+      const select=tr.querySelector(".status-select");
+      const noteBox=tr.querySelector(".note-input");
+      if(!select) return;
 
-      const {error} = await sb
-        .from("enquiries")
-        .update({
-          status:"In Progress"
-        })
-        .eq("id",id);
+      const newStatus=select.value;
+      const note=noteBox ? noteBox.value.trim() : "";
+
+      btn.disabled=true;
+      btn.textContent="Saving...";
+
+      const {error}=await sb.from("enquiries").update({
+        status:newStatus,
+        admin_note:note||null
+      }).eq("id",id);
 
       if(error){
-
-        btn.disabled = false;
-        btn.textContent = "↻ Reopen";
-
+        btn.disabled=false; btn.textContent="Save";
         showStatus(error.message,true);
         return;
       }
 
-      showStatus("Enquiry reopened and moved to In Progress.");
-      await load();
-
-      return;
-    }
-
-
-    /* SAVE STATUS + NOTE */
-    if(action === "save"){
-
-      const select = tr.querySelector(".status-select");
-      const noteBox = tr.querySelector(".note-input");
-
-      if(!select) return;
-
-      const status = select.value;
-      const note = noteBox ? noteBox.value.trim() : "";
-
-      btn.disabled = true;
-      btn.textContent = "Saving...";
-
-      const {error} = await sb
-        .from("enquiries")
-        .update({
-          status:status,
-          admin_note:note || null
-        })
-        .eq("id",id);
-
-      if(error){
-
-        btn.disabled = false;
-        btn.textContent = "Save";
-
-        if(String(error.message).toLowerCase().includes("admin_note")){
-          showStatus(
-            "Admin Note column is missing in Supabase. Status was not changed.",
-            true
-          );
-        }else{
-          showStatus(error.message,true);
-        }
-
-        return;
-      }
-
-      showStatus("Status and Admin Note updated successfully.");
+      showStatus("Status and follow-up note updated.");
       await load();
     }
-
   });
-
-
-  /* MODAL */
-  function closeModal(){
-
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden","true");
-  }
 
   modalClose.addEventListener("click",closeModal);
+  modal.addEventListener("click",e=>{ if(e.target===modal) closeModal(); });
 
-  modal.addEventListener("click",event=>{
-    if(event.target === modal) closeModal();
+  modalWa.addEventListener("click",()=>{
+    if(!modalItem?.mobile) return showStatus("Mobile number is missing.",true);
+    const phone=String(modalItem.mobile).replace(/\D/g,"");
+    const msg=`Hi ${modalItem.name||"Customer"},
+
+Thank you for contacting iTech IT Solutions.
+
+Enquiry Type: ${modalItem.category||"General"}
+Requirement:
+${modalItem.message||""}
+
+Regards,
+iTech IT Solutions`;
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
   });
 
-  document.addEventListener("keydown",event=>{
-    if(event.key === "Escape") closeModal();
+  modalCopy.addEventListener("click",async()=>{
+    if(!modalItem?.mobile) return showStatus("Mobile number is missing.",true);
+    try{
+      await navigator.clipboard.writeText(String(modalItem.mobile));
+      showStatus("Mobile number copied.");
+    }catch(e){
+      showStatus("Could not copy the number.",true);
+    }
   });
 
+  modalReopen.addEventListener("click",async()=>{
+    if(!modalItem?.id) return;
+    const {error}=await sb.from("enquiries").update({status:"In Progress"}).eq("id",modalItem.id);
+    if(error){ showStatus(error.message,true); return; }
+    closeModal();
+    showStatus("Enquiry reopened.");
+    await load();
+  });
+
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+
+  /* Mobile dashboard navigation */
+  (() => {
+    const header=document.querySelector(".dash-header");
+    const sidebar=document.querySelector(".sidebar");
+    if(!header||!sidebar||document.getElementById("uiMobileMenuBtn")) return;
+
+    const btn=document.createElement("button");
+    btn.id="uiMobileMenuBtn";
+    btn.className="ui-mobile-menu-btn";
+    btn.type="button";
+    btn.setAttribute("aria-label","Open menu");
+    btn.innerHTML="☰";
+
+    const overlay=document.createElement("div");
+    overlay.className="ui-mobile-overlay";
+
+    const close=document.createElement("button");
+    close.className="ui-mobile-close";
+    close.type="button";
+    close.setAttribute("aria-label","Close menu");
+    close.innerHTML="×";
+
+    sidebar.prepend(close);
+    document.body.appendChild(overlay);
+
+    const brand=header.querySelector(".brand");
+    if(brand&&brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+    else header.insertBefore(btn,header.firstChild);
+
+    function openMenu(){
+      sidebar.classList.add("ui-open");
+      overlay.classList.add("open");
+      document.body.style.overflow="hidden";
+    }
+    function closeMenu(){
+      sidebar.classList.remove("ui-open");
+      overlay.classList.remove("open");
+      document.body.style.overflow="";
+    }
+
+    btn.addEventListener("click",openMenu);
+    close.addEventListener("click",closeMenu);
+    overlay.addEventListener("click",closeMenu);
+    sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu();});
+  })();
 
   await load();
-
 })();
 </script>
-
-
-<!-- Keep mobile dashboard navigation -->
-<script data-dashboard-active-nav>
-(() => {
-
-  const current =
-    location.pathname.split("/").pop() ||
-    "dashboard.html";
-
-  document
-    .querySelectorAll(".sidebar nav a")
-    .forEach(a=>{
-
-      const href =
-        (a.getAttribute("href") || "")
-          .split("?")[0]
-          .split("#")[0];
-
-      const file = href.split("/").pop();
-
-      if(file === current){
-        a.classList.add("active");
-      }
-
-    });
-
-})();
-</script>
-
-<script id="itech-mobile-navigation">
-(function(){
-
-  const header = document.querySelector(".dash-header");
-  const sidebar = document.querySelector(".sidebar");
-
-  if(
-    !header ||
-    !sidebar ||
-    document.getElementById("uiMobileMenuBtn")
-  ) return;
-
-  const btn = document.createElement("button");
-
-  btn.id = "uiMobileMenuBtn";
-  btn.className = "ui-mobile-menu-btn";
-  btn.type = "button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML = "☰";
-
-  const overlay = document.createElement("div");
-  overlay.className = "ui-mobile-overlay";
-
-  const close = document.createElement("button");
-  close.className = "ui-mobile-close";
-  close.type = "button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML = "×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand = header.querySelector(".brand");
-
-  if(brand && brand.parentNode){
-    brand.parentNode.insertBefore(btn,brand.nextSibling);
-  }else{
-    header.insertBefore(btn,header.firstChild);
-  }
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-
-  sidebar
-    .querySelectorAll("a")
-    .forEach(a=>a.addEventListener("click",closeMenu));
-
-  document.addEventListener("keydown",e=>{
-    if(e.key === "Escape") closeMenu();
-  });
-
-})();
-</script>
-
 </body>
 </html>

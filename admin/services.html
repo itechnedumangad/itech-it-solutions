@@ -320,7 +320,7 @@
   async function createCustomerWithLogin(name,mobile){
     const existing=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('mobile',mobile).maybeSingle(); if(existing.error)throw existing.error;
     if(existing.data){if(existing.data.auth_user_id)return {id:existing.data.id,loginCreated:false};throw Error('This customer already exists but has no login. Please create the login from Add Customer first.')}
-    const {data:{session}}=await sb.auth.getSession(); if(!session)throw Error('Session expired.'); const email=mobile+'@itech.local'; const password='IT@'+(crypto?.randomUUID?.()||Math.random().toString(36).slice(2)).replace(/-/g,'').slice(0,8)+'#';
+    const {data:{session}}=await sb.auth.getSession(); if(!session)throw Error('Session expired.'); const email=mobile+'@itech.local'; const password='12345';
     const response=await fetch(`${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`,'apikey':window.APP_CONFIG?.SUPABASE_ANON_KEY||''},body:JSON.stringify({full_name:name,mobile,whatsapp:mobile,email,password,address:'',opening_balance:0})});
     const json=await response.json().catch(()=>({})); if(!response.ok)throw Error(json.error||json.message||'Customer login creation failed.');
     let created=null; for(let i=0;i<6;i++){const q=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('mobile',mobile).maybeSingle();if(!q.error&&q.data){created=q.data;if(created.auth_user_id)break}await new Promise(r=>setTimeout(r,250))}

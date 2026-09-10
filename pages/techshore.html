@@ -176,7 +176,7 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
 </header>
 <div class="wrap">
   <div class="quiz-hero">
-    <div><div class="hero-title">TECHSHORE</div><div class="hero-sub">Logistics Question Practice • <b>500 Questions</b> • <b>10 Tasks × 50</b></div></div>
+    <div><div class="hero-title">TECHSHORE</div><div class="hero-sub">Logistics Question Practice • <b>500 Questions</b> • <b>4 Parts × 125</b></div></div>
     <div class="hero-pill"><span class="pulse-dot"></span> Online Practice</div>
   </div>
 
@@ -184,8 +184,8 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
     <div class="login-icon">🎓</div>
     <div class="eyebrow">TECHSHORE • LOGISTICS</div>
     <h1>Ready to Start Practice?</h1>
-    <p class="muted">500 questions • 10 tasks • 50 questions per task • 25 minutes per task</p>
-    <div class="feature-row"><span>⏱ 25 Min / Task</span><span>📝 50 Questions</span><span>🏆 Live Mark</span></div>
+    <p class="muted">500 questions • 4 parts • 125 questions per part • 60 minutes per part</p>
+    <div class="feature-row"><span>⏱ 60 Min / Part</span><span>📝 125 Questions</span><span>🏆 Live Mark</span></div>
     <div class="form-grid">
       <div class="full"><label for="name">Full Name</label><input id="name" placeholder="Enter your full name" autocomplete="name"></div>
       <div class="full"><label for="mobile">Mobile Number</label><input id="mobile" placeholder="10 digit mobile number" inputmode="numeric" maxlength="10"></div>
@@ -195,14 +195,14 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
 
   <section id="taskHome" class="hidden">
     <div class="home-toolbar">
-      <div><div class="eyebrow">WELCOME BACK</div><h1 class="page-title">Choose Your Task</h1><div id="homeUser" class="muted"></div></div>
+      <div><div class="eyebrow">WELCOME BACK</div><h1 class="page-title">Choose Your Part</h1><div id="homeUser" class="muted"></div></div>
       <div class="home-actions"><button class="btn secondary" onclick="showPreviousResults()">📊 Previous Results</button><button class="btn secondary home-exit" onclick="logoutHome()">↩ Home</button></div>
     </div>
     <div class="overall-card">
-      <div class="overall-stat"><strong id="completedCount">0</strong><span>Tasks Completed</span></div>
+      <div class="overall-stat"><strong id="completedCount">0</strong><span>Parts Completed</span></div>
       <div class="overall-stat"><strong id="totalCorrect">0</strong><span>Total Correct</span></div>
       <div class="overall-stat"><strong>500</strong><span>Total Questions</span></div>
-      <div class="overall-stat"><strong>25 min</strong><span>Per Task</span></div>
+      <div class="overall-stat"><strong>25 min</strong><span>Per Part</span></div>
     </div>
     <div id="taskGrid" class="task-grid"></div>
     <section id="historyPanel" class="history-card hidden">
@@ -215,12 +215,12 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
   <section id="quiz" class="card hidden">
     <div class="quiz-top">
       <div>
-        <div class="quiz-meta"><span id="taskChip" class="task-chip">TASK 1</span><span id="qCounter" class="meta-chip">Question 1 of 50</span><span id="scoreBadge" class="badge mark-badge">Mark: 0 / 50</span></div>
+        <div class="quiz-meta"><span id="taskChip" class="task-chip">TASK 1</span><span id="qCounter" class="meta-chip">Question 1 of 125</span><span id="scoreBadge" class="badge mark-badge">Mark: 0 / 50</span></div>
         <div id="userLabel" class="muted" style="margin-top:8px"></div>
       </div>
       <div class="quiz-top-actions"><button class="btn secondary top-home-btn" onclick="goTaskHome()">⌂ Home</button><div class="timer-wrap"><span class="timer-label">TIME LEFT</span><div id="timer" class="timer">25:00</div></div></div>
     </div>
-    <div class="progress-row"><span id="progressText">0% Complete</span><div class="progress"><i id="bar"></i></div><span>50 Questions</span></div>
+    <div class="progress-row"><span id="progressText">0% Complete</span><div class="progress"><i id="bar"></i></div><span>125 Questions</span></div>
     <div class="question-panel">
       <div class="question-topline"><div id="questionNo" class="question-number">QUESTION 01</div><span class="mark-one">+1 Mark</span></div>
       <h2 id="question" class="question-text"></h2>
@@ -266,10 +266,10 @@ async function syncResultToCloud(report){if(!supabaseClient)return;try{const loo
 async function loadCloudHistory(){if(!supabaseClient||!user)return null;try{const lookup_hash=await hashIdentity(user.name,user.mobile);const {data,error}=await supabaseClient.rpc('get_techshore_results',{p_lookup_hash:lookup_hash});if(error)throw error;return Array.isArray(data)?data:[];}catch(e){console.warn('Cloud history unavailable',e.message);return null;}}
 
 const SESSION_KEY="techshore_quiz_session_v2";
-const TOTAL_TASKS=10, QUESTIONS_PER_TASK=50, TIME_LIMIT=25*60;
+const TOTAL_TASKS=4, QUESTIONS_PER_TASK=125, TIME_LIMIT=60*60;
 let user=null, taskSets=[], taskStates=[], currentTask=0, taskQuestions=[], index=0, score=0, answered=false, timerInterval=null, timeLeft=TIME_LIMIT, timedOut=false, startedAt=null;
 
-function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+
 function reports(){try{return JSON.parse(localStorage.getItem(REPORT_KEY)||"[]")}catch(e){return []}}
 function saveReports(a){localStorage.setItem(REPORT_KEY,JSON.stringify(a))}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
@@ -285,29 +285,29 @@ function createSession(){
  saveSession();
 }
 function saveSession(){try{localStorage.setItem(SESSION_KEY,JSON.stringify({user,taskSets,taskStates}))}catch(e){}}
-function loadSession(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');if(s&&s.user&&Array.isArray(s.taskSets)&&s.taskSets.length===10){user=s.user;taskSets=s.taskSets;taskStates=s.taskStates||Array.from({length:10},()=>({completed:false,score:0,attempts:0,lastScore:0}));return true}}catch(e){}return false}
+function loadSession(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');if(s&&s.user&&Array.isArray(s.taskSets)&&s.taskSets.length===4){user=s.user;taskSets=s.taskSets;taskStates=s.taskStates||Array.from({length:4},()=>({completed:false,score:0,attempts:0,lastScore:0}));return true}}catch(e){}return false}
 function hideAll(){['login','taskHome','quiz','result'].forEach(id=>document.getElementById(id).classList.add('hidden'))}
 function showTaskHome(){clearInterval(timerInterval);hideAll();document.getElementById('taskHome').classList.remove('hidden');document.getElementById('homeUser').textContent=user.name+' • '+user.mobile;renderTasks()}
 function renderTasks(){
  const grid=document.getElementById('taskGrid');grid.innerHTML='';let done=0,total=0;
  taskStates.forEach((st,t)=>{if(st.completed)done++;total+=Number(st.score||0);const n=t+1;const cls=st.completed?'completed':'';const icon=st.completed?'✓':String(n).padStart(2,'0');const status=st.completed?`Completed • ${st.lastScore}/50`:'Not Started';
- const card=document.createElement('button');card.className='task-card '+cls;card.onclick=()=>startTask(t);card.innerHTML=`<div class="task-icon">${icon}</div><div class="task-card-main"><div class="task-title">Task ${n}</div><div class="task-sub">50 Questions <span>•</span> 25 Minutes</div><div class="task-status">${status}</div></div><span class="task-arrow">→</span>`;grid.appendChild(card)});
+ const card=document.createElement('button');card.className='task-card '+cls;card.onclick=()=>startTask(t);card.innerHTML=`<div class="task-icon">${icon}</div><div class="task-card-main"><div class="task-title">Part ${n}</div><div class="task-sub">125 Questions <span>•</span> 60 Minutes</div><div class="task-status">${status}</div></div><span class="task-arrow">→</span>`;grid.appendChild(card)});
  document.getElementById('completedCount').textContent=done;document.getElementById('totalCorrect').textContent=total;
 }
 function startTask(t){
  currentTask=t;const st=taskStates[t]||{};
  // Same 50-question allocation for the session; question order/options are randomized for each attempt.
- taskQuestions=shuffle(taskSets[t]).map(q=>{const correct=q.options[q.answer.charCodeAt(0)-65];return {...q,answerText:correct,options:shuffle(q.options)}});
+ taskQuestions=shuffle(taskSets[t].map(q=>{const correct=q.options[q.answer.charCodeAt(0)-65];return {...q,answerText:correct,options:shuffle(q.options)}});
  index=0;score=0;answered=false;timedOut=false;timeLeft=TIME_LIMIT;startedAt=new Date().toISOString();
  hideAll();document.getElementById('quiz').classList.remove('hidden');
- document.getElementById('taskChip').textContent='TASK '+(t+1);document.getElementById('userLabel').textContent=user.name+' • '+user.mobile;
+ document.getElementById('taskChip').textContent='PART '+(t+1);document.getElementById('userLabel').textContent=user.name+' • '+user.mobile;
  startTimer();renderQuestion();
 }
 function startTimer(){clearInterval(timerInterval);updateTimer();timerInterval=setInterval(()=>{timeLeft--;updateTimer();if(timeLeft<=0){clearInterval(timerInterval);timedOut=true;finishQuiz(true)}},1000)}
 function updateTimer(){const m=Math.floor(timeLeft/60),s=timeLeft%60,el=document.getElementById('timer');el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.classList.toggle('warning',timeLeft<=300&&timeLeft>60);el.classList.toggle('danger',timeLeft<=60);}
 function renderQuestion(){
  const q=taskQuestions[index];answered=false;
- document.getElementById('qCounter').textContent='Question '+(index+1)+' of 50';document.getElementById('questionNo').textContent='QUESTION '+String(index+1).padStart(2,'0');document.getElementById('scoreBadge').textContent='Mark: '+score+' / 50';
+ document.getElementById('qCounter').textContent='Question '+(index+1)+' of 125';document.getElementById('questionNo').textContent='QUESTION '+String(index+1).padStart(2,'0');document.getElementById('scoreBadge').textContent='Mark: '+score+' / 125';
  const pct=Math.round(index/QUESTIONS_PER_TASK*100);document.getElementById('bar').style.width=pct+'%';document.getElementById('progressText').textContent=pct+'% Complete';
  document.getElementById('question').textContent=q.q;document.getElementById('feedback').innerHTML='';document.getElementById('feedback').className='feedback';document.getElementById('nextBtn').disabled=true;document.getElementById('navHint').textContent='Select an answer to continue';
  const box=document.getElementById('options');box.innerHTML='';
@@ -317,25 +317,25 @@ function answerQuestion(selected,clicked){
  if(answered||timedOut)return;answered=true;const q=taskQuestions[index],correct=q.answerText;
  document.querySelectorAll('.option').forEach(b=>{if(b.querySelector('.option-text')?.textContent===correct)b.classList.add('correct');b.disabled=true});
  if(selected===correct){score++;clicked.classList.add('correct');showFeedback(true,'✓ Correct answer! +1 Mark')}else{clicked.classList.add('wrong');showFeedback(false,'✕ Wrong answer • Correct answer: '+correct)}
- document.getElementById('scoreBadge').textContent='Mark: '+score+' / 50';document.getElementById('nextBtn').disabled=false;document.getElementById('navHint').textContent=index===49?'Final question answered':'Click Next Question to continue';
+ document.getElementById('scoreBadge').textContent='Mark: '+score+' / 125';document.getElementById('nextBtn').disabled=false;document.getElementById('navHint').textContent=index===124?'Final question answered':'Click Next Question to continue';
 }
 function showFeedback(ok,msg){const f=document.getElementById('feedback');f.className='feedback '+(ok?'ok':'no');f.innerHTML='<span class="feedback-icon">'+(ok?'✓':'!')+'</span><span>'+esc(msg)+'</span>'}
-function nextQuestion(){if(!answered)return;if(index===49){finishQuiz(false);return}index++;renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}
+function nextQuestion(){if(!answered)return;if(index===124){finishQuiz(false);return}index++;renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}
 function finishQuiz(timeout){
  if(document.getElementById('quiz').classList.contains('hidden'))return;clearInterval(timerInterval);timedOut=!!timeout||timedOut;
- const percentage=Math.round(score/50*100);const st=taskStates[currentTask]||{};st.completed=true;st.score=score;st.lastScore=score;st.attempts=Number(st.attempts||0)+1;taskStates[currentTask]=st;saveSession();
- const report={id:Date.now(),name:user.name,mobile:user.mobile,task:currentTask+1,total:50,score,percentage,startedAt,completedAt:new Date().toISOString(),timedOut};const a=reports();a.push(report);saveReports(a);
+ const percentage=Math.round(score/125*100);const st=taskStates[currentTask]||{};st.completed=true;st.score=score;st.lastScore=score;st.attempts=Number(st.attempts||0)+1;taskStates[currentTask]=st;saveSession();
+ const report={id:Date.now(),name:user.name,mobile:user.mobile,task:currentTask+1,total:125,score,percentage,startedAt,completedAt:new Date().toISOString(),timedOut};const a=reports();a.push(report);saveReports(a);
  syncResultToCloud(report);
- hideAll();document.getElementById('result').classList.remove('hidden');document.getElementById('resultBadge').textContent='Task '+(currentTask+1)+' Completed';document.getElementById('resultTitle').textContent=timedOut?'Time Out!':'Excellent Work!';document.getElementById('finalScore').textContent=score+' / 50';document.getElementById('resultCorrect').textContent=score;document.getElementById('resultWrong').textContent=50-score;document.getElementById('resultPercent').textContent=percentage+'%';document.getElementById('resultRing').style.setProperty('--pct',percentage+'%');
+ hideAll();document.getElementById('result').classList.remove('hidden');document.getElementById('resultBadge').textContent='Task '+(currentTask+1)+' Completed';document.getElementById('resultTitle').textContent=timedOut?'Time Out!':'Excellent Work!';document.getElementById('finalScore').textContent=score+' / 125';document.getElementById('resultCorrect').textContent=score;document.getElementById('resultWrong').textContent=125-score;document.getElementById('resultPercent').textContent=percentage+'%';document.getElementById('resultRing').style.setProperty('--pct',percentage+'%');
  document.getElementById('resultText').textContent=timedOut?'25 minutes completed. This task was submitted automatically. Your result has been saved.':'Task completed successfully. Your result has been saved to the Techshore Admin Dashboard.';
  document.getElementById('resultText').insertAdjacentHTML('afterend','<div class="score-share-note">📲 Download or share your result as an image score card.</div>');
- const nb=document.getElementById('nextTaskBtn');nb.style.display=currentTask<TOTAL_TASKS-1?'inline-flex':'none';nb.textContent=currentTask<TOTAL_TASKS-1?'Task '+(currentTask+2)+' →':'All Tasks Completed';
+ const nb=document.getElementById('nextTaskBtn');nb.style.display=currentTask<TOTAL_TASKS-1?'inline-flex':'none';nb.textContent=currentTask<TOTAL_TASKS-1?'Task '+(currentTask+2)+' →':'All Parts Completed';
 }
 function makeScoreCard(){
  const canvas=document.getElementById('scoreCanvas');
  const ctx=canvas.getContext('2d');
  const W=canvas.width,H=canvas.height;
- const pct=Math.round(score/50*100);
+ const pct=Math.round(score/125*100);
  ctx.clearRect(0,0,W,H);
  const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#071c3b');bg.addColorStop(1,'#0b67a8');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
  ctx.fillStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.arc(950,120,240,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(80,1260,220,0,Math.PI*2);ctx.fill();
@@ -344,8 +344,8 @@ function makeScoreCard(){
  ctx.fillStyle='#fff';ctx.font='900 72px Arial';ctx.fillText('TASK '+(currentTask+1),70,330);ctx.font='700 30px Arial';ctx.fillStyle='#dce7f8';ctx.fillText('Logistics Question Practice',72,380);
  ctx.fillStyle='#fff';ctx.font='800 30px Arial';ctx.fillText(user.name,72,470);ctx.font='600 24px Arial';ctx.fillStyle='#dce7f8';ctx.fillText('Mobile: '+user.mobile,72,510);
  ctx.fillStyle='rgba(255,255,255,.12)';roundRect(ctx,70,570,940,420,35);ctx.fill();
- ctx.fillStyle='#fff';ctx.font='700 26px Arial';ctx.fillText('YOUR SCORE',110,640);ctx.font='900 140px Arial';ctx.fillText(score+' / 50',110,805);ctx.font='900 48px Arial';ctx.fillStyle='#8ff0b1';ctx.fillText(pct+'%',720,805);
- ctx.fillStyle='#dce7f8';ctx.font='700 25px Arial';ctx.fillText('Correct: '+score,110,875);ctx.fillText('Wrong: '+(50-score),430,875);ctx.fillText(timedOut?'Status: Time Out':'Status: Completed',720,875);
+ ctx.fillStyle='#fff';ctx.font='700 26px Arial';ctx.fillText('YOUR SCORE',110,640);ctx.font='900 140px Arial';ctx.fillText(score+' / 125',110,805);ctx.font='900 48px Arial';ctx.fillStyle='#8ff0b1';ctx.fillText(pct+'%',720,805);
+ ctx.fillStyle='#dce7f8';ctx.font='700 25px Arial';ctx.fillText('Correct: '+score,110,875);ctx.fillText('Wrong: '+(125-score),430,875);ctx.fillText(timedOut?'Status: Time Out':'Status: Completed',720,875);
  ctx.fillStyle='rgba(255,255,255,.16)';roundRect(ctx,110,915,800,24,12);ctx.fill();ctx.fillStyle='#ff9a25';roundRect(ctx,110,915,800*(pct/100),24,12);ctx.fill();
  ctx.fillStyle='#fff';ctx.font='800 28px Arial';ctx.fillText('Practice • Prepare • Perform • Succeed',72,1100);
  ctx.font='600 23px Arial';ctx.fillStyle='#dce7f8';ctx.fillText('Govt. Sub Treasury Road, Nedumangad',72,1180);ctx.fillText('7736929233  •  8943165951',72,1220);ctx.fillText('itnedumangad@gmail.com  •  @itechndd',72,1260);
@@ -355,7 +355,7 @@ function makeScoreCard(){
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function scoreCardBlob(){return new Promise(resolve=>makeScoreCard().toBlob(resolve,'image/png',1));}
 async function downloadScoreCard(){const blob=await scoreCardBlob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Techshore_Task_${currentTask+1}_Score_${score}_50.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Score card downloaded ✓');}
-async function shareScoreCard(){const blob=await scoreCardBlob();const file=new File([blob],`Techshore_Task_${currentTask+1}_Score.png`,{type:'image/png'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:'Techshore Quiz Score Card',text:`${user.name} • Task ${currentTask+1} • Score ${score}/50 (${Math.round(score/50*100)}%)`,files:[file]});return;}catch(e){if(e.name==='AbortError')return;}}await downloadScoreCard();const text=encodeURIComponent(`Techshore Online Practice\n${user.name}\nTask ${currentTask+1}: ${score}/50 (${Math.round(score/50*100)}%)\nhttps://itnedumangad.online/pages/techshore.html`);window.open('https://wa.me/?text='+text,'_blank');toast('Score card downloaded; WhatsApp opened');}
+async function shareScoreCard(){const blob=await scoreCardBlob();const file=new File([blob],`Techshore_Task_${currentTask+1}_Score.png`,{type:'image/png'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:'Techshore Quiz Score Card',text:`${user.name} • Part ${currentTask+1} • Score ${score}/50 (${Math.round(score/125*100)}%)`,files:[file]});return;}catch(e){if(e.name==='AbortError')return;}}await downloadScoreCard();const text=encodeURIComponent(`Techshore Online Practice\n${user.name}\nPart ${currentTask+1}: ${score}/50 (${Math.round(score/125*100)}%)\nhttps://itnedumangad.online/pages/techshore.html`);window.open('https://wa.me/?text='+text,'_blank');toast('Score card downloaded; WhatsApp opened');}
 async function showPreviousResults(){
  const panel=document.getElementById('historyPanel'); panel.classList.remove('hidden');
  let mine=reports().filter(r=>r.mobile===user.mobile).sort((a,b)=>Number(b.id)-Number(a.id));

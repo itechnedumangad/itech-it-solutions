@@ -794,11 +794,13 @@
      AUTH
   ------------------------------------------------ */
 
-  const ok = await requireStaff();
+  const access = await requireStaff();
 
-  if(!ok){
+  if(!access){
     return;
   }
+
+  const canDeleteCustomers = String(access.profile?.role || "").toLowerCase() === "admin";
 
 
   /* -----------------------------------------------
@@ -1072,14 +1074,14 @@
                   ✏️ Edit
                 </button>
 
-                <button
+                ${canDeleteCustomers ? `<button
                   type="button"
                   class="btn delete-customer-btn"
                   data-delete-id="${escapeHtml(c.id)}"
                   data-delete-name="${escapeHtml(c.full_name || 'Customer')}"
                 >
                   🗑️ Delete
-                </button>
+                </button>` : ""}
               </div>
 
             </div>
@@ -1130,7 +1132,7 @@
     if(!id) return;
 
     const confirmed = confirm(
-      `Delete customer "${name}"?\n\nThis permanently removes the customer record. Linked transaction records may prevent deletion.`
+      `Delete customer "${name}"?\n\nThis removes the customer record and linked Supabase login account. Continue?`
     );
     if(!confirmed) return;
 
@@ -1138,7 +1140,7 @@
     const oldText = button.textContent;
     button.textContent = "Deleting…";
 
-    const result = await sb.from("customers").delete().eq("id", id);
+    const result = await sb.rpc("admin_delete_customer", { p_customer_id: id });
 
     if(result.error){
       button.disabled = false;

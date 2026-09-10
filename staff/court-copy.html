@@ -1,38 +1,195 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Court Copy | Staff</title><link rel="stylesheet" href="../css/unified-dashboard.css"><link rel="stylesheet" href="../css/dashboard-shell.css"><style>
-:root{--navy:#071a3a;--blue:#164b8f;--orange:#f47b20;--bg:#f4f7fb;--card:#fff;--line:#e3e9f2;--muted:#6d7b91;--green:#16834b;--yellow:#9a6b00;--shadow:0 10px 30px rgba(7,26,58,.07)}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:#14233b}.dash-header{height:74px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}.brand-logo{height:50px;max-width:180px;object-fit:contain}.header-actions{display:flex;gap:12px;align-items:center}.user-chip{font-size:13px;color:#17345f;font-weight:700}.btn{border:0;border-radius:10px;padding:11px 15px;cursor:pointer;text-decoration:none;font-weight:800;font-size:13px}.primary{background:var(--orange);color:#fff}.secondary{background:#eef3f9;color:#18375f}.dash-layout{display:flex;min-height:calc(100vh - 74px)}.sidebar{width:250px;background:var(--navy);padding:18px 10px;flex:0 0 250px}.sidebar nav a{display:block;color:#dbe6f7;text-decoration:none;padding:11px 13px;border-radius:10px;margin:3px 0;font-size:13px}.sidebar nav a.active,.sidebar nav a:hover{background:#19477f;color:#fff}.dash-main{flex:1;padding:30px;min-width:0}.hero{margin-bottom:22px}.eyebrow{font-size:11px;color:var(--orange);font-weight:900;letter-spacing:.14em;margin:0 0 6px}.hero h1{margin:0;font-size:30px;letter-spacing:-.02em}.muted{color:var(--muted);margin:7px 0 0}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}.card h2{font-size:17px;margin:0 0 16px}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{font-size:11px;font-weight:850;display:block;margin-bottom:6px;color:#34435a}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #d5deea;border-radius:10px;background:#fff;color:#16263f;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#7da7d8;box-shadow:0 0 0 3px rgba(22,75,143,.08)}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.status{margin-top:10px;font-size:12px;color:#345}.grid{display:grid;grid-template-columns:minmax(310px,.85fr) minmax(600px,1.8fr);gap:18px}.mapping{border:1px solid var(--line);border-radius:13px;padding:13px;margin:9px 0;background:#fbfdff}.mapping-head{display:flex;justify-content:space-between;gap:10px}.mapping-name{font-weight:900;font-size:14px}.mapping-meta{color:var(--muted);font-size:11px;margin-top:4px}.chip{display:inline-flex;background:#edf3fb;color:#254b7c;border-radius:999px;padding:5px 9px;font-size:11px;margin:7px 5px 0 0}.toolbar{display:grid;grid-template-columns:170px 1fr 180px 1fr;gap:9px;margin-bottom:14px}.toolbar input,.toolbar select{padding:10px 11px;border:1px solid #d5deea;border-radius:10px;background:#fff}.checkline{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;color:#44536a;margin:7px 0 12px}.checkline input{accent-color:var(--orange)}.stats{display:flex;gap:24px;flex-wrap:wrap;margin:7px 0 15px}.stat{font-size:12px;color:#6c7890}.stat b{display:block;color:#132a4c;font-size:19px;margin-top:2px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.table{border-collapse:collapse;width:100%;min-width:1080px}.table th,.table td{padding:11px 10px;border-bottom:1px solid #edf1f6;text-align:left;font-size:12px;vertical-align:middle}.table th{background:#f7faff;color:#41516a;font-size:11px;position:sticky;top:0}.table tr:last-child td{border-bottom:0}.badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;white-space:nowrap}.done{background:#dcfce7;color:var(--green)}.pending{background:#fff4d6;color:var(--yellow)}.copy{background:#e7f0ff;color:var(--blue)}.mini{border:0;border-radius:8px;padding:7px 9px;cursor:pointer;font-weight:800;font-size:11px;background:#edf2f8;color:#17385f}.mini.orange{background:#fff0e5;color:#c85d00}.case-row{border:1px solid #dfe7f1;border-radius:14px;padding:14px;margin:10px 0;background:#fbfdff;display:grid;grid-template-columns:1.1fr 1.1fr .8fr .8fr auto;gap:10px;align-items:end}.case-head{grid-column:1/-1;font-size:12px;font-weight:900;color:#17385f}.remove{border:0;border-radius:9px;background:#fff0f0;color:#b52c2c;padding:10px 12px;cursor:pointer;font-weight:900}.plus{width:40px;height:40px;border:0;border-radius:10px;background:#e9f1fc;color:#174d8e;font-size:24px;font-weight:800;cursor:pointer}.empty{text-align:center;color:var(--muted);padding:26px}.site-footer,.unified-site-footer{background:linear-gradient(135deg,#071a3a,#0d2f68);color:#fff;text-align:center;padding:28px 20px;margin-top:20px}.footer-logo{width:62px}.site-footer p,.unified-site-footer p{margin:5px}.orange-text{color:#ff9a48}.footer-brand{margin-bottom:7px}
-@media(max-width:1150px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.case-row{grid-template-columns:1fr 1fr}}
-@media(max-width:720px){.sidebar{display:none}.dash-main{padding:16px}.form,.toolbar,.case-row{grid-template-columns:1fr}.full{grid-column:auto}.dash-header{padding:0 12px}.user-chip{display:none}.hero h1{font-size:25px}}
-</style></head><body>
-<header class="dash-header"><a class="brand" href="dashboard.html"><img class="brand-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></a><div class="header-actions"><span class="user-chip" data-admin-name>Staff</span><a class="btn secondary" href="../pages/login.html" data-logout>Logout</a></div></header>
-<div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a><a href="customers.html">Customers</a><a href="daily-work.html">Daily Work</a><a href="payments.html">Payments</a><a href="services.html">Services</a><a href="vehicle-insurance.html">🚗 Vehicle Insurance</a><a href="enquiries.html">Enquiries</a><a href="works.html">Our Works</a><a href="court-copy.html">⚖️ Court Copy</a><a href="activities.html">📋 Staff Activities</a></nav></aside><main class="dash-main"><div class="hero"><p class="eyebrow">COURT COPY</p><h1>Daily Court Copy Update</h1><p class="muted">All Admin-added customers are available to every staff login. Enter today's cases, stamp and payment details.</p></div>
-<section class="card"><h2>Customer Update</h2><div class="form"><div class="field"><label>Customer *</label><select id="customer"></select></div><div class="field"><label>Sub Customer / Advocate *</label><select id="sub"></select></div><div class="field"><label>Court Name</label><input id="court" readonly></div><div class="field"><label>Date</label><input id="date" type="date"></div></div><div id="caseList"></div><div class="actions"><button class="plus" id="addCase" type="button" title="Add another case">+</button><button class="btn primary" id="saveAll">Save Today's Update</button><button class="btn secondary" id="clear">Clear</button></div><div id="status" class="status"></div></section>
-<section class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin-bottom:4px">Today's Updates</h2><div class="muted" style="font-size:12px">Completed tasks are hidden unless you enable the checkbox.</div></div></div><div class="toolbar" style="margin-top:14px"><input id="day" type="date"><select id="filter"><option value="">All Updates</option><option value="pending">Pending</option><option value="completed">Completed</option></select><input id="search" placeholder="Search customer / advocate / court / case"><div></div></div><label class="checkline"><input id="showCompleted" type="checkbox"> Show completed tasks</label><div class="stats"><span class="stat">Cases<b id="count">0</b></span><span class="stat">Copy Payment<b id="copyCount">0</b></span><span class="stat">Completed<b id="doneCount">0</b></span><span class="stat">Stamp<b id="stampTotal">₹0</b></span><span class="stat">Paid<b id="paidTotal">₹0</b></span></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Advocate / Sub</th><th>Court</th><th>Case</th><th>Application</th><th>Stamp</th><th>Paid</th><th>Copy Payment Today</th><th>Task</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></section></main></div>
-<footer class="site-footer unified-site-footer"><div class="footer-brand"><img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"></div><p>Govt. Sub Treasury Road, Nedumangad</p><p>7736929233 · 8943165951</p><p>itnedumangad@gmail.com</p><p>@itechndd</p><p class="orange-text">Your Trust Our Service</p></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const auth=await requireStaff();if(!auth)return;const $=id=>document.getElementById(id);let customers=[],maps=[],updates=[],editingId=null;const today=new Date().toISOString().slice(0,10);$('date').value=today;$('day').value=today;const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-async function load(){let r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[];const ids=[...new Set(maps.map(x=>x.customer_id))];customers=[];if(ids.length){r=await sb.from('customers').select('id,full_name,mobile').in('id',ids).order('full_name');if(r.error)throw r.error;customers=r.data||[]}await loadDay();renderCustomers();renderRows()}
-async function loadDay(){let r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('created_at',{ascending:false});if(r.error)throw r;updates=r.data||[]}
-function renderCustomers(){const old=$('customer').value;$('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)} — ${esc(c.mobile||'')}</option>`).join('');if(customers.some(c=>c.id===old))$('customer').value=old;renderSubs()}
-function renderSubs(){const cid=$('customer').value;const list=maps.filter(m=>m.customer_id===cid);const old=$('sub').value;$('sub').innerHTML='<option value="">Select sub customer</option>'+list.map(m=>`<option value="${m.id}">${esc(m.sub_name)}</option>`).join('');if(list.some(m=>m.id===old))$('sub').value=old;setCourt()}
-function setCourt(){const m=maps.find(x=>x.id===$('sub').value);$('court').value=m?.court_name||''}
-function addCaseRow(data={}){const wrap=document.createElement('div');wrap.className='case-row';wrap.innerHTML=`<div class="case-head">Case / Stamp Details</div><div class="field"><label>Case Number</label><input class="case" value="${esc(data.case_number||'')}"></div><div class="field"><label>Application Number</label><input class="app" value="${esc(data.application_number||'')}"></div><div class="field"><label>Stamp Amount</label><input class="stamp" type="number" min="0" step="0.01" value="${Number(data.stamp_amount||0)}"></div><div class="field"><label>Paid Amount</label><input class="paid" type="number" min="0" step="0.01" value="${Number(data.paid_amount||0)}"></div><button class="remove" type="button">−</button><div class="field full"><label>Notes</label><input class="notes" value="${esc(data.notes||'')}" placeholder="Optional update / note"></div>`;wrap.querySelector('.remove').onclick=()=>{if(document.querySelectorAll('.case-row').length>1)wrap.remove()};$('caseList').appendChild(wrap)}
-function resetRows(){$('caseList').innerHTML='';addCaseRow()}
-$('customer').onchange=renderSubs;$('sub').onchange=setCourt;$('addCase').onclick=()=>addCaseRow();$('clear').onclick=()=>{editingId=null;$('customer').value='';renderSubs();$('date').value=today;resetRows();$('status').textContent=''};
-$('saveAll').onclick=async()=>{const cid=$('customer').value,aid=$('sub').value,m=maps.find(x=>x.id===aid),workDate=$('date').value;if(!cid||!m)return $('status').textContent='Select customer and sub customer.';if(!workDate)return $('status').textContent='Select date.';const rows=[...document.querySelectorAll('.case-row')];const payloads=[];for(const row of rows){const stamp=Number(row.querySelector('.stamp').value||0),paid=Number(row.querySelector('.paid').value||0);if(stamp<0||paid<0||paid>stamp)return $('status').textContent='Paid amount cannot exceed stamp amount.';payloads.push({assignment_id:m.id,customer_id:cid,staff_id:auth.user.id,sub_name:m.sub_name,court_name:m.court_name,work_date:workDate,case_number:row.querySelector('.case').value.trim()||null,application_number:row.querySelector('.app').value.trim()||null,stamp_amount:stamp,paid_amount:paid,copy_payment_today:paid>0,task_completed:false,notes:row.querySelector('.notes').value.trim()||null,created_by:auth.user.id,updated_by:auth.user.id})}if(editingId){const r=await sb.from('court_copy_daily_updates').update(payloads[0]).eq('id',editingId);if(r.error)return $('status').textContent=r.error.message}else{const r=await sb.from('court_copy_daily_updates').insert(payloads);if(r.error)return $('status').textContent=r.error.message}$('status').textContent=editingId?'Update saved.':'Today\'s update saved.';editingId=null;resetRows();await loadDay();renderRows()}
-window.editRow=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;editingId=id;$('customer').value=a.customer_id;renderSubs();$('sub').value=a.assignment_id;setCourt();$('date').value=a.work_date;$('caseList').innerHTML='';addCaseRow(a);window.scrollTo({top:0,behavior:'smooth'})};window.toggleComplete=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;const r=await sb.from('court_copy_daily_updates').update({task_completed:!a.task_completed,updated_by:auth.user.id}).eq('id',id);if(r.error)return alert(r.error.message);await loadDay();renderRows()};window.toggleCopy=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;const r=await sb.from('court_copy_daily_updates').update({copy_payment_today:!a.copy_payment_today,updated_by:auth.user.id}).eq('id',id);if(r.error)return alert(r.error.message);await loadDay();renderRows()};
-function renderRows(){
- const q=$('search').value.trim().toLowerCase(),f=$('filter').value,show=$('showCompleted').checked;
- const r=updates.filter(a=>{
-   const cName=String(customers.find(c=>c.id===a.customer_id)?.full_name||'').toLowerCase();
-   const textMatch=!q||[a.case_number,a.application_number,a.court_name,a.sub_name].some(v=>String(v||'').toLowerCase().includes(q))||cName.includes(q);
-   const statusMatch=!f||(f==='completed'?a.task_completed:!a.task_completed);
-   return (show||!a.task_completed)&&statusMatch&&textMatch;
- });
- let stamp=0,paid=0,copy=0,done=0;
- r.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});
- $('count').textContent=r.length;$('copyCount').textContent=copy;$('doneCount').textContent=done;$('stampTotal').textContent=money(stamp);$('paidTotal').textContent=money(paid);
- $('rows').innerHTML=r.map(a=>{const c=customers.find(x=>x.id===a.customer_id);return `<tr><td>${esc(c?.full_name||'')}</td><td>${esc(a.sub_name)}</td><td>${esc(a.court_name)}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><button class="mini ${a.copy_payment_today?'orange':''}" onclick="toggleCopy('${a.id}')">${a.copy_payment_today?'✓ Paid Today':'Copy Payment Today'}</button></td><td><button class="mini ${a.task_completed?'done':''}" onclick="toggleComplete('${a.id}')">${a.task_completed?'✓ COMPLETED':'Complete Task'}</button></td><td><button class="mini" onclick="editRow('${a.id}')">Edit</button></td></tr>`}).join('')||'<tr><td colspan="10" class="empty">No updates for this day.</td></tr>';
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Court Copy | iTech Staff</title>
+<link href="../css/style.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+
+<link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
 }
-$('day').onchange=async()=>{await loadDay();renderRows()};$('filter').oninput=renderRows;$('search').oninput=renderRows;$('showCompleted').oninput=renderRows;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user?.email||'Staff';resetRows();try{await load()}catch(e){$('status').textContent=e.message}})();</script>
-<script>(()=>{const current=location.pathname.split('/').pop()||'dashboard.html';document.querySelectorAll('.sidebar nav a').forEach(a=>{if((a.getAttribute('href')||'').split('?')[0].split('#')[0].split('/').pop()===current)a.classList.add('active')})})();</script>
-<script id="itech-mobile-navigation">(()=>{const h=document.querySelector('.dash-header'),s=document.querySelector('.sidebar');if(!h||!s||document.getElementById('uiMobileMenuBtn'))return;const b=document.createElement('button');b.id='uiMobileMenuBtn';b.className='ui-mobile-menu-btn';b.type='button';b.innerHTML='☰';const o=document.createElement('div');o.className='ui-mobile-overlay';const c=document.createElement('button');c.className='ui-mobile-close';c.type='button';c.innerHTML='×';s.prepend(c);document.body.appendChild(o);const brand=h.querySelector('.brand');if(brand)brand.parentNode.insertBefore(b,brand.nextSibling);else h.prepend(b);const close=()=>{s.classList.remove('ui-open');o.classList.remove('open');document.body.style.overflow=''};b.onclick=()=>{s.classList.add('ui-open');o.classList.add('open');document.body.style.overflow='hidden'};c.onclick=close;o.onclick=close;s.querySelectorAll('a').forEach(a=>a.onclick=close)})();</script></body></html>
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/>
+<!-- SEO: private application page -->
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+:root{--cc-orange:#f08a16;--cc-navy:#071c3b;--cc-blue:#2563eb;--cc-bg:#f4f7fb;--cc-line:#e3eaf3;--cc-muted:#71809a;--cc-green:#16a34a}
+.cc-grid{display:grid;grid-template-columns:minmax(300px,.82fr) minmax(560px,1.65fr);gap:18px}.cc-card{background:#fff;border:1px solid #e4ebf4;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(15,35,65,.06);margin-bottom:18px}.cc-card h2{margin:0 0 7px;color:#102a4c;font-size:18px}.cc-card .subhead{color:#71809a;font-size:12px;margin-bottom:18px}.cc-form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.cc-field label{display:block;font-size:11px;font-weight:800;color:#34435a;margin-bottom:6px}.cc-field input,.cc-field select,.cc-field textarea{width:100%;padding:11px 12px;border:1px solid #d6e0ec;border-radius:10px;background:#fff;color:#16263f;outline:none}.cc-field input:focus,.cc-field select:focus,.cc-field textarea:focus{border-color:#7aa7dc;box-shadow:0 0 0 3px rgba(37,99,235,.08)}.cc-full{grid-column:1/-1}.cc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.cc-btn{border:0;border-radius:10px;padding:11px 14px;font-weight:800;cursor:pointer}.cc-primary{background:#f08a16;color:#fff}.cc-secondary{background:#eef4fb;color:#17426f}.cc-status{margin-top:9px;font-size:12px;color:#31506f}.cc-customer-list{display:grid;gap:10px}.cc-customer{border:1px solid #e1e8f1;border-radius:14px;padding:13px;background:#fbfdff}.cc-customer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.cc-name{font-weight:850;color:#102a4c;font-size:14px}.cc-mobile{color:#7b8aa0;font-size:11px;margin-top:3px}.cc-meta{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap}.cc-chip{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eef4ff;color:#2458b8;font-size:10px;font-weight:750}.cc-update-btn{border:0;border-radius:9px;padding:8px 10px;background:#2563eb;color:#fff;font-weight:800;font-size:11px;cursor:pointer}.cc-case{border:1px solid #e0e8f1;background:#fbfdff;border-radius:14px;padding:14px;margin-top:12px}.cc-case-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.cc-case-title{font-size:12px;font-weight:850;color:#17385f}.cc-remove{border:0;background:#fff0f0;color:#dc2626;border-radius:8px;padding:7px 9px;font-weight:800;cursor:pointer}.cc-plus{width:40px;height:40px;border:0;border-radius:10px;background:#eef4ff;color:#174d8e;font-size:24px;font-weight:800;cursor:pointer}.cc-toolbar{display:grid;grid-template-columns:170px 1fr auto;gap:10px;margin:16px 0}.cc-toolbar input,.cc-toolbar select{padding:10px 11px;border:1px solid #d6e0ec;border-radius:10px;background:#fff}.cc-check{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;color:#44536a;margin:0 0 12px}.cc-check input{accent-color:#f08a16}.cc-stats{display:flex;gap:24px;flex-wrap:wrap;margin:8px 0 15px}.cc-stat{font-size:11px;color:#71809a}.cc-stat b{display:block;color:#102a4c;font-size:19px;margin-top:2px}.cc-table-wrap{overflow:auto;border:1px solid #e2e8f0;border-radius:12px}.cc-table{width:100%;min-width:1100px;border-collapse:collapse}.cc-table th,.cc-table td{padding:11px 10px;border-bottom:1px solid #edf1f6;text-align:left;font-size:12px;vertical-align:middle}.cc-table th{background:#f7faff;color:#153052;font-size:11px}.cc-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:850;white-space:nowrap}.cc-paid{background:#dcfce7;color:#15803d}.cc-no{background:#fff4d6;color:#9a6b00}.cc-done{background:#dcfce7;color:#15803d}.cc-pending{background:#fff4d6;color:#9a6b00}.cc-mini{border:0;border-radius:8px;padding:7px 9px;background:#edf3fb;color:#17426f;font-weight:800;font-size:10px;cursor:pointer}.cc-empty{text-align:center;color:#71809a;padding:24px}.cc-danger{background:#fff0f0;color:#dc2626}.cc-note{font-size:11px;color:#71809a;margin-top:8px}.cc-hidden{display:none!important}
+@media(max-width:1050px){.cc-grid{grid-template-columns:1fr}.cc-toolbar{grid-template-columns:1fr 1fr auto}}
+@media(max-width:700px){.cc-form,.cc-toolbar{grid-template-columns:1fr}.cc-full{grid-column:auto}.cc-card{padding:16px}.dash-main{padding:16px}}
+</style></head><body><header class="dash-header">
+<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
+<div class="header-actions">
+<span class="user-chip" data-admin-name="">Staff</span>
+<a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a>
+</div>
+</header><div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+<a href="customers.html">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="customer-bill.html">Customer Bill</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a><a href="court-copy.html" class="active">⚖️ Court Copy</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a></nav></aside><main class="dash-main">
+<div class="toolbar"><div><p class="eyebrow">COURT COPY</p><h1>Daily Court Copy Update</h1><p class="muted">All customers added by Admin are available here every day. Select a customer and update today's cases, stamp and payment details.</p></div></div>
+<section class="cc-card"><h2>Select Customer & Update</h2><div class="subhead">Choose an Admin-added customer. Sub Customer and Court are automatically loaded from Admin's setup.</div>
+<div class="cc-form"><div class="cc-field"><label>Customer *</label><select id="customer"></select></div><div class="cc-field"><label>Sub Customer / Advocate *</label><select id="sub"></select></div><div class="cc-field"><label>Court Name</label><input id="court" readonly></div><div class="cc-field"><label>Date</label><input id="date" type="date"></div></div>
+<div id="caseList"></div><div class="cc-actions"><button class="cc-plus" id="addCase" type="button" title="Add another case">+</button><button class="cc-btn cc-primary" id="saveAll" type="button">Save Today's Update</button><button class="cc-btn cc-secondary" id="clear" type="button">Clear</button></div><div id="status" class="cc-status"></div></section>
+<section class="cc-card"><h2>Today's Court Copy Customers</h2><div class="subhead">Every Admin-added customer is shown daily. Completed updates are hidden from the update list.</div><div id="customerCards" class="cc-customer-list"></div></section>
+<section class="cc-card"><h2>My Today's Updates</h2><div class="cc-toolbar"><input id="day" type="date"><select id="filter"><option value="">All Updates</option><option value="pending">Pending</option><option value="completed">Completed</option></select><input id="search" placeholder="Search customer / advocate / court / case"><div></div></div><label class="cc-check"><input id="showCompleted" type="checkbox"> Show completed tasks</label><div class="cc-stats"><span class="cc-stat">Cases<b id="count">0</b></span><span class="cc-stat">Copy Payment<b id="copyCount">0</b></span><span class="cc-stat">Completed<b id="doneCount">0</b></span><span class="cc-stat">Stamp<b id="stampTotal">₹0</b></span><span class="cc-stat">Paid<b id="paidTotal">₹0</b></span></div><div class="cc-table-wrap"><table class="cc-table"><thead><tr><th>Customer</th><th>Advocate / Sub</th><th>Court</th><th>Case</th><th>Application</th><th>Stamp</th><th>Paid</th><th>Copy Payment Today</th><th>Task</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+</main></div><footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const auth=await requireStaff();if(!auth)return;const $=id=>document.getElementById(id);let customers=[],maps=[],updates=[],editingId=null;const today=new Date().toISOString().slice(0,10);$('date').value=today;$('day').value=today;const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+async function loadBase(){let r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[];const ids=[...new Set(maps.map(x=>x.customer_id))];customers=[];if(ids.length){r=await sb.from('customers').select('id,full_name,mobile').in('id',ids).order('full_name');if(r.error)throw r.error;customers=r.data||[]}await loadDay();renderCustomers();renderRows()}
+async function loadDay(){let r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('updated_at',{ascending:false});if(r.error)throw r;updates=r.data||[]}
+function renderCustomers(){const groups=new Map();maps.forEach(m=>{if(!groups.has(m.customer_id))groups.set(m.customer_id,[]);groups.get(m.customer_id).push(m)});$('customerCards').innerHTML=[...groups.entries()].map(([cid,list])=>{const c=customers.find(x=>x.id===cid);return `<div class="cc-customer"><div class="cc-customer-top"><div><div class="cc-name">${esc(c?.full_name||'Customer')}</div><div class="cc-mobile">${esc(c?.mobile||'')}</div></div><button class="cc-update-btn" onclick="pickCustomer('${cid}')">Update</button></div><div class="cc-meta">${list.map(m=>`<span class="cc-chip">${esc(m.sub_name)} · ${esc(m.court_name)}</span>`).join('')}</div></div>`}).join('')||'<div class="cc-empty">No Court Copy customers have been added by Admin.</div>';const old=$('customer').value;$('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)} — ${esc(c.mobile||'')}</option>`).join('');if(customers.some(c=>c.id===old))$('customer').value=old;renderSubs()}
+function renderSubs(){const cid=$('customer').value,old=$('sub').value,list=maps.filter(m=>m.customer_id===cid);$('sub').innerHTML='<option value="">Select sub customer</option>'+list.map(m=>`<option value="${m.id}">${esc(m.sub_name)}</option>`).join('');if(list.some(m=>m.id===old))$('sub').value=old;setCourt()}
+function setCourt(){const m=maps.find(x=>x.id===$('sub').value);$('court').value=m?.court_name||''}
+window.pickCustomer=cid=>{$('customer').value=cid;renderSubs();$('customer').scrollIntoView({behavior:'smooth',block:'center'});document.querySelector('.cc-card').scrollIntoView({behavior:'smooth',block:'start'})}
+function addCaseRow(data={}){const wrap=document.createElement('div');wrap.className='cc-case';wrap.innerHTML=`<div class="cc-case-head"><span class="cc-case-title">Case / Stamp Details</span><button class="cc-remove" type="button">Remove</button></div><div class="cc-form"><div class="cc-field"><label>Case Number</label><input class="case" value="${esc(data.case_number||'')}"></div><div class="cc-field"><label>Application Number</label><input class="app" value="${esc(data.application_number||'')}"></div><div class="cc-field"><label>Stamp Amount</label><input class="stamp" type="number" min="0" step="0.01" value="${Number(data.stamp_amount||0)}"></div><div class="cc-field"><label>Paid Amount</label><input class="paid" type="number" min="0" step="0.01" value="${Number(data.paid_amount||0)}"></div><div class="cc-field cc-full"><label>Notes / Update</label><textarea class="notes" rows="2" placeholder="Optional note">${esc(data.notes||'')}</textarea></div></div>`;wrap.querySelector('.cc-remove').onclick=()=>{if(document.querySelectorAll('.cc-case').length>1)wrap.remove()};$('caseList').appendChild(wrap)}
+function reset(){editingId=null;$('caseList').innerHTML='';addCaseRow();$('status').textContent=''}
+$('customer').onchange=renderSubs;$('sub').onchange=setCourt;$('addCase').onclick=()=>addCaseRow();$('clear').onclick=()=>{$('customer').value='';renderSubs();$('date').value=today;reset()};
+$('saveAll').onclick=async()=>{const cid=$('customer').value,aid=$('sub').value,m=maps.find(x=>x.id===aid),workDate=$('date').value;if(!cid||!m)return $('status').textContent='Select customer and sub customer.';const rows=[...document.querySelectorAll('.cc-case')];if(!rows.length)return $('status').textContent='Add at least one case.';const payloads=[];for(const row of rows){const stamp=Number(row.querySelector('.stamp').value||0),paid=Number(row.querySelector('.paid').value||0);if(stamp<0||paid<0||paid>stamp)return $('status').textContent='Paid amount cannot exceed stamp amount.';payloads.push({assignment_id:m.id,customer_id:cid,staff_id:auth.user.id,sub_name:m.sub_name,court_name:m.court_name,work_date:workDate,case_number:row.querySelector('.case').value.trim()||null,application_number:row.querySelector('.app').value.trim()||null,stamp_amount:stamp,paid_amount:paid,copy_payment_today:paid>0,task_completed:false,notes:row.querySelector('.notes').value.trim()||null,created_by:auth.user.id,updated_by:auth.user.id})}if(editingId){const r=await sb.from('court_copy_daily_updates').update(payloads[0]).eq('id',editingId);if(r.error)return $('status').textContent=r.error.message}else{const r=await sb.from('court_copy_daily_updates').insert(payloads);if(r.error)return $('status').textContent=r.error.message}$('status').textContent=editingId?'Update saved.':'Today\'s update saved.';reset();await loadDay();renderRows()};
+window.editRow=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;editingId=id;$('customer').value=a.customer_id;renderSubs();$('sub').value=a.assignment_id;setCourt();$('date').value=a.work_date;$('caseList').innerHTML='';addCaseRow(a);window.scrollTo({top:0,behavior:'smooth'})};window.toggleComplete=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;const r=await sb.from('court_copy_daily_updates').update({task_completed:!a.task_completed,updated_by:auth.user.id}).eq('id',id);if(r.error)return alert(r.error.message);await loadDay();renderRows()};window.toggleCopy=async id=>{const a=updates.find(x=>x.id===id);if(!a)return;const r=await sb.from('court_copy_daily_updates').update({copy_payment_today:!a.copy_payment_today,updated_by:auth.user.id}).eq('id',id);if(r.error)return alert(r.error.message);await loadDay();renderRows()};
+function renderRows(){const q=$('search').value.trim().toLowerCase(),f=$('filter').value,show=$('showCompleted').checked;const r=updates.filter(a=>{const c=customers.find(x=>x.id===a.customer_id),txt=[c?.full_name,a.case_number,a.application_number,a.court_name,a.sub_name].map(v=>String(v||'').toLowerCase()).join(' ');return(show||!a.task_completed)&&(!f||(f==='completed'?a.task_completed:!a.task_completed))&&(!q||txt.includes(q))});let stamp=0,paid=0,copy=0,done=0;r.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});$('count').textContent=r.length;$('copyCount').textContent=copy;$('doneCount').textContent=done;$('stampTotal').textContent=money(stamp);$('paidTotal').textContent=money(paid);$('rows').innerHTML=r.map(a=>{const c=customers.find(x=>x.id===a.customer_id);return `<tr><td><b>${esc(c?.full_name||'')}</b><br><small>${esc(c?.mobile||'')}</small></td><td>${esc(a.sub_name)}</td><td>${esc(a.court_name)}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><button class="cc-mini ${a.copy_payment_today?'cc-paid':''}" onclick="toggleCopy('${a.id}')">${a.copy_payment_today?'✓ Paid Today':'Copy Payment Today'}</button></td><td><button class="cc-mini ${a.task_completed?'cc-done':''}" onclick="toggleComplete('${a.id}')">${a.task_completed?'✓ COMPLETED':'Complete Task'}</button></td><td><button class="cc-mini" onclick="editRow('${a.id}')">Edit</button></td></tr>`}).join('')||'<tr><td colspan="10" class="cc-empty">No updates for this day.</td></tr>'}
+$('day').onchange=async()=>{await loadDay();renderRows()};$('filter').oninput=renderRows;$('search').oninput=renderRows;$('showCompleted').oninput=renderRows;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user?.email||'Staff';reset();try{await loadBase()}catch(e){$('status').textContent=e.message}})();</script><script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script><script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script></body></html>

@@ -92,11 +92,7 @@
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-<link href="../css/itech-final-ui.css" rel="stylesheet"/>
-<!-- SEO: private application page -->
-<meta name="robots" content="noindex, nofollow">
-
-</head>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/></head>
 <body>
 <!-- =========================
      HEADER
@@ -179,8 +175,9 @@
 
           Mobile
 
-          <input id="mobile" placeholder="Optional" type="tel"/>
+          <input id="mobile" placeholder="10 digit mobile number" inputmode="tel" maxlength="10" required type="tel"/>
 </label>
+<div id="mobileIdentityStatus" class="notice" style="display:none;margin-top:-6px;margin-bottom:14px"></div>
 <!-- WHATSAPP -->
 <label class="field">
 
@@ -288,6 +285,65 @@
 
 
   /* =========================
+     MOBILE IDENTITY CHECK
+  ========================= */
+
+  const mobileInput = document.getElementById("mobile");
+  const mobileIdentityStatus = document.getElementById("mobileIdentityStatus");
+  let mobileDuplicate = null;
+
+  function escapeHtml(value){
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function normalizeMobile(value){
+    let digits = String(value || "").replace(/\D/g, "");
+    if(digits.length === 12 && digits.startsWith("91")) digits = digits.slice(2);
+    if(digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
+    return /^[6-9]\d{9}$/.test(digits) ? digits : "";
+  }
+
+  async function checkMobileIdentity(){
+    const key = normalizeMobile(mobileInput.value);
+    mobileDuplicate = null;
+    if(!key){ mobileIdentityStatus.style.display = "none"; return; }
+    const r = await sb.from("customers")
+      .select("id,full_name,mobile,mobile_key,auth_user_id")
+      .eq("mobile_key", key)
+      .maybeSingle();
+    if(r.error){
+      mobileIdentityStatus.style.display = "block";
+      mobileIdentityStatus.style.background = "#fff0f0";
+      mobileIdentityStatus.style.borderColor = "#ffcaca";
+      mobileIdentityStatus.textContent = "Unable to check mobile number: " + r.error.message;
+      return;
+    }
+    if(r.data){
+      mobileDuplicate = r.data;
+      mobileIdentityStatus.style.display = "block";
+      mobileIdentityStatus.style.background = "#fff8ed";
+      mobileIdentityStatus.style.borderColor = "#ffe0ae";
+      mobileIdentityStatus.innerHTML = `⚠️ <strong>Customer already exists.</strong><br>${escapeHtml(r.data.full_name || "Customer")} — ${escapeHtml(r.data.mobile || key)}<br><small>Use the existing customer instead of creating another record.</small>`;
+    }else{
+      mobileIdentityStatus.style.display = "block";
+      mobileIdentityStatus.style.background = "#eafaf1";
+      mobileIdentityStatus.style.borderColor = "#bce8cf";
+      mobileIdentityStatus.textContent = "✓ Mobile number is available for a new customer.";
+    }
+  }
+
+  mobileInput.addEventListener("input", ()=>{
+    mobileInput.value = mobileInput.value.replace(/\D/g, "").slice(0, 10);
+    checkMobileIdentity();
+  });
+  mobileInput.addEventListener("blur", checkMobileIdentity);
+
+  /* =========================
      CREATE CUSTOMER
   ========================= */
 
@@ -305,11 +361,7 @@
         .trim();
 
 
-    const mobile =
-      document
-        .getElementById("mobile")
-        .value
-        .trim();
+    const mobile = normalizeMobile(mobileInput.value);
 
 
     const whatsapp =
@@ -368,6 +420,19 @@
     }
 
 
+
+    if(!mobile){
+      showStatus("Please enter a valid 10-digit Indian mobile number.", true);
+      mobileInput.focus();
+      return;
+    }
+
+    await checkMobileIdentity();
+    if(mobileDuplicate){
+      showStatus(`Customer already exists for ${mobile}. Duplicate customer was not created.`, true);
+      mobileInput.focus();
+      return;
+    }
 
     /* =========================
        BALANCE VALIDATION
@@ -442,6 +507,9 @@
         fullName,
 
       mobile:
+        mobile,
+
+      mobile_key:
         mobile,
 
       whatsapp:
@@ -628,6 +696,9 @@
       document
         .getElementById("password")
         .value = "";
+
+      mobileDuplicate = null;
+      mobileIdentityStatus.style.display = "none";
 
 
     }

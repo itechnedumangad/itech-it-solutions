@@ -218,7 +218,7 @@ body{background:radial-gradient(circle at 10% 10%,rgba(11,103,168,.09),transpare
         <div class="quiz-meta"><span id="taskChip" class="task-chip">TASK 1</span><span id="qCounter" class="meta-chip">Question 1 of 125</span><span id="scoreBadge" class="badge mark-badge">Mark: 0 / 50</span></div>
         <div id="userLabel" class="muted" style="margin-top:8px"></div>
       </div>
-      <div class="quiz-top-actions"><button class="btn secondary top-home-btn" onclick="goTaskHome()">⌂ Home</button><div class="timer-wrap"><span class="timer-label">TIME LEFT</span><div id="timer" class="timer">25:00</div></div></div>
+      <div class="quiz-top-actions"><button class="btn secondary top-home-btn" onclick="goTaskHome()">⌂ Home</button><div class="timer-wrap"><span class="timer-label">TIME LEFT</span><div id="timer" class="timer">60:00</div></div></div>
     </div>
     <div class="progress-row"><span id="progressText">0% Complete</span><div class="progress"><i id="bar"></i></div><span>125 Questions</span></div>
     <div class="question-panel">
@@ -265,7 +265,7 @@ async function hashIdentity(name,mobile){const raw=(String(name).trim().toLowerC
 async function syncResultToCloud(report){if(!supabaseClient)return;try{const lookup_hash=await hashIdentity(report.name,report.mobile);const payload={attempt_id:String(report.id),lookup_hash,student_name:report.name,student_mobile:report.mobile,task:report.task,total:report.total,score:report.score,percentage:report.percentage,started_at:report.startedAt,completed_at:report.completedAt,timed_out:report.timedOut};const {error}=await supabaseClient.from(SUPABASE_TABLE).insert(payload);if(error){console.warn('Cloud result save failed:',error.message);toast('Result saved locally; cloud sync failed');}else{toast('Result saved to Admin Dashboard ✓')}}catch(e){console.warn('Cloud sync error',e);}}
 async function loadCloudHistory(){if(!supabaseClient||!user)return null;try{const lookup_hash=await hashIdentity(user.name,user.mobile);const {data,error}=await supabaseClient.rpc('get_techshore_results',{p_lookup_hash:lookup_hash});if(error)throw error;return Array.isArray(data)?data:[];}catch(e){console.warn('Cloud history unavailable',e.message);return null;}}
 
-const SESSION_KEY="techshore_quiz_session_v2";
+const SESSION_KEY="techshore_quiz_session_v3";
 const TOTAL_TASKS=4, QUESTIONS_PER_TASK=125, TIME_LIMIT=60*60;
 let user=null, taskSets=[], taskStates=[], currentTask=0, taskQuestions=[], index=0, score=0, answered=false, timerInterval=null, timeLeft=TIME_LIMIT, timedOut=false, startedAt=null;
 
@@ -276,13 +276,25 @@ function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",
 function startUser(){
  const name=document.getElementById('name').value.trim(); const mobile=document.getElementById('mobile').value.replace(/\D/g,'');
  if(!name){alert('Please enter your full name.');return} if(mobile.length!==10){alert('Please enter a valid 10 digit mobile number.');return}
- user={name,mobile}; createSession(); showTaskHome();
+ user={name,mobile}; if(createSession()) showTaskHome();
 }
 function createSession(){
- const pool=shuffle(window.TECHSHORE_QUESTIONS);
- taskSets=[]; for(let t=0;t<TOTAL_TASKS;t++) taskSets.push(pool.slice(t*QUESTIONS_PER_TASK,(t+1)*QUESTIONS_PER_TASK).map(q=>({...q})));
+ // Keep original question order: Part 1 = Q1-125, Part 2 = Q126-250, etc.
+ const pool=Array.isArray(window.TECHSHORE_QUESTIONS)?window.TECHSHORE_QUESTIONS.slice():[];
+ if(pool.length<TOTAL_TASKS*QUESTIONS_PER_TASK){
+   alert('Question data is incomplete. Please refresh the page and try again.');
+   return false;
+ }
+ taskSets=[];
+ for(let t=0;t<TOTAL_TASKS;t++){
+   taskSets.push(pool.slice(t*QUESTIONS_PER_TASK,(t+1)*QUESTIONS_PER_TASK).map(q=>({
+     ...q,
+     options:Array.isArray(q.options)?q.options.slice():[]
+   })));
+ }
  taskStates=Array.from({length:TOTAL_TASKS},()=>({completed:false,score:0,attempts:0,lastScore:0}));
  saveSession();
+ return true;
 }
 function saveSession(){try{localStorage.setItem(SESSION_KEY,JSON.stringify({user,taskSets,taskStates}))}catch(e){}}
 function loadSession(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');if(s&&s.user&&Array.isArray(s.taskSets)&&s.taskSets.length===4){user=s.user;taskSets=s.taskSets;taskStates=s.taskStates||Array.from({length:4},()=>({completed:false,score:0,attempts:0,lastScore:0}));return true}}catch(e){}return false}
@@ -290,14 +302,19 @@ function hideAll(){['login','taskHome','quiz','result'].forEach(id=>document.get
 function showTaskHome(){clearInterval(timerInterval);hideAll();document.getElementById('taskHome').classList.remove('hidden');document.getElementById('homeUser').textContent=user.name+' • '+user.mobile;renderTasks()}
 function renderTasks(){
  const grid=document.getElementById('taskGrid');grid.innerHTML='';let done=0,total=0;
- taskStates.forEach((st,t)=>{if(st.completed)done++;total+=Number(st.score||0);const n=t+1;const cls=st.completed?'completed':'';const icon=st.completed?'✓':String(n).padStart(2,'0');const status=st.completed?`Completed • ${st.lastScore}/50`:'Not Started';
+ taskStates.forEach((st,t)=>{if(st.completed)done++;total+=Number(st.score||0);const n=t+1;const cls=st.completed?'completed':'';const icon=st.completed?'✓':String(n).padStart(2,'0');const status=st.completed?`Completed • ${st.lastScore}/125`:'Not Started';
  const card=document.createElement('button');card.className='task-card '+cls;card.onclick=()=>startTask(t);card.innerHTML=`<div class="task-icon">${icon}</div><div class="task-card-main"><div class="task-title">Part ${n}</div><div class="task-sub">125 Questions <span>•</span> 60 Minutes</div><div class="task-status">${status}</div></div><span class="task-arrow">→</span>`;grid.appendChild(card)});
  document.getElementById('completedCount').textContent=done;document.getElementById('totalCorrect').textContent=total;
 }
 function startTask(t){
  currentTask=t;const st=taskStates[t]||{};
- // Same 50-question allocation for the session; question order/options are randomized for each attempt.
- taskQuestions=shuffle(taskSets[t].map(q=>{const correct=q.options[q.answer.charCodeAt(0)-65];return {...q,answerText:correct,options:shuffle(q.options)}});
+ // No shuffle: questions and answer options stay in the original source order.
+ const source=Array.isArray(taskSets[t])?taskSets[t]:[];
+ taskQuestions=source.map(q=>({
+   ...q,
+   answerText:q.options?.[q.answer?.charCodeAt(0)-65]||'',
+   options:Array.isArray(q.options)?q.options.slice():[]
+ }));
  index=0;score=0;answered=false;timedOut=false;timeLeft=TIME_LIMIT;startedAt=new Date().toISOString();
  hideAll();document.getElementById('quiz').classList.remove('hidden');
  document.getElementById('taskChip').textContent='PART '+(t+1);document.getElementById('userLabel').textContent=user.name+' • '+user.mobile;
@@ -327,7 +344,7 @@ function finishQuiz(timeout){
  const report={id:Date.now(),name:user.name,mobile:user.mobile,task:currentTask+1,total:125,score,percentage,startedAt,completedAt:new Date().toISOString(),timedOut};const a=reports();a.push(report);saveReports(a);
  syncResultToCloud(report);
  hideAll();document.getElementById('result').classList.remove('hidden');document.getElementById('resultBadge').textContent='Task '+(currentTask+1)+' Completed';document.getElementById('resultTitle').textContent=timedOut?'Time Out!':'Excellent Work!';document.getElementById('finalScore').textContent=score+' / 125';document.getElementById('resultCorrect').textContent=score;document.getElementById('resultWrong').textContent=125-score;document.getElementById('resultPercent').textContent=percentage+'%';document.getElementById('resultRing').style.setProperty('--pct',percentage+'%');
- document.getElementById('resultText').textContent=timedOut?'25 minutes completed. This task was submitted automatically. Your result has been saved.':'Task completed successfully. Your result has been saved to the Techshore Admin Dashboard.';
+ document.getElementById('resultText').textContent=timedOut?'60 minutes completed. This part was submitted automatically. Your result has been saved.':'Task completed successfully. Your result has been saved to the Techshore Admin Dashboard.';
  document.getElementById('resultText').insertAdjacentHTML('afterend','<div class="score-share-note">📲 Download or share your result as an image score card.</div>');
  const nb=document.getElementById('nextTaskBtn');nb.style.display=currentTask<TOTAL_TASKS-1?'inline-flex':'none';nb.textContent=currentTask<TOTAL_TASKS-1?'Task '+(currentTask+2)+' →':'All Parts Completed';
 }
@@ -354,8 +371,8 @@ function makeScoreCard(){
 }
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function scoreCardBlob(){return new Promise(resolve=>makeScoreCard().toBlob(resolve,'image/png',1));}
-async function downloadScoreCard(){const blob=await scoreCardBlob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Techshore_Task_${currentTask+1}_Score_${score}_50.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Score card downloaded ✓');}
-async function shareScoreCard(){const blob=await scoreCardBlob();const file=new File([blob],`Techshore_Task_${currentTask+1}_Score.png`,{type:'image/png'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:'Techshore Quiz Score Card',text:`${user.name} • Part ${currentTask+1} • Score ${score}/50 (${Math.round(score/125*100)}%)`,files:[file]});return;}catch(e){if(e.name==='AbortError')return;}}await downloadScoreCard();const text=encodeURIComponent(`Techshore Online Practice\n${user.name}\nPart ${currentTask+1}: ${score}/50 (${Math.round(score/125*100)}%)\nhttps://itnedumangad.online/pages/techshore.html`);window.open('https://wa.me/?text='+text,'_blank');toast('Score card downloaded; WhatsApp opened');}
+async function downloadScoreCard(){const blob=await scoreCardBlob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Techshore_Task_${currentTask+1}_Score_${score}_125.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Score card downloaded ✓');}
+async function shareScoreCard(){const blob=await scoreCardBlob();const file=new File([blob],`Techshore_Task_${currentTask+1}_Score.png`,{type:'image/png'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:'Techshore Quiz Score Card',text:`${user.name} • Part ${currentTask+1} • Score ${score}/125 (${Math.round(score/125*100)}%)`,files:[file]});return;}catch(e){if(e.name==='AbortError')return;}}await downloadScoreCard();const text=encodeURIComponent(`Techshore Online Practice\n${user.name}\nPart ${currentTask+1}: ${score}/125 (${Math.round(score/125*100)}%)\nhttps://itnedumangad.online/pages/techshore.html`);window.open('https://wa.me/?text='+text,'_blank');toast('Score card downloaded; WhatsApp opened');}
 async function showPreviousResults(){
  const panel=document.getElementById('historyPanel'); panel.classList.remove('hidden');
  let mine=reports().filter(r=>r.mobile===user.mobile).sort((a,b)=>Number(b.id)-Number(a.id));
@@ -368,7 +385,7 @@ async function showPreviousResults(){
  list.innerHTML=mine.map(r=>{
    const d=r.completedAt?new Date(r.completedAt):null; const date=d&&!isNaN(d)?d.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
    const timeout=r.timedOut?' • Time Out':'';
-   return `<div class="history-item"><div class="history-task">T${esc(r.task)}</div><div class="history-main"><strong>Task ${esc(r.task)} ${timeout}</strong><small>${date} • ${esc(r.name||user.name)}</small></div><div class="history-score"><strong>${esc(r.score)} / ${esc(r.total||50)}</strong><span>${esc(r.percentage||0)}%</span></div></div>`;
+   return `<div class="history-item"><div class="history-task">T${esc(r.task)}</div><div class="history-main"><strong>Task ${esc(r.task)} ${timeout}</strong><small>${date} • ${esc(r.name||user.name)}</small></div><div class="history-score"><strong>${esc(r.score)} / ${esc(r.total||125)}</strong><span>${esc(r.percentage||0)}%</span></div></div>`;
  }).join('');
  panel.scrollIntoView({behavior:'smooth',block:'start'});
 }

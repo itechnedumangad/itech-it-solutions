@@ -482,7 +482,7 @@ body{
 <div class="cc-grid">
 <section>
 <div class="cc-card"><h2>Add Customer / Sub Customer</h2><div class="subhead">Use an existing customer. If the customer is not available, add a new customer first.</div>
-<div class="cc-form"><div class="cc-field cc-full"><label>Existing Customer / Add New *</label><select id="customer"></select></div>
+<div class="cc-form"><div class="cc-field cc-full"><label>Existing Customer / Add New *</label><select id="customer"><option value="">Loading existing customers...</option></select></div>
 <div id="newCustomerBox" class="cc-full cc-hidden" style="padding:13px;border:1px dashed #d3ddea;border-radius:12px;background:#fafcff"><div class="cc-form"><div class="cc-field"><label>Customer Name *</label><input id="newCustomerName" placeholder="Customer name"></div><div class="cc-field"><label>Mobile Number *</label><input id="newCustomerMobile" inputmode="tel" maxlength="10" placeholder="10 digit mobile"></div></div><div class="cc-actions"><button class="cc-btn cc-primary" id="createCustomer" type="button">Add Customer</button><button class="cc-btn cc-secondary" id="cancelNewCustomer" type="button">Cancel</button></div><div id="newCustomerStatus" class="cc-status"></div></div>
 <div class="cc-field"><label>Advocate Mobile Number *</label><input id="advocateMobile" inputmode="tel" maxlength="10" placeholder="10 digit advocate mobile"></div><div class="cc-field"><label>Sub Customer / Advocate *</label><input id="subName" placeholder="Sub customer / advocate name"></div><div class="cc-field"><label>Court Name *</label><input id="courtName" placeholder="Court name"></div></div>
 <div class="cc-actions"><button class="cc-btn cc-primary" id="saveAssign">Add Customer</button><button class="cc-btn cc-secondary" id="clearAssign">Clear</button></div><div id="assignStatus" class="cc-status"></div></div>
@@ -505,16 +505,28 @@ body{
   <small>Your Trust Our Service</small>
 </footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id);let customers=[],maps=[],updates=[],profiles=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 async function loadCustomers(){
-  let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');
-  if(r.error){
-    console.error('Customer load error:',r.error);
-    $('assignStatus').textContent='Unable to load existing customers: '+r.error.message;
+  const sel=$('customer');
+  const status=$('assignStatus');
+  sel.innerHTML='<option value="">Loading existing customers...</option>';
+  status.textContent='Loading existing customers...';
+  try{
+    if(!window.sb){ throw new Error('Supabase client (sb) is not available. Check js/supabase.js.'); }
+    let r=await window.sb.from('customers').select('id,full_name,mobile').order('full_name',{ascending:true}).limit(5000);
+    if(r.error) throw r.error;
+    customers=Array.isArray(r.data)?r.data.filter(c=>c&&c.id):[];
     renderCustomerOptions();
+    status.textContent=customers.length
+      ? `✓ ${customers.length} existing customer(s) loaded.`
+      : 'No customers were returned from the customers table.';
+    return true;
+  }catch(err){
+    console.error('Court Copy customer load failed',err);
+    customers=[];
+    sel.innerHTML='<option value="">Unable to load customers</option><option value="__new__">➕ Add New Customer</option>';
+    status.textContent='Customer loading error: '+(err?.message||err);
+    status.style.color='#b42318';
     return false;
   }
-  customers=r.data||[];
-  renderCustomerOptions();
-  return true;
 }
 async function loadMaps(){let r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[]}
 async function loadDay(){let r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('updated_at',{ascending:false});if(r.error)throw r.error;updates=r.data||[];const ids=[...new Set(updates.map(x=>x.updated_by).filter(Boolean))];profiles=[];if(ids.length){const p=await sb.from('profiles').select('id,full_name,role').in('id',ids);if(!p.error)profiles=p.data||[]}}
@@ -523,6 +535,7 @@ function renderMaps(){const groups=new Map();maps.forEach(m=>{if(!groups.has(m.c
 function renderRows(){const q=$('search').value.trim().toLowerCase(),f=$('statusFilter').value,show=$('showCompleted').checked;const r=updates.filter(a=>{const c=customers.find(x=>x.id===a.customer_id),txt=[c?.full_name,a.case_number,a.application_number,a.court_name,a.sub_name].map(v=>String(v||'').toLowerCase()).join(' ');return(show||!a.task_completed)&&(!f||(f==='completed'?a.task_completed:!a.task_completed))&&(!q||txt.includes(q))});let stamp=0,paid=0,copy=0,done=0;r.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});$('count').textContent=r.length;$('copyCount').textContent=copy;$('doneCount').textContent=done;$('stampTotal').textContent=money(stamp);$('paidTotal').textContent=money(paid);$('rows').innerHTML=r.map(a=>{const c=customers.find(x=>x.id===a.customer_id),p=profiles.find(x=>x.id===a.updated_by);return `<tr><td><b>${esc(c?.full_name||'')}</b><br><small>${esc(c?.mobile||'')}</small></td><td><b>${esc(a.advocate_mobile||'')}</b></td><td>${esc(a.sub_name)}</td><td>${esc(a.court_name)}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><span class="cc-badge ${a.copy_payment_today?'cc-paid':'cc-no'}">${a.copy_payment_today?'YES':'NO'}</span></td><td><span class="cc-badge ${a.task_completed?'cc-done':'cc-pending'}">${a.task_completed?'✓ COMPLETED':'PENDING'}</span></td><td>${esc(p?.full_name||'')}</td><td>${esc(a.updated_at?new Date(a.updated_at).toLocaleString('en-IN'):'')}</td></tr>`}).join('')||'<tr><td colspan="12" class="cc-empty">No updates for this day.</td></tr>'}
 function render(){renderCustomerOptions();renderMaps();renderRows();$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__')}
 $('customer').onchange=()=>$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');$('cancelNewCustomer').onclick=()=>{$('customer').value='';$('newCustomerBox').classList.add('cc-hidden');$('newCustomerName').value='';$('newCustomerMobile').value='';$('newCustomerStatus').textContent=''};
+$('reloadCustomers').onclick=async()=>{await loadCustomers();render();};
 $('createCustomer').onclick=async()=>{const name=$('newCustomerName').value.trim(),mobile=$('newCustomerMobile').value.replace(/\D/g,'');if(!name||mobile.length!==10)return $('newCustomerStatus').textContent='Enter customer name and valid 10 digit mobile number.';let r=await sb.from('customers').select('id,full_name,mobile').eq('mobile',mobile).limit(1);if(r.data?.length)return $('newCustomerStatus').textContent='Customer with this mobile already exists. Select the existing customer.';r=await sb.from('customers').insert({full_name:name,mobile:mobile}).select('id,full_name,mobile').single();if(r.error)return $('newCustomerStatus').textContent=r.error.message;customers.push(r.data);renderCustomerOptions();$('customer').value=r.data.id;$('newCustomerBox').classList.add('cc-hidden');$('assignStatus').textContent='New customer added. Enter Sub Customer and Court Name.'};
 $('saveAssign').onclick=async()=>{const cid=$('customer').value,advocateMobile=$('advocateMobile').value.replace(/\D/g,''),sub=$('subName').value.trim(),court=$('courtName').value.trim();if(cid==='__new__'||!cid||advocateMobile.length!==10||!sub||!court)return $('assignStatus').textContent='Select a customer and enter a valid 10 digit Advocate Mobile Number, Sub Customer and Court Name.';const c=customers.find(x=>x.id===cid);const r=await sb.from('court_copy_assignments').insert({customer_id:cid,advocate_mobile:advocateMobile,sub_name:sub,court_name:court,mobile:c?.mobile||null,created_by:auth.user.id});if(r.error)return $('assignStatus').textContent=r.error.message;$('assignStatus').textContent='Customer mapping added successfully.';$('advocateMobile').value='';$('subName').value='';$('courtName').value='';await loadMaps();render()};window.delMap=async id=>{if(!confirm('Delete this customer/sub customer mapping?'))return;const r=await sb.from('court_copy_assignments').delete().eq('id',id);if(r.error)alert(r.error.message);else{await loadMaps();render()}};
 ['day','statusFilter','search','showCompleted'].forEach(id=>$(id).addEventListener(id==='day'?'change':'input',async()=>{if(id==='day'){await loadDay()}renderRows()}));document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user?.email||'Admin';try{

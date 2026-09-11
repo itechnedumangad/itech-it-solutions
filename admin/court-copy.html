@@ -634,8 +634,8 @@ body{
     const court=$('courtName').value.trim();
     if(cid==='__new__'||!cid||advocateMobile.length!==10||!sub||!court){setStatus('Select a customer and enter a valid 10 digit Advocate Mobile Number, Sub Customer and Court Name.');return;}
     const c=customers.find(x=>String(x.id)===String(cid));
-    const r=await sb.from('court_copy_assignments').insert({customer_id:cid,advocate_mobile:advocateMobile,sub_name:sub,court_name:court,mobile:c?.mobile||null,created_by:auth.user.id});
-    if(r.error){setStatus(r.error.message);return;}
+    const r=await sb.from('court_copy_assignments').insert({customer_id:cid,advocate_mobile:advocateMobile,sub_name:sub,court_name:court,mobile:c?.mobile||null,created_by:auth.user.id,staff_id:null}).select('id').single();
+    if(r.error){console.error('Court Copy save error:',r.error);setStatus('Save failed: '+r.error.message);return;}
     setStatus('Customer mapping added successfully.',true);$('advocateMobile').value='';$('subName').value='';$('courtName').value='';await loadMaps();render();
   };
 

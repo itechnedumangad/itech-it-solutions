@@ -504,62 +504,158 @@ body{
   <span>@itechndd</span>
   <small>Your Trust Our Service</small>
 </footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{
-const $=id=>document.getElementById(id);
-let customers=[],maps=[],updates=[],profiles=[];
+  'use strict';
+  const auth = await requireAdmin();
+  if(!auth) return;
 
-/* Court Copy uses its own Supabase client so customer loading is independent of other page scripts. */
-const cfg=window.APP_CONFIG||{};
-const CC_SUPABASE_URL=cfg.SUPABASE_URL||'https://qllprfglsnkpvgqilhze.supabase.co';
-const CC_SUPABASE_KEY=cfg.SUPABASE_PUBLISHABLE_KEY||cfg.SUPABASE_ANON_KEY||cfg.SUPABASE_KEY||'sb_publishable_BjgtqhMLpDYTLMLjmQWflg_KxTiH_dW';
-const ccDb=window.supabase.createClient(CC_SUPABASE_URL,CC_SUPABASE_KEY);
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const money = n => '₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 
-let auth={user:null,profile:null};
-try{
-  const sess=await ccDb.auth.getSession();
-  if(!sess.data?.session){ alert('Session expired. Please login again.'); location.href='../pages/login.html'; return; }
-  auth.user=sess.data.session.user;
-  const pr=await ccDb.from('profiles').select('id,full_name,role').eq('id',auth.user.id).maybeSingle();
-  if(pr.error){ console.error('Profile load error:',pr.error); throw new Error('Profile loading failed: '+pr.error.message); }
-  auth.profile=pr.data||{};
-  if(auth.profile.role!=='admin'){ alert('Admin access required.'); location.href='../pages/login.html'; return; }
-}catch(e){ console.error('Court Copy auth error:',e); $('assignStatus').textContent=e.message||'Unable to verify admin access.'; return; }
-const today=new Date().toISOString().slice(0,10);$('day').value=today;const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-async function loadCustomers(){
-  $('assignStatus').textContent='Loading existing customers…';
-  $('customer').innerHTML='<option value="">Loading existing customers…</option>';
-  const query=ccDb.from('customers').select('id,full_name,mobile').order('full_name',{ascending:true}).limit(2000);
-  const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('Customer loading timed out. Please refresh and check Supabase connection/RLS.')),10000));
-  try{
-    const r=await Promise.race([query,timeout]);
-    if(r.error) throw new Error(r.error.message);
-    customers=(r.data||[]).filter(c=>c && c.id).sort((a,b)=>String(a.full_name||'').localeCompare(String(b.full_name||'')));
-    console.log('Court Copy customers loaded:',customers.length);
-    renderCustomerOptions();
-    $('assignStatus').textContent=customers.length?`${customers.length} existing customer(s) loaded.`:'No customers found in the customers table.';
-    return true;
-  }catch(e){
-    console.error('Customer load error:',e);
-    customers=[];
-    renderCustomerOptions();
-    $('assignStatus').textContent='Unable to load existing customers: '+(e.message||e);
-    return false;
+  let customers=[];
+  let maps=[];
+  let updates=[];
+  let profiles=[];
+
+  const today = new Date().toISOString().slice(0,10);
+  $('day').value = today;
+
+  function setStatus(msg, ok=false){
+    const el=$('assignStatus');
+    if(el){ el.textContent=msg||''; el.style.color=ok?'#087a42':'#b42318'; }
   }
-}
-async function loadMaps(){let r=await ccDb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[]}
-async function loadDay(){let r=await ccDb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('updated_at',{ascending:false});if(r.error)throw r.error;updates=r.data||[];const ids=[...new Set(updates.map(x=>x.updated_by).filter(Boolean))];profiles=[];if(ids.length){const p=await ccDb.from('profiles').select('id,full_name,role').in('id',ids);if(!p.error)profiles=p.data||[]}}
-function renderCustomerOptions(){const old=$('customer').value;$('customer').innerHTML='<option value="">'+(customers.length?'Select existing customer':'No existing customers found')+'</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name||'Customer')} — ${esc(c.mobile||'')}</option>`).join('')+'<option value="__new__">➕ Add New Customer</option>';if(customers.some(c=>c.id===old))$('customer').value=old}
-function renderMaps(){const groups=new Map();maps.forEach(m=>{if(!groups.has(m.customer_id))groups.set(m.customer_id,[]);groups.get(m.customer_id).push(m)});$('assignments').innerHTML=[...groups.entries()].map(([cid,list])=>{const c=customers.find(x=>x.id===cid);return `<div class="cc-customer"><div class="cc-customer-top"><div><div class="cc-name">${esc(c?.full_name||'Customer')}</div><div class="cc-mobile">Customer Mobile: ${esc(c?.mobile||'')}</div></div></div><div class="cc-meta">${list.map(m=>`<div style="width:100%;padding:9px 10px;border:1px solid #e5ebf3;border-radius:10px;background:#fff"><div style="font-size:12px;font-weight:850;color:#102a4c">📱 Advocate Mobile: ${esc(m.advocate_mobile||'Not set')}</div><div style="font-size:12px;color:#31506f;margin-top:3px">${esc(m.sub_name)} · ${esc(m.court_name)}</div><div style="margin-top:6px"><button class="cc-mini cc-danger" onclick="delMap('${m.id}')">Delete</button></div></div>`).join('')}</div></div>`}).join('')||'<div class="cc-empty">No customers added to Court Copy yet.</div>}
-function renderRows(){const q=$('search').value.trim().toLowerCase(),f=$('statusFilter').value,show=$('showCompleted').checked;const r=updates.filter(a=>{const c=customers.find(x=>x.id===a.customer_id),txt=[c?.full_name,a.case_number,a.application_number,a.court_name,a.sub_name].map(v=>String(v||'').toLowerCase()).join(' ');return(show||!a.task_completed)&&(!f||(f==='completed'?a.task_completed:!a.task_completed))&&(!q||txt.includes(q))});let stamp=0,paid=0,copy=0,done=0;r.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});$('count').textContent=r.length;$('copyCount').textContent=copy;$('doneCount').textContent=done;$('stampTotal').textContent=money(stamp);$('paidTotal').textContent=money(paid);$('rows').innerHTML=r.map(a=>{const c=customers.find(x=>x.id===a.customer_id),p=profiles.find(x=>x.id===a.updated_by);return `<tr><td><b>${esc(c?.full_name||'')}</b><br><small>${esc(c?.mobile||'')}</small></td><td><b>${esc(a.advocate_mobile||'')}</b></td><td>${esc(a.sub_name)}</td><td>${esc(a.court_name)}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><span class="cc-badge ${a.copy_payment_today?'cc-paid':'cc-no'}">${a.copy_payment_today?'YES':'NO'}</span></td><td><span class="cc-badge ${a.task_completed?'cc-done':'cc-pending'}">${a.task_completed?'✓ COMPLETED':'PENDING'}</span></td><td>${esc(p?.full_name||'')}</td><td>${esc(a.updated_at?new Date(a.updated_at).toLocaleString('en-IN'):'')}</td></tr>`}).join('')||'<tr><td colspan="12" class="cc-empty">No updates for this day.</td></tr>'}
-function render(){renderCustomerOptions();renderMaps();renderRows();$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__')}
-$('customer').onchange=()=>$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');$('cancelNewCustomer').onclick=()=>{$('customer').value='';$('newCustomerBox').classList.add('cc-hidden');$('newCustomerName').value='';$('newCustomerMobile').value='';$('newCustomerStatus').textContent=''};
-$('createCustomer').onclick=async()=>{const name=$('newCustomerName').value.trim(),mobile=$('newCustomerMobile').value.replace(/\D/g,'');if(!name||mobile.length!==10)return $('newCustomerStatus').textContent='Enter customer name and valid 10 digit mobile number.';let r=await ccDb.from('customers').select('id,full_name,mobile').eq('mobile',mobile).limit(1);if(r.data?.length)return $('newCustomerStatus').textContent='Customer with this mobile already exists. Select the existing customer.';r=await ccDb.from('customers').insert({full_name:name,mobile:mobile}).select('id,full_name,mobile').single();if(r.error)return $('newCustomerStatus').textContent=r.error.message;customers.push(r.data);renderCustomerOptions();$('customer').value=r.data.id;$('newCustomerBox').classList.add('cc-hidden');$('assignStatus').textContent='New customer added. Enter Sub Customer and Court Name.'};
-$('saveAssign').onclick=async()=>{const cid=$('customer').value,advocateMobile=$('advocateMobile').value.replace(/\D/g,''),sub=$('subName').value.trim(),court=$('courtName').value.trim();if(cid==='__new__'||!cid||advocateMobile.length!==10||!sub||!court)return $('assignStatus').textContent='Select a customer and enter a valid 10 digit Advocate Mobile Number, Sub Customer and Court Name.';const c=customers.find(x=>x.id===cid);const r=await ccDb.from('court_copy_assignments').insert({customer_id:cid,advocate_mobile:advocateMobile,sub_name:sub,court_name:court,mobile:c?.mobile||null,created_by:auth.user.id});if(r.error)return $('assignStatus').textContent=r.error.message;$('assignStatus').textContent='Customer mapping added successfully.';$('advocateMobile').value='';$('subName').value='';$('courtName').value='';await loadMaps();render()};window.delMap=async id=>{if(!confirm('Delete this customer/sub customer mapping?'))return;const r=await ccDb.from('court_copy_assignments').delete().eq('id',id);if(r.error)alert(r.error.message);else{await loadMaps();render()}};
-['day','statusFilter','search','showCompleted'].forEach(id=>$(id).addEventListener(id==='day'?'change':'input',async()=>{if(id==='day'){await loadDay()}renderRows()}));document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user?.email||'Admin';try{
-  await loadCustomers();
-  try{await loadMaps();}catch(e){console.error('Court Copy mapping load error:',e);$('assignStatus').textContent='Customer list loaded. Court Copy mappings could not be loaded: '+e.message;}
-  try{await loadDay();}catch(e){console.error('Court Copy day load error:',e);}
-  render();
-}catch(e){console.error(e);$('assignStatus').textContent=e.message}})();</script><script data-dashboard-active-nav="">
+
+  async function loadCustomers(){
+    const select=$('customer');
+    if(select) select.innerHTML='<option value="">Loading existing customers...</option>';
+    setStatus('Loading existing customers...', true);
+
+    // Use the same Supabase client/authenticated admin session as the working dashboard.
+    // Do NOT depend on court-copy tables or profiles.email.
+    let r = await sb.from('customers')
+      .select('id,full_name,mobile')
+      .order('full_name',{ascending:true})
+      .limit(2000);
+
+    if(r.error){
+      console.error('Court Copy customer query failed:', r.error);
+      if(select) select.innerHTML='<option value="">Unable to load customers</option><option value="__new__">➕ Add New Customer</option>';
+      setStatus('Customer loading failed: '+r.error.message);
+      return false;
+    }
+
+    customers=(r.data||[]).filter(c=>c && c.id);
+    renderCustomerOptions();
+    setStatus(customers.length ? `${customers.length} existing customer(s) loaded.` : 'No existing customers found.', true);
+    return true;
+  }
+
+  async function loadMaps(){
+    const r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});
+    if(r.error) throw r.error;
+    maps=r.data||[];
+  }
+
+  async function loadDay(){
+    const r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('updated_at',{ascending:false});
+    if(r.error) throw r.error;
+    updates=r.data||[];
+    profiles=[];
+    const ids=[...new Set(updates.map(x=>x.updated_by).filter(Boolean))];
+    if(ids.length){
+      const p=await sb.from('profiles').select('id,full_name,role').in('id',ids);
+      if(!p.error) profiles=p.data||[];
+    }
+  }
+
+  function renderCustomerOptions(){
+    const select=$('customer');
+    if(!select) return;
+    const old=select.value;
+    select.innerHTML='<option value="">'+(customers.length?'Select existing customer':'No existing customers found')+'</option>'+
+      customers.map(c=>`<option value="${esc(c.id)}">${esc(c.full_name||'Customer')} — ${esc(c.mobile||'')}</option>`).join('')+
+      '<option value="__new__">➕ Add New Customer</option>';
+    if(customers.some(c=>String(c.id)===String(old))) select.value=old;
+  }
+
+  function renderMaps(){
+    const groups=new Map();
+    maps.forEach(m=>{if(!groups.has(m.customer_id))groups.set(m.customer_id,[]);groups.get(m.customer_id).push(m)});
+    $('assignments').innerHTML=[...groups.entries()].map(([cid,list])=>{
+      const c=customers.find(x=>String(x.id)===String(cid));
+      return `<div class="cc-customer"><div class="cc-customer-top"><div><div class="cc-name">${esc(c?.full_name||'Customer')}</div><div class="cc-mobile">Customer Mobile: ${esc(c?.mobile||'')}</div></div></div><div class="cc-meta">${list.map(m=>`<div style="width:100%;padding:9px 10px;border:1px solid #e5ebf3;border-radius:10px;background:#fff"><div style="font-size:12px;font-weight:850;color:#102a4c">📱 Advocate Mobile: ${esc(m.advocate_mobile||'Not set')}</div><div style="font-size:12px;color:#31506f;margin-top:3px">${esc(m.sub_name)} · ${esc(m.court_name)}</div><div style="margin-top:6px"><button class="cc-mini cc-danger" onclick="delMap('${m.id}')">Delete</button></div></div>`).join('')}</div></div>`;
+    }).join('') || '<div class="cc-empty">No customers added to Court Copy yet.</div>';
+  }
+
+  function renderRows(){
+    const q=$('search').value.trim().toLowerCase();
+    const f=$('statusFilter').value;
+    const show=$('showCompleted').checked;
+    const rows=updates.filter(a=>{
+      const c=customers.find(x=>String(x.id)===String(a.customer_id));
+      const txt=[c?.full_name,c?.mobile,a.advocate_mobile,a.case_number,a.application_number,a.court_name,a.sub_name].map(v=>String(v||'').toLowerCase()).join(' ');
+      return (show||!a.task_completed) && (!f||(f==='completed'?a.task_completed:!a.task_completed)) && (!q||txt.includes(q));
+    });
+    let stamp=0,paid=0,copy=0,done=0;
+    rows.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});
+    $('count').textContent=rows.length;
+    $('copyCount').textContent=copy;
+    $('doneCount').textContent=done;
+    $('stampTotal').textContent=money(stamp);
+    $('paidTotal').textContent=money(paid);
+    $('rows').innerHTML=rows.map(a=>{
+      const c=customers.find(x=>String(x.id)===String(a.customer_id));
+      const p=profiles.find(x=>String(x.id)===String(a.updated_by));
+      return `<tr><td><b>${esc(c?.full_name||'')}</b><br><small>${esc(c?.mobile||'')}</small></td><td><b>${esc(a.advocate_mobile||'')}</b></td><td>${esc(a.sub_name||'')}</td><td>${esc(a.court_name||'')}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><span class="cc-badge ${a.copy_payment_today?'cc-paid':'cc-no'}">${a.copy_payment_today?'YES':'NO'}</span></td><td><span class="cc-badge ${a.task_completed?'cc-done':'cc-pending'}">${a.task_completed?'✓ COMPLETED':'PENDING'}</span></td><td>${esc(p?.full_name||'')}</td><td>${esc(a.updated_at?new Date(a.updated_at).toLocaleString('en-IN'):'')}</td></tr>`;
+    }).join('') || '<tr><td colspan="12" class="cc-empty">No updates for this day.</td></tr>';
+  }
+
+  function render(){renderCustomerOptions();renderMaps();renderRows();$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');}
+
+  $('customer').onchange=()=>{$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');};
+  $('cancelNewCustomer').onclick=()=>{$('customer').value='';$('newCustomerBox').classList.add('cc-hidden');$('newCustomerName').value='';$('newCustomerMobile').value='';$('newCustomerStatus').textContent='';};
+
+  $('createCustomer').onclick=async()=>{
+    const name=$('newCustomerName').value.trim();
+    const mobile=$('newCustomerMobile').value.replace(/\D/g,'');
+    if(!name||mobile.length!==10)return $('newCustomerStatus').textContent='Enter customer name and valid 10 digit mobile number.';
+    let r=await sb.from('customers').select('id,full_name,mobile').eq('mobile',mobile).limit(1);
+    if(r.error)return $('newCustomerStatus').textContent=r.error.message;
+    if(r.data?.length)return $('newCustomerStatus').textContent='Customer with this mobile already exists. Select the existing customer.';
+    r=await sb.from('customers').insert({full_name:name,mobile:mobile}).select('id,full_name,mobile').single();
+    if(r.error)return $('newCustomerStatus').textContent=r.error.message;
+    customers.push(r.data);renderCustomerOptions();$('customer').value=r.data.id;$('newCustomerBox').classList.add('cc-hidden');setStatus('New customer added. Enter Sub Customer and Court Name.',true);
+  };
+
+  $('saveAssign').onclick=async()=>{
+    const cid=$('customer').value;
+    const advocateMobile=$('advocateMobile').value.replace(/\D/g,'');
+    const sub=$('subName').value.trim();
+    const court=$('courtName').value.trim();
+    if(cid==='__new__'||!cid||advocateMobile.length!==10||!sub||!court){setStatus('Select a customer and enter a valid 10 digit Advocate Mobile Number, Sub Customer and Court Name.');return;}
+    const c=customers.find(x=>String(x.id)===String(cid));
+    const r=await sb.from('court_copy_assignments').insert({customer_id:cid,advocate_mobile:advocateMobile,sub_name:sub,court_name:court,mobile:c?.mobile||null,created_by:auth.user.id});
+    if(r.error){setStatus(r.error.message);return;}
+    setStatus('Customer mapping added successfully.',true);$('advocateMobile').value='';$('subName').value='';$('courtName').value='';await loadMaps();render();
+  };
+
+  window.delMap=async id=>{if(!confirm('Delete this customer/sub customer mapping?'))return;const r=await sb.from('court_copy_assignments').delete().eq('id',id);if(r.error)alert(r.error.message);else{await loadMaps();render();}};
+
+  $('day').addEventListener('change',async()=>{try{await loadDay();renderRows();}catch(e){console.error(e);}});
+  $('statusFilter').addEventListener('change',renderRows);
+  $('search').addEventListener('input',renderRows);
+  $('showCompleted').addEventListener('change',renderRows);
+
+  const adminName=document.querySelector('[data-admin-name]');
+  if(adminName) adminName.textContent=auth.profile?.full_name||auth.user?.email||'Admin';
+
+  try{
+    await loadCustomers();
+    try{await loadMaps();}catch(e){console.error('Court Copy mapping load error:',e);setStatus('Customers loaded, but Court Copy mappings could not be loaded: '+e.message);}
+    try{await loadDay();}catch(e){console.error('Court Copy day load error:',e);}
+    render();
+  }catch(e){console.error('Court Copy startup error:',e);setStatus(e.message||'Unable to load Court Copy.');}
+})();</script></script><script data-dashboard-active-nav="">
 (() => {
   const current = location.pathname.split('/').pop() || 'dashboard.html';
   document.querySelectorAll('.sidebar nav a').forEach(a => {

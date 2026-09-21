@@ -606,62 +606,17 @@ body{
   }
 
   async function loadCustomers(){
-    const box=$("customerSuggestions");
-    const search=$("customerSearch");
-    if(box){
-      box.innerHTML='<div class="customer-empty">Loading customers…</div>';
-      box.classList.add("show");
-    }
-
-    // Do not apply the insurance-origin filter in the initial query.
-    // That filter can hide every customer if older rows/schema values differ.
-    // Keep the same table and select fields used by the existing dashboard.
-    let r=await sb.from("customers")
+    // Quick Daily Work shows only normal customer profiles, not insurance-created profiles.
+    // Insurance-created profiles are intentionally excluded.
+    const r=await sb.from("customers")
       .select("*")
-      .order("created_at",{ascending:false});
-
-    if(r.error){
-      console.error("[Staff Dashboard] customers query failed:",r.error);
-      status("Customer loading failed: "+(r.error.message||"Supabase query error"),true);
-      customers=[];
-      if(box){
-        box.innerHTML='<div class="customer-empty">Could not load customers. Check staff database permissions.</div>';
-        box.classList.add("show");
-      }
-      return;
-    }
-
-    const rows=Array.isArray(r.data)?r.data:[];
-    // Filter insurance-origin rows only when the marker is explicitly true.
-    customers=rows.filter(c=>c.created_from_insurance!==true && c.created_from_insurance!=="true");
-
-    // Compatibility with legacy customer schemas where the display fields
-    // may be named differently. Keep original fields for existing functions.
-    customers=customers.map(c=>({
-      ...c,
-      full_name:c.full_name||c.customer_name||c.name||c.name_of_customer||"Customer",
-      mobile:c.mobile||c.mobile_number||c.phone||c.phone_number||"",
-      whatsapp:c.whatsapp||c.whatsapp_number||""
-    }));
-
-    if(search){
-      search.value="";
-      search.dataset.cashSale="0";
-    }
+      .or("created_from_insurance.is.null,created_from_insurance.eq.false")
+      .order("full_name");
+    if(r.error){status(r.error.message,true);return;}
+    customers=r.data||[];
     $("customer").value="";
-    activeSuggestion=-1;
+    $("customerSearch").value="";
     renderCustomerSuggestions("");
-
-    if(!customers.length){
-      console.warn("[Staff Dashboard] customers query returned zero visible rows. Check Supabase RLS/staff role and whether customer records exist.");
-      if(box){
-        box.innerHTML='<div class="customer-empty">No customers are visible to this staff account. Check customer records and Supabase staff access (RLS).</div>';
-        box.classList.add("show");
-      }
-      status("Customer query succeeded but returned 0 visible records. Check Supabase customer-table access.",true);
-    }else{
-      console.info(`[Staff Dashboard] Loaded ${customers.length} customer records.`);
-    }
   }
 
 
@@ -842,36 +797,6 @@ body{
     Daily Work / Payment pages. If your existing save logic has extra fields,
     keep those fields in the corresponding INSERT blocks below.
   */
-
-  // Google Sheets sync (Apps Script Web App)
-  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
-  async function syncQuickEntryToGoogleSheets(data){
-    // Apps Script requires a real customer. Cash-sale entries are kept in Supabase only.
-    if(!data.customer_id || !data.customer_name) return {skipped:true};
-    const body={
-      customer_id:String(data.customer_id),
-      customer_name:String(data.customer_name),
-      entry_id:String(data.entry_id||""),
-      work_date:data.work_date,
-      old_balance:Number(data.old_balance||0),
-      e_filing:Number(data.e_filing||0),
-      e_payment:Number(data.e_payment||0),
-      print_amount:Number(data.print_amount||0),
-      scanning:Number(data.scanning||0),
-      other_works:Number(data.other_works||0),
-      paid_amount:Number(data.paid_amount||0)
-    };
-    // no-cors is used because Apps Script web apps may not expose CORS response headers.
-    // The browser cannot read the response in this mode; the POST is a best-effort sync.
-    await fetch(ITCH_SHEETS_WEB_APP_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify(body)
-    });
-    return {sent:true};
-  }
-
   $("saveBtn").addEventListener("click",async()=>{
     const customerId=$("customer").value || null;
     const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
@@ -887,12 +812,19 @@ body{
       const desc=$("description").value.trim();
       const entryDate=selectedEntryDate();
 
+      // Get the signed-in staff user explicitly. RLS requires entered_by = auth.uid().
+      const { data: authData, error: authError } = await sb.auth.getUser();
+      if(authError) throw authError;
+      const currentUserId = authData?.user?.id;
+      if(!currentUserId) throw new Error("Session expired. Please sign in again.");
+
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
         const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
         const payload={
           customer_id:isCashSale?null:customerId,
+          entered_by:currentUserId,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
           print_amount:sumField("print_amount"),
@@ -909,7 +841,6 @@ body{
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
         if(ins.error) throw ins.error;
-        var sheetsEntryId=ins.data?.id||null;
 
         // Award points immediately after the Quick Entry is saved.
         // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
@@ -947,28 +878,6 @@ body{
         if(pr.error) throw pr.error;
       }
 
-      // Sync the combined Quick Entry to Google Sheets after Supabase work/payment writes.
-      if(work>0 && !isCashSale && sheetsEntryId){
-        const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
-        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
-        const sheetsPayload={
-          customer_id:customerId,
-          customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
-          entry_id:sheetsEntryId,
-          work_date:entryDate,
-          old_balance:0,
-          e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),
-          e_payment:amount("e_payment")+extraForSheets.reduce((s,r)=>s+Number(r.e_payment||0),0),
-          print_amount:amount("print_amount")+extraForSheets.reduce((s,r)=>s+Number(r.print_amount||0),0),
-          scanning:amount("scanning")+extraForSheets.reduce((s,r)=>s+Number(r.scanning||0),0),
-          other_works:amount("other_works")+extraForSheets.reduce((s,r)=>s+Number(r.other_works||0),0),
-          paid_amount:paid
-        };
-        // Fire-and-forget: Google Sheets sync must not delay the successful Supabase save.
-        void syncQuickEntryToGoogleSheets(sheetsPayload)
-          .then(()=>console.info("Google Sheets sync request sent."))
-          .catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
-      }
       status("Transaction saved successfully.");
       window.dispatchEvent(new Event("itech:work-saved"));
       await loadWhatsAppReminders();

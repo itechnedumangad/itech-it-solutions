@@ -2,6 +2,7 @@
 
 <html lang="en">
 <head>
+<link rel="stylesheet" href="/css/modern-v2-fullsite.css">
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Dashboard | iTech Staff</title>
@@ -412,7 +413,6 @@ body{
 <a href="customers.html">Customers</a>
 <a href="add-customer.html">+ Add Customer</a>
 <a href="daily-work.html">Daily Work</a>
-<a href="court-copy.html">⚖️ Court Copy</a>
 <a href="payments.html">Payments</a>
 <a href="reports.html">Reports</a>
 <a href="customer-bill.html">Customer Bill</a>
@@ -812,19 +812,12 @@ body{
       const desc=$("description").value.trim();
       const entryDate=selectedEntryDate();
 
-      // Get the signed-in staff user explicitly. RLS requires entered_by = auth.uid().
-      const { data: authData, error: authError } = await sb.auth.getUser();
-      if(authError) throw authError;
-      const currentUserId = authData?.user?.id;
-      if(!currentUserId) throw new Error("Session expired. Please sign in again.");
-
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
         const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
         const payload={
           customer_id:isCashSale?null:customerId,
-          entered_by:currentUserId,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
           print_amount:sumField("print_amount"),
@@ -839,17 +832,13 @@ body{
           work_date:entryDate
         };
 
-        // Use a narrowly-scoped SECURITY DEFINER RPC for staff inserts.
-        // The server derives the staff identity from auth.uid(); never trust a client-supplied entered_by.
-        const ins=await sb.rpc("staff_quick_daily_work_insert",{p_payload:payload});
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
         if(ins.error) throw ins.error;
-        const insertedEntryId=ins.data;
-        if(!insertedEntryId) throw new Error("Daily work was not saved: the server returned no entry ID.");
 
         // Award points immediately after the Quick Entry is saved.
         // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
         try{
-          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:insertedEntryId});
+          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:ins.data.id});
           if(pointResult.error){
             console.error("Quick Entry points error:",pointResult.error);
           }else{
@@ -877,9 +866,7 @@ body{
           amount:paid,
           payment_date:entryDate,
           payment_method:"Cash",
-          reference_note:"Dashboard Quick Entry",
-          // Required by payments_staff_insert_own RLS policy.
-          entered_by:currentUserId
+          reference_note:"Dashboard Quick Entry"
         });
         if(pr.error) throw pr.error;
       }

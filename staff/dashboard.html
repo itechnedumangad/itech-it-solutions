@@ -797,71 +797,6 @@ body{
     Daily Work / Payment pages. If your existing save logic has extra fields,
     keep those fields in the corresponding INSERT blocks below.
   */
-  // Google Sheets sync (Apps Script Web App)
-  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
-  async function syncQuickEntryToGoogleSheets(data){
-    // Apps Script requires a real customer. Cash-sale entries are kept in Supabase only.
-    if(!data.customer_id || !data.customer_name) return {skipped:true};
-    const body={
-      customer_id:String(data.customer_id),
-      customer_name:String(data.customer_name),
-      entry_id:String(data.entry_id||""),
-      work_date:data.work_date,
-      old_balance:Number(data.old_balance||0),
-      e_filing:Number(data.e_filing||0),
-      e_payment:Number(data.e_payment||0),
-      print_amount:Number(data.print_amount||0),
-      scanning:Number(data.scanning||0),
-      other_works:Number(data.other_works||0),
-      paid_amount:Number(data.paid_amount||0)
-    };
-    // no-cors is used because Apps Script web apps may not expose CORS response headers.
-    // The browser cannot read the response in this mode; the POST is a best-effort sync.
-    await fetch(ITCH_SHEETS_WEB_APP_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify(body)
-    });
-    return {sent:true};
-  }
-
-
-  function escapeTransactionText(value){
-    return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[m]));
-  }
-  function transactionWorkTotal(r){
-    const base=["e_filing","e_payment","print_amount","scanning","other_works"].reduce((n,k)=>n+Number(r[k]||0),0);
-    const extras=Array.isArray(r.extra_entries)?r.extra_entries.reduce((n,row)=>n+Object.values(row||{}).reduce((a,v)=>a+Number(v||0),0),0):0;
-    return Math.max(base+extras-Number(r.discount||0),0);
-  }
-  async function loadStaffRecentTransactions(){
-    const host=$("staffTransactionsList");
-    if(!host)return;
-    host.innerHTML='<div style="color:#7b8eaa">Loading transactions…</div>';
-    try{
-      const {data,error}=await sb.from("daily_work_entries").select("*").order("created_at",{ascending:false}).limit(5);
-      if(error)throw error;
-      const rows=data||[];
-      if(!rows.length){host.innerHTML='<div style="color:#7b8eaa;padding:8px 0">No transactions recorded yet.</div>';return;}
-      host.innerHTML=rows.map(r=>{
-        const customer=customers.find(c=>String(c.id)===String(r.customer_id));
-        const name=customer?.full_name||(r.customer_id?"Customer":"Cash Sale");
-        const date=String(r.work_date||r.created_at||"").slice(0,10);
-        const work=transactionWorkTotal(r);
-        const paid=Number(r.paid_amount||0);
-        return `<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #edf2f9;flex-wrap:wrap">
-          <div style="min-width:160px"><div style="font-weight:700;color:#17385f">${escapeTransactionText(name)}</div><div style="font-size:12px;color:#7185a2;margin-top:4px">${escapeTransactionText(date)}${r.description?' · '+escapeTransactionText(r.description):''}</div></div>
-          <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px"><span>Work: <b>${money(work)}</b></span><span>Paid: <b style="color:#11945b">${money(paid)}</b></span><span>Balance: <b style="color:#d97706">${money(Math.max(work-paid,0))}</b></span></div>
-        </div>`;
-      }).join("");
-    }catch(err){
-      console.error("Recent transactions load failed:",err);
-      host.innerHTML=`<div style="color:#b42318;padding:8px 0">Could not load transactions: ${escapeTransactionText(err.message||"Check Supabase SELECT permission/RLS.")}</div>`;
-    }
-  }
-  $("refreshStaffTransactions")?.addEventListener("click",loadStaffRecentTransactions);
-
   $("saveBtn").addEventListener("click",async()=>{
     const customerId=$("customer").value || null;
     const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
@@ -934,27 +869,6 @@ body{
           console.error("Quick Entry points error:",pointErr);
         }
 
-        // Send the saved customer work entry to the same Google Sheets endpoint as Admin.
-        if(!isCashSale){
-          const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
-          const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
-          const sheetsPayload={
-            customer_id:customerId,
-            customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
-            entry_id:insertedEntryId,
-            work_date:entryDate,
-            old_balance:selectedBalance,
-            e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),
-            e_payment:amount("e_payment")+extraForSheets.reduce((s,r)=>s+Number(r.e_payment||0),0),
-            print_amount:amount("print_amount")+extraForSheets.reduce((s,r)=>s+Number(r.print_amount||0),0),
-            scanning:amount("scanning")+extraForSheets.reduce((s,r)=>s+Number(r.scanning||0),0),
-            other_works:amount("other_works")+extraForSheets.reduce((s,r)=>s+Number(r.other_works||0),0),
-            paid_amount:paid
-          };
-          void syncQuickEntryToGoogleSheets(sheetsPayload)
-            .then(()=>console.info("Google Sheets sync request sent (response cannot be verified in no-cors mode)."))
-            .catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
-        }
       }
 
       if(paid>0){
@@ -963,13 +877,14 @@ body{
           amount:paid,
           payment_date:entryDate,
           payment_method:"Cash",
-          reference_note:"Dashboard Quick Entry"
+          reference_note:"Dashboard Quick Entry",
+          // Required by payments_staff_insert_own RLS policy.
+          entered_by:currentUserId
         });
         if(pr.error) throw pr.error;
       }
 
       status("Transaction saved successfully.");
-      await loadStaffRecentTransactions();
       window.dispatchEvent(new Event("itech:work-saved"));
       await loadWhatsAppReminders();
       clearForm();
@@ -981,8 +896,6 @@ body{
     }
   });
 
-
-  loadStaffRecentTransactions();
 
   /* ===== WhatsApp Payment Reminders ===== */
   function normalizePhone(value){

@@ -905,6 +905,7 @@ body{
           entry_type:isCashSale?"cash_sale":"customer",
           extra_entries:extraEntries.length?extraEntries:null,
           work_date:entryDate
+          entered_by: (await sb.auth.getUser()).data.user.id,
         };
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();

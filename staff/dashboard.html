@@ -397,23 +397,6 @@ body{
 <!-- SEO: private application page -->
 <meta name="robots" content="noindex, nofollow">
 
-
-
-<style id="customer-picker-modern-fix">
-/* ===== Customer picker reliability + modern staff polish ===== */
-.customer-picker{z-index:12}
-.customer-suggestions{top:calc(100% - 1px);max-height:min(320px,50vh);overscroll-behavior:contain}
-.customer-option{min-height:54px;border-bottom:1px solid #edf2f8}
-.customer-option:last-child{border-bottom:0}
-.customer-option:focus-visible{outline:2px solid #1769e0;outline-offset:-2px}
-.customer-main{display:block}
-.customer-mobile{display:block;margin-top:3px}
-@media(max-width:620px){
-  .customer-suggestions{max-height:42vh}
-  .quick-entry{padding:16px!important}
-  .entry-main{padding:12px!important}
-}
-</style>
 </head>
 <body>
 <header class="dash-header">
@@ -623,51 +606,61 @@ body{
   }
 
   async function loadCustomers(){
-    const search=$("customerSearch");
     const box=$("customerSuggestions");
+    const search=$("customerSearch");
     if(box){
       box.innerHTML='<div class="customer-empty">Loading customers…</div>';
       box.classList.add("show");
     }
 
-    // First try the intended filter. If the optional insurance-origin column
-    // is absent in this database, retry without that filter so the list is not blank.
+    // Do not apply the insurance-origin filter in the initial query.
+    // That filter can hide every customer if older rows/schema values differ.
+    // Keep the same table and select fields used by the existing dashboard.
     let r=await sb.from("customers")
       .select("*")
-      .or("created_from_insurance.is.null,created_from_insurance.eq.false")
-      .order("full_name");
+      .order("created_at",{ascending:false});
 
     if(r.error){
-      console.warn("Customer list filtered query failed; retrying basic customer query:",r.error);
-      r=await sb.from("customers").select("*").order("full_name");
-    }
-
-    if(r.error){
+      console.error("[Staff Dashboard] customers query failed:",r.error);
+      status("Customer loading failed: "+(r.error.message||"Supabase query error"),true);
       customers=[];
       if(box){
-        box.innerHTML='<div class="customer-empty">Customer list could not be loaded. Please refresh or contact Admin.</div>';
+        box.innerHTML='<div class="customer-empty">Could not load customers. Check staff database permissions.</div>';
         box.classList.add("show");
       }
-      status("Customer list error: "+(r.error.message||"Unable to load customers"),true);
       return;
     }
 
     const rows=Array.isArray(r.data)?r.data:[];
-    // Exclude insurance-created profiles only when the marker exists on the row.
-    customers=rows.filter(c=>c.created_from_insurance==null || c.created_from_insurance===false || c.created_from_insurance==="false");
-    if(!customers.length && rows.length){
-      // Older schemas may not expose the marker consistently; preserve available customers.
-      customers=rows;
-    }
+    // Filter insurance-origin rows only when the marker is explicitly true.
+    customers=rows.filter(c=>c.created_from_insurance!==true && c.created_from_insurance!=="true");
+
+    // Compatibility with legacy customer schemas where the display fields
+    // may be named differently. Keep original fields for existing functions.
+    customers=customers.map(c=>({
+      ...c,
+      full_name:c.full_name||c.customer_name||c.name||c.name_of_customer||"Customer",
+      mobile:c.mobile||c.mobile_number||c.phone||c.phone_number||"",
+      whatsapp:c.whatsapp||c.whatsapp_number||""
+    }));
 
     if(search){
       search.value="";
       search.dataset.cashSale="0";
     }
     $("customer").value="";
+    activeSuggestion=-1;
     renderCustomerSuggestions("");
+
     if(!customers.length){
-      status("No customer records were returned from the customers table. Check customer data and staff access permissions.",true);
+      console.warn("[Staff Dashboard] customers query returned zero visible rows. Check Supabase RLS/staff role and whether customer records exist.");
+      if(box){
+        box.innerHTML='<div class="customer-empty">No customers are visible to this staff account. Check customer records and Supabase staff access (RLS).</div>';
+        box.classList.add("show");
+      }
+      status("Customer query succeeded but returned 0 visible records. Check Supabase customer-table access.",true);
+    }else{
+      console.info(`[Staff Dashboard] Loaded ${customers.length} customer records.`);
     }
   }
 

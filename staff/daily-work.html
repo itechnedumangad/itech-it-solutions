@@ -442,6 +442,8 @@
       .join(" | ");
 
     const payload = {
+      // Required by the staff INSERT RLS policy: tie this entry to the signed-in staff user.
+      entered_by: ok.profile.id,
       customer_id,
       work_date: selectedWorkDate,
       e_filing: values.e_filing,

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Dashboard | iTech Staff</title>
+<title>Dashboard | iTech Admin</title>
 <link href="../css/style.css" rel="stylesheet"/>
 <link href="../css/dashboard.css" rel="stylesheet"/>
 <style>
@@ -138,7 +138,11 @@ body{
 .field textarea{height:70px;padding-top:11px;resize:vertical}
 .customer-picker{position:relative}
 .customer-input-wrap{position:relative}
-.customer-input-wrap input{padding-right:42px}
+.customer-input-wrap input{padding-left:42px;padding-right:42px}
+.entry-date-btn{position:absolute;left:7px;top:7px;width:31px;height:31px;border:0;border-radius:8px;background:#eef5ff;color:#17345b;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;box-shadow:0 1px 2px rgba(16,40,75,.08)}
+.entry-date-btn:hover{background:#e3efff;transform:translateY(-1px)}
+.entry-date-hidden{position:absolute!important;left:0!important;bottom:0!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;border:0!important}
+
 .customer-clear{
   position:absolute;right:7px;top:4px;width:36px;height:36px;border:0;
   border-radius:8px;background:transparent;color:#8392a8;font-size:22px;
@@ -242,6 +246,8 @@ body{
   .bottom-row{grid-template-columns:1fr}
 }
 @media(max-width:850px){
+  .customer-paid{grid-template-columns:1fr 1fr}
+  .customer-paid .field:first-child{grid-column:1/-1}
   .sidebar{width:210px!important}
   .kpis{grid-template-columns:repeat(2,1fr)!important}
   .amount-grid{grid-template-columns:repeat(2,1fr)}
@@ -283,6 +289,46 @@ body{
 .wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
 @media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
 @media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
+
+/* ===== 30 Minute Quick Entry Reminder ===== */
+.quick-update-reminder{
+  position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;
+  background:rgba(3,16,36,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.quick-update-reminder.show{display:flex;animation:reminderFade .18s ease}
+.quick-update-reminder-card{
+  width:min(560px,calc(100vw - 30px));padding:32px 26px;text-align:center;
+  background:linear-gradient(145deg,#fff,#f4f8ff);border:1px solid rgba(255,255,255,.8);
+  border-radius:26px;box-shadow:0 28px 80px rgba(0,0,0,.28);
+  animation:reminderPop .25s cubic-bezier(.2,.8,.2,1);
+}
+.quick-update-reminder-icon{
+  width:74px;height:74px;margin:0 auto 15px;border-radius:22px;display:flex;
+  align-items:center;justify-content:center;font-size:38px;
+  background:linear-gradient(135deg,#ffb14a,#ff7c00);box-shadow:0 12px 28px rgba(255,126,0,.28);
+}
+.quick-update-reminder-card h2{margin:0;color:#071d3d;font-size:24px;font-weight:900}
+.quick-update-reminder-card p{margin:9px auto 0;max-width:440px;color:#667892;font-size:14px;line-height:1.55}
+.quick-update-reminder-progress{
+  width:100%;height:5px;margin-top:22px;border-radius:999px;background:#e5ebf4;overflow:hidden
+}
+.quick-update-reminder-progress span{
+  display:block;width:100%;height:100%;transform-origin:left center;
+  background:linear-gradient(90deg,#1769e0,#ff8a16);
+  animation:reminderProgress 2s linear forwards;
+}
+.quick-update-reminder-close{
+  margin-top:16px;border:0;background:transparent;color:#1769e0;font-weight:800;font-size:12px;
+  cursor:pointer;opacity:.8;
+}
+@keyframes reminderFade{from{opacity:0}to{opacity:1}}
+@keyframes reminderPop{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes reminderProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(max-width:620px){
+  .quick-update-reminder-card{padding:27px 19px;border-radius:22px}
+  .quick-update-reminder-card h2{font-size:20px}
+  .quick-update-reminder-icon{width:64px;height:64px;font-size:32px}
+}
 
 </style>
 <link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
@@ -333,82 +379,102 @@ body{
   .unified-site-footer .footer-logo{width:58px!important;height:58px!important}
 }
 
-.ins-dash-card{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
-.ins-dash-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.ins-dash-head h2{margin:0;color:#10284b;font-size:20px}.ins-dash-head p{margin:4px 0 0;color:#71819b;font-size:12px}
-.ins-dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ins-dash-stat{padding:13px;border:1px solid #e0e9f4;border-radius:13px;background:#f8fbff}.ins-dash-stat small{display:block;color:#71819b;font-weight:800}.ins-dash-stat strong{display:block;margin-top:5px;font-size:22px;color:#10284b}.ins-dash-note{margin-top:12px;padding:11px 12px;border-radius:11px;background:#eef6ff;color:#244a78;font-size:12px}
-@media(max-width:800px){.ins-dash-grid{grid-template-columns:repeat(2,1fr)}.ins-dash-head{align-items:flex-start;flex-direction:column}}
-@media(max-width:520px){.ins-dash-grid{grid-template-columns:1fr}}\n</style>
+/* ===== Notification Center ===== */
+.notification-wrap{position:relative}
+.notification-btn{
+  position:relative;width:44px;height:44px;border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;background:rgba(255,255,255,.10);color:#fff;font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s ease
+}
+.notification-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.notification-count{
+  position:absolute;right:-4px;top:-5px;min-width:20px;height:20px;padding:0 5px;
+  border-radius:999px;background:#ff5b35;color:#fff;border:2px solid #071c3b;
+  font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center
+}
+.notification-panel{
+  position:absolute;right:0;top:54px;width:380px;max-width:calc(100vw - 24px);
+  background:#fff;border:1px solid #dfe8f4;border-radius:16px;
+  box-shadow:0 18px 45px rgba(7,29,61,.22);overflow:hidden;display:none;
+  z-index:9999;animation:notificationDrop .18s ease
+}
+.notification-panel.show{display:block}
+@keyframes notificationDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notification-head{
+  padding:14px 15px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #e8eef6;background:#f8fbff
+}
+.notification-head strong{color:#10284b;font-size:15px}
+.notification-head button{
+  border:0;background:transparent;color:#1769e0;font-size:11px;font-weight:800;cursor:pointer
+}
+.notification-list{max-height:390px;overflow-y:auto}
+.notification-item{
+  display:flex;gap:11px;padding:13px 14px;border-bottom:1px solid #edf1f6;
+  cursor:pointer;transition:.18s ease
+}
+.notification-item:hover{background:#f5f9ff}
+.notification-item.unread{background:#f1f7ff}
+.notification-icon{
+  width:38px;height:38px;flex:0 0 38px;border-radius:11px;display:flex;
+  align-items:center;justify-content:center;background:#eaf2ff;font-size:18px
+}
+.notification-content{min-width:0;flex:1}
+.notification-title{color:#10284b;font-size:13px;font-weight:850}
+.notification-message{margin-top:3px;color:#71819b;font-size:11px;line-height:1.45}
+.notification-time{margin-top:4px;color:#9aa8ba;font-size:10px}
+.notification-empty{padding:35px 15px;text-align:center;color:#71819b;font-size:12px}
+@media(max-width:620px){
+  .notification-panel{position:fixed;top:70px;left:10px;right:10px;width:auto;max-width:none}
+  .notification-btn{width:40px;height:40px}
+  .header-actions{gap:6px}
+  .user-chip{display:none}
+}
+
+</style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
-
-<style>
-/* ===== Staff Quick Entry: compact calendar + reminder ===== */
-.entry-date-inline{display:inline-flex;align-items:center;flex:0 0 auto}
-.entry-date-inline input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.entry-date-inline button{
-  width:30px;height:30px;border:1px solid #d9e4f0;border-radius:9px;
-  background:#f7fbff;cursor:pointer;font-size:15px;display:inline-flex;
-  align-items:center;justify-content:center;transition:.2s
-}
-.entry-date-inline button:hover{background:#eef5ff;transform:translateY(-1px)}
-.entry-date-inline button:active{transform:scale(.96)}
-
-.quick-reminder-overlay{
-  position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;
-  background:rgba(5,18,40,.74);backdrop-filter:blur(7px);padding:20px
-}
-.quick-reminder-overlay.show{display:flex}
-.quick-reminder-card{
-  width:min(430px,92vw);background:#fff;border-radius:24px;padding:28px 24px 22px;
-  text-align:center;box-shadow:0 28px 80px rgba(0,0,0,.30);
-  animation:staffReminderPop .28s ease-out
-}
-.quick-reminder-icon{
-  width:66px;height:66px;margin:0 auto 14px;border-radius:20px;
-  display:flex;align-items:center;justify-content:center;background:#fff4e6;font-size:34px
-}
-.quick-reminder-card h3{margin:0;color:#10284b;font-size:21px}
-.quick-reminder-card p{margin:9px 0 18px;color:#71819b;font-size:13px;line-height:1.5}
-.quick-reminder-progress{height:4px;border-radius:999px;background:#e8eef6;overflow:hidden}
-.quick-reminder-progress span{display:block;width:100%;height:100%;background:#ff8a16;transform-origin:left}
-.quick-reminder-overlay.show .quick-reminder-progress span{animation:staffReminderProgress 2s linear}
-@keyframes staffReminderPop{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes staffReminderProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-</style>
 <link href="../css/itech-final-ui.css" rel="stylesheet"/>
-<style id="staff-dashboard-spacing-fix">
-/* STAFF DASHBOARD CARD SPACING FIX — preserves existing design */
-.ins-dash-card{margin-top:18px!important;margin-bottom:0!important}
-.quick-entry{margin-top:18px!important}
-@media(max-width:620px){.ins-dash-card{margin-top:16px!important;margin-bottom:0!important}.quick-entry{margin-top:16px!important}}
-</style>
-<style id="staff-points-dashboard-style">
-#staffPointsSummary{margin:18px 0;border:1px solid #dce6ef;border-radius:16px;background:#fff;padding:16px;box-shadow:0 8px 24px rgba(20,45,80,.06)}
-#staffPointsSummary .sps-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-#staffPointsSummary h2{margin:0;font-size:18px;color:#10284b}
-#staffPointsSummary .sps-link{font-size:12px;text-decoration:none;font-weight:800}
-#staffPointsSummary .sps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
-#staffPointsSummary .sps-box{padding:11px;border-radius:11px;background:#f5f8fb}
-#staffPointsSummary .sps-box small{display:block;color:#708198;font-size:10px}
-#staffPointsSummary .sps-box b{display:block;margin-top:4px;color:#10284b;font-size:20px}
-@media(max-width:700px){#staffPointsSummary .sps-grid{grid-template-columns:repeat(2,1fr)}}
-</style>
-<link rel="stylesheet" href="../css/points-reward-fullscreen.css">
 <!-- SEO: private application page -->
 <meta name="robots" content="noindex, nofollow">
 
 </head>
 <body>
+<div class="quick-update-reminder" id="quickUpdateReminder" aria-hidden="true">
+  <div class="quick-update-reminder-card" role="alertdialog" aria-live="assertive">
+    <div class="quick-update-reminder-icon">⏰</div>
+    <h2>Quick Update Reminder</h2>
+    <p>30 minutes aayi. Quick Daily Work-il enthenkilum entry update cheyyan maranno?</p>
+    <div class="quick-update-reminder-progress"><span></span></div>
+    <button class="quick-update-reminder-close" id="quickUpdateReminderClose" type="button">Close</button>
+  </div>
+</div>
 <header class="dash-header">
-<a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
+<a class="brand" href="dashboard.html">
+<img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/>
+</a>
 <div class="header-actions">
-<span class="user-chip" data-staff-name="">Staff</span>
+<div class="notification-wrap">
+<button aria-label="Notifications" class="notification-btn" id="notificationBtn" title="Notifications" type="button">
+        🔔
+        <span class="notification-count" id="notificationCount" style="display:none">0</span>
+</button>
+<div class="notification-panel" id="notificationPanel">
+<div class="notification-head">
+<strong>Notifications</strong>
+<button id="markAllRead" type="button">Mark all read</button>
+</div>
+<div class="notification-list" id="notificationList">
+<div class="notification-empty">Loading notifications…</div>
+</div>
+</div>
+</div>
+<span class="user-chip" data-admin-name="">Admin</span>
 <a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a>
 </div>
 </header>
 <div class="dash-layout">
 <aside class="sidebar"><nav><a href="dashboard.html" class="active">Dashboard</a>
-<a href="points.html">⭐ Points</a>
 <a href="customers.html">Customers</a>
 <a href="add-customer.html">+ Add Customer</a>
 <a href="daily-work.html">Daily Work</a>
@@ -420,33 +486,27 @@ body{
 <a href="products.html">Products</a>
 <a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
 <a href="enquiries.html">Enquiries</a>
+<a href="techshore-admin.html">📝 Techshore Quiz</a>
 <a href="amc.html">AMC</a>
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
+<a href="activities.html">📋 Staff Activities</a>
+<a href="staff-management.html">👥 Staff Management</a>
 <a href="messages.html">Messages</a></nav></aside>
 <main class="dash-main">
 <div class="toolbar">
 <div>
-<p class="eyebrow">STAFF CONTROL CENTER</p>
+<p class="eyebrow">CONTROL CENTER</p>
 <h1>Dashboard</h1>
-<p class="muted">Daily shop activity and customer work at a glance.</p>
+<p class="muted">Daily shop activity at a glance.</p>
 </div>
 </div>
-<div class="info-bar" style="margin-bottom:16px">
-  👤 Staff Mode — You can manage customer work, payments, services and vehicle insurance. Staff Management is available only to Admin.
+<div class="kpis">
+<div class="kpi"><b>Today's Work</b><div class="value" id="todayWork">₹0.00</div><small class="muted" id="todayEntries">0 entries</small></div>
+<div class="kpi"><b>Today's Payments</b><div class="value" id="todayPayments">₹0.00</div><small class="muted">Collected today</small></div>
+<div class="kpi"><b>Total Outstanding</b><div class="value" id="outstanding">₹0.00</div><small class="muted">All customers</small></div>
+<div class="kpi"><b>New Enquiries</b><div class="value" id="enquiries">0</div><small class="muted">Pending / new</small></div>
 </div>
-<section id="staffPointsSummary">
-  <div class="sps-head">
-    <h2>⭐ My Points</h2>
-    <a class="sps-link" href="points.html">View Points →</a>
-  </div>
-  <div class="sps-grid">
-    <div class="sps-box"><small>Today</small><b id="spsToday">0</b></div>
-    <div class="sps-box"><small>Yesterday</small><b id="spsYesterday">0</b></div>
-    <div class="sps-box"><small>This Month</small><b id="spsMonth">0</b></div>
-    <div class="sps-box"><small>Total</small><b id="spsTotal">0</b></div>
-  </div>
-</section>
 <section class="dashboard-card quick-entry">
 <div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
 <p class="quick-sub">Work + payment can be entered from this screen.</p>
@@ -454,16 +514,12 @@ body{
 <div class="entry-main">
 <div class="customer-paid">
 <div class="field customer-picker">
-<label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-  <span>Customer / Cash Sale <span style="color:#e33">*</span></span>
-  <span class="entry-date-inline">
-    <input id="entryDate" type="date" aria-label="Entry date">
-    <button type="button" id="entryDateBtn" aria-label="Select entry date" title="Select entry date">📅</button>
-  </span>
-</label>
+<label>Customer / Cash Sale <span style="color:#e33">*</span></label>
 <div class="customer-input-wrap">
+<button aria-label="Change entry date" class="entry-date-btn" id="entryDateBtn" title="Entry date" type="button">📅</button>
 <input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
 <button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
+<input aria-hidden="true" class="entry-date-hidden" id="entryDate" tabindex="-1" type="date"/>
 </div>
 <div aria-label="Customer suggestions" class="customer-suggestions" id="customerSuggestions" role="listbox"></div>
 <input id="customer" type="hidden" value=""/>
@@ -541,34 +597,176 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script><script src="../js/global-search.js"></script><script>
-(async function(){
-  try{
-    const a=await requireStaff(); if(!a)return;
-    const {data,error}=await sb.from('vehicle_insurance').select('expiry_date');
-    if(error)throw error;
-    const rows=data||[],today=new Date();today.setHours(0,0,0,0);
-    const left=d=>Math.ceil((new Date(d+'T00:00:00')-today)/86400000);
-    const expired=rows.filter(r=>left(r.expiry_date)<0).length;
-    const due=rows.filter(r=>{const n=left(r.expiry_date);return n>=0&&n<=30}).length;
-    document.getElementById('dashInsTotal').textContent=rows.length;
-    document.getElementById('dashInsExpired').textContent=expired;
-    document.getElementById('dashInsDue').textContent=due;
-    document.getElementById('dashInsActive').textContent=Math.max(0,rows.length-expired);
-    document.getElementById('dashInsNote').textContent=due?`${due} policy${due===1?' is':'ies are'} due for renewal within 30 days.`:'No policy is due within the next 30 days.';
-  }catch(e){const n=document.getElementById('dashInsNote');if(n)n.textContent='Insurance overview unavailable right now.'}
+<script src="../js/auth.js"></script><script src="../js/global-search.js"></script><script src="../js/quick-work-enhancements.js"></script>
+<script>
+/* ===== iTech Admin Notification Center ===== */
+(async()=>{
+  const btn=document.getElementById("notificationBtn");
+  const panel=document.getElementById("notificationPanel");
+  const list=document.getElementById("notificationList");
+  const count=document.getElementById("notificationCount");
+  const markAll=document.getElementById("markAllRead");
+  if(!btn||!panel||!list)return;
+
+  let rows=[];
+
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+
+  const iconFor=type=>({
+    customer:"👤",payment:"💰",work:"⚡",insurance:"🚗",
+    enquiry:"📩",service:"🛠️",product:"📦",staff:"👨‍💼",staff_activity:"👨‍💼",general:"🔔"
+  })[String(type||"general").toLowerCase()]||"🔔";
+
+  const timeAgo=value=>{
+    const d=new Date(value), now=new Date();
+    const sec=Math.max(0,Math.floor((now-d)/1000));
+    if(sec<60)return"Just now";
+    const min=Math.floor(sec/60);
+    if(min<60)return`${min} min ago`;
+    const hrs=Math.floor(min/60);
+    if(hrs<24)return`${hrs} hour${hrs>1?"s":""} ago`;
+    const days=Math.floor(hrs/24);
+    if(days<7)return`${days} day${days>1?"s":""} ago`;
+    return d.toLocaleDateString("en-IN");
+  };
+
+  const targetPath=page=>{
+    if(!page)return"";
+    if(/^https?:\/\//i.test(page))return page;
+    return String(page).replace(/^\/+/,"").replace(/^admin\//,"");
+  };
+
+  function render(){
+    const unread=rows.filter(x=>!x.is_read).length;
+    if(unread){
+      count.textContent=unread>99?"99+":String(unread);
+      count.style.display="flex";
+    }else{
+      count.style.display="none";
+    }
+
+    if(!rows.length){
+      list.innerHTML='<div class="notification-empty">🔔<br><span style="display:block;margin-top:7px">No notifications</span></div>';
+      return;
+    }
+
+    list.innerHTML=rows.map(n=>`
+      <div class="notification-item ${n.is_read?"":"unread"}"
+           data-id="${esc(n.id)}"
+           data-target="${esc(targetPath(n.target_page))}">
+        <div class="notification-icon">${iconFor(n.type)}</div>
+        <div class="notification-content">
+          <div class="notification-title">${esc(n.title)}</div>
+          <div class="notification-message">${esc(n.message||"")}</div>
+          <div class="notification-time">${timeAgo(n.created_at)}</div>
+        </div>
+      </div>
+    `).join("");
+
+    list.querySelectorAll(".notification-item").forEach(item=>{
+      item.addEventListener("click",async()=>{
+        const id=item.dataset.id;
+        const target=item.dataset.target;
+
+        await sb.from("notifications").update({is_read:true}).eq("id",id);
+
+        if(target){
+          window.location.href=target;
+        }else{
+          await load();
+        }
+      });
+    });
+  }
+
+  async function load(){
+    try{
+      const r=await sb.from("notifications")
+        .select("id,user_id,role,type,title,message,target_page,reference_id,is_read,created_at")
+        .or("role.eq.admin,role.eq.all")
+        .order("created_at",{ascending:false})
+        .limit(50);
+
+      if(r.error){
+        console.error("Notification load error:",r.error);
+        list.innerHTML='<div class="notification-empty">Unable to load notifications.</div>';
+        return;
+      }
+
+      rows=r.data||[];
+      render();
+    }catch(e){
+      console.error("Notification error:",e);
+    }
+  }
+
+  btn.addEventListener("click",e=>{
+    e.stopPropagation();
+    panel.classList.toggle("show");
+  });
+
+  panel.addEventListener("click",e=>e.stopPropagation());
+
+  document.addEventListener("click",()=>{
+    panel.classList.remove("show");
+  });
+
+  markAll.addEventListener("click",async()=>{
+    const unreadIds=rows.filter(x=>!x.is_read).map(x=>x.id);
+    if(!unreadIds.length)return;
+
+    const r=await sb.from("notifications")
+      .update({is_read:true})
+      .in("id",unreadIds);
+
+    if(r.error){
+      console.error("Mark all read error:",r.error);
+      return;
+    }
+    await load();
+  });
+
+  sb.channel("admin-notifications")
+    .on("postgres_changes",
+      {event:"*",schema:"public",table:"notifications"},
+      ()=>load()
+    )
+    .subscribe();
+
+  await load();
 })();
 </script>
-<script src="../js/quick-work-enhancements.js"></script>
 <script>
 (async()=>{
-  const ok=await requireStaff(); if(!ok)return;
+  const ok=await requireAdmin(); if(!ok)return;
 
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const today=new Date().toISOString().slice(0,10);
+  const today=(()=>{const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,"0"); const day=String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`;})();
   const $=id=>document.getElementById(id);
 
-  function selectedEntryDate(){ return $("entryDate")?.value || today; }
+  function selectedEntryDate(){
+    return $("entryDate")?.value || today;
+  }
+
+  if($("entryDate")) $("entryDate").value=today;
+  function syncEntryDateButton(){
+    const d=$("entryDate")?.value || today;
+    const btn=$("entryDateBtn");
+    if(btn){
+      const parts=d.split("-");
+      const label=parts.length===3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : d;
+      btn.title=`Entry date: ${label}`;
+      btn.setAttribute("aria-label",`Entry date ${label}`);
+    }
+  }
+  syncEntryDateButton();
+  $("entryDateBtn")?.addEventListener("click",()=>{
+    const input=$("entryDate");
+    if(!input) return;
+    try{ if(typeof input.showPicker === "function") input.showPicker(); else input.click(); }catch(e){ input.click(); }
+  });
 
   let customers=[];
   let selectedBalance=0;
@@ -606,12 +804,12 @@ body{
   }
 
   async function loadCustomers(){
-    // Quick Daily Work shows only normal customer profiles, not insurance-created profiles.
+    // Quick Daily Work must show ONLY customers created through Add Customer.
     // Insurance-created profiles are intentionally excluded.
     const r=await sb.from("customers")
       .select("*")
       .or("created_from_insurance.is.null,created_from_insurance.eq.false")
-      .order("full_name");
+      .order("created_at",{ascending:false});
     if(r.error){status(r.error.message,true);return;}
     customers=r.data||[];
     $("customer").value="";
@@ -735,18 +933,18 @@ body{
     const entryDate=selectedEntryDate();
     const [b,w,p]=await Promise.all([
       sb.from("customer_balances").select("*").eq("id",id).single(),
-      sb.from("daily_work_entries").select("e_filing,e_payment,print_amount,scanning,other_works,discount,extra_entries")
-        .eq("customer_id",id).eq("work_date",entryDate),
+      sb.from("daily_work_entries").select("*").eq("customer_id",id).eq("work_date",entryDate),
       sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",entryDate)
     ]);
     if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
     selectedTodayWork=(w.data||[]).reduce((s,r)=>{
-      const base=["e_filing","e_payment","print_amount","scanning","other_works"]
-        .reduce((x,k)=>x+Number(r[k]||0),0);
-      const extra=Array.isArray(r.extra_entries)
-        ? r.extra_entries.reduce((x,row)=>x+Object.values(row||{}).reduce((a,v)=>a+Number(v||0),0),0)
+      const gross=["e_filing","e_payment","print_amount","scanning","other_works"]
+        .reduce((a,k)=>a+Number(r[k]||0),0);
+      const extras=Array.isArray(r.extra_entries)
+        ? r.extra_entries.reduce((a,row)=>a+Object.values(row||{}).reduce((x,v)=>x+Number(v||0),0),0)
         : 0;
-      return s+Math.max(base+extra-Number(r.discount||0),0);
+      const discount=Number(r.discount||0);
+      return s+Math.max(gross+extras-discount,0);
     },0);
     selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
 
@@ -762,6 +960,12 @@ body{
   ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
     $(id).addEventListener("input",updateTotals);
   });
+  $("entryDate")?.addEventListener("change",()=>{
+    syncEntryDateButton();
+    const id=$("customer").value;
+    if(id) loadCustomerSummary(id);
+    updateTotals();
+  });
 
   function clearForm(){
     $("customer").value="";
@@ -773,23 +977,12 @@ body{
     if($("balanceAmount"))$("balanceAmount").value="0";
     $("description").value="";
     if($("entryDate")) $("entryDate").value=today;
+    syncEntryDateButton();
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
   }
-  $("entryDate")?.addEventListener("change",async()=>{
-    if($("customer").value) await loadCustomerSummary($("customer").value);
-    updateTotals();
-  });
-
-  $("entryDateBtn")?.addEventListener("click",()=>{
-    const input=$("entryDate");
-    if(!input)return;
-    try{ if(typeof input.showPicker==="function") input.showPicker(); else input.click(); }
-    catch(_){ input.click(); }
-  });
-
   $("clearBtn").addEventListener("click",clearForm);
 
   /*
@@ -797,6 +990,36 @@ body{
     Daily Work / Payment pages. If your existing save logic has extra fields,
     keep those fields in the corresponding INSERT blocks below.
   */
+
+  // Google Sheets sync (Apps Script Web App)
+  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  async function syncQuickEntryToGoogleSheets(data){
+    // Apps Script requires a real customer. Cash-sale entries are kept in Supabase only.
+    if(!data.customer_id || !data.customer_name) return {skipped:true};
+    const body={
+      customer_id:String(data.customer_id),
+      customer_name:String(data.customer_name),
+      entry_id:String(data.entry_id||""),
+      work_date:data.work_date,
+      old_balance:Number(data.old_balance||0),
+      e_filing:Number(data.e_filing||0),
+      e_payment:Number(data.e_payment||0),
+      print_amount:Number(data.print_amount||0),
+      scanning:Number(data.scanning||0),
+      other_works:Number(data.other_works||0),
+      paid_amount:Number(data.paid_amount||0)
+    };
+    // no-cors is used because Apps Script web apps may not expose CORS response headers.
+    // The browser cannot read the response in this mode; the POST is a best-effort sync.
+    await fetch(ITCH_SHEETS_WEB_APP_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(body)
+    });
+    return {sent:true};
+  }
+
   $("saveBtn").addEventListener("click",async()=>{
     const customerId=$("customer").value || null;
     const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
@@ -812,19 +1035,13 @@ body{
       const desc=$("description").value.trim();
       const entryDate=selectedEntryDate();
 
-      // Get the signed-in staff user explicitly. RLS requires entered_by = auth.uid().
-      const { data: authData, error: authError } = await sb.auth.getUser();
-      if(authError) throw authError;
-      const currentUserId = authData?.user?.id;
-      if(!currentUserId) throw new Error("Session expired. Please sign in again.");
-
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
         const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
         const payload={
           customer_id:isCashSale?null:customerId,
-          entered_by:currentUserId,
+          work_date:entryDate,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
           print_amount:sumField("print_amount"),
@@ -835,38 +1052,17 @@ body{
           paid_amount:paid,
           balance_amount:Math.max(work-paid,0),
           entry_type:isCashSale?"cash_sale":"customer",
-          extra_entries:extraEntries.length?extraEntries:null,
-          work_date:entryDate
+          extra_entries:extraEntries.length?extraEntries:null
         };
 
-        // Use a narrowly-scoped SECURITY DEFINER RPC for staff inserts.
-        // The server derives the staff identity from auth.uid(); never trust a client-supplied entered_by.
-        const ins=await sb.rpc("staff_quick_daily_work_insert",{p_payload:payload});
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id,work_date").single();
         if(ins.error) throw ins.error;
-        const insertedEntryId=ins.data;
-        if(!insertedEntryId) throw new Error("Daily work was not saved: the server returned no entry ID.");
-
-        // Award points immediately after the Quick Entry is saved.
-        // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
-        try{
-          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:insertedEntryId});
-          if(pointResult.error){
-            console.error("Quick Entry points error:",pointResult.error);
-          }else{
-            const earned=Number(pointResult.data||0);
-            if(earned>0 && window.itechShowPointsReward){
-              window.itechShowPointsReward(earned,"Quick Entry");
-            }
-            // Update dashboard Today/Month/Total counters without reloading the page.
-            ["spsToday","spsMonth","spsTotal"].forEach(id=>{
-              const el=document.getElementById(id);
-              if(el && id==="spsToday") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
-              if(el && id==="spsMonth") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
-              if(el && id==="spsTotal") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
-            });
-          }
-        }catch(pointErr){
-          console.error("Quick Entry points error:",pointErr);
+        var sheetsEntryId=ins.data?.id||null;
+        // Some older DB triggers/defaults may fall back to today's date.
+        // Force the selected Quick Entry date after insert as a safety check.
+        if(ins.data?.id && String(ins.data.work_date||"") !== entryDate){
+          const fix=await sb.from("daily_work_entries").update({work_date:entryDate}).eq("id",ins.data.id);
+          if(fix.error) throw fix.error;
         }
 
       }
@@ -877,15 +1073,40 @@ body{
           amount:paid,
           payment_date:entryDate,
           payment_method:"Cash",
-          reference_note:"Dashboard Quick Entry",
-          // Required by payments_staff_insert_own RLS policy.
-          entered_by:currentUserId
-        });
+          reference_note:"Dashboard Quick Entry"
+        }).select("id,payment_date").single();
         if(pr.error) throw pr.error;
+        // Safety check: make absolutely sure the selected date is stored.
+        if(pr.data?.id && String(pr.data.payment_date||"") !== entryDate){
+          const fix=await sb.from("payments").update({payment_date:entryDate}).eq("id",pr.data.id);
+          if(fix.error) throw fix.error;
+        }
       }
 
+      // Google Sheets sync runs in the background; do not block the save flow.
+      if(work>0 && !isCashSale && sheetsEntryId){
+        const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
+        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        const sheetsPayload={
+          customer_id:customerId,
+          customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
+          entry_id:sheetsEntryId,
+          work_date:entryDate,
+          old_balance:0,
+          e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),
+          e_payment:amount("e_payment")+extraForSheets.reduce((s,r)=>s+Number(r.e_payment||0),0),
+          print_amount:amount("print_amount")+extraForSheets.reduce((s,r)=>s+Number(r.print_amount||0),0),
+          scanning:amount("scanning")+extraForSheets.reduce((s,r)=>s+Number(r.scanning||0),0),
+          other_works:amount("other_works")+extraForSheets.reduce((s,r)=>s+Number(r.other_works||0),0),
+          paid_amount:paid
+        };
+        void syncQuickEntryToGoogleSheets(sheetsPayload)
+          .then(()=>console.info("Google Sheets sync request sent."))
+          .catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
+      }
       status("Transaction saved successfully.");
       window.dispatchEvent(new Event("itech:work-saved"));
+      await refreshDashboard();
       await loadWhatsAppReminders();
       clearForm();
     }catch(err){
@@ -1028,23 +1249,60 @@ Your Trust Our Service`;
   }
 
 
-  if($("entryDate")) $("entryDate").value=today;
-
-  const quickReminder=$("quickReminderOverlay");
-  function showQuickReminder(){
-    if(!quickReminder || document.visibilityState!=="visible") return;
-    quickReminder.classList.remove("show");
-    void quickReminder.offsetWidth;
-    quickReminder.classList.add("show");
-    setTimeout(()=>quickReminder.classList.remove("show"),2000);
+  async function refreshDashboard(){
+    const [work,pay,bal,enq]=await Promise.all([
+      sb.from("today_work_report").select("*"),
+      sb.from("payments").select("amount").eq("payment_date",today),
+      sb.from("customer_balances").select("current_balance"),
+      sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+    ]);
+    if(work.error)return;
+    const rows=work.data||[];
+    $("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+    $("todayEntries").textContent=rows.length+" entries";
+    $("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+    $("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+    $("enquiries").textContent=enq.count||0;
   }
-  setInterval(showQuickReminder,30*60*1000);
 
   await Promise.all([
     loadCustomers(),
+    refreshDashboard(),
     loadWhatsAppReminders()
   ]);
   updateTotals();
+})();
+</script>
+<script id="itech-last-five-date-fix">
+/* Last 5 Transactions: show the selected WORK DATE, not created_at. */
+(async()=>{
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  const money=n=>"₹"+Number(n||0).toFixed(2);
+  async function renderLastFive(){
+    const host=document.getElementById("qwLastFive");
+    if(!host) return;
+    try{
+      const r=await sb.from("daily_work_entries")
+        .select("id,customer_id,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount,balance_amount,entry_type,description,work_date,created_at,customers(full_name,mobile)")
+        .order("created_at",{ascending:false}).limit(5);
+      if(r.error) throw r.error;
+      const rows=r.data||[];
+      if(!rows.length){host.innerHTML='<div class="qw-last-empty">No transactions recorded yet.</div>';return;}
+      host.innerHTML=rows.map(x=>{
+        const c=x.customers||{};
+        const name=x.entry_type==="cash_sale"?"Cash Sale":(c.full_name||"Customer");
+        const work=Number(x.e_filing||0)+Number(x.e_payment||0)+Number(x.print_amount||0)+Number(x.scanning||0)+Number(x.other_works||0);
+        const net=Math.max(work-Number(x.discount||0),0);
+        const paid=Number(x.paid_amount||0);
+        const bal=Number(x.balance_amount??Math.max(net-paid,0));
+        const d=x.work_date?new Date(String(x.work_date)+"T00:00:00"):null;
+        const dt=d&&!Number.isNaN(d.getTime())?d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):"";
+        return `<div class="qw-last-row"><div class="qw-last-main"><strong>${esc(name)}</strong><span>Entry Date: ${esc(dt)}</span></div><div class="qw-last-values"><span>Work <b>${money(net)}</b></span><span>Paid <b>${money(paid)}</b></span><span>Balance <b>${money(bal)}</b></span></div></div>`;
+      }).join("");
+    }catch(e){console.error("Last five date fix:",e);}
+  }
+  const boot=()=>{renderLastFive(); window.addEventListener("itech:work-saved",renderLastFive);};
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,150)); else setTimeout(boot,150);
 })();
 </script>
 <footer class="site-footer unified-site-footer">
@@ -1115,45 +1373,44 @@ Your Trust Our Service`;
 })();
 </script>
 
-<div class="quick-reminder-overlay" id="quickReminderOverlay" aria-hidden="true">
-  <div class="quick-reminder-card" role="dialog" aria-modal="true">
-    <div class="quick-reminder-icon">⏰</div>
-    <h3>Quick Entry Reminder</h3>
-    <p>30 minutes aayi. Quick Daily Work-il enthenkilum update cheyyan maranno?</p>
-    <div class="quick-reminder-progress"><span></span></div>
-  </div>
-</div>
+<script id="itech-30-minute-update-reminder">
+(function(){
+  const overlay=document.getElementById("quickUpdateReminder");
+  const closeBtn=document.getElementById("quickUpdateReminderClose");
+  if(!overlay) return;
 
+  let timer=null, hideTimer=null;
 
-<script>
-(async function(){
-  try{
-    if(!window.sb) return;
-    const u=await sb.auth.getUser();
-    const uid=u.data?.user?.id;
-    if(!uid) return;
-    const {data,error}=await sb.from('staff_points')
-      .select('points,work_date')
-      .eq('staff_id',uid);
-    if(error){console.error('Staff points dashboard:',error);return;}
-    const rows=data||[], now=new Date();
-    const startToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    const y=new Date(startToday); y.setDate(y.getDate()-1);
-    let today=0, yesterday=0, month=0, total=0;
-    rows.forEach(r=>{
-      const pts=Number(r.points||0); total+=pts;
-      const d=new Date(String(r.work_date).slice(0,10)+'T00:00:00');
-      if(d.getTime()===startToday.getTime()) today+=pts;
-      if(d.getTime()===y.getTime()) yesterday+=pts;
-      if(d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth()) month+=pts;
-    });
-    const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:2});
-    document.getElementById('spsToday').textContent=fmt(today);
-    document.getElementById('spsYesterday').textContent=fmt(yesterday);
-    document.getElementById('spsMonth').textContent=fmt(month);
-    document.getElementById('spsTotal').textContent=fmt(total);
-  }catch(e){console.error(e);}
+  function hideReminder(){
+    overlay.classList.remove("show");
+    overlay.setAttribute("aria-hidden","true");
+    if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
+  }
+
+  function showReminder(){
+    if(document.hidden) return;
+    overlay.classList.remove("show");
+    void overlay.offsetWidth;
+    const bar=overlay.querySelector(".quick-update-reminder-progress span");
+    if(bar){
+      bar.style.animation="none";
+      void bar.offsetWidth;
+      bar.style.animation="reminderProgress 2s linear forwards";
+    }
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden","false");
+    hideTimer=setTimeout(hideReminder,2000);
+  }
+
+  closeBtn?.addEventListener("click",hideReminder);
+  overlay.addEventListener("click",e=>{
+    if(e.target===overlay) hideReminder();
+  });
+
+  // First reminder after 30 minutes, then every 30 minutes while this dashboard stays open.
+  timer=setInterval(showReminder,30*60*1000);
 })();
 </script>
-<script src="../js/points-reward-fullscreen.js"></script></body>
+
+</body>
 </html>

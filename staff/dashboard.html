@@ -839,13 +839,17 @@ body{
           work_date:entryDate
         };
 
-        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        // Use a narrowly-scoped SECURITY DEFINER RPC for staff inserts.
+        // The server derives the staff identity from auth.uid(); never trust a client-supplied entered_by.
+        const ins=await sb.rpc("staff_quick_daily_work_insert",{p_payload:payload});
         if(ins.error) throw ins.error;
+        const insertedEntryId=ins.data;
+        if(!insertedEntryId) throw new Error("Daily work was not saved: the server returned no entry ID.");
 
         // Award points immediately after the Quick Entry is saved.
         // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
         try{
-          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:ins.data.id});
+          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:insertedEntryId});
           if(pointResult.error){
             console.error("Quick Entry points error:",pointResult.error);
           }else{

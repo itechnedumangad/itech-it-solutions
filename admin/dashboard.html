@@ -1083,24 +1083,26 @@ body{
         }
       }
 
-      // Sync the combined Quick Entry to Google Sheets after Supabase work/payment writes.
+      // Google Sheets sync runs in the background; do not block the save flow.
       if(work>0 && !isCashSale && sheetsEntryId){
         const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
-        try{
-          await syncQuickEntryToGoogleSheets({
-            customer_id:customerId,
-            customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
-            entry_id:sheetsEntryId,
-            work_date:entryDate,
-            old_balance:0,
-            e_filing:amount("e_filing") + (window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries().reduce((s,r)=>s+Number(r.e_filing||0),0):0),
-            e_payment:amount("e_payment") + (window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries().reduce((s,r)=>s+Number(r.e_payment||0),0):0),
-            print_amount:amount("print_amount") + (window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries().reduce((s,r)=>s+Number(r.print_amount||0),0):0),
-            scanning:amount("scanning") + (window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries().reduce((s,r)=>s+Number(r.scanning||0),0):0),
-            other_works:amount("other_works") + (window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries().reduce((s,r)=>s+Number(r.other_works||0),0):0),
-            paid_amount:paid
-          });
-        }catch(sheetErr){console.error("Google Sheets sync failed:",sheetErr);}
+        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        const sheetsPayload={
+          customer_id:customerId,
+          customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
+          entry_id:sheetsEntryId,
+          work_date:entryDate,
+          old_balance:0,
+          e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),
+          e_payment:amount("e_payment")+extraForSheets.reduce((s,r)=>s+Number(r.e_payment||0),0),
+          print_amount:amount("print_amount")+extraForSheets.reduce((s,r)=>s+Number(r.print_amount||0),0),
+          scanning:amount("scanning")+extraForSheets.reduce((s,r)=>s+Number(r.scanning||0),0),
+          other_works:amount("other_works")+extraForSheets.reduce((s,r)=>s+Number(r.other_works||0),0),
+          paid_amount:paid
+        };
+        void syncQuickEntryToGoogleSheets(sheetsPayload)
+          .then(()=>console.info("Google Sheets sync request sent."))
+          .catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
       }
       status("Transaction saved successfully.");
       window.dispatchEvent(new Event("itech:work-saved"));

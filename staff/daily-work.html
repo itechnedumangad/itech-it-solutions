@@ -131,6 +131,16 @@
 </div>
 <label class="field">Other Works<input id="other_works" min="0" step="0.01" type="number" value="0"/></label>
 <label class="field">Description<input id="description" placeholder="Optional: ITR filing, printout, form submission…"/></label>
+
+<div class="grid">
+  <label class="field">Discount (₹)<input id="discount" min="0" step="0.01" type="number" value="0"/></label>
+  <label class="field">Paid Amount (₹)<input id="paid_amount" min="0" step="0.01" type="number" value="0"/></label>
+</div>
+<label class="field" style="display:flex;align-items:center;gap:10px">
+  <input id="cash_sale" type="checkbox" style="width:18px;height:18px"/>
+  Cash Sale (mark as fully paid)
+</label>
+<label class="field">Balance Amount (₹)<input id="balance_amount" type="number" value="0.00" readonly/></label>
 <div class="total-box">Work Total <strong id="total">₹0.00</strong></div>
 <button class="btn primary" id="save" type="button">Save Work Entry</button><div class="status" data-status=""></div></section>
 <section class="panel" style="margin-top:20px"><div class="section-title"><h2>Today's Entries</h2><a href="reports.html">Full report →</a></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Work</th><th>Total</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></section>
@@ -396,7 +406,7 @@
     ids.forEach(id=>{
       const value = Number(document.getElementById(id).value || 0);
       if(!Number.isFinite(value) || value < 0){
-        throw new Error("Please enter valid work amounts.");
+        showMessage("Please enter valid work amounts.",true); return;
       }
       values[id] = Math.round(value * 100) / 100;
     });

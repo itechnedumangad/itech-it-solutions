@@ -121,14 +121,18 @@
 <a href="works.html">Our Works</a>
 <a href="messages.html">Messages</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER MANAGEMENT</p><h1>Customers</h1></div><a class="btn primary" href="add-customer.html">+ Add Customer</a></div>
 <section class="panel"><div class="search-row"><input id="search" placeholder="Search by customer name or mobile…"/><span class="muted" id="count"></span></div>
-<div class="table-scroll"><table class="data-table"><thead><tr><th>Customer</th><th>Mobile</th><th>Opening</th><th>Total Work</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></section>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>Customer</th><th>Mobile</th><th>Password</th><th>Opening</th><th>Total Work</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></section>
 <div class="status" data-status=""></div></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
 <script>
 (async()=>{
  const ok=await requireStaff(); if(!ok)return;
- const {data,error}=await sb.from("customer_balances").select("*").order("full_name");
- if(error)return showStatus(error.message,true);
+ const balanceResult=await sb.from("customer_balances").select("*").order("full_name");
+ if(balanceResult.error)return showStatus(balanceResult.error.message,true);
+ const customerResult=await sb.from("customers").select("id,password");
+ if(customerResult.error)return showStatus(customerResult.error.message,true);
+ const passwordMap=new Map((customerResult.data||[]).map(c=>[String(c.id),c.password||""]));
+ const data=(balanceResult.data||[]).map(c=>({...c,password:passwordMap.get(String(c.id))||""}));
  const rows=document.getElementById("rows"), search=document.getElementById("search");
  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});
  const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
@@ -139,6 +143,7 @@
   rows.innerHTML=list.map(c=>`<tr>
 <td data-label="Customer"><b>${esc(c.full_name)}</b><small>${esc(c.customer_code||"")}</small></td>
 <td data-label="Mobile">${esc(c.mobile||"")}</td>
+<td data-label="Password"><code>${esc(c.password||"—")}</code></td>
 <td data-label="Opening">${money(c.opening_balance)}</td>
 <td data-label="Total Work">${money(c.total_work)}</td>
 <td data-label="Paid">${money(c.total_paid)}</td>
@@ -148,7 +153,7 @@
 <button type="button" class="btn secondary" data-edit-id="${esc(c.id)}">✏️ Edit</button>
 <button type="button" class="btn delete-customer-btn" data-delete-id="${esc(c.id)}" data-delete-name="${esc(c.full_name||'Customer')}">🗑️ Delete</button>
 </div></td>
-</tr>`).join("")||'<tr><td colspan="7">No customers found.</td></tr>';
+</tr>`).join("")||'<tr><td colspan="8">No customers found.</td></tr>';
  }
  search.addEventListener("input",render);
  rows.addEventListener("click",async e=>{

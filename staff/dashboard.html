@@ -573,6 +573,14 @@ body{
 (async()=>{
   const ok=await requireStaff(); if(!ok)return;
 
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
+  }
+
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
   const today=new Date().toISOString().slice(0,10);
   const $=id=>document.getElementById(id);

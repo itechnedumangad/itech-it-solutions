@@ -646,6 +646,26 @@
 
 
       /* =========================
+         SAVE INITIAL PORTAL PASSWORD
+      ========================= */
+      if(createLogin && password){
+        let createdCustomer = null;
+        if(json?.customer?.id) createdCustomer = json.customer;
+        if(!createdCustomer?.id && json?.id) createdCustomer = {id: json.id};
+        if(!createdCustomer?.id){
+          const lookup = await sb.from("customers").select("id").eq("mobile", mobile).maybeSingle();
+          if(!lookup.error) createdCustomer = lookup.data;
+        }
+        if(createdCustomer?.id){
+          const saved = await sb.rpc("save_customer_portal_password", {
+            p_customer_id: createdCustomer.id,
+            p_password: password
+          });
+          if(saved.error) console.warn("Initial customer password was not saved:", saved.error.message);
+        }
+      }
+
+      /* =========================
          SUCCESS MESSAGE
       ========================= */
 

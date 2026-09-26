@@ -317,7 +317,10 @@
     const response=await fetch(`${window.APP_CONFIG.SUPABASE_URL}/functions/v1/create-customer`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({full_name:name,mobile,whatsapp:mobile,email,password,address:'',opening_balance:0})});
     const json=await response.json().catch(()=>({})); if(!response.ok)throw Error(json.error||json.message||'Customer login creation failed.');
     let created=null; for(let i=0;i<6;i++){const q=await sb.from('customers').select('id,full_name,mobile,auth_user_id').eq('mobile',mobile).maybeSingle();if(!q.error&&q.data){created=q.data;if(created.auth_user_id)break}await new Promise(r=>setTimeout(r,250))}
-    if(!created?.auth_user_id)throw Error('Customer account was created but auth_user_id is not linked.'); return {id:created.id,loginCreated:true,mobile,password}
+    if(!created?.auth_user_id)throw Error('Customer account was created but auth_user_id is not linked.');
+    const savedPassword=await sb.rpc('save_customer_portal_password',{p_customer_id:created.id,p_password:password});
+    if(savedPassword.error) console.warn('Initial customer password was not saved:',savedPassword.error.message);
+    return {id:created.id,loginCreated:true,mobile,password}
   }
   function addHistory(j,status,notes,by){const h=historyOf(j).slice();h.push({status,notes:notes||'',at:nowISO(),by_id:by?.id||me?.id||null,by_name:roleName(by||me)});return h}
   function jobModal(title,html,saveLabel,handler){

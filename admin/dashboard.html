@@ -1040,6 +1040,7 @@ body{
       method:"POST",
       mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
+      keepalive:true,
       body:JSON.stringify(body)
     });
     return {sent:true};
@@ -1110,16 +1111,17 @@ body{
           const fix=await sb.from("payments").update({payment_date:entryDate}).eq("id",pr.data.id);
           if(fix.error) throw fix.error;
         }
+        var sheetsPaymentId=pr.data?.id||null;
       }
 
       // Google Sheets sync runs in the background; do not block the save flow.
-      if(work>0 && !isCashSale && sheetsEntryId){
+      if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
         const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
         const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sheetsPayload={
           customer_id:customerId,
           customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
-          entry_id:sheetsEntryId,
+          entry_id:sheetsEntryId || sheetsPaymentId,
           work_date:entryDate,
           old_balance:0,
           e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),

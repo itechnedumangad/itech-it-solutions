@@ -355,17 +355,25 @@
       : `<tr><td colspan="4" class="empty-cell">No status history recorded.</td></tr>`;
 
     const terms=[
-      'The device is accepted for service based on the complaint and condition recorded on this Job Card.',
-      'The estimate is preliminary and may change after detailed diagnosis. Any additional work or parts will be informed to the customer before proceeding.',
-      'Customers are advised to take a backup of important data before handing over the device. iTech IT Solutions is not responsible for data loss during service, repair, formatting or software work.',
-      'Service completion time is an estimate and may vary depending on diagnosis, spare-part availability and the nature of the repair.',
-      'Replacement parts, if used, are covered only according to the applicable manufacturer/supplier warranty terms.',
-      'Software, operating-system and application issues are handled on a best-effort basis and may require reinstallation or activation by the customer where applicable.',
-      'The customer should check the device and accessories at the time of collection and report any issue promptly.',
-      'The device will be released after settlement of the applicable service charges and outstanding balance.'
+      'The device is accepted for service based on the complaint and physical condition recorded on this Job Card.',
+      'The estimate is preliminary and may change after detailed diagnosis. Any additional work, parts or charges will be informed to the customer before proceeding, wherever possible.',
+      'Customers are advised to take a backup of important data before handing over the device. iTech IT Solutions is not responsible for data loss during service, repair, formatting, software installation or other service work.',
+      'Service completion time is an estimate and may vary depending on diagnosis, spare-part availability, workload and the nature of the repair.',
+      'Replacement parts, if used, are covered only according to the applicable manufacturer / supplier warranty terms. Warranty does not cover physical damage, liquid damage, misuse or other exclusions of the part warranty.',
+      'Software, operating-system and application issues are handled on a best-effort basis. Original software licences, activation keys and account credentials must be provided by the customer where required.',
+      'The customer should check the device, accessories and visible condition at the time of collection and report any issue promptly.',
+      'Devices may be kept on hold if required parts are unavailable or if customer approval is pending. The customer will be contacted using the available contact details.',
+      'The device will be released after settlement of the applicable service charges and outstanding balance, unless otherwise agreed by iTech IT Solutions.',
+      'If the device is found to have pre-existing physical damage, liquid damage, missing accessories or other conditions not recorded at intake, the same may affect the service outcome and applicable charges.',
+      'For devices submitted for data recovery, software service or diagnosis, successful recovery / repair cannot be guaranteed because the condition of the device may prevent complete recovery or repair.',
+      'Any replaced component may be retained by iTech IT Solutions for service records or disposed of appropriately unless the customer requests its return at the time of service completion.',
+      'Once the customer is informed that the service is completed or the device is ready for collection, the customer is requested to collect the device promptly.',
+      'IMPORTANT: A device that remains uncollected for more than 15 days after service completion / notification that it is ready for collection may be treated as an unclaimed device and may be handed over for scrap, recycling or disposal by iTech IT Solutions. The customer acknowledges this condition and agrees to collect the device within the stated period.',
+      'The customer is responsible for providing correct contact details and for responding to service-related calls or messages. iTech IT Solutions will use the available contact details for service communication.',
+      'By signing this Job Card or accepting / collecting the serviced device, the customer confirms that the above Service Terms & Conditions have been read and understood.'
     ];
 
-    const termsHtml=terms.map((t,i)=>`<div class="term"><span class="term-no">${i+1}</span><div>${esc(t)}</div></div>`).join('');
+    const termsHtml=terms.map((t,i)=>`<div class="term ${i===13?'term-important':''}"><span class="term-no">${i+1}</span><div>${esc(t)}</div></div>`).join('');
 
     const created=j.created_at?new Date(j.created_at).toLocaleString('en-IN'):'';
     const delivery=j.expected_delivery?new Date(j.expected_delivery+'T00:00:00').toLocaleDateString('en-IN'):'—';
@@ -415,6 +423,7 @@
       .sign-label{font-size:9px;color:#66778d;font-weight:700;text-transform:uppercase}
       .foot{text-align:center;margin-top:9px;padding-top:6px;border-top:1px solid #e2e8f0;font-size:9px;color:#65758a}
 
+      .term-important{background:#fff7ed!important;border-color:#f59e0b!important;color:#7c2d12}.term-important .term-no{background:#f97316;color:#fff}
       .terms-page{page-break-before:always;padding-top:2mm}
       .terms-banner{border:1px solid #cfdbea;border-radius:10px;overflow:hidden;margin-bottom:10px}
       .terms-banner-top{background:#0b2f63;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}

@@ -512,6 +512,10 @@
               </th>
 
               <th>
+                Password
+              </th>
+
+              <th>
                 Opening
               </th>
 
@@ -540,7 +544,7 @@
 
             <tr>
 
-              <td colspan="7">
+              <td colspan="8">
                 Loading…
               </td>
 
@@ -904,25 +908,25 @@
 
     rows.innerHTML = `
       <tr>
-        <td colspan="7">
+        <td colspan="8">
           Loading customers…
         </td>
       </tr>
     `;
 
 
-    const result =
-      await sb
-        .from("customer_balances")
-        .select("*")
-        .order("full_name");
+    const [balanceResult, customerResult] = await Promise.all([
+      sb.from("customer_balances").select("*").order("full_name"),
+      sb.from("customers").select("id,password").order("id")
+    ]);
 
+    const result = balanceResult;
 
     if(result.error){
 
       rows.innerHTML = `
         <tr>
-          <td colspan="7">
+          <td colspan="8">
             Unable to load customers.
           </td>
         </tr>
@@ -939,6 +943,8 @@
 
 
     data = result.data || [];
+    const passwordMap = new Map((customerResult.data || []).map(c => [String(c.id), c.password || ""]));
+    data = data.map(c => ({...c, password: passwordMap.get(String(c.id)) || ""}));
 
     render();
 
@@ -990,7 +996,7 @@
 
       rows.innerHTML = `
         <tr>
-          <td colspan="7">
+          <td colspan="8">
             No customers found.
           </td>
         </tr>
@@ -1021,6 +1027,11 @@
 
           <td>
             ${escapeHtml(c.mobile || "")}
+          </td>
+
+
+          <td>
+            <code>${escapeHtml(c.password || "—")}</code>
           </td>
 
 

@@ -742,6 +742,14 @@ body{
 (async()=>{
   const ok=await requireAdmin(); if(!ok)return;
 
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
+  }
+
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
   const today=(()=>{const d=new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,"0"); const day=String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`;})();
   const $=id=>document.getElementById(id);
@@ -1039,8 +1047,10 @@ body{
       if(work>0){
         const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
+        const enteredBy=await getEnteredById();
         const payload={
           customer_id:isCashSale?null:customerId,
+          entered_by:enteredBy,
           work_date:entryDate,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
@@ -1068,8 +1078,10 @@ body{
       }
 
       if(paid>0){
+        const enteredByForPayment=await getEnteredById();
         const pr=await sb.from("payments").insert({
           customer_id:isCashSale?null:customerId,
+          entered_by:enteredByForPayment,
           amount:paid,
           payment_date:entryDate,
           payment_method:"Cash",
@@ -1409,6 +1421,41 @@ Your Trust Our Service`;
 
   // First reminder after 30 minutes, then every 30 minutes while this dashboard stays open.
   timer=setInterval(showReminder,30*60*1000);
+})();
+</script>
+
+
+<script id="itech-unified-live-data-fix">
+(async function(){
+  try{
+    if(typeof sb==="undefined") return;
+    async function refreshSelectedCustomer(){
+      const id=document.getElementById("customer")?.value;
+      if(id && typeof loadCustomerSummary==="function"){
+        try{ await loadCustomerSummary(id); }catch(e){ console.error("Balance refresh:",e); }
+      }
+      if(typeof refreshDashboard==="function"){
+        try{ await refreshDashboard(); }catch(e){ console.error("Dashboard refresh:",e); }
+      }
+      if(typeof loadWhatsAppReminders==="function"){
+        try{ await loadWhatsAppReminders(); }catch(e){ console.error("Reminder refresh:",e); }
+      }
+    }
+
+    // Refresh when returning to the tab/window. This prevents Staff from showing
+    // a stale balance after a payment was entered from another page.
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="visible") setTimeout(refreshSelectedCustomer,150);
+    });
+    window.addEventListener("focus",()=>setTimeout(refreshSelectedCustomer,150));
+
+    // Realtime refresh for work and payment changes made by Admin/Staff.
+    const channelName="itech-unified-data-"+Math.random().toString(36).slice(2);
+    sb.channel(channelName)
+      .on("postgres_changes",{event:"*",schema:"public",table:"payments"},()=>refreshSelectedCustomer())
+      .on("postgres_changes",{event:"*",schema:"public",table:"daily_work_entries"},()=>refreshSelectedCustomer())
+      .subscribe();
+  }catch(e){ console.error("Unified live data fix:",e); }
 })();
 </script>
 

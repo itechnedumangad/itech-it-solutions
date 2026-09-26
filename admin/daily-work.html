@@ -435,6 +435,586 @@ body{
 <script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script>
 <script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
 <script>
+(async()=>{
+  const ok=await requireAdmin(); if(!ok)return;
+
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
+  }
+
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const today=new Date().toISOString().slice(0,10);
+  const $=id=>document.getElementById(id);
+
+  function selectedEntryDate(){ return $("entryDate")?.value || today; }
+
+  let customers=[];
+  let selectedBalance=0;
+  let selectedTodayWork=0;
+  let selectedTodayPaid=0;
+
+  function status(msg,error=false){
+    const el=$("statusBox");
+    el.textContent=msg;
+    el.className="status-box show "+(error?"error":"ok");
+    setTimeout(()=>el.classList.remove("show"),5000);
+  }
+
+  function amount(id){ return Math.max(Number($(id).value||0),0); }
+
+  function workTotal(){
+    const fields=["e_filing","e_payment","print_amount","scanning","other_works"];
+    const primary=fields.reduce((s,id)=>s+amount(id),0);
+    const extra=(window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[]).reduce((sum,row)=>sum+Object.values(row).reduce((a,v)=>a+Number(v||0),0),0);
+    return primary+extra;
+  }
+
+  function updateTotals(){
+    const grossWork=workTotal(), discount=Math.min(amount("discount"),grossWork), work=Math.max(grossWork-discount,0);
+    let paid=amount("paidAmount");
+    const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
+    if(isCashSale){$("paidAmount").value=work.toFixed(2);paid=work;}
+    $("balanceAmount") && ($("balanceAmount").value=Math.max(work-paid,0).toFixed(2));
+    $("workTotal").textContent=money(work);
+    $("paidTotal").textContent=money(paid);
+    $("balanceAdded").textContent=money(work-paid);
+    $("customerTodayWork").textContent=money(selectedTodayWork+work);
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
+    $("newBalance").textContent=money(selectedBalance+work-paid);
+  }
+
+  async function loadCustomers(){
+    // SINGLE MASTER CUSTOMER LIST: Admin and Staff use the exact same
+    // customers table/filter/order. Service/insurance records are not
+    // loaded from a separate list here.
+    const r=await sb.from("customers")
+      .select("id,full_name,mobile,whatsapp,email,address,status,created_from_insurance")
+      .eq("status","active")
+      .or("created_from_insurance.is.null,created_from_insurance.eq.false")
+      .order("full_name",{ascending:true});
+    if(r.error){status(r.error.message,true);return;}
+    customers=r.data||[];
+    $("customer").value="";
+    $("customerSearch").value="";
+    renderCustomerSuggestions("");
+  }
+
+
+  let activeSuggestion = -1;
+
+  function customerText(c){
+    return `${c.full_name||""} — ${c.mobile||c.whatsapp||""}`.trim();
+  }
+
+  function renderCustomerSuggestions(query){
+    const box=$("customerSuggestions");
+    const q=(query||"").trim().toLowerCase();
+    const matches=customers.filter(c=>{
+      const name=String(c.full_name||"").toLowerCase();
+      const mobile=String(c.mobile||"").toLowerCase();
+      const whatsapp=String(c.whatsapp||"").toLowerCase();
+      return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
+    }).slice(0,8);
+
+    if(!matches.length){
+      box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
+      box.classList.add("show");
+      return;
+    }
+
+    box.innerHTML=matches.map((c,i)=>`
+      <button type="button" class="customer-option ${i===activeSuggestion?"active":""}"
+              data-customer-id="${c.id}" role="option">
+        <span>
+          <span class="customer-main">${String(c.full_name||"Customer")}</span>
+          <span class="customer-mobile">${c.mobile||c.whatsapp||""}</span>
+        </span>
+        <span class="customer-balance">Select</span>
+      </button>`).join("");
+
+    box.classList.add("show");
+
+    box.querySelectorAll(".customer-option").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const c=customers.find(x=>String(x.id)===String(btn.dataset.customerId));
+        if(!c)return;
+        $("customer").value=c.id;
+        $("customerSearch").value=customerText(c);
+        $("customerSearch").dataset.cashSale="0";
+        $("customerSuggestions").classList.remove("show");
+        $("customerClear").style.display="block";
+        activeSuggestion=-1;
+        loadCustomerSummary(c.id);
+      });
+    });
+  }
+
+  $("qwOpenCustomerDash")?.addEventListener("click",()=>document.getElementById("qwCustomerModal")?.classList.add("show"));
+  window.addEventListener("itech:customer-created",e=>{const c=e.detail;if(!c)return;customers.unshift(c);$("customer").value=c.id;$("customerSearch").value=customerText(c);loadCustomerSummary(c.id);});
+
+  $("customerSearch").addEventListener("input",e=>{
+    if(e.target.value.trim()==="Cash Sale"){
+      e.target.dataset.cashSale="1";
+      $("customer").value="";
+    } else if($("customer").value){
+      $("customer").value="";
+      selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+      $("oldBalance").textContent=money(0);
+    }
+    $("customerClear").style.display=e.target.value.trim()?"block":"none";
+    activeSuggestion=-1;
+    renderCustomerSuggestions(e.target.value);
+    updateTotals();
+  });
+
+  $("customerSearch").addEventListener("focus",()=>{
+    renderCustomerSuggestions($("customerSearch").value);
+  });
+
+  $("customerSearch").addEventListener("keydown",e=>{
+    const options=[...document.querySelectorAll(".customer-option")];
+    if(!options.length)return;
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeSuggestion=Math.min(activeSuggestion+1,options.length-1);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeSuggestion=Math.max(activeSuggestion-1,0);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="Enter" && activeSuggestion>=0){
+      e.preventDefault();
+      options[activeSuggestion].click();
+    }else if(e.key==="Escape"){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  $("customerClear").addEventListener("click",()=>{
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerSearch").dataset.cashSale="0";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+    $("customerSearch").focus();
+  });
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".customer-picker")){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  async function loadCustomerSummary(id){
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
+
+    const entryDate=selectedEntryDate();
+
+    // IMPORTANT: Admin and Staff both calculate the balance from the SAME
+    // source tables. Do not use the customer_balances view here because an
+    // old/stale view value can make the two dashboards display differently.
+    // Use one SECURITY DEFINER RPC for both Admin and Staff. This avoids
+    // RLS returning different rows to the two dashboards.
+    const { data: balanceRow, error: balanceError } = await sb
+      .rpc("itech_get_customer_balance", {
+        p_customer_id: id,
+        p_entry_date: entryDate
+      });
+
+    if (balanceError) {
+      console.error("Unified customer balance load:", balanceError);
+      status(balanceError.message, true);
+      return;
+    }
+
+    const b = Array.isArray(balanceRow) ? balanceRow[0] : balanceRow;
+    const oldBalance = Number(b?.old_balance || 0);
+    const todayWork = Number(b?.today_work || 0);
+    const todayPaid = Number(b?.today_paid || 0);
+    const currentBalance = Number(b?.current_balance || 0);
+
+    selectedBalance = currentBalance;
+    selectedTodayWork = todayWork;
+    selectedTodayPaid = todayPaid;
+
+    // Both dashboards now render exactly the same database result.
+    $("oldBalance").textContent = money(oldBalance);
+    $("customerTodayWork").textContent = money(todayWork + workTotal());
+    $("customerTodayPaid").textContent = money(todayPaid + amount("paidAmount"));
+    $("newBalance").textContent = money(
+      Math.max(oldBalance + todayWork + workTotal() - todayPaid - amount("paidAmount"), 0)
+    );
+  }
+
+  $("customer").addEventListener("change",e=>loadCustomerSummary(e.target.value));
+  $("discount")?.addEventListener("input",updateTotals);
+  $("paidAmount")?.addEventListener("input",updateTotals);
+  ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
+    $(id).addEventListener("input",updateTotals);
+  });
+
+  function clearForm(){
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerSearch").dataset.cashSale="0";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    ["paidAmount","discount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
+    if($("balanceAmount"))$("balanceAmount").value="0";
+    $("description").value="";
+    if($("entryDate")) $("entryDate").value=today;
+    if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+  }
+  $("entryDate")?.addEventListener("change",async()=>{
+    if($("customer").value) await loadCustomerSummary($("customer").value);
+    updateTotals();
+  });
+
+  $("entryDateBtn")?.addEventListener("click",()=>{
+    const input=$("entryDate");
+    if(!input)return;
+    try{ if(typeof input.showPicker==="function") input.showPicker(); else input.click(); }
+    catch(_){ input.click(); }
+  });
+
+  $("clearBtn").addEventListener("click",clearForm);
+
+  /*
+    The save routine uses the same database structure used by the existing
+    Daily Work / Payment pages. If your existing save logic has extra fields,
+    keep those fields in the corresponding INSERT blocks below.
+  */
+
+  // Google Sheets sync (same Apps Script endpoint used by Admin)
+  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  async function syncQuickEntryToGoogleSheets(data){
+    if(!data.customer_id || !data.customer_name) return {skipped:true};
+    const body={customer_id:String(data.customer_id),customer_name:String(data.customer_name),entry_id:String(data.entry_id||""),work_date:data.work_date,old_balance:Number(data.old_balance||0),e_filing:Number(data.e_filing||0),e_payment:Number(data.e_payment||0),print_amount:Number(data.print_amount||0),scanning:Number(data.scanning||0),other_works:Number(data.other_works||0),paid_amount:Number(data.paid_amount||0)};
+    await fetch(ITCH_SHEETS_WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},keepalive:true,body:JSON.stringify(body)});
+    return {sent:true};
+  }
+
+  // IMPORTANT: Each + row is sent separately. Apps Script then places
+  // row 1 in E-Filing 1/E-Payment 1, row 2 in pair 2, row 3 in pair 3, etc.
+  async function syncQuickEntryRowsToGoogleSheets({customerId,customerName,entryDate,oldBalance,primary,extras,paid,workEntryId,paymentId}){
+    const rows=[{...primary,_index:0}].concat((extras||[]).map((r,i)=>({...r,_index:i+1})));
+    const valid=rows.filter(r=>Object.entries(r).some(([k,v])=>k[0]!=='_' && Number(v||0)>0));
+    let paidAttached=false;
+    for(const r of valid){
+      const idx=r._index;
+      const payload={customer_id:customerId,customer_name:customerName,entry_id:idx===0?String(workEntryId||paymentId||''):`${String(workEntryId||'')}-extra-${idx}`,work_date:entryDate,old_balance:idx===0?Number(oldBalance||0):0,e_filing:Number(r.e_filing||0),e_payment:Number(r.e_payment||0),print_amount:Number(r.print_amount||0),scanning:Number(r.scanning||0),other_works:Number(r.other_works||0),paid_amount:(!paidAttached&&Number(paid)>0)?Number(paid):0};
+      await syncQuickEntryToGoogleSheets(payload);
+      if(payload.paid_amount) paidAttached=true;
+    }
+    if(!paidAttached&&Number(paid)>0){
+      await syncQuickEntryToGoogleSheets({customer_id:customerId,customer_name:customerName,entry_id:`${String(paymentId||workEntryId||'')}-payment`,work_date:entryDate,old_balance:0,e_filing:0,e_payment:0,print_amount:0,scanning:0,other_works:0,paid_amount:Number(paid)});
+    }
+  }
+
+  $("saveBtn").addEventListener("click",async()=>{
+    const customerId=$("customer").value || null;
+    const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
+    const work=workTotal();
+    const paid=amount("paidAmount");
+    if(!customerId && !isCashSale){status("Please select a customer or choose Cash Sale.",true);return;}
+    if(work<=0 && paid<=0){status("Enter a work amount or enter a payment.",true);return;}
+
+    $("saveBtn").disabled=true;
+    $("saveBtn").textContent="Saving…";
+
+    try{
+      const desc=$("description").value.trim();
+      const entryDate=selectedEntryDate();
+      let sheetsEntryId=null;
+
+      /* Work entry: keep the same column names as the existing report view. */
+      if(work>0){
+        const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
+        const enteredBy=await getEnteredById();
+        const payload={
+          customer_id:isCashSale?null:customerId,
+          entered_by:enteredBy,
+          e_filing:sumField("e_filing"),
+          e_payment:sumField("e_payment"),
+          print_amount:sumField("print_amount"),
+          scanning:sumField("scanning"),
+          other_works:sumField("other_works"),
+          description:desc||null,
+          discount:amount("discount"),
+          paid_amount:paid,
+          balance_amount:Math.max(work-paid,0),
+          entry_type:isCashSale?"cash_sale":"customer",
+          extra_entries:extraEntries.length?extraEntries:null,
+          work_date:entryDate
+        };
+
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        if(ins.error) throw ins.error;
+        sheetsEntryId=ins.data?.id||null;
+
+        // Award points immediately after the Quick Entry is saved.
+        // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
+        try{
+          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:ins.data.id});
+          if(pointResult.error){
+            console.error("Quick Entry points error:",pointResult.error);
+          }else{
+            const earned=Number(pointResult.data||0);
+            if(earned>0 && window.itechShowPointsReward){
+              window.itechShowPointsReward(earned,"Quick Entry");
+            }
+            // Update dashboard Today/Month/Total counters without reloading the page.
+            ["spsToday","spsMonth","spsTotal"].forEach(id=>{
+              const el=document.getElementById(id);
+              if(el && id==="spsToday") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+              if(el && id==="spsMonth") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+              if(el && id==="spsTotal") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+            });
+          }
+        }catch(pointErr){
+          console.error("Quick Entry points error:",pointErr);
+        }
+
+      }
+
+      if(paid>0){
+        const enteredByForPayment=await getEnteredById();
+        const pr=await sb.from("payments").insert({
+          customer_id:isCashSale?null:customerId,
+          entered_by:enteredByForPayment,
+          amount:paid,
+          payment_date:entryDate,
+          payment_method:"Cash",
+          reference_note:"Dashboard Quick Entry"
+        }).select("id").single();
+        if(pr.error) throw pr.error;
+        var sheetsPaymentId=pr.data?.id||null;
+      }
+
+      // Send each visible Quick Entry row separately to Google Sheets.
+      if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
+        const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
+        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        void syncQuickEntryRowsToGoogleSheets({customerId,customerName:chosenCustomer?.full_name||$("customerSearch").value.trim(),entryDate,oldBalance:Number(selectedBalance||0),primary:{e_filing:amount("e_filing"),e_payment:amount("e_payment"),print_amount:amount("print_amount"),scanning:amount("scanning"),other_works:amount("other_works")},extras:extraForSheets,paid,workEntryId:sheetsEntryId,paymentId:sheetsPaymentId}).then(()=>console.info("Staff Google Sheets row-by-row sync sent.")).catch(sheetErr=>console.error("Staff Google Sheets sync failed:",sheetErr));
+      }
+
+      status("Transaction saved successfully.");
+      window.dispatchEvent(new Event("itech:work-saved"));
+      if(customerId && typeof loadCustomerSummary==="function"){
+        await loadCustomerSummary(customerId);
+      }
+      await refreshDashboard();
+      await loadWhatsAppReminders();
+      clearForm();
+    }catch(err){
+      status(err.message||"Unable to save transaction.",true);
+    }finally{
+      $("saveBtn").disabled=false;
+      $("saveBtn").textContent="💾 Save Work & Payment";
+    }
+  });
+
+
+  /* ===== Instant WhatsApp Reminder Refresh ===== */
+  /*
+   * Keep Today's Customers in sync immediately after a payment is saved
+   * from this dashboard or from the Payments page. Realtime handles the
+   * fast path; this short fallback poll also works when Realtime is delayed.
+   */
+  if(!window.__itechWaInstantRefresh){
+    window.__itechWaInstantRefresh=true;
+    setInterval(()=>{
+      if(document.visibilityState === "visible" && typeof loadWhatsAppReminders === "function") {
+        loadWhatsAppReminders().catch(()=>{});
+      }
+    },3000);
+  }
+
+  /* ===== WhatsApp Payment Reminders ===== */
+  function normalizePhone(value){
+    let p=String(value||"").replace(/\D/g,"");
+    if(p.length===11 && p.startsWith("0")) p=p.slice(1);
+    if(p.length===12 && p.startsWith("91")) p=p.slice(2);
+    if(!/^[6-9]\d{9}$/.test(p)) return "";
+    return "91"+p;
+  }
+
+  function getValidWhatsAppNumber(c){
+    const whatsapp=normalizePhone(c.whatsapp);
+    if(whatsapp) return whatsapp;
+    const mobile=normalizePhone(c.mobile);
+    if(mobile) return mobile;
+    return "";
+  }
+
+  function buildPaymentMessage(c){
+    const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
+    return `Hello ${c.full_name||"Customer"},
+
+*iTech IT Solutions — Payment Reminder*
+
+*Date: ${reminderDate}*
+Old Balance: ${money(c.oldBalance)}
+Today's Work: ${money(c.todayWork)}
+Paid Today: ${money(c.todayPaid)}
+*Total Balance: ${money(c.totalBalance)}*
+
+Please contact us for any clarification.
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
+  }
+
+  function openWhatsApp(c){
+    const phone=getValidWhatsAppNumber(c);
+    if(!phone) return false;
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+    return true;
+  }
+
+  function renderWaList(el,rows,emptyText){
+    if(!rows.length){el.innerHTML=`<div class="wa-empty">${emptyText}</div>`;return;}
+    el.innerHTML=rows.map((c,i)=>`
+      <div class="wa-customer">
+        <div class="wa-customer-main">
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
+          <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
+        </div>
+        <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
+      </div>`).join("");
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+  }
+
+  async function refreshDashboard(){
+    try{
+      const [work,pay,bal,enq]=await Promise.all([
+        sb.from("today_work_report").select("*"),
+        sb.from("payments").select("amount").eq("payment_date",today),
+        sb.from("customer_balances").select("current_balance"),
+        sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+      ]);
+      if(work.error) throw work.error;
+      const rows=work.data||[];
+      const el=id=>document.getElementById(id);
+      if(el("todayWork")) el("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+      if(el("todayEntries")) el("todayEntries").textContent=rows.length+" entries";
+      if(el("todayPayments")) el("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+      if(el("outstanding")) el("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+      if(el("enquiries")) el("enquiries").textContent=enq.count||0;
+    }catch(e){ console.error("Admin dashboard refresh:",e); }
+  }
+
+  async function loadWhatsAppReminders(){
+    const todayList=$("waTodayList"), overdueList=$("waOverdueList");
+    if(!todayList||!overdueList)return;
+    todayList.innerHTML='<div class="wa-empty">Loading…</div>';
+    overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+
+    try{
+      const [cu,ba,tw,tp,wh,ph]=await Promise.all([
+        sb.from("customers").select("id,full_name,mobile,whatsapp,status").eq("status","active").order("full_name"),
+        sb.from("customer_balances").select("id,current_balance"),
+        sb.from("today_work_report").select("customer_id,total_amount"),
+        sb.from("payments").select("customer_id,amount").eq("payment_date",today),
+        sb.from("today_work_report").select("customer_id,created_at"),
+        sb.from("payments").select("customer_id,payment_date")
+      ]);
+      for(const r of [cu,ba,tw,tp,wh,ph]) if(r.error) throw r.error;
+
+      const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
+      const works=new Map(), paid=new Map(), last=new Map();
+
+      (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
+      (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
+      (wh.data||[]).forEach(r=>{
+        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
+        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
+      });
+      (ph.data||[]).forEach(r=>{
+        const id=String(r.customer_id); if(!r.payment_date)return;
+        const d=new Date(String(r.payment_date)+"T23:59:59");
+        if(!last.has(id)||d>last.get(id))last.set(id,d);
+      });
+
+      const customersWithData=(cu.data||[]).map(c=>{
+        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+      });
+
+      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+
+      const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+        .sort((a,b)=>b.totalBalance-a.totalBalance);
+
+      $("waTodayCount").textContent=todayRows.length;
+      $("waOverdueCount").textContent=overdueRows.length;
+      renderWaList(todayList,todayRows,"No customer activity recorded today.");
+      renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
+
+      $("waSendTodayAll").onclick=()=>{
+        let processed=0, skipped=0;
+        const validCustomers=[];
+        todayRows.forEach(c=>{
+          if(getValidWhatsAppNumber(c)) validCustomers.push(c);
+          else skipped++;
+        });
+        validCustomers.forEach((c,i)=>setTimeout(()=>{
+          if(openWhatsApp(c)) processed++;
+          if(i===validCustomers.length-1){
+            setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),300);
+          }
+        },i*700));
+        if(validCustomers.length===0){
+          status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
+        }
+      };
+      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waRefresh").onclick=loadWhatsAppReminders;
+    }catch(err){
+      console.error("WhatsApp reminder error:",err);
+      todayList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+      overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+    }
+  }
+
+
+  if($("entryDate")) $("entryDate").value=today;
+
+  const quickReminder=$("quickReminderOverlay");
+  function showQuickReminder(){
+    if(!quickReminder || document.visibilityState!=="visible") return;
+    quickReminder.classList.remove("show");
+    void quickReminder.offsetWidth;
+    quickReminder.classList.add("show");
+    setTimeout(()=>quickReminder.classList.remove("show"),2000);
+  }
+  setInterval(showQuickReminder,30*60*1000);
+
+  await Promise.all([
+    loadCustomers(),
+    refreshDashboard(),
+    loadWhatsAppReminders()
+  ]);
+  updateTotals();
+})();
+
+</script>
+<script>
 /* ===== iTech Admin Notification Center ===== */
 (async()=>{
   const btn=document.getElementById("notificationBtn");

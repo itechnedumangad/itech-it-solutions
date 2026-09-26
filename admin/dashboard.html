@@ -1046,6 +1046,23 @@ body{
     return {sent:true};
   }
 
+  // IMPORTANT: Each + row is sent separately so Google Sheets creates
+  // E-Filing 1/E-Payment 1, then pair 2, pair 3, etc.
+  async function syncQuickEntryRowsToGoogleSheets({customerId,customerName,entryDate,oldBalance,primary,extras,paid,workEntryId,paymentId}){
+    const rows=[{...primary,_index:0}].concat((extras||[]).map((r,i)=>({...r,_index:i+1})));
+    const valid=rows.filter(r=>Object.entries(r).some(([k,v])=>k[0]!=='_' && Number(v||0)>0));
+    let paidAttached=false;
+    for(const r of valid){
+      const idx=r._index;
+      const payload={customer_id:customerId,customer_name:customerName,entry_id:idx===0?String(workEntryId||paymentId||''):`${String(workEntryId||'')}-extra-${idx}`,work_date:entryDate,old_balance:idx===0?Number(oldBalance||0):0,e_filing:Number(r.e_filing||0),e_payment:Number(r.e_payment||0),print_amount:Number(r.print_amount||0),scanning:Number(r.scanning||0),other_works:Number(r.other_works||0),paid_amount:(!paidAttached&&Number(paid)>0)?Number(paid):0};
+      await syncQuickEntryToGoogleSheets(payload);
+      if(payload.paid_amount) paidAttached=true;
+    }
+    if(!paidAttached&&Number(paid)>0){
+      await syncQuickEntryToGoogleSheets({customer_id:customerId,customer_name:customerName,entry_id:`${String(paymentId||workEntryId||'')}-payment`,work_date:entryDate,old_balance:0,e_filing:0,e_payment:0,print_amount:0,scanning:0,other_works:0,paid_amount:Number(paid)});
+    }
+  }
+
   $("saveBtn").addEventListener("click",async()=>{
     const customerId=$("customer").value || null;
     const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
@@ -1114,26 +1131,11 @@ body{
         var sheetsPaymentId=pr.data?.id||null;
       }
 
-      // Google Sheets sync runs in the background; do not block the save flow.
+      // Send every + row separately to Google Sheets.
       if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
         const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
         const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
-        const sheetsPayload={
-          customer_id:customerId,
-          customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
-          entry_id:sheetsEntryId || sheetsPaymentId,
-          work_date:entryDate,
-          old_balance:0,
-          e_filing:amount("e_filing")+extraForSheets.reduce((s,r)=>s+Number(r.e_filing||0),0),
-          e_payment:amount("e_payment")+extraForSheets.reduce((s,r)=>s+Number(r.e_payment||0),0),
-          print_amount:amount("print_amount")+extraForSheets.reduce((s,r)=>s+Number(r.print_amount||0),0),
-          scanning:amount("scanning")+extraForSheets.reduce((s,r)=>s+Number(r.scanning||0),0),
-          other_works:amount("other_works")+extraForSheets.reduce((s,r)=>s+Number(r.other_works||0),0),
-          paid_amount:paid
-        };
-        void syncQuickEntryToGoogleSheets(sheetsPayload)
-          .then(()=>console.info("Google Sheets sync request sent."))
-          .catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
+        void syncQuickEntryRowsToGoogleSheets({customerId,customerName:chosenCustomer?.full_name||$("customerSearch").value.trim(),entryDate,oldBalance:0,primary:{e_filing:amount("e_filing"),e_payment:amount("e_payment"),print_amount:amount("print_amount"),scanning:amount("scanning"),other_works:amount("other_works")},extras:extraForSheets,paid,workEntryId:sheetsEntryId,paymentId:sheetsPaymentId}).then(()=>console.info("Google Sheets row-by-row sync sent.")).catch(sheetErr=>console.error("Google Sheets sync failed:",sheetErr));
       }
       status("Transaction saved successfully.");
       window.dispatchEvent(new Event("itech:work-saved"));

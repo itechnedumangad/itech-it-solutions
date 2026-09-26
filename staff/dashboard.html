@@ -830,6 +830,34 @@ body{
     Daily Work / Payment pages. If your existing save logic has extra fields,
     keep those fields in the corresponding INSERT blocks below.
   */
+
+  // Google Sheets sync (same Apps Script endpoint used by Admin)
+  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  async function syncQuickEntryToGoogleSheets(data){
+    if(!data.customer_id || !data.customer_name) return {skipped:true};
+    const body={
+      customer_id:String(data.customer_id),
+      customer_name:String(data.customer_name),
+      entry_id:String(data.entry_id||""),
+      work_date:data.work_date,
+      old_balance:Number(data.old_balance||0),
+      e_filing:Number(data.e_filing||0),
+      e_payment:Number(data.e_payment||0),
+      print_amount:Number(data.print_amount||0),
+      scanning:Number(data.scanning||0),
+      other_works:Number(data.other_works||0),
+      paid_amount:Number(data.paid_amount||0)
+    };
+    await fetch(ITCH_SHEETS_WEB_APP_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      keepalive:true,
+      body:JSON.stringify(body)
+    });
+    return {sent:true};
+  }
+
   $("saveBtn").addEventListener("click",async()=>{
     const customerId=$("customer").value || null;
     const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
@@ -844,6 +872,7 @@ body{
     try{
       const desc=$("description").value.trim();
       const entryDate=selectedEntryDate();
+      let sheetsEntryId=null;
 
       /* Work entry: keep the same column names as the existing report view. */
       if(work>0){
@@ -869,6 +898,7 @@ body{
 
         const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
         if(ins.error) throw ins.error;
+        sheetsEntryId=ins.data?.id||null;
 
         // Award points immediately after the Quick Entry is saved.
         // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
@@ -904,8 +934,32 @@ body{
           payment_date:entryDate,
           payment_method:"Cash",
           reference_note:"Dashboard Quick Entry"
-        });
+        }).select("id").single();
         if(pr.error) throw pr.error;
+        var sheetsPaymentId=pr.data?.id||null;
+      }
+
+      // Send Staff Quick Daily Work to the SAME Google Sheet as Admin.
+      // No "Added By" column is sent; Admin and Staff use the same sheet layout.
+      if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
+        const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
+        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        const sheetsPayload={
+          customer_id:customerId,
+          customer_name:chosenCustomer?.full_name||$("customerSearch").value.trim(),
+          entry_id:sheetsEntryId || sheetsPaymentId,
+          work_date:entryDate,
+          old_balance:Number(selectedBalance||0),
+          e_filing:amount("e_filing")+extraForSheets.reduce((sum,row)=>sum+Number(row.e_filing||0),0),
+          e_payment:amount("e_payment")+extraForSheets.reduce((sum,row)=>sum+Number(row.e_payment||0),0),
+          print_amount:amount("print_amount")+extraForSheets.reduce((sum,row)=>sum+Number(row.print_amount||0),0),
+          scanning:amount("scanning")+extraForSheets.reduce((sum,row)=>sum+Number(row.scanning||0),0),
+          other_works:amount("other_works")+extraForSheets.reduce((sum,row)=>sum+Number(row.other_works||0),0),
+          paid_amount:paid
+        };
+        void syncQuickEntryToGoogleSheets(sheetsPayload)
+          .then(()=>console.info("Staff Google Sheets sync request sent."))
+          .catch(sheetErr=>console.error("Staff Google Sheets sync failed:",sheetErr));
       }
 
       status("Transaction saved successfully.");

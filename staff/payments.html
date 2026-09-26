@@ -269,6 +269,14 @@
 
   const ok = await requireStaff();
 
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
+  }
+
   if (!ok) return;
 
 
@@ -857,5 +865,23 @@
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 })();
 </script>
+
+<script id="itech-payment-live-balance-fix">
+(function(){
+  if(typeof sb==="undefined") return;
+  const refresh=async()=>{
+    try{
+      if(typeof getBalance==="function") await getBalance();
+      if(typeof loadPayments==="function") await loadPayments();
+    }catch(e){ console.error("Payment live refresh:",e); }
+  };
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(refresh,120);});
+  window.addEventListener("focus",()=>setTimeout(refresh,120));
+  sb.channel("itech-payment-live-"+Math.random().toString(36).slice(2))
+    .on("postgres_changes",{event:"*",schema:"public",table:"payments"},refresh)
+    .subscribe();
+})();
+</script>
+
 </body>
 </html>

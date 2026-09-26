@@ -545,6 +545,14 @@ body{
 (async function(){
   try{
     const a=await requireStaff(); if(!a)return;
+
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
+  }
     const {data,error}=await sb.from('vehicle_insurance').select('expiry_date');
     if(error)throw error;
     const rows=data||[],today=new Date();today.setHours(0,0,0,0);
@@ -816,8 +824,10 @@ body{
       if(work>0){
         const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
         const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
+        const enteredBy=await getEnteredById();
         const payload={
           customer_id:isCashSale?null:customerId,
+          entered_by:enteredBy,
           e_filing:sumField("e_filing"),
           e_payment:sumField("e_payment"),
           print_amount:sumField("print_amount"),
@@ -861,8 +871,10 @@ body{
       }
 
       if(paid>0){
+        const enteredByForPayment=await getEnteredById();
         const pr=await sb.from("payments").insert({
           customer_id:isCashSale?null:customerId,
+          entered_by:enteredByForPayment,
           amount:paid,
           payment_date:entryDate,
           payment_method:"Cash",
@@ -873,6 +885,10 @@ body{
 
       status("Transaction saved successfully.");
       window.dispatchEvent(new Event("itech:work-saved"));
+      if(customerId && typeof loadCustomerSummary==="function"){
+        await loadCustomerSummary(customerId);
+      }
+      await refreshDashboard();
       await loadWhatsAppReminders();
       clearForm();
     }catch(err){
@@ -937,6 +953,25 @@ Your Trust Our Service`;
         <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
       </div>`).join("");
     el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+  }
+
+  async function refreshDashboard(){
+    try{
+      const [work,pay,bal,enq]=await Promise.all([
+        sb.from("today_work_report").select("*"),
+        sb.from("payments").select("amount").eq("payment_date",today),
+        sb.from("customer_balances").select("current_balance"),
+        sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+      ]);
+      if(work.error) throw work.error;
+      const rows=work.data||[];
+      const el=id=>document.getElementById(id);
+      if(el("todayWork")) el("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+      if(el("todayEntries")) el("todayEntries").textContent=rows.length+" entries";
+      if(el("todayPayments")) el("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+      if(el("outstanding")) el("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+      if(el("enquiries")) el("enquiries").textContent=enq.count||0;
+    }catch(e){ console.error("Staff dashboard refresh:",e); }
   }
 
   async function loadWhatsAppReminders(){
@@ -1029,6 +1064,7 @@ Your Trust Our Service`;
 
   await Promise.all([
     loadCustomers(),
+    refreshDashboard(),
     loadWhatsAppReminders()
   ]);
   updateTotals();
@@ -1142,5 +1178,40 @@ Your Trust Our Service`;
   }catch(e){console.error(e);}
 })();
 </script>
-<script src="../js/points-reward-fullscreen.js"></script></body>
+<script src="../js/points-reward-fullscreen.js"></script>
+<script id="itech-unified-live-data-fix">
+(async function(){
+  try{
+    if(typeof sb==="undefined") return;
+    async function refreshSelectedCustomer(){
+      const id=document.getElementById("customer")?.value;
+      if(id && typeof loadCustomerSummary==="function"){
+        try{ await loadCustomerSummary(id); }catch(e){ console.error("Balance refresh:",e); }
+      }
+      if(typeof refreshDashboard==="function"){
+        try{ await refreshDashboard(); }catch(e){ console.error("Dashboard refresh:",e); }
+      }
+      if(typeof loadWhatsAppReminders==="function"){
+        try{ await loadWhatsAppReminders(); }catch(e){ console.error("Reminder refresh:",e); }
+      }
+    }
+
+    // Refresh when returning to the tab/window. This prevents Staff from showing
+    // a stale balance after a payment was entered from another page.
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="visible") setTimeout(refreshSelectedCustomer,150);
+    });
+    window.addEventListener("focus",()=>setTimeout(refreshSelectedCustomer,150));
+
+    // Realtime refresh for work and payment changes made by Admin/Staff.
+    const channelName="itech-unified-data-"+Math.random().toString(36).slice(2);
+    sb.channel(channelName)
+      .on("postgres_changes",{event:"*",schema:"public",table:"payments"},()=>refreshSelectedCustomer())
+      .on("postgres_changes",{event:"*",schema:"public",table:"daily_work_entries"},()=>refreshSelectedCustomer())
+      .subscribe();
+  }catch(e){ console.error("Unified live data fix:",e); }
+})();
+</script>
+
+</body>
 </html>

@@ -29,6 +29,7 @@
       .qw-last-main{display:flex;justify-content:space-between;gap:10px}.qw-last-main strong{color:#17385e;font-size:14px}.qw-last-main span{color:#8292a7;font-size:11px;white-space:nowrap}
       .qw-last-values{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;color:#70839b;font-size:12px}.qw-last-values b{color:#163e68}
       .qw-last-loading,.qw-last-empty{padding:18px;color:#7b8da4;font-size:13px}
+      .qw-last-payment{background:#fcfffb}.qw-last-meta{margin-top:5px;color:#8797aa;font-size:11px}.qw-last-values b{font-weight:850}
       @media(max-width:700px){.qw-last-main{display:block}.qw-last-main span{display:block;margin-top:3px}.qw-last-values{gap:10px}.qw-entry-plus button{width:38px;height:38px}}
     `;
     document.head.appendChild(st);
@@ -145,23 +146,96 @@
     const host=$("qwLastFive"); if(!host) return;
     host.innerHTML='<div class="qw-last-loading">Loading recent transactions…</div>';
     try{
-      const r=await sb.from("daily_work_entries")
-        .select("id,customer_id,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount,balance_amount,entry_type,description,created_at,customers(full_name,mobile)")
-        .order("created_at",{ascending:false}).limit(5);
-      if(r.error) throw r.error;
-      const rows=r.data||[];
+      // Show BOTH Quick Daily Work entries and payment records in one timeline.
+      // This is shared by Admin + Staff dashboards, so both screens see the same data.
+      const [wr,pr]=await Promise.all([
+        sb.from("daily_work_entries")
+          .select("id,customer_id,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount,balance_amount,entry_type,description,created_at,entered_by,work_date,customers(full_name,mobile)")
+          .order("created_at",{ascending:false}).limit(10),
+        sb.from("payments")
+          .select("id,customer_id,amount,payment_method,reference_note,notes,created_at,payment_date,entered_by,customers(full_name,mobile)")
+          .order("created_at",{ascending:false}).limit(10)
+      ]);
+      if(wr.error) throw wr.error;
+      if(pr.error) throw pr.error;
+
+      const workRows=(wr.data||[]).map(x=>({...x,__kind:"work",__time:x.created_at||x.work_date}));
+      const paymentRows=(pr.data||[]).map(x=>({...x,__kind:"payment",__time:x.created_at||x.payment_date}));
+      const rows=[...workRows,...paymentRows]
+        .sort((a,b)=>new Date(b.__time||0)-new Date(a.__time||0))
+        .slice(0,5);
+
       if(!rows.length){host.innerHTML='<div class="qw-last-empty">No transactions recorded yet.</div>';return;}
+
+      // Resolve the person who entered each record. Keep the current user's profile
+      // as a fallback so Staff can still see their own name even if profile RLS is strict.
+      const ids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean).map(String))];
+      const profileMap=new Map();
+      if(ids.length){
+        try{
+          const me=await sb.auth.getUser();
+          const meId=me?.data?.user?.id;
+          if(meId && ids.includes(String(meId))){
+            const mine=await sb.from("profiles").select("id,full_name,role").eq("id",meId).maybeSingle();
+            if(mine.data) profileMap.set(String(mine.data.id),mine.data);
+          }
+          const others=ids.filter(id=>!profileMap.has(id));
+          if(others.length){
+            const prf=await sb.from("profiles").select("id,full_name,role").in("id",others);
+            if(!prf.error)(prf.data||[]).forEach(x=>profileMap.set(String(x.id),x));
+          }
+        }catch(_){/* profile lookup is only display metadata */}
+      }
+
+      const addedBy=(x)=>{
+        const p=profileMap.get(String(x.entered_by||""));
+        if(p){
+          const role=String(p.role||"").toLowerCase();
+          const label=role==="admin"||role==="administrator"?"Admin":"Staff";
+          return `${label} – ${p.full_name||"User"}`;
+        }
+        return x.entered_by ? "Entered by user" : "—";
+      };
+
       host.innerHTML=rows.map(x=>{
         const c=x.customers||{};
         const name=x.entry_type==="cash_sale"?"Cash Sale":(c.full_name||"Customer");
+        const dt=x.__time?new Date(x.__time).toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+        const who=esc(addedBy(x));
+
+        if(x.__kind==="payment"){
+          const paid=Number(x.amount||0);
+          const method=x.payment_method||"Payment";
+          const ref=x.reference_note||x.notes||"";
+          return `<div class="qw-last-row qw-last-payment">
+            <div class="qw-last-main"><strong>💰 ${esc(name)}</strong><span>${dt}</span></div>
+            <div class="qw-last-values">
+              <span>Payment <b>₹${paid.toFixed(2)}</b></span>
+              <span>Method <b>${esc(method)}</b></span>
+              <span>Added By <b>${who}</b></span>
+            </div>
+            ${ref?`<div class="qw-last-meta">${esc(ref)}</div>`:""}
+          </div>`;
+        }
+
         const work=Number(x.e_filing||0)+Number(x.e_payment||0)+Number(x.print_amount||0)+Number(x.scanning||0)+Number(x.other_works||0);
         const net=Math.max(work-Number(x.discount||0),0);
         const paid=Number(x.paid_amount||0);
         const bal=Number(x.balance_amount??Math.max(net-paid,0));
-        const dt=x.created_at?new Date(x.created_at).toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"";
-        return `<div class="qw-last-row"><div class="qw-last-main"><strong>${esc(name)}</strong><span>${dt}</span></div><div class="qw-last-values"><span>Work <b>₹${net.toFixed(2)}</b></span><span>Paid <b>₹${paid.toFixed(2)}</b></span><span>Balance <b>₹${bal.toFixed(2)}</b></span></div></div>`;
+        return `<div class="qw-last-row">
+          <div class="qw-last-main"><strong>🧾 ${esc(name)}</strong><span>${dt}</span></div>
+          <div class="qw-last-values">
+            <span>Work <b>₹${net.toFixed(2)}</b></span>
+            <span>Paid <b>₹${paid.toFixed(2)}</b></span>
+            <span>Balance <b>₹${bal.toFixed(2)}</b></span>
+            <span>Added By <b>${who}</b></span>
+          </div>
+        </div>`;
       }).join("");
-    }catch(e){host.innerHTML='<div class="qw-last-empty">Unable to load recent transactions.</div>';}
+    }catch(e){
+      console.error("Last 5 transactions error:",e);
+      host.innerHTML=`<div class="qw-last-empty">Unable to load recent transactions.</div>`;
+    }
   }
 
   function injectLastFiveTransactions(){

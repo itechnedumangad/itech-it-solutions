@@ -416,7 +416,7 @@ body{
 <div style="display:flex;align-items:center;gap:10px;">
 <span class="bolt">📋</span><h2>Today's Entries</h2>
 </div>
-<button class="btn-clear" id="refreshDailyEntries" type="button">↻ Refresh</button>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="btn-clear" id="syncSheetEntries" type="button">📥 Sync Sheet</button><button class="btn-clear" id="refreshDailyEntries" type="button">↻ Refresh</button></div>
 </div>
 <p class="quick-sub" style="margin-bottom:14px;">All Quick Work Entries for the selected date.</p>
 <div class="table-scroll">
@@ -454,6 +454,7 @@ body{
 
   let customers=[];
   let selectedBalance=0;
+  let selectedOldBalance=0;
   let selectedTodayWork=0;
   let selectedTodayPaid=0;
 
@@ -562,7 +563,7 @@ body{
       $("customer").value="";
     } else if($("customer").value){
       $("customer").value="";
-      selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+      selectedBalance=selectedOldBalance=selectedTodayWork=selectedTodayPaid=0;
       $("oldBalance").textContent=money(0);
     }
     $("customerClear").style.display=e.target.value.trim()?"block":"none";
@@ -600,7 +601,7 @@ body{
     $("customerSearch").dataset.cashSale="0";
     $("customerClear").style.display="none";
     $("customerSuggestions").classList.remove("show");
-    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    selectedBalance=selectedOldBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
     $("customerSearch").focus();
@@ -613,7 +614,7 @@ body{
   });
 
   async function loadCustomerSummary(id){
-    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    selectedBalance=selectedOldBalance=selectedTodayWork=selectedTodayPaid=0;
     if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
 
     const entryDate=selectedEntryDate();
@@ -641,6 +642,7 @@ body{
     const todayPaid = Number(b?.today_paid || 0);
     const currentBalance = Number(b?.current_balance || 0);
 
+    selectedOldBalance = oldBalance;
     selectedBalance = currentBalance;
     selectedTodayWork = todayWork;
     selectedTodayPaid = todayPaid;
@@ -672,7 +674,7 @@ body{
     $("description").value="";
     if($("entryDate")) $("entryDate").value=today;
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
-    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    selectedBalance=selectedOldBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
   }
@@ -807,7 +809,7 @@ body{
       if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
         const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
         const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
-        void syncQuickEntryRowsToGoogleSheets({customerId,customerName:chosenCustomer?.full_name||$("customerSearch").value.trim(),entryDate,oldBalance:Number(selectedBalance||0),primary:{e_filing:amount("e_filing"),e_payment:amount("e_payment"),print_amount:amount("print_amount"),scanning:amount("scanning"),other_works:amount("other_works")},extras:extraForSheets,paid,workEntryId:sheetsEntryId,paymentId:sheetsPaymentId}).then(()=>console.info("Staff Google Sheets row-by-row sync sent.")).catch(sheetErr=>console.error("Staff Google Sheets sync failed:",sheetErr));
+        void syncQuickEntryRowsToGoogleSheets({customerId,customerName:chosenCustomer?.full_name||$("customerSearch").value.trim(),entryDate,oldBalance:Number(selectedOldBalance||0),primary:{e_filing:amount("e_filing"),e_payment:amount("e_payment"),print_amount:amount("print_amount"),scanning:amount("scanning"),other_works:amount("other_works")},extras:extraForSheets,paid,workEntryId:sheetsEntryId,paymentId:sheetsPaymentId}).then(()=>console.info("Staff Google Sheets row-by-row sync sent.")).catch(sheetErr=>console.error("Staff Google Sheets sync failed:",sheetErr));
       }
 
       status("Transaction saved successfully.");
@@ -1154,6 +1156,137 @@ Your Trust Our Service`;
   await load();
 })();
 </script>
+
+<script id="google-sheet-import-sync">
+(async()=>{
+  const btn=document.getElementById("syncSheetEntries");
+  if(!btn || typeof sb==="undefined") return;
+
+  const SHEETS_URL="https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+
+  function jsonp(params){
+    return new Promise((resolve,reject)=>{
+      const callback="itechSheetCb_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+      const script=document.createElement("script");
+      const query=new URLSearchParams({...params,callback});
+      let timer=null;
+      window[callback]=(data)=>{ cleanup(); resolve(data); };
+      function cleanup(){
+        if(timer) clearTimeout(timer);
+        try{delete window[callback];}catch(_){window[callback]=undefined;}
+        script.remove();
+      }
+      script.onerror=()=>{cleanup();reject(new Error("Google Sheet connection failed."));};
+      timer=setTimeout(()=>{cleanup();reject(new Error("Google Sheet sync timed out."));},20000);
+      script.src=SHEETS_URL+"?"+query.toString();
+      document.head.appendChild(script);
+    });
+  }
+
+  function num(v){ return Math.max(Number(v||0),0); }
+
+  async function importSheetEntries(){
+    const date=document.getElementById("entryDate")?.value || new Date().toISOString().slice(0,10);
+    btn.disabled=true;
+    const oldText=btn.textContent;
+    btn.textContent="⏳ Syncing…";
+    try{
+      const result=await jsonp({action:"read_daily",date});
+      if(!result?.ok) throw new Error(result?.error||"Unable to read Google Sheet.");
+      const rows=Array.isArray(result.rows)?result.rows:[];
+      if(!rows.length){
+        if(typeof window.status==="function") window.status("No new Sheet entries found.");
+        alert("No new Google Sheet entries found for this date.");
+        return;
+      }
+
+      let imported=0, skipped=0, failed=0;
+      const errors=[];
+
+      let enteredBy=null;
+      try{
+        if(typeof getEnteredById==="function") enteredBy=await getEnteredById();
+      }catch(_){}
+      if(!enteredBy){
+        const ur=await sb.auth.getUser();
+        enteredBy=ur.data?.user?.id||null;
+      }
+
+      for(const row of rows){
+        const work=num(row.e_filing)+num(row.e_payment)+num(row.print_amount)+num(row.scanning)+num(row.other_works);
+        const paid=num(row.paid_amount);
+        if(!row.customer_id || (work<=0 && paid<=0)){ skipped++; continue; }
+
+        try{
+          let workId=null, paymentId=null;
+
+          if(work>0){
+            const payload={
+              customer_id:String(row.customer_id),
+              entered_by:enteredBy,
+              e_filing:num(row.e_filing),
+              e_payment:num(row.e_payment),
+              print_amount:num(row.print_amount),
+              scanning:num(row.scanning),
+              other_works:num(row.other_works),
+              description:"Imported from Google Sheet",
+              discount:0,
+              paid_amount:paid,
+              balance_amount:Math.max(work-paid,0),
+              entry_type:"customer",
+              work_date:date
+            };
+            const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+            if(ins.error) throw ins.error;
+            workId=ins.data?.id||null;
+
+            try{
+              if(workId) await sb.rpc("award_daily_work_points",{p_entry_id:workId});
+            }catch(_){}
+          }
+
+          if(paid>0){
+            const pr=await sb.from("payments").insert({
+              customer_id:String(row.customer_id),
+              entered_by:enteredBy,
+              amount:paid,
+              payment_date:date,
+              payment_method:"Cash",
+              reference_note:"Imported from Google Sheet"
+            }).select("id").single();
+            if(pr.error) throw pr.error;
+            paymentId=pr.data?.id||null;
+          }
+
+          const marker=String(workId||paymentId||"");
+          if(marker){
+            await jsonp({action:"mark_imported",date,row:Number(row.sheet_row),entry_id:marker,customer_id:String(row.customer_id||"")});
+          }
+          imported++;
+        }catch(err){
+          failed++;
+          errors.push(`${row.customer_name||row.customer_id}: ${err.message||err}`);
+        }
+      }
+
+      window.dispatchEvent(new Event("itech:work-saved"));
+      const msg=`Sheet Sync complete: ${imported} imported, ${skipped} skipped, ${failed} failed.`;
+      if(failed) alert(msg+"\n\n"+errors.slice(0,5).join("\n"));
+      else alert(msg);
+      if(typeof window.status==="function") window.status(msg,failed>0);
+    }catch(err){
+      alert(err.message||"Google Sheet sync failed.");
+      if(typeof window.status==="function") window.status(err.message||"Google Sheet sync failed.",true);
+    }finally{
+      btn.disabled=false;
+      btn.textContent=oldText;
+    }
+  }
+
+  btn.addEventListener("click",importSheetEntries);
+})();
+</script>
 <script id="daily-work-entries-loader">
 (async()=>{
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1208,4 +1341,40 @@ Your Trust Our Service`;
 
 
 
+<script id="itech-day-status-sync">
+(async()=>{
+  const dateEl=document.getElementById('entryDate');
+  if(!dateEl || typeof sb==='undefined') return;
+  const SHEETS_URL="https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  function jsonp(params){
+    return new Promise((resolve,reject)=>{
+      const cb='itechDayStatus_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+      const s=document.createElement('script');
+      let timer;
+      window[cb]=(d)=>{clearTimeout(timer);delete window[cb];s.remove();resolve(d);};
+      s.onerror=()=>{clearTimeout(timer);delete window[cb];s.remove();reject(new Error('Day status sync failed.'));};
+      timer=setTimeout(()=>{delete window[cb];s.remove();reject(new Error('Day status sync timed out.'));},15000);
+      s.src=SHEETS_URL+'?'+new URLSearchParams({...params,callback:cb}).toString();
+      document.head.appendChild(s);
+    });
+  }
+  async function refresh(){
+    const date=dateEl.value;
+    if(!date) return;
+    try{
+      const [w,p]=await Promise.all([
+        sb.from('daily_work_entries').select('id',{count:'exact',head:true}).eq('work_date',date),
+        sb.from('payments').select('id',{count:'exact',head:true}).eq('payment_date',date)
+      ]);
+      // If the current RLS/session permits the count, publish the real status to Sheets.
+      // If it does not, leave the Sheet-side status untouched rather than guessing.
+      if(!w.error && !p.error){
+        await jsonp({action:'set_supabase_status',date,working:(Number(w.count||0)+Number(p.count||0))>0?'1':'0'});
+      }
+    }catch(e){ console.warn('Day status:',e.message||e); }
+  }
+  dateEl.addEventListener('change',refresh);
+  refresh();
+})();
+</script>
 </body></html>

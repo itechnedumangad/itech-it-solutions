@@ -3,72 +3,285 @@
 <html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Daily Work | iTech Staff</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
 <style>
-/* ===== Unified iTech Footer - ordered layout ===== */
-.unified-site-footer{
-  width:100%;
-  margin-top:32px;
-  padding:28px 20px 24px;
-  background:linear-gradient(135deg,#071c3b,#0d2d5a);
-  color:#fff;
-  border-radius:18px 18px 0 0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:7px;
-  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+/* Dashboard Quick Daily Work Entry model */
+
+/* ===== iTech Dashboard Redesign ===== */
+:root{
+  --navy:#071d3d;
+  --navy2:#0d2c58;
+  --blue:#1769e0;
+  --blue2:#3459ff;
+  --orange:#ff8a16;
+  --green:#16a05d;
+  --purple:#7148e8;
+  --ink:#10284b;
+  --muted:#71819b;
+  --line:#dfe8f4;
+  --bg:#f4f8fd;
+  --white:#fff;
+  --shadow:0 10px 30px rgba(17,50,91,.08);
 }
-.unified-site-footer .footer-logo{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto 4px;
-}
-.unified-site-footer p{
+*{box-sizing:border-box}
+body{
   margin:0;
-  line-height:1.45;
+  background:linear-gradient(135deg,#f6f9fd 0%,#eef4fb 100%);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-.unified-site-footer .footer-address{
-  font-size:12px;
-  font-weight:600;
-  color:#dce7f8;
+.dash-header{
+  height:76px!important;
+  background:linear-gradient(100deg,#071c3b,#0d2d5a)!important;
+  box-shadow:0 5px 18px rgba(5,27,57,.18);
+  position:sticky;top:0;z-index:50;
 }
-.unified-site-footer .footer-contact{
-  font-size:13px;
-  font-weight:800;
-  color:#fff;
+.dash-header .brand{font-size:19px;font-weight:800}
+.dash-header .logo{
+  width:44px!important;height:44px!important;border-radius:13px!important;
+  display:inline-flex!important;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#ffb04b,#ff8410)!important;
+  box-shadow:0 6px 15px rgba(255,138,22,.25);
 }
-.unified-site-footer .footer-email{
-  font-size:12px;
-  color:#dce7f8;
+.header-actions{display:flex;align-items:center;gap:10px}
+.user-chip{
+  background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.12);
+  padding:10px 14px;border-radius:22px;font-size:12px;font-weight:700
 }
-.unified-site-footer .footer-social{
-  font-size:12px;
-  font-weight:800;
-  color:#ff9a25;
+.dash-layout{min-height:calc(100vh - 76px)}
+.sidebar{
+  width:246px!important;
+  background:linear-gradient(180deg,#071c3b,#09264d)!important;
+  border:0!important;color:#fff!important;
+  padding:18px!important;
+  box-shadow:8px 0 25px rgba(6,29,59,.08);
 }
-.unified-site-footer .footer-tagline{
-  margin-top:7px;
-  padding-top:9px;
-  width:min(360px,90%);
-  border-top:1px solid rgba(255,255,255,.16);
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.4px;
-  color:#fff;
+.sidebar nav{display:flex;flex-direction:column;gap:4px}
+.sidebar nav a{
+  color:#dce7f8!important;text-decoration:none!important;
+  border-radius:11px!important;padding:12px 14px!important;
+  font-weight:600;font-size:14px;transition:.2s ease;
+}
+.sidebar nav a:hover,.sidebar nav a.active{
+  background:linear-gradient(90deg,#1769e0,#3459ff)!important;
+  color:#fff!important;transform:translateX(2px);
+  box-shadow:0 7px 18px rgba(31,102,224,.25);
+}
+.sidebar nav a:nth-child(4){margin-top:3px}
+.dash-main{
+  max-width:none!important;
+  padding:22px 28px 34px!important;
+}
+.toolbar{
+  margin-bottom:18px;
+}
+.toolbar h1{font-size:30px;margin:0 0 4px}
+.eyebrow{color:var(--orange)!important;font-weight:800;letter-spacing:2px}
+.kpis{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+.kpi{
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #e3ebf5!important;
+  border-radius:18px!important;
+  padding:20px!important;
+  min-height:148px;
+  box-shadow:var(--shadow)!important;
+  transition:.28s ease;
+}
+.kpi:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(17,50,91,.13)!important}
+.kpi:after{
+  content:"";position:absolute;right:-25px;top:-35px;width:100px;height:100px;
+  border-radius:50%;background:rgba(255,138,22,.09);
+}
+.kpi:nth-child(2):after{background:rgba(22,160,93,.09)}
+.kpi:nth-child(3):after{background:rgba(255,138,22,.09)}
+.kpi:nth-child(4):after{background:rgba(113,72,232,.10)}
+.kpi b{font-size:14px}
+.kpi .value{font-size:28px!important;margin-top:10px;font-weight:850!important}
+.kpi small{display:block;margin-top:7px}
+.dashboard-card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.quick-entry{
+  margin-top:18px;padding:24px;
+  position:relative;overflow:hidden;
+}
+.quick-entry:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(#ff9b25,#ff7d00);
+}
+.quick-title{display:flex;align-items:center;gap:10px}
+.quick-title .bolt{font-size:27px}
+.quick-title h2{margin:0;font-size:23px}
+.quick-sub{margin:5px 0 20px;color:var(--muted)}
+.entry-layout{
+  display:grid;grid-template-columns:minmax(0,1fr) 355px;gap:18px
+}
+.entry-main{
+  border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff
+}
+.customer-paid{
+  display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px
+}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px;color:#39506f}
+.field input,.field select,.field textarea{
+  width:100%;height:45px;border:1px solid #d8e2ef;border-radius:10px;
+  padding:0 12px;background:#fff;color:var(--ink);outline:none;
+  transition:.2s;
+}
+.field textarea{height:70px;padding-top:11px;resize:vertical}
+.customer-picker{position:relative}
+.customer-input-wrap{position:relative}
+.customer-input-wrap input{padding-right:42px}
+.customer-clear{
+  position:absolute;right:7px;top:4px;width:36px;height:36px;border:0;
+  border-radius:8px;background:transparent;color:#8392a8;font-size:22px;
+  cursor:pointer;display:none
+}
+.customer-clear:hover{background:#f1f5fa;color:#17345b}
+.customer-suggestions{
+  position:absolute;z-index:30;left:0;right:0;top:76px;
+  background:#fff;border:1px solid #d9e4f1;border-radius:12px;
+  box-shadow:0 16px 35px rgba(16,40,75,.14);overflow:hidden;display:none;
+  max-height:250px;overflow-y:auto
+}
+.customer-suggestions.show{display:block}
+.customer-option{
+  width:100%;border:0;background:#fff;text-align:left;padding:11px 13px;
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;color:#142e52
+}
+.customer-option:hover,.customer-option.active{background:#eef5ff}
+.customer-option .customer-main{font-weight:750}
+.customer-option .customer-mobile{font-size:12px;color:#7a8aa0;white-space:nowrap}
+.customer-option .customer-balance{font-size:11px;color:#d97706;font-weight:750}
+.customer-empty{padding:13px;color:#7889a2;font-size:13px}
+
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#4d83e7;box-shadow:0 0 0 3px rgba(23,105,224,.09)
+}
+.amount-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px
+}
+.amount-box{
+  border:1px solid #dce5f0;border-radius:11px;padding:9px 10px;background:#fbfdff
+}
+.amount-box label{display:block;font-size:11px;font-weight:700;color:#60728c;margin-bottom:5px}
+.amount-box input{
+  width:100%;border:0;outline:0;background:transparent;font-size:14px;
+  color:var(--ink);height:28px;padding:0
+}
+.amount-box input::placeholder{color:#a1aec0}
+.service-label{font-size:12px;font-weight:800;margin:18px 0 8px}
+.service-list{display:flex;flex-direction:column;gap:8px}
+.service-row{
+  border:1px solid #dce5f0;border-radius:10px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:#fbfdff
+}
+.service-row label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:650}
+.service-row input[type=checkbox]{width:18px;height:18px;accent-color:#1769e0}
+.service-price{font-weight:800;color:#0b376e;font-size:13px}
+.summary{
+  border:1px solid #dfe7f2;border-radius:15px;padding:14px;
+  background:linear-gradient(180deg,#fff,#fbfdff)
+}
+.summary h3{margin:0 0 12px;font-size:16px}
+.sum-card{
+  border-radius:12px;padding:13px;margin-bottom:9px;border:1px solid #e2e9f2
+}
+.sum-card .label{font-size:12px;font-weight:650;margin-bottom:5px}
+.sum-card .num{font-size:22px;font-weight:850}
+.sum-old{background:#fff8ef;border-color:#ffe2c4}.sum-old .num{color:#e56f00}
+.sum-work{background:#eef6ff;border-color:#d7e8ff}.sum-work .num{color:#0862dc}
+.sum-paid{background:#effbf5;border-color:#d7f0e2}.sum-paid .num{color:#0a9652}
+.sum-new{background:#f4f0ff;border-color:#e4d9ff}.sum-new .num{color:#6840d5}
+.formula{font-size:11px;color:#536781;margin-top:10px}
+.bottom-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:10px;margin-top:12px
+}
+.total-strip{
+  display:grid;grid-template-columns:1fr 35px 1fr 35px 1fr;align-items:center;
+  background:#f5f9ff;border:1px solid #dce8f7;border-radius:12px;padding:13px 16px
+}
+.total-strip .cap{font-size:10px;font-weight:800;color:#60718a}
+.total-strip .num{font-size:20px;font-weight:850;margin-top:4px}
+.work-color{color:#0758c9}.paid-color{color:#079653}.balance-color{color:#e56f00}
+.action-row{display:flex;gap:9px}
+.btn-save{
+  flex:1;border:0;border-radius:11px;color:#fff;font-size:15px;font-weight:800;
+  background:linear-gradient(100deg,#1769e0,#b53be0);cursor:pointer;
+  box-shadow:0 9px 20px rgba(55,73,215,.22);transition:.2s
+}
+.btn-save:hover{transform:translateY(-2px)}
+.btn-clear{
+  width:115px;border:1px solid #d6dfeb;border-radius:11px;background:#fff;
+  color:#183252;font-weight:750;cursor:pointer
+}
+.status-box{
+  margin-top:14px;border-radius:11px;padding:12px 14px;font-size:13px;
+  display:none
+}
+.status-box.show{display:block}.status-box.error{background:#fff0f0;color:#b42318}
+.status-box.ok{background:#effbf4;color:#087a42}
+.info-bar{
+  margin-top:16px;background:#eaf3ff;border:1px solid #d8e8ff;border-radius:12px;
+  padding:13px 16px;color:#1760b7;font-size:13px
+}
+@media(max-width:1100px){
+  .entry-layout{grid-template-columns:1fr}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .summary h3,.formula{grid-column:1/-1}
+  .sum-card{margin:0}
+  .bottom-row{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  .sidebar{width:210px!important}
+  .kpis{grid-template-columns:repeat(2,1fr)!important}
+  .amount-grid{grid-template-columns:repeat(2,1fr)}
+  .customer-paid{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:620px){
-  .unified-site-footer{
-    margin-top:22px;
-    padding:24px 14px 20px;
-    border-radius:14px 14px 0 0;
-  }
-  .unified-site-footer .footer-logo{
-    width:52px;height:52px;
-  }
+  .dash-main{padding:15px!important}
+  .sidebar{display:none}
+  .kpis{grid-template-columns:1fr!important}
+  .amount-grid{grid-template-columns:1fr 1fr}
+  .summary{grid-template-columns:1fr}
+  .total-strip{grid-template-columns:1fr;text-align:center;gap:7px}
+  .total-strip .eq{display:none}
+  .action-row{flex-direction:column}
+  .btn-clear{width:100%;height:45px}
 }
+
+/* ===== WhatsApp Payment Reminder ===== */
+.wa-reminder-section{margin-top:18px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.wa-reminder-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.wa-reminder-title{display:flex;align-items:center;gap:10px}
+.wa-reminder-title .wa-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#eafaf0;font-size:22px}
+.wa-reminder-title h2{margin:0;font-size:20px}.wa-reminder-title p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.wa-actions{display:flex;gap:8px;flex-wrap:wrap}.wa-btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;font-size:12px}
+.wa-btn.green{background:#16a05d;color:#fff}.wa-btn.light{background:#eef5ff;color:#164b8f;border:1px solid #d9e7f8}
+.wa-reminder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.wa-list-card{border:1px solid #e0e8f2;border-radius:14px;overflow:hidden;background:#fbfdff}
+.wa-list-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e3ebf4;background:#f7faff}
+.wa-list-head strong{font-size:13px}.wa-badge{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:850}
+.wa-badge.today{background:#1769e0}.wa-badge.overdue{background:#ef4444}.wa-list-body{max-height:330px;overflow:auto}
+.wa-customer{padding:12px 14px;border-bottom:1px solid #edf1f6;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wa-customer:last-child{border-bottom:0}.wa-customer-main{min-width:0}
+.wa-customer-name{font-weight:800;color:#10284b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-meta{margin-top:3px;color:#71819b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-customer-balance{margin-top:4px;font-size:11px;font-weight:800;color:#d97706}
+.wa-send{flex:0 0 auto;border:0;border-radius:9px;padding:8px 10px;background:#16a05d;color:#fff;font-weight:800;cursor:pointer;font-size:11px}
+.wa-empty{padding:22px 14px;text-align:center;color:#71819b;font-size:12px}
+.wa-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7ff;border:1px solid #dcecff;color:#41627f;font-size:11px}
+@media(max-width:850px){.wa-reminder-grid{grid-template-columns:1fr}.wa-reminder-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.wa-reminder-section{padding:14px}.wa-customer{align-items:flex-start}.wa-send{padding:8px}}
+
+
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
@@ -86,16 +299,15 @@
   };
 })();
 </script>
-<link rel="stylesheet" href="../css/points-reward-fullscreen.css">
+<link href="../css/points-reward-fullscreen.css" rel="stylesheet"/>
 <!-- SEO: private application page -->
-<meta name="robots" content="noindex, nofollow">
-
+<meta content="noindex, nofollow" name="robots"/>
 </head><body>
 <header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></header>
 <div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
 <a href="customers.html">Customers</a>
 <a href="add-customer.html">+ Add Customer</a>
-<a href="daily-work.html" class="active">Daily Work</a>
+<a class="active" href="daily-work.html">Daily Work</a>
 <a href="payments.html">Payments</a>
 <a href="reports.html">Reports</a>
 <a href="customer-bill.html">Customer Bill</a>
@@ -106,439 +318,668 @@
 <a href="amc.html">AMC</a>
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
-<a href="messages.html">Messages</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">SHOP COUNTER</p><h1>Daily Work Entry</h1><p class="muted">Every submission becomes a separate transaction.</p></div><a class="btn secondary" href="reports.html">Today's Report</a></div>
-<section class="panel form"><div style="margin-bottom:18px;padding:14px 16px;border:1px solid #dfe8f2;border-radius:12px;background:#f7faff;display:flex;align-items:center;gap:14px;flex-wrap:wrap;"><div style="font-weight:800;color:#09264a;min-width:110px;">📅 Entry Date</div><input id="work_date" type="date" required style="max-width:190px;padding:10px 12px;border:1px solid #cbd9e8;border-radius:9px;background:#fff;font-weight:700;color:#17385f;"><span style="font-size:12px;color:#6b7f94;">You can select a previous/future date if required.</span></div><label class="field">Customer<select id="customer" required=""><option value="">Select customer</option></select></label>
+<a href="messages.html">Messages</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">SHOP COUNTER</p><h1>Daily Work Entry</h1><p class="muted">Quick Work Entry — Admin &amp; Staff use the same entry system.</p></div></div><section class="dashboard-card quick-entry">
+<div class="quick-title"><span class="bolt">⚡</span><h2>Quick Daily Work Entry</h2></div>
+<p class="quick-sub">Work + payment can be entered from this screen.</p>
+<div class="entry-layout">
+<div class="entry-main">
+<div class="customer-paid">
+<div class="field customer-picker">
+<label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<span>Customer / Cash Sale <span style="color:#e33">*</span></span>
+<span class="entry-date-inline">
+<input aria-label="Entry date" id="entryDate" type="date"/>
+<button aria-label="Select entry date" id="entryDateBtn" title="Select entry date" type="button">📅</button>
+</span>
+</label>
+<div class="customer-input-wrap">
+<input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
+<button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
+</div>
+<div aria-label="Customer suggestions" class="customer-suggestions" id="customerSuggestions" role="listbox"></div>
+<input id="customer" type="hidden" value=""/>
+</div>
 <div class="field">
-<label>Services</label>
-<div id="servicesList" style="display:grid;gap:10px;margin-top:6px">
-<div style="padding:12px;border:1px solid #dfe8f2;border-radius:10px;color:#6b7f94">Loading services…</div>
+<label>Paid Amount Today</label>
+<input id="paidAmount" min="0" placeholder="Enter amount" step="0.01" type="number"/>
 </div>
 </div>
-<div id="serviceSummary" style="display:none;margin:10px 0 18px;padding:14px 16px;border-radius:12px;background:#f6f9fd;border:1px solid #dfe8f2;">
-<div style="font-weight:800;color:#09264a;margin-bottom:7px">Selected Services</div>
-<div id="selectedServicesView" style="display:grid;gap:6px;font-size:13px;color:#5f7690"></div>
-<div style="margin-top:10px;padding-top:10px;border-top:1px solid #dfe8f2;display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#5f7690">
-<span>Base: <b id="serviceBase">₹0.00</b></span>
-<span>GST: <b id="serviceGst">₹0.00</b></span>
-<span>Total: <b id="serviceTotal" style="color:#b66a00">₹0.00</b></span>
+<div class="amount-grid">
+<div class="amount-box"><label>E-Filing</label><input id="e_filing" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>E-Payment</label><input id="e_payment" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Print</label><input id="print_amount" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Scanning</label><input id="scanning" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+<div class="amount-box"><label>Other Works</label><input id="other_works" min="0" placeholder="₹ Amount" step="0.01" type="number"/></div>
+</div><div class="amount-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:9px"><div class="amount-box"><label>Discount</label><input id="discount" min="0" step="0.01" type="number" value="0"/></div><div class="amount-box"><label>Balance</label><input id="balanceAmount" min="0" readonly="" step="0.01" type="number" value="0"/></div></div>
+<div class="field" style="margin-top:14px">
+<label>Description <span style="font-weight:500;color:#7a8ba2">(Optional)</span></label>
+<textarea id="description" placeholder="Optional note / work description"></textarea>
 </div>
 </div>
-<div class="grid">
-<label class="field">E-Filing<input id="e_filing" min="0" step="0.01" type="number" value="0"/></label>
-<label class="field">E-Payment<input id="e_payment" min="0" step="0.01" type="number" value="0"/></label>
-<label class="field">Print<input id="print_amount" min="0" step="0.01" type="number" value="0"/></label>
-<label class="field">Scanning<input id="scanning" min="0" step="0.01" type="number" value="0"/></label>
+<aside class="summary">
+<h3>👤 Customer Summary</h3>
+<div class="sum-card sum-old"><div class="label">Old Balance (Before Today)</div><div class="num" id="oldBalance">₹0.00</div></div>
+<div class="sum-card sum-work"><div class="label">Today's Work Total</div><div class="num" id="customerTodayWork">₹0.00</div></div>
+<div class="sum-card sum-paid"><div class="label">Today's Paid</div><div class="num" id="customerTodayPaid">₹0.00</div></div>
+<div class="sum-card sum-new"><div class="label">New Balance (After Transaction)</div><div class="num" id="newBalance">₹0.00</div></div>
+<div class="formula">New Balance = Old Balance + Work − Paid</div>
+</aside>
 </div>
-<label class="field">Other Works<input id="other_works" min="0" step="0.01" type="number" value="0"/></label>
-<label class="field">Description<input id="description" placeholder="Optional: ITR filing, printout, form submission…"/></label>
-<div class="total-box">Work Total <strong id="total">₹0.00</strong></div>
-<button class="btn primary" id="save" type="button">Save Work Entry</button><div class="status" data-status=""></div></section>
-<section class="panel" style="margin-top:20px"><div class="section-title"><h2>Today's Entries</h2><a href="reports.html">Full report →</a></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Work</th><th>Total</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></section>
-</main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/quick-work-enhancements.js"></script>
+<div class="bottom-row">
+<div class="total-strip">
+<div><div class="cap">WORK TOTAL</div><div class="num work-color" id="workTotal">₹0.00</div></div>
+<div class="eq">−</div>
+<div><div class="cap">PAID TODAY</div><div class="num paid-color" id="paidTotal">₹0.00</div></div>
+<div class="eq">=</div>
+<div><div class="cap">BALANCE ADDED</div><div class="num balance-color" id="balanceAdded">₹0.00</div></div>
+</div>
+<div class="action-row">
+<button class="btn-save" id="saveBtn">💾 Save Work &amp; Payment</button>
+<button class="btn-clear" id="clearBtn">↻ Clear</button>
+</div>
+</div>
+<div class="status-box" id="statusBox"></div>
+</section>
+<section class="dashboard-card daily-entries-card" style="margin-top:18px;padding:20px;">
+<div class="quick-title" style="justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:10px;">
+<span class="bolt">📋</span><h2>Today's Entries</h2>
+</div>
+<button class="btn-clear" id="refreshDailyEntries" type="button">↻ Refresh</button>
+</div>
+<p class="quick-sub" style="margin-bottom:14px;">All Quick Work Entries for the selected date.</p>
+<div class="table-scroll">
+<table class="data-table" id="dailyEntriesTable">
+<thead><tr><th>Time</th><th>Customer</th><th>E-Filing</th><th>E-Payment</th><th>Print</th><th>Scanning</th><th>Other Works</th><th>Total</th><th>Paid</th><th>Balance</th></tr></thead>
+<tbody id="dailyEntriesRows"><tr><td colspan="10">Loading…</td></tr></tbody>
+</table>
+</div>
+</section></main></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/supabase.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
 <script>
 (async()=>{
-  const ok = await requireStaff();
-  if(!ok) return;
+  const ok=await requireStaff(); if(!ok)return;
 
-  const customer = document.getElementById("customer");
-  const workDate = document.getElementById("work_date");
-  const saveBtn = document.getElementById("save");
-  const statusEl = document.querySelector("[data-status]");
-  const rowsEl = document.getElementById("todayRows");
-  const descriptionEl = document.getElementById("description");
-  const servicesList = document.getElementById("servicesList");
-  const serviceSummary = document.getElementById("serviceSummary");
-  const selectedServicesView = document.getElementById("selectedServicesView");
-  const serviceBaseEl = document.getElementById("serviceBase");
-  const serviceGstEl = document.getElementById("serviceGst");
-  const serviceTotalEl = document.getElementById("serviceTotal");
-  let services = [];
-
-  const ids = ["e_filing","e_payment","print_amount","scanning","other_works"];
-  const todayISO = () => {
-    const d = new Date();
-    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-    return local.toISOString().slice(0,10);
-  };
-  workDate.value = todayISO();
-
-  const money = n => "₹" + Number(n || 0).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
-  const escapeHtml = value => String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-  function getSelectedServices(){
-    const ids = [...servicesList.querySelectorAll('input[data-service-id]:checked')].map(i => String(i.dataset.serviceId));
-    return services.filter(s => ids.includes(String(s.id)));
+  async function getEnteredById(){
+    const r=await sb.auth.getUser();
+    if(r.error) throw r.error;
+    const id=r.data?.user?.id;
+    if(!id) throw new Error("Unable to identify the logged-in user.");
+    return id;
   }
 
-  function getServiceAmounts(){
-    return getSelectedServices().reduce((sum, s) => {
-      const base = Math.round(Number(s.price || 0) * 100) / 100;
-      const gst = s.gst_enabled
-        ? Math.round(base * Number(s.gst_percent || 0) / 100 * 100) / 100
-        : 0;
-      sum.base += base;
-      sum.gst += gst;
-      sum.total += base + gst;
-      return sum;
-    }, {base:0,gst:0,total:0});
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const today=new Date().toISOString().slice(0,10);
+  const $=id=>document.getElementById(id);
+
+  function selectedEntryDate(){ return $("entryDate")?.value || today; }
+
+  let customers=[];
+  let selectedBalance=0;
+  let selectedTodayWork=0;
+  let selectedTodayPaid=0;
+
+  function status(msg,error=false){
+    const el=$("statusBox");
+    el.textContent=msg;
+    el.className="status-box show "+(error?"error":"ok");
+    setTimeout(()=>el.classList.remove("show"),5000);
   }
 
-  function getTotal(){
-    const manual = ids.reduce((sum,id)=>sum + Number(document.getElementById(id).value || 0),0);
-    const extra = window.itechGetExtraWorkEntries ? window.itechGetExtraWorkEntries().reduce((sum,row)=>sum + Object.values(row).reduce((a,v)=>a+Number(v||0),0),0) : 0;
-    return manual + extra + getServiceAmounts().total;
+  function amount(id){ return Math.max(Number($(id).value||0),0); }
+
+  function workTotal(){
+    const fields=["e_filing","e_payment","print_amount","scanning","other_works"];
+    const primary=fields.reduce((s,id)=>s+amount(id),0);
+    const extra=(window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[]).reduce((sum,row)=>sum+Object.values(row).reduce((a,v)=>a+Number(v||0),0),0);
+    return primary+extra;
   }
 
-  function updateTotal(){
-    document.getElementById("total").textContent = money(getTotal());
+  function updateTotals(){
+    const grossWork=workTotal(), discount=Math.min(amount("discount"),grossWork), work=Math.max(grossWork-discount,0);
+    let paid=amount("paidAmount");
+    const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
+    if(isCashSale){$("paidAmount").value=work.toFixed(2);paid=work;}
+    $("balanceAmount") && ($("balanceAmount").value=Math.max(work-paid,0).toFixed(2));
+    $("workTotal").textContent=money(work);
+    $("paidTotal").textContent=money(paid);
+    $("balanceAdded").textContent=money(work-paid);
+    $("customerTodayWork").textContent=money(selectedTodayWork+work);
+    $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
+    $("newBalance").textContent=money(selectedBalance+work-paid);
   }
 
-  function showMessage(message, isError=false){
-    if(typeof showStatus === "function"){
-      showStatus(message, isError);
+  async function loadCustomers(){
+    // SINGLE MASTER CUSTOMER LIST: Admin and Staff use the exact same
+    // customers table/filter/order. Service/insurance records are not
+    // loaded from a separate list here.
+    const r=await sb.from("customers")
+      .select("id,full_name,mobile,whatsapp,email,address,status,created_from_insurance")
+      .eq("status","active")
+      .or("created_from_insurance.is.null,created_from_insurance.eq.false")
+      .order("full_name",{ascending:true});
+    if(r.error){status(r.error.message,true);return;}
+    customers=r.data||[];
+    $("customer").value="";
+    $("customerSearch").value="";
+    renderCustomerSuggestions("");
+  }
+
+
+  let activeSuggestion = -1;
+
+  function customerText(c){
+    return `${c.full_name||""} — ${c.mobile||c.whatsapp||""}`.trim();
+  }
+
+  function renderCustomerSuggestions(query){
+    const box=$("customerSuggestions");
+    const q=(query||"").trim().toLowerCase();
+    const matches=customers.filter(c=>{
+      const name=String(c.full_name||"").toLowerCase();
+      const mobile=String(c.mobile||"").toLowerCase();
+      const whatsapp=String(c.whatsapp||"").toLowerCase();
+      return !q || name.includes(q) || mobile.includes(q) || whatsapp.includes(q);
+    }).slice(0,8);
+
+    if(!matches.length){
+      box.innerHTML='<div class="customer-empty">No matching customer found.</div>';
+      box.classList.add("show");
       return;
     }
-    statusEl.textContent = message;
-    statusEl.className = "status " + (isError ? "error" : "success");
-  }
 
-  function setSaving(saving){
-    saveBtn.disabled = saving;
-    saveBtn.textContent = saving ? "Saving…" : "Save Work Entry";
-    saveBtn.style.opacity = saving ? ".7" : "1";
-    saveBtn.style.cursor = saving ? "wait" : "pointer";
-  }
-
-  // Load active customers.
-  const {data: customers, error: customerError} = await sb
-    .from("customers")
-    .select("id,full_name,mobile")
-    .eq("status","active")
-    .order("created_at",{ascending:false});
-
-  if(customerError){
-    showMessage(customerError.message,true);
-    return;
-  }
-
-  customer.innerHTML =
-    '<option value="">Select customer</option>' +
-    (customers || []).map(c =>
-      `<option value="${escapeHtml(c.id)}">${escapeHtml(c.full_name)} — ${escapeHtml(c.mobile || "")}</option>`
-    ).join("");
-
-  // Load active services for the Daily Work selector.
-  const {data: serviceData, error: serviceError} = await sb
-    .from("services")
-    .select("id,service_name,category,description,price,gst_enabled,gst_percent,status")
-    .eq("status","active")
-    .order("service_name");
-
-  if(serviceError){
-    showMessage("Unable to load services: " + serviceError.message, true);
-    return;
-  }
-
-  services = serviceData || [];
-
-  servicesList.innerHTML = services.length ? services.map(s => `
-    <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #dfe8f2;border-radius:10px;background:#fff;cursor:pointer">
-      <span style="display:flex;align-items:center;gap:10px;min-width:0">
-        <input type="checkbox" data-service-id="${escapeHtml(s.id)}" style="width:18px;height:18px;accent-color:#ff8b1a">
+    box.innerHTML=matches.map((c,i)=>`
+      <button type="button" class="customer-option ${i===activeSuggestion?"active":""}"
+              data-customer-id="${c.id}" role="option">
         <span>
-          <b style="color:#09264a">${escapeHtml(s.service_name)}</b>
-          ${s.category ? `<small style="display:block;color:#7b8ea3;margin-top:2px">${escapeHtml(s.category)}</small>` : ""}
+          <span class="customer-main">${String(c.full_name||"Customer")}</span>
+          <span class="customer-mobile">${c.mobile||c.whatsapp||""}</span>
         </span>
-      </span>
-      <span style="white-space:nowrap;color:#b66a00;font-weight:800">${money(s.price)}${s.gst_enabled ? " + GST" : ""}</span>
-    </label>`).join("") : '<div style="padding:12px;border:1px solid #dfe8f2;border-radius:10px;color:#6b7f94">No active services found. Add services from Services page.</div>';
+        <span class="customer-balance">Select</span>
+      </button>`).join("");
 
-  function updateServiceSummary(){
-    const selected = getSelectedServices();
-    const a = getServiceAmounts();
-    if(!selected.length){
-      serviceSummary.style.display = "none";
-      updateTotal();
-      return;
-    }
-    selectedServicesView.innerHTML = selected.map(s => {
-      const base = Number(s.price || 0);
-      const gst = s.gst_enabled ? base * Number(s.gst_percent || 0) / 100 : 0;
-      const total = base + gst;
-      return `<div style="display:flex;justify-content:space-between;gap:12px"><span>${escapeHtml(s.service_name)}${s.gst_enabled ? ` <small>(${Number(s.gst_percent || 0)}% GST)</small>` : ""}</span><b>${money(total)}</b></div>`;
-    }).join("");
-    serviceBaseEl.textContent = money(a.base);
-    serviceGstEl.textContent = money(a.gst);
-    serviceTotalEl.textContent = money(a.total);
-    serviceSummary.style.display = "block";
-    updateTotal();
+    box.classList.add("show");
+
+    box.querySelectorAll(".customer-option").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const c=customers.find(x=>String(x.id)===String(btn.dataset.customerId));
+        if(!c)return;
+        $("customer").value=c.id;
+        $("customerSearch").value=customerText(c);
+        $("customerSearch").dataset.cashSale="0";
+        $("customerSuggestions").classList.remove("show");
+        $("customerClear").style.display="block";
+        activeSuggestion=-1;
+        loadCustomerSummary(c.id);
+      });
+    });
   }
 
-  servicesList.addEventListener("change", updateServiceSummary);
+  $("qwOpenCustomerDash")?.addEventListener("click",()=>document.getElementById("qwCustomerModal")?.classList.add("show"));
+  window.addEventListener("itech:customer-created",e=>{const c=e.detail;if(!c)return;customers.unshift(c);$("customer").value=c.id;$("customerSearch").value=customerText(c);loadCustomerSummary(c.id);});
 
-  // Live total calculation.
-  ids.forEach(id=>{
-    document.getElementById(id).addEventListener("input", updateTotal);
-  });
-  ["discount","paid_amount"].forEach(id=>document.getElementById(id)?.addEventListener("input",()=>{const gross=getTotal(),d=Math.max(Number(document.getElementById("discount").value||0),0),p=Math.max(Number(document.getElementById("paid_amount").value||0),0);document.getElementById("balance_amount").value=Math.max(gross-d-p,0).toFixed(2)}));
-  document.getElementById("cash_sale")?.addEventListener("change",e=>{if(e.target.checked){const gross=getTotal(),d=Math.max(Number(document.getElementById("discount").value||0),0);document.getElementById("paid_amount").value=Math.max(gross-d,0).toFixed(2);document.getElementById("balance_amount").value="0.00";}});
-
-  // Small customer summary below the selector.
-  const customerSummary = document.createElement("div");
-  customerSummary.id = "customerSummary";
-  customerSummary.style.cssText =
-    "display:none;margin-top:10px;padding:10px 12px;border-radius:10px;" +
-    "background:#f6f9fd;border:1px solid #dfe8f2;font-size:13px;color:#5f7690;";
-  customer.insertAdjacentElement("afterend", customerSummary);
-
-  customer.addEventListener("change",()=>{
-    const selected = (customers || []).find(c => String(c.id) === String(customer.value));
-    if(!selected){
-      customerSummary.style.display = "none";
-      return;
+  $("customerSearch").addEventListener("input",e=>{
+    if(e.target.value.trim()==="Cash Sale"){
+      e.target.dataset.cashSale="1";
+      $("customer").value="";
+    } else if($("customer").value){
+      $("customer").value="";
+      selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+      $("oldBalance").textContent=money(0);
     }
-    customerSummary.innerHTML =
-      `<strong style="color:#09264a">${escapeHtml(selected.full_name)}</strong>` +
-      (selected.mobile ? ` &nbsp;•&nbsp; ${escapeHtml(selected.mobile)}` : "");
-    customerSummary.style.display = "block";
+    $("customerClear").style.display=e.target.value.trim()?"block":"none";
+    activeSuggestion=-1;
+    renderCustomerSuggestions(e.target.value);
+    updateTotals();
   });
 
-  async function load(){
-    rowsEl.innerHTML =
-      '<tr><td colspan="4" style="text-align:center;padding:20px">Loading…</td></tr>';
+  $("customerSearch").addEventListener("focus",()=>{
+    renderCustomerSuggestions($("customerSearch").value);
+  });
 
-    const {data,error} = await sb
-      .from("today_work_report")
-      .select("*")
-      .order("created_at",{ascending:false});
+  $("customerSearch").addEventListener("keydown",e=>{
+    const options=[...document.querySelectorAll(".customer-option")];
+    if(!options.length)return;
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeSuggestion=Math.min(activeSuggestion+1,options.length-1);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeSuggestion=Math.max(activeSuggestion-1,0);
+      options.forEach((x,i)=>x.classList.toggle("active",i===activeSuggestion));
+    }else if(e.key==="Enter" && activeSuggestion>=0){
+      e.preventDefault();
+      options[activeSuggestion].click();
+    }else if(e.key==="Escape"){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
 
-    if(error){
-      rowsEl.innerHTML =
-        `<tr><td colspan="4" style="text-align:center;padding:20px">${escapeHtml(error.message)}</td></tr>`;
+  $("customerClear").addEventListener("click",()=>{
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerSearch").dataset.cashSale="0";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+    $("customerSearch").focus();
+  });
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".customer-picker")){
+      $("customerSuggestions").classList.remove("show");
+    }
+  });
+
+  async function loadCustomerSummary(id){
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
+
+    const entryDate=selectedEntryDate();
+
+    // IMPORTANT: Admin and Staff both calculate the balance from the SAME
+    // source tables. Do not use the customer_balances view here because an
+    // old/stale view value can make the two dashboards display differently.
+    // Use one SECURITY DEFINER RPC for both Admin and Staff. This avoids
+    // RLS returning different rows to the two dashboards.
+    const { data: balanceRow, error: balanceError } = await sb
+      .rpc("itech_get_customer_balance", {
+        p_customer_id: id,
+        p_entry_date: entryDate
+      });
+
+    if (balanceError) {
+      console.error("Unified customer balance load:", balanceError);
+      status(balanceError.message, true);
       return;
     }
 
-    const entries = (data || []).slice(0,50);
-    if(!entries.length){
-      rowsEl.innerHTML =
-        '<tr><td colspan="4" style="text-align:center;padding:20px">No entries today.</td></tr>';
-      return;
-    }
+    const b = Array.isArray(balanceRow) ? balanceRow[0] : balanceRow;
+    const oldBalance = Number(b?.old_balance || 0);
+    const todayWork = Number(b?.today_work || 0);
+    const todayPaid = Number(b?.today_paid || 0);
+    const currentBalance = Number(b?.current_balance || 0);
 
-    const entryIds = entries.map(r=>r.id).filter(Boolean);
-    let serviceLines = [];
-    if(entryIds.length){
-      const svc = await sb.from("daily_work_entry_services")
-        .select("work_entry_id,service_name,base_amount,gst_percent,gst_amount,total_amount")
-        .in("work_entry_id",entryIds)
-        .order("created_at",{ascending:true});
-      if(!svc.error) serviceLines = svc.data || [];
-    }
+    selectedBalance = currentBalance;
+    selectedTodayWork = todayWork;
+    selectedTodayPaid = todayPaid;
 
-    const byEntry = {};
-    serviceLines.forEach(s=>{
-      (byEntry[s.work_entry_id] ||= []).push(s);
-    });
-
-    rowsEl.innerHTML = entries.map(r=>{
-      const time = r.created_at
-        ? new Date(r.created_at).toLocaleTimeString("en-IN",{
-            hour:"2-digit",minute:"2-digit"
-          })
-        : "—";
-      const lines = byEntry[r.id] || [];
-      const serviceHtml = lines.length
-        ? `<div style="display:grid;gap:4px;margin-top:5px">${
-            lines.map(s=>`<div style="font-size:12px;color:#5f7690;display:flex;justify-content:space-between;gap:10px">
-              <span>• ${escapeHtml(s.service_name)}${Number(s.gst_percent||0)>0 ? ` (${Number(s.gst_percent)}% GST)` : ""}</span>
-              <b>${money(s.total_amount)}</b>
-            </div>`).join("")
-          }</div>`
-        : "";
-      return `<tr>
-        <td>${escapeHtml(time)}</td>
-        <td><b>${escapeHtml(r.customer_name || "Customer")}</b></td>
-        <td>
-          ${serviceHtml}
-          ${r.description ? `<div style="font-size:12px;color:#7b8ea3;margin-top:${lines.length ? "5px":"0"}">${escapeHtml(r.description)}</div>` : (!lines.length ? "Work entry" : "")}
-        </td>
-        <td><strong>${money(r.total_amount)}</strong></td>
-      </tr>`;
-    }).join("");
+    // Both dashboards now render exactly the same database result.
+    $("oldBalance").textContent = money(oldBalance);
+    $("customerTodayWork").textContent = money(todayWork + workTotal());
+    $("customerTodayPaid").textContent = money(todayPaid + amount("paidAmount"));
+    $("newBalance").textContent = money(
+      Math.max(oldBalance + todayWork + workTotal() - todayPaid - amount("paidAmount"), 0)
+    );
   }
 
-  saveBtn.onclick = async()=>{
-    const customer_id = customer.value;
-    const selectedWorkDate = workDate.value;
+  $("customer").addEventListener("change",e=>loadCustomerSummary(e.target.value));
+  $("discount")?.addEventListener("input",updateTotals);
+  $("paidAmount")?.addEventListener("input",updateTotals);
+  ["paidAmount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>{
+    $(id).addEventListener("input",updateTotals);
+  });
 
-    if(!selectedWorkDate){
-      showMessage("Please select the entry date.",true);
-      workDate.focus();
-      return;
+  function clearForm(){
+    $("customer").value="";
+    $("customerSearch").value="";
+    $("customerSearch").dataset.cashSale="0";
+    $("customerClear").style.display="none";
+    $("customerSuggestions").classList.remove("show");
+    ["paidAmount","discount","e_filing","e_payment","print_amount","scanning","other_works"].forEach(id=>$(id).value="");
+    if($("balanceAmount"))$("balanceAmount").value="0";
+    $("description").value="";
+    if($("entryDate")) $("entryDate").value=today;
+    if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
+    selectedBalance=selectedTodayWork=selectedTodayPaid=0;
+    $("oldBalance").textContent=money(0);
+    updateTotals();
+  }
+  $("entryDate")?.addEventListener("change",async()=>{
+    if($("customer").value) await loadCustomerSummary($("customer").value);
+    updateTotals();
+  });
+
+  $("entryDateBtn")?.addEventListener("click",()=>{
+    const input=$("entryDate");
+    if(!input)return;
+    try{ if(typeof input.showPicker==="function") input.showPicker(); else input.click(); }
+    catch(_){ input.click(); }
+  });
+
+  $("clearBtn").addEventListener("click",clearForm);
+
+  /*
+    The save routine uses the same database structure used by the existing
+    Daily Work / Payment pages. If your existing save logic has extra fields,
+    keep those fields in the corresponding INSERT blocks below.
+  */
+
+  // Google Sheets sync (same Apps Script endpoint used by Admin)
+  const ITCH_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz6-6jZSioCRHg45tsOL6E1gJMWqN4BXFAXPXmwZglFMWpgISVJ-C08X8f4pWBlfPMcng/exec";
+  async function syncQuickEntryToGoogleSheets(data){
+    if(!data.customer_id || !data.customer_name) return {skipped:true};
+    const body={customer_id:String(data.customer_id),customer_name:String(data.customer_name),entry_id:String(data.entry_id||""),work_date:data.work_date,old_balance:Number(data.old_balance||0),e_filing:Number(data.e_filing||0),e_payment:Number(data.e_payment||0),print_amount:Number(data.print_amount||0),scanning:Number(data.scanning||0),other_works:Number(data.other_works||0),paid_amount:Number(data.paid_amount||0)};
+    await fetch(ITCH_SHEETS_WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},keepalive:true,body:JSON.stringify(body)});
+    return {sent:true};
+  }
+
+  // IMPORTANT: Each + row is sent separately. Apps Script then places
+  // row 1 in E-Filing 1/E-Payment 1, row 2 in pair 2, row 3 in pair 3, etc.
+  async function syncQuickEntryRowsToGoogleSheets({customerId,customerName,entryDate,oldBalance,primary,extras,paid,workEntryId,paymentId}){
+    const rows=[{...primary,_index:0}].concat((extras||[]).map((r,i)=>({...r,_index:i+1})));
+    const valid=rows.filter(r=>Object.entries(r).some(([k,v])=>k[0]!=='_' && Number(v||0)>0));
+    let paidAttached=false;
+    for(const r of valid){
+      const idx=r._index;
+      const payload={customer_id:customerId,customer_name:customerName,entry_id:idx===0?String(workEntryId||paymentId||''):`${String(workEntryId||'')}-extra-${idx}`,work_date:entryDate,old_balance:idx===0?Number(oldBalance||0):0,e_filing:Number(r.e_filing||0),e_payment:Number(r.e_payment||0),print_amount:Number(r.print_amount||0),scanning:Number(r.scanning||0),other_works:Number(r.other_works||0),paid_amount:(!paidAttached&&Number(paid)>0)?Number(paid):0};
+      await syncQuickEntryToGoogleSheets(payload);
+      if(payload.paid_amount) paidAttached=true;
     }
-
-    if(!customer_id){
-      showMessage("Select a customer first.",true);
-      customer.focus();
-      return;
+    if(!paidAttached&&Number(paid)>0){
+      await syncQuickEntryToGoogleSheets({customer_id:customerId,customer_name:customerName,entry_id:`${String(paymentId||workEntryId||'')}-payment`,work_date:entryDate,old_balance:0,e_filing:0,e_payment:0,print_amount:0,scanning:0,other_works:0,paid_amount:Number(paid)});
     }
+  }
 
-    const values = {};
-    ids.forEach(id=>{
-      const value = Number(document.getElementById(id).value || 0);
-      if(!Number.isFinite(value) || value < 0){
-        throw new Error("Please enter valid work amounts.");
-      }
-      values[id] = Math.round(value * 100) / 100;
-    });
+  $("saveBtn").addEventListener("click",async()=>{
+    const customerId=$("customer").value || null;
+    const isCashSale=$("customerSearch")?.dataset.cashSale==="1" || $("customerSearch")?.value.trim()==="Cash Sale";
+    const work=workTotal();
+    const paid=amount("paidAmount");
+    if(!customerId && !isCashSale){status("Please select a customer or choose Cash Sale.",true);return;}
+    if(work<=0 && paid<=0){status("Enter a work amount or enter a payment.",true);return;}
 
-    const extraEntries = window.itechGetExtraWorkEntries ? window.itechGetExtraWorkEntries() : [];
-    const extraTotal = extraEntries.reduce((sum,row)=>sum + Object.values(row).reduce((a,v)=>a+Number(v||0),0),0);
-    const total = Object.values(values).reduce((a,b)=>a+b,0) + extraTotal;
-    const selectedServices = getSelectedServices();
-    const serviceAmounts = getServiceAmounts();
-    const discount = Math.min(Math.max(Number(document.getElementById("discount").value||0),0), total + serviceAmounts.total);
-    const netAmount = Math.max((total + serviceAmounts.total) - discount, 0);
-    const paidAmount = Math.max(Number(document.getElementById("paid_amount").value||0),0);
-    const balanceAmount = Math.max(netAmount - paidAmount, 0);
-    document.getElementById("balance_amount").value = balanceAmount.toFixed(2);
-    const grandTotal = Math.round((total + serviceAmounts.total) * 100) / 100;
-    const effectivePaid = document.getElementById("cash_sale").checked ? netAmount : paidAmount;
-    document.getElementById("paid_amount").value = effectivePaid.toFixed(2);
-    document.getElementById("balance_amount").value = Math.max(netAmount-effectivePaid,0).toFixed(2);
-
-    if(grandTotal <= 0){
-      showMessage("Enter at least one work amount or select a service.",true);
-      document.getElementById("e_filing").focus();
-      return;
-    }
-
-    // Keep the existing daily_work_entries schema/reporting intact:
-    // all selected service totals are recorded under Other Works and
-    // each service is listed in the description.
-    const finalOtherWorks =
-      Math.round((values.other_works + serviceAmounts.total) * 100) / 100;
-
-    const serviceDescription = selectedServices.length
-      ? "Services: " + selectedServices.map(s => {
-          const base = Number(s.price || 0);
-          const gst = s.gst_enabled ? base * Number(s.gst_percent || 0) / 100 : 0;
-          return `${s.service_name} ${money(base + gst)}${s.gst_enabled ? ` (GST ${Number(s.gst_percent || 0)}%)` : ""}`;
-        }).join(", ")
-      : "";
-
-    const userDescription = descriptionEl.value.trim();
-    const finalDescription = [serviceDescription, userDescription]
-      .filter(Boolean)
-      .join(" | ");
-
-    const payload = {
-      // Required by the staff INSERT RLS policy: tie this entry to the signed-in staff user.
-      entered_by: ok.profile.id,
-      customer_id,
-      work_date: selectedWorkDate,
-      e_filing: values.e_filing,
-      e_payment: values.e_payment,
-      print_amount: values.print_amount,
-      scanning: values.scanning,
-      other_works: finalOtherWorks,
-      description: finalDescription,
-      discount,
-      paid_amount: effectivePaid,
-      balance_amount: Math.max(netAmount-effectivePaid,0),
-      entry_type: document.getElementById("cash_sale").checked ? "cash_sale" : "customer"
-    };
-
-    setSaving(true);
+    $("saveBtn").disabled=true;
+    $("saveBtn").textContent="Saving…";
 
     try{
-      const {data: insertedEntry, error} = await sb
-        .from("daily_work_entries")
-        .insert(payload)
-        .select("id")
-        .single();
+      const desc=$("description").value.trim();
+      const entryDate=selectedEntryDate();
+      let sheetsEntryId=null;
 
-      if(error) throw error;
+      /* Work entry: keep the same column names as the existing report view. */
+      if(work>0){
+        const extraEntries=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        const sumField=(id)=>amount(id)+extraEntries.reduce((sum,row)=>sum+Number(row[id]||0),0);
+        const enteredBy=await getEnteredById();
+        const payload={
+          customer_id:isCashSale?null:customerId,
+          entered_by:enteredBy,
+          e_filing:sumField("e_filing"),
+          e_payment:sumField("e_payment"),
+          print_amount:sumField("print_amount"),
+          scanning:sumField("scanning"),
+          other_works:sumField("other_works"),
+          description:desc||null,
+          discount:amount("discount"),
+          paid_amount:paid,
+          balance_amount:Math.max(work-paid,0),
+          entry_type:isCashSale?"cash_sale":"customer",
+          extra_entries:extraEntries.length?extraEntries:null,
+          work_date:entryDate
+        };
 
-      if(selectedServices.length){
-        const linePayload = selectedServices.map(s=>{
-          const base = Math.round(Number(s.price || 0) * 100) / 100;
-          const gstPercent = s.gst_enabled ? Number(s.gst_percent || 0) : 0;
-          const gst = Math.round(base * gstPercent / 100 * 100) / 100;
-          return {
-            work_entry_id: insertedEntry.id,
-            service_id: s.id,
-            service_name: s.service_name,
-            base_amount: base,
-            gst_percent: gstPercent,
-            gst_amount: gst,
-            total_amount: Math.round((base + gst) * 100) / 100
-          };
-        });
+        const ins=await sb.from("daily_work_entries").insert(payload).select("id").single();
+        if(ins.error) throw ins.error;
+        sheetsEntryId=ins.data?.id||null;
 
-        const {error: lineError} = await sb
-          .from("daily_work_entry_services")
-          .insert(linePayload);
+        // Award points immediately after the Quick Entry is saved.
+        // Only E-Filing, Print, Scanning and explicit Other Works are eligible.
+        try{
+          const pointResult=await sb.rpc("award_daily_work_points",{p_entry_id:ins.data.id});
+          if(pointResult.error){
+            console.error("Quick Entry points error:",pointResult.error);
+          }else{
+            const earned=Number(pointResult.data||0);
+            if(earned>0 && window.itechShowPointsReward){
+              window.itechShowPointsReward(earned,"Quick Entry");
+            }
+            // Update dashboard Today/Month/Total counters without reloading the page.
+            ["spsToday","spsMonth","spsTotal"].forEach(id=>{
+              const el=document.getElementById(id);
+              if(el && id==="spsToday") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+              if(el && id==="spsMonth") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+              if(el && id==="spsTotal") el.textContent=(Number(el.textContent.replace(/,/g,"")||0)+earned).toLocaleString("en-IN");
+            });
+          }
+        }catch(pointErr){
+          console.error("Quick Entry points error:",pointErr);
+        }
 
-        if(lineError) throw lineError;
       }
 
-      // Award Quick Entry points only for the four eligible fields.
-      // Service line amounts are excluded from points even though they are stored in Other Works.
-      try{
-        const pointResult = await sb.rpc("award_daily_work_points", { p_entry_id: insertedEntry.id });
-        if(pointResult.error) console.error("Points award error:", pointResult.error);
-        else if(Number(pointResult.data || 0) > 0 && window.itechShowPointsReward){
-          window.itechShowPointsReward(Number(pointResult.data), "Quick Entry");
-        }
-      }catch(pointErr){ console.error("Points award error:", pointErr); }
+      if(paid>0){
+        const enteredByForPayment=await getEnteredById();
+        const pr=await sb.from("payments").insert({
+          customer_id:isCashSale?null:customerId,
+          entered_by:enteredByForPayment,
+          amount:paid,
+          payment_date:entryDate,
+          payment_method:"Cash",
+          reference_note:"Dashboard Quick Entry"
+        }).select("id").single();
+        if(pr.error) throw pr.error;
+        var sheetsPaymentId=pr.data?.id||null;
+      }
 
-      showMessage(`Work entry saved successfully — ${money(grandTotal)}`);
+      // Send each visible Quick Entry row separately to Google Sheets.
+      if(!isCashSale && (work>0 || paid>0) && (sheetsEntryId || sheetsPaymentId)){
+        const chosenCustomer=customers.find(c=>String(c.id)===String(customerId));
+        const extraForSheets=window.itechGetExtraWorkEntries?window.itechGetExtraWorkEntries():[];
+        void syncQuickEntryRowsToGoogleSheets({customerId,customerName:chosenCustomer?.full_name||$("customerSearch").value.trim(),entryDate,oldBalance:Number(selectedBalance||0),primary:{e_filing:amount("e_filing"),e_payment:amount("e_payment"),print_amount:amount("print_amount"),scanning:amount("scanning"),other_works:amount("other_works")},extras:extraForSheets,paid,workEntryId:sheetsEntryId,paymentId:sheetsPaymentId}).then(()=>console.info("Staff Google Sheets row-by-row sync sent.")).catch(sheetErr=>console.error("Staff Google Sheets sync failed:",sheetErr));
+      }
 
-      ids.forEach(id=>{
-        document.getElementById(id).value = 0;
-      });
-      ["discount","paid_amount","balance_amount"].forEach(id=>document.getElementById(id).value="0");
-      document.getElementById("cash_sale").checked=false;
-      descriptionEl.value = "";
-      if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
-      servicesList.querySelectorAll('input[data-service-id]').forEach(i => i.checked = false);
-      updateServiceSummary();
-      updateTotal();
-
-      await load();
-      window.dispatchEvent(new CustomEvent("itech:work-saved"));
-
-      // Give the user a short visual confirmation without blocking the page.
-      saveBtn.textContent = "✓ Saved";
-      setTimeout(()=>setSaving(false),900);
-
-    }catch(error){
-      setSaving(false);
-      showMessage(error.message || "Unable to save work entry.",true);
-    }
-  };
-
-  // Enter key in description saves the entry, while Ctrl+Enter also works.
-  descriptionEl.addEventListener("keydown", e=>{
-    if(e.key === "Enter" && (e.ctrlKey || e.metaKey)){
-      e.preventDefault();
-      saveBtn.click();
+      status("Transaction saved successfully.");
+      window.dispatchEvent(new Event("itech:work-saved"));
+      if(customerId && typeof loadCustomerSummary==="function"){
+        await loadCustomerSummary(customerId);
+      }
+      await refreshDashboard();
+      await loadWhatsAppReminders();
+      clearForm();
+    }catch(err){
+      status(err.message||"Unable to save transaction.",true);
+    }finally{
+      $("saveBtn").disabled=false;
+      $("saveBtn").textContent="💾 Save Work & Payment";
     }
   });
 
-  updateTotal();
-  updateServiceSummary();
-  await load();
+
+  /* ===== Instant WhatsApp Reminder Refresh ===== */
+  /*
+   * Keep Today's Customers in sync immediately after a payment is saved
+   * from this dashboard or from the Payments page. Realtime handles the
+   * fast path; this short fallback poll also works when Realtime is delayed.
+   */
+  if(!window.__itechWaInstantRefresh){
+    window.__itechWaInstantRefresh=true;
+    setInterval(()=>{
+      if(document.visibilityState === "visible" && typeof loadWhatsAppReminders === "function") {
+        loadWhatsAppReminders().catch(()=>{});
+      }
+    },3000);
+  }
+
+  /* ===== WhatsApp Payment Reminders ===== */
+  function normalizePhone(value){
+    let p=String(value||"").replace(/\D/g,"");
+    if(p.length===11 && p.startsWith("0")) p=p.slice(1);
+    if(p.length===12 && p.startsWith("91")) p=p.slice(2);
+    if(!/^[6-9]\d{9}$/.test(p)) return "";
+    return "91"+p;
+  }
+
+  function getValidWhatsAppNumber(c){
+    const whatsapp=normalizePhone(c.whatsapp);
+    if(whatsapp) return whatsapp;
+    const mobile=normalizePhone(c.mobile);
+    if(mobile) return mobile;
+    return "";
+  }
+
+  function buildPaymentMessage(c){
+    const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
+    return `Hello ${c.full_name||"Customer"},
+
+*iTech IT Solutions — Payment Reminder*
+
+*Date: ${reminderDate}*
+Old Balance: ${money(c.oldBalance)}
+Today's Work: ${money(c.todayWork)}
+Paid Today: ${money(c.todayPaid)}
+*Total Balance: ${money(c.totalBalance)}*
+
+Please contact us for any clarification.
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
+  }
+
+  function openWhatsApp(c){
+    const phone=getValidWhatsAppNumber(c);
+    if(!phone) return false;
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+    return true;
+  }
+
+  function renderWaList(el,rows,emptyText){
+    if(!rows.length){el.innerHTML=`<div class="wa-empty">${emptyText}</div>`;return;}
+    el.innerHTML=rows.map((c,i)=>`
+      <div class="wa-customer">
+        <div class="wa-customer-main">
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
+          <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
+        </div>
+        <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
+      </div>`).join("");
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+  }
+
+  async function refreshDashboard(){
+    try{
+      const [work,pay,bal,enq]=await Promise.all([
+        sb.from("today_work_report").select("*"),
+        sb.from("payments").select("amount").eq("payment_date",today),
+        sb.from("customer_balances").select("current_balance"),
+        sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
+      ]);
+      if(work.error) throw work.error;
+      const rows=work.data||[];
+      const el=id=>document.getElementById(id);
+      if(el("todayWork")) el("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+      if(el("todayEntries")) el("todayEntries").textContent=rows.length+" entries";
+      if(el("todayPayments")) el("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
+      if(el("outstanding")) el("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));
+      if(el("enquiries")) el("enquiries").textContent=enq.count||0;
+    }catch(e){ console.error("Staff dashboard refresh:",e); }
+  }
+
+  async function loadWhatsAppReminders(){
+    const todayList=$("waTodayList"), overdueList=$("waOverdueList");
+    if(!todayList||!overdueList)return;
+    todayList.innerHTML='<div class="wa-empty">Loading…</div>';
+    overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+
+    try{
+      const [cu,ba,tw,tp,wh,ph]=await Promise.all([
+        sb.from("customers").select("id,full_name,mobile,whatsapp,status").eq("status","active").order("full_name"),
+        sb.from("customer_balances").select("id,current_balance"),
+        sb.from("today_work_report").select("customer_id,total_amount"),
+        sb.from("payments").select("customer_id,amount").eq("payment_date",today),
+        sb.from("today_work_report").select("customer_id,created_at"),
+        sb.from("payments").select("customer_id,payment_date")
+      ]);
+      for(const r of [cu,ba,tw,tp,wh,ph]) if(r.error) throw r.error;
+
+      const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
+      const works=new Map(), paid=new Map(), last=new Map();
+
+      (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
+      (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
+      (wh.data||[]).forEach(r=>{
+        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
+        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
+      });
+      (ph.data||[]).forEach(r=>{
+        const id=String(r.customer_id); if(!r.payment_date)return;
+        const d=new Date(String(r.payment_date)+"T23:59:59");
+        if(!last.has(id)||d>last.get(id))last.set(id,d);
+      });
+
+      const customersWithData=(cu.data||[]).map(c=>{
+        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+      });
+
+      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+
+      const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+        .sort((a,b)=>b.totalBalance-a.totalBalance);
+
+      $("waTodayCount").textContent=todayRows.length;
+      $("waOverdueCount").textContent=overdueRows.length;
+      renderWaList(todayList,todayRows,"No customer activity recorded today.");
+      renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
+
+      $("waSendTodayAll").onclick=()=>{
+        let processed=0, skipped=0;
+        const validCustomers=[];
+        todayRows.forEach(c=>{
+          if(getValidWhatsAppNumber(c)) validCustomers.push(c);
+          else skipped++;
+        });
+        validCustomers.forEach((c,i)=>setTimeout(()=>{
+          if(openWhatsApp(c)) processed++;
+          if(i===validCustomers.length-1){
+            setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),300);
+          }
+        },i*700));
+        if(validCustomers.length===0){
+          status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
+        }
+      };
+      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waRefresh").onclick=loadWhatsAppReminders;
+    }catch(err){
+      console.error("WhatsApp reminder error:",err);
+      todayList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+      overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
+    }
+  }
+
+
+  if($("entryDate")) $("entryDate").value=today;
+
+  const quickReminder=$("quickReminderOverlay");
+  function showQuickReminder(){
+    if(!quickReminder || document.visibilityState!=="visible") return;
+    quickReminder.classList.remove("show");
+    void quickReminder.offsetWidth;
+    quickReminder.classList.add("show");
+    setTimeout(()=>quickReminder.classList.remove("show"),2000);
+  }
+  setInterval(showQuickReminder,30*60*1000);
+
+  await Promise.all([
+    loadCustomers(),
+    refreshDashboard(),
+    loadWhatsAppReminders()
+  ]);
+  updateTotals();
 })();
 </script>
 <footer class="site-footer unified-site-footer">
@@ -551,80 +992,58 @@
 <p class="footer-social">@itechndd</p>
 <p class="footer-tagline">Your Trust Our Service</p>
 </footer>
-<script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
-})();
-</script>
-<script id="itech-mobile-navigation">
-(function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
-
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
-
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
-
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
-})();
-</script>
-<script src="../js/points-reward-fullscreen.js"></script>
-<script id="itech-daily-work-live-fix">
-(function(){
-  if(typeof sb==="undefined") return;
-  const refresh=async()=>{
+<script id="daily-work-entries-loader">
+(async()=>{
+  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[m]));
+  const $=id=>document.getElementById(id);
+  function dateValue(){ return $("entryDate")?.value || new Date().toISOString().slice(0,10); }
+  async function loadDailyEntries(){
+    const tbody=$("dailyEntriesRows"); if(!tbody||typeof sb==="undefined") return;
+    tbody.innerHTML='<tr><td colspan="10">Loading…</td></tr>';
     try{
-      const id=document.getElementById("customer")?.value;
-      if(id && typeof loadCustomerSummary==="function") await loadCustomerSummary(id);
-    }catch(e){ console.error("Daily work live refresh:",e); }
-  };
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(refresh,120);});
-  window.addEventListener("focus",()=>setTimeout(refresh,120));
-  sb.channel("itech-daily-work-live-"+Math.random().toString(36).slice(2))
-    .on("postgres_changes",{event:"*",schema:"public",table:"payments"},refresh)
-    .on("postgres_changes",{event:"*",schema:"public",table:"daily_work_entries"},refresh)
-    .subscribe();
+      const d=dateValue();
+      const r=await sb.from("daily_work_entries")
+        .select("id,created_at,customer_id,e_filing,e_payment,print_amount,scanning,other_works,paid_amount,description,entered_by")
+        .eq("work_date",d)
+        .order("created_at",{ascending:false});
+      if(r.error) throw r.error;
+      const rows=r.data||[];
+      const ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean).map(String))];
+      const pids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean).map(String))];
+      let customers=[],profiles=[];
+      if(ids.length){ const c=await sb.from("customers").select("id,full_name,mobile").in("id",ids); if(c.error) throw c.error; customers=c.data||[]; }
+      if(pids.length){ const p=await sb.from("profiles").select("id,full_name,role").in("id",pids); if(!p.error) profiles=p.data||[]; }
+      const cm=new Map(customers.map(c=>[String(c.id),c]));
+      const pm=new Map(profiles.map(p=>[String(p.id),p]));
+      if(!rows.length){tbody.innerHTML='<tr><td colspan="10">No entries for this date.</td></tr>';return;}
+      tbody.innerHTML=rows.map(x=>{
+        const total=['e_filing','e_payment','print_amount','scanning','other_works'].reduce((s,k)=>s+Number(x[k]||0),0);
+        const paid=Number(x.paid_amount||0), bal=Math.max(total-paid,0);
+        const c=cm.get(String(x.customer_id));
+        const time=x.created_at?new Date(x.created_at).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}):"—";
+        return `<tr><td>${esc(time)}</td><td><b>${esc(c?.full_name||"Cash Sale")}</b><br><small>${esc(c?.mobile||"")}</small></td><td>${money(x.e_filing)}</td><td>${money(x.e_payment)}</td><td>${money(x.print_amount)}</td><td>${money(x.scanning)}</td><td>${money(x.other_works)}</td><td><b>${money(total)}</b></td><td>${money(paid)}</td><td><b>${money(bal)}</b></td></tr>`;
+      }).join("");
+    }catch(e){tbody.innerHTML=`<tr><td colspan="10">Unable to load entries: ${esc(e.message||e)}</td></tr>`;}
+  }
+  window.addEventListener("itech:work-saved",loadDailyEntries);
+  $("refreshDailyEntries")?.addEventListener("click",loadDailyEntries);
+  $("entryDate")?.addEventListener("change",loadDailyEntries);
+  await new Promise(r=>setTimeout(r,500));
+  loadDailyEntries();
 })();
-</script>
+</script><footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+
+
+
 
 </body></html>

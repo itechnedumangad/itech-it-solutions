@@ -598,7 +598,7 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js?v=20260926-1200-rpc-balance"></script>
 <script src="../js/supabase.js?v=20260926-1200-rpc-balance"></script>
-<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script><script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script><script src="../js/quick-work-enhancements.js?v=20260926-1235-last5-payment-by"></script>
+<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script><script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script><script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
 <script>
 /* ===== iTech Admin Notification Center ===== */
 (async()=>{
@@ -813,12 +813,14 @@ body{
   }
 
   async function loadCustomers(){
-    // Quick Daily Work must show ONLY customers created through Add Customer.
-    // Insurance-created profiles are intentionally excluded.
+    // SINGLE MASTER CUSTOMER LIST: Admin and Staff use the exact same
+    // customers table/filter/order. Service/insurance records are not
+    // loaded from a separate list here.
     const r=await sb.from("customers")
-      .select("*")
+      .select("id,full_name,mobile,whatsapp,email,address,status,created_from_insurance")
+      .eq("status","active")
       .or("created_from_insurance.is.null,created_from_insurance.eq.false")
-      .order("created_at",{ascending:false});
+      .order("full_name",{ascending:true});
     if(r.error){status(r.error.message,true);return;}
     customers=r.data||[];
     $("customer").value="";

@@ -538,11 +538,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
-<script>window.ITECH_DASHBOARD_BUILD="20260926-1135-balance-fix";</script>
+<script>window.ITECH_DASHBOARD_BUILD="20260926-1145-unified-balance";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js?v=20260926-1135-balance-fix"></script>
-<script src="../js/supabase.js?v=20260926-1135-balance-fix"></script>
-<script src="../js/auth.js?v=20260926-1135-balance-fix"></script><script src="../js/global-search.js?v=20260926-1135-balance-fix"></script><script>
+<script src="../js/config.js?v=20260926-1145-unified-balance"></script>
+<script src="../js/supabase.js?v=20260926-1145-unified-balance"></script>
+<script src="../js/auth.js?v=20260926-1145-unified-balance"></script><script src="../js/global-search.js?v=20260926-1145-unified-balance"></script><script>
 (async function(){
   try{
     const a=await requireStaff(); if(!a)return;
@@ -568,7 +568,7 @@ body{
   }catch(e){const n=document.getElementById('dashInsNote');if(n)n.textContent='Insurance overview unavailable right now.'}
 })();
 </script>
-<script src="../js/quick-work-enhancements.js?v=20260926-1135-balance-fix"></script>
+<script src="../js/quick-work-enhancements.js?v=20260926-1145-unified-balance"></script>
 <script>
 (async()=>{
   const ok=await requireStaff(); if(!ok)return;
@@ -609,15 +609,9 @@ body{
     $("workTotal").textContent=money(work);
     $("paidTotal").textContent=money(paid);
     $("balanceAdded").textContent=money(work-paid);
-    const oldBalanceBeforeToday=Math.max(
-      selectedBalance-selectedTodayWork+selectedTodayPaid,0
-    );
-    $("oldBalance").textContent=money(oldBalanceBeforeToday);
     $("customerTodayWork").textContent=money(selectedTodayWork+work);
     $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
-    $("newBalance").textContent=money(
-      Math.max(oldBalanceBeforeToday+selectedTodayWork+work-selectedTodayPaid-paid,0)
-    );
+    $("newBalance").textContent=money(selectedBalance+work-paid);
   }
 
   async function loadCustomers(){
@@ -748,27 +742,78 @@ body{
     if(!id){ $("oldBalance").textContent=money(0); updateTotals(); return; }
 
     const entryDate=selectedEntryDate();
-    const [b,w,p]=await Promise.all([
-      sb.from("customer_balances").select("*").eq("id",id).single(),
-      sb.from("daily_work_entries").select("e_filing,e_payment,print_amount,scanning,other_works,discount,extra_entries")
-        .eq("customer_id",id).eq("work_date",entryDate),
-      sb.from("payments").select("amount").eq("customer_id",id).eq("payment_date",entryDate)
-    ]);
-    if(!b.error) selectedBalance=Number(b.data?.current_balance||0);
-    selectedTodayWork=(w.data||[]).reduce((s,r)=>{
-      const base=["e_filing","e_payment","print_amount","scanning","other_works"]
-        .reduce((x,k)=>x+Number(r[k]||0),0);
-      const extra=Array.isArray(r.extra_entries)
-        ? r.extra_entries.reduce((x,row)=>x+Object.values(row||{}).reduce((a,v)=>a+Number(v||0),0),0)
-        : 0;
-      return s+Math.max(base+extra-Number(r.discount||0),0);
-    },0);
-    selectedTodayPaid=(p.data||[]).reduce((s,r)=>s+Number(r.amount||0),0);
 
-    $("oldBalance").textContent=money(selectedBalance);
-    $("customerTodayWork").textContent=money(selectedTodayWork+workTotal());
-    $("customerTodayPaid").textContent=money(selectedTodayPaid+amount("paidAmount"));
-    $("newBalance").textContent=money(selectedBalance+workTotal()-amount("paidAmount"));
+    // IMPORTANT: Admin and Staff both calculate the balance from the SAME
+    // source tables. Do not use the customer_balances view here because an
+    // old/stale view value can make the two dashboards display differently.
+    const [cust, workRows, payRows] = await Promise.all([
+      sb.from("customers").select("id,opening_balance").eq("id",id).single(),
+      sb.from("daily_work_entries")
+        .select("work_date,e_filing,e_payment,print_amount,scanning,other_works,discount,extra_entries")
+        .eq("customer_id",id),
+      sb.from("payments")
+        .select("amount,payment_date")
+        .eq("customer_id",id)
+    ]);
+
+    if(cust.error){
+      console.error("Customer balance load:",cust.error);
+      status(cust.error.message,true);
+      return;
+    }
+    if(workRows.error){
+      console.error("Work balance load:",workRows.error);
+      status(workRows.error.message,true);
+      return;
+    }
+    if(payRows.error){
+      console.error("Payment balance load:",payRows.error);
+      status(payRows.error.message,true);
+      return;
+    }
+
+    const opening=Number(cust.data?.opening_balance||0);
+    const rows=workRows.data||[];
+    const pays=payRows.data||[];
+
+    const rowWork=(r)=>{
+      const base=["e_filing","e_payment","print_amount","scanning","other_works"]
+        .reduce((a,k)=>a+Number(r[k]||0),0);
+      const extras=Array.isArray(r.extra_entries)
+        ? r.extra_entries.reduce((a,row)=>
+            a+Object.values(row||{}).reduce((x,v)=>x+Number(v||0),0),0)
+        : 0;
+      return Math.max(base+extras-Number(r.discount||0),0);
+    };
+
+    let workBefore=0, paidBefore=0, todayWork=0, todayPaid=0;
+    rows.forEach(r=>{
+      const amount=rowWork(r);
+      const d=String(r.work_date||"").slice(0,10);
+      if(d===entryDate) todayWork+=amount;
+      else if(d && d<entryDate) workBefore+=amount;
+    });
+    pays.forEach(r=>{
+      const amount=Number(r.amount||0);
+      const d=String(r.payment_date||"").slice(0,10);
+      if(d===entryDate) todayPaid+=amount;
+      else if(d && d<entryDate) paidBefore+=amount;
+    });
+
+    // This is the single balance formula used by BOTH dashboards.
+    const oldBalance=Math.max(opening+workBefore-paidBefore,0);
+    const currentBalance=Math.max(oldBalance+todayWork-todayPaid,0);
+
+    selectedBalance=currentBalance;
+    selectedTodayWork=todayWork;
+    selectedTodayPaid=todayPaid;
+
+    $("oldBalance").textContent=money(oldBalance);
+    $("customerTodayWork").textContent=money(todayWork+workTotal());
+    $("customerTodayPaid").textContent=money(todayPaid+amount("paidAmount"));
+    $("newBalance").textContent=money(
+      Math.max(oldBalance+todayWork+workTotal()-todayPaid-amount("paidAmount"),0)
+    );
   }
 
   $("customer").addEventListener("change",e=>loadCustomerSummary(e.target.value));
@@ -1185,7 +1230,7 @@ Your Trust Our Service`;
   }catch(e){console.error(e);}
 })();
 </script>
-<script src="../js/points-reward-fullscreen.js?v=20260926-1135-balance-fix"></script>
+<script src="../js/points-reward-fullscreen.js?v=20260926-1145-unified-balance"></script>
 <script id="itech-unified-live-data-fix">
 (async function(){
   try{

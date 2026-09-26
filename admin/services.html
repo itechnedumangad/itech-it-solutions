@@ -422,6 +422,17 @@
       .sign-line{height:38px;border-bottom:1px solid #7b8794;margin-bottom:5px}
       .sign-label{font-size:9px;color:#66778d;font-weight:700;text-transform:uppercase}
       .foot{text-align:center;margin-top:9px;padding-top:6px;border-top:1px solid #e2e8f0;font-size:9px;color:#65758a}
+      .status-check{margin-top:8px;border:1.5px solid #cfe0f5;border-radius:9px;background:linear-gradient(135deg,#f7fbff,#eef6ff);padding:9px 10px;page-break-inside:avoid}
+      .status-check-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+      .status-check-title{font-size:11px;font-weight:900;color:#0b3569;text-transform:uppercase;letter-spacing:.35px}
+      .status-check-badge{background:#f97316;color:#fff;border-radius:12px;padding:3px 7px;font-size:8px;font-weight:800}
+      .status-check-text{font-size:9.5px;line-height:1.4;color:#4b617b;margin-bottom:6px}
+      .status-check-link{display:inline-block;color:#0b5fc4;font-size:10px;font-weight:900;text-decoration:none;margin-bottom:7px}
+      .login-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+      .login-card{background:#fff;border:1px solid #d9e5f3;border-radius:6px;padding:6px 8px}
+      .login-card .label{font-size:8px;color:#718198;text-transform:uppercase;letter-spacing:.3px}
+      .login-card .login-value{font-size:10px;font-weight:800;color:#17304f;margin-top:2px;word-break:break-all}
+
 
       .term-important{background:#fff7ed!important;border-color:#f59e0b!important;color:#7c2d12}.term-important .term-no{background:#f97316;color:#fff}
       .terms-page{page-break-before:always;padding-top:2mm}
@@ -503,6 +514,16 @@
           </div>
         </div>
 
+        <div class="status-check">
+          <div class="status-check-head"><div class="status-check-title">Service Status Check</div><div class="status-check-badge">ONLINE</div></div>
+          <div class="status-check-text">Service status, latest updates and job progress അറിയാൻ താഴെ നൽകിയിരിക്കുന്ന website സന്ദർശിക്കുക.</div>
+          <a class="status-check-link" href="https://itnedumangad.online">https://itnedumangad.online</a>
+          <div class="login-grid">
+            <div class="login-card"><div class="label">User ID</div><div class="login-value">${esc(c.mobile||'Customer Mobile Number')}</div></div>
+            <div class="login-card"><div class="label">Password</div><div class="login-value">________________</div></div>
+          </div>
+        </div>
+
         <div class="foot"><b>iTech IT Solutions</b> · Your Trust, Our Service · @itechndd · itnedumangad.online</div>
       </div>
 
@@ -518,6 +539,16 @@
         </div>
 
         <div class="terms-list">${termsHtml}</div>
+
+        <div class="status-check" style="margin-top:10px">
+          <div class="status-check-head"><div class="status-check-title">Service Status Check</div><div class="status-check-badge">ONLINE</div></div>
+          <div class="status-check-text">Check your service/job status online using the website and login details provided by iTech IT Solutions.</div>
+          <a class="status-check-link" href="https://itnedumangad.online">https://itnedumangad.online</a>
+          <div class="login-grid">
+            <div class="login-card"><div class="label">User ID</div><div class="login-value">${esc(c.mobile||'Customer Mobile Number')}</div></div>
+            <div class="login-card"><div class="label">Password</div><div class="login-value">________________</div></div>
+          </div>
+        </div>
 
         <div class="ack"><b>Customer Acknowledgement:</b> I have read / understood the above Service Terms & Conditions and agree to the service process, applicable charges and responsibilities stated in this Job Card.</div>
 

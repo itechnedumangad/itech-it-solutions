@@ -594,10 +594,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
+<script>window.ITECH_DASHBOARD_BUILD="20260926-1135-balance-fix";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js"></script>
-<script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script><script src="../js/global-search.js"></script><script src="../js/quick-work-enhancements.js"></script>
+<script src="../js/config.js?v=20260926-1135-balance-fix"></script>
+<script src="../js/supabase.js?v=20260926-1135-balance-fix"></script>
+<script src="../js/auth.js?v=20260926-1135-balance-fix"></script><script src="../js/global-search.js?v=20260926-1135-balance-fix"></script><script src="../js/quick-work-enhancements.js?v=20260926-1135-balance-fix"></script>
 <script>
 /* ===== iTech Admin Notification Center ===== */
 (async()=>{
@@ -806,9 +807,15 @@ body{
     $("workTotal").textContent=money(work);
     $("paidTotal").textContent=money(paid);
     $("balanceAdded").textContent=money(work-paid);
+    const oldBalanceBeforeToday=Math.max(
+      selectedBalance-selectedTodayWork+selectedTodayPaid,0
+    );
+    $("oldBalance").textContent=money(oldBalanceBeforeToday);
     $("customerTodayWork").textContent=money(selectedTodayWork+work);
     $("customerTodayPaid").textContent=money(selectedTodayPaid+paid);
-    $("newBalance").textContent=money(selectedBalance+work-paid);
+    $("newBalance").textContent=money(
+      Math.max(oldBalanceBeforeToday+selectedTodayWork+work-selectedTodayPaid-paid,0)
+    );
   }
 
   async function loadCustomers(){

@@ -594,11 +594,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
-<script>window.ITECH_DASHBOARD_BUILD="20260926-1145-unified-balance";</script>
+<script>window.ITECH_DASHBOARD_BUILD="20260926-1200-rpc-balance";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js?v=20260926-1145-unified-balance"></script>
-<script src="../js/supabase.js?v=20260926-1145-unified-balance"></script>
-<script src="../js/auth.js?v=20260926-1145-unified-balance"></script><script src="../js/global-search.js?v=20260926-1145-unified-balance"></script><script src="../js/quick-work-enhancements.js?v=20260926-1145-unified-balance"></script>
+<script src="../js/config.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/supabase.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script><script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script><script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
 <script>
 /* ===== iTech Admin Notification Center ===== */
 (async()=>{
@@ -944,73 +944,36 @@ body{
     // IMPORTANT: Admin and Staff both calculate the balance from the SAME
     // source tables. Do not use the customer_balances view here because an
     // old/stale view value can make the two dashboards display differently.
-    const [cust, workRows, payRows] = await Promise.all([
-      sb.from("customers").select("id,opening_balance").eq("id",id).single(),
-      sb.from("daily_work_entries")
-        .select("work_date,e_filing,e_payment,print_amount,scanning,other_works,discount,extra_entries")
-        .eq("customer_id",id),
-      sb.from("payments")
-        .select("amount,payment_date")
-        .eq("customer_id",id)
-    ]);
+    // Use one SECURITY DEFINER RPC for both Admin and Staff. This avoids
+    // RLS returning different rows to the two dashboards.
+    const { data: balanceRow, error: balanceError } = await sb
+      .rpc("itech_get_customer_balance", {
+        p_customer_id: id,
+        p_entry_date: entryDate
+      });
 
-    if(cust.error){
-      console.error("Customer balance load:",cust.error);
-      status(cust.error.message,true);
-      return;
-    }
-    if(workRows.error){
-      console.error("Work balance load:",workRows.error);
-      status(workRows.error.message,true);
-      return;
-    }
-    if(payRows.error){
-      console.error("Payment balance load:",payRows.error);
-      status(payRows.error.message,true);
+    if (balanceError) {
+      console.error("Unified customer balance load:", balanceError);
+      status(balanceError.message, true);
       return;
     }
 
-    const opening=Number(cust.data?.opening_balance||0);
-    const rows=workRows.data||[];
-    const pays=payRows.data||[];
+    const b = Array.isArray(balanceRow) ? balanceRow[0] : balanceRow;
+    const oldBalance = Number(b?.old_balance || 0);
+    const todayWork = Number(b?.today_work || 0);
+    const todayPaid = Number(b?.today_paid || 0);
+    const currentBalance = Number(b?.current_balance || 0);
 
-    const rowWork=(r)=>{
-      const base=["e_filing","e_payment","print_amount","scanning","other_works"]
-        .reduce((a,k)=>a+Number(r[k]||0),0);
-      const extras=Array.isArray(r.extra_entries)
-        ? r.extra_entries.reduce((a,row)=>
-            a+Object.values(row||{}).reduce((x,v)=>x+Number(v||0),0),0)
-        : 0;
-      return Math.max(base+extras-Number(r.discount||0),0);
-    };
+    selectedBalance = currentBalance;
+    selectedTodayWork = todayWork;
+    selectedTodayPaid = todayPaid;
 
-    let workBefore=0, paidBefore=0, todayWork=0, todayPaid=0;
-    rows.forEach(r=>{
-      const amount=rowWork(r);
-      const d=String(r.work_date||"").slice(0,10);
-      if(d===entryDate) todayWork+=amount;
-      else if(d && d<entryDate) workBefore+=amount;
-    });
-    pays.forEach(r=>{
-      const amount=Number(r.amount||0);
-      const d=String(r.payment_date||"").slice(0,10);
-      if(d===entryDate) todayPaid+=amount;
-      else if(d && d<entryDate) paidBefore+=amount;
-    });
-
-    // This is the single balance formula used by BOTH dashboards.
-    const oldBalance=Math.max(opening+workBefore-paidBefore,0);
-    const currentBalance=Math.max(oldBalance+todayWork-todayPaid,0);
-
-    selectedBalance=currentBalance;
-    selectedTodayWork=todayWork;
-    selectedTodayPaid=todayPaid;
-
-    $("oldBalance").textContent=money(oldBalance);
-    $("customerTodayWork").textContent=money(todayWork+workTotal());
-    $("customerTodayPaid").textContent=money(todayPaid+amount("paidAmount"));
-    $("newBalance").textContent=money(
-      Math.max(oldBalance+todayWork+workTotal()-todayPaid-amount("paidAmount"),0)
+    // Both dashboards now render exactly the same database result.
+    $("oldBalance").textContent = money(oldBalance);
+    $("customerTodayWork").textContent = money(todayWork + workTotal());
+    $("customerTodayPaid").textContent = money(todayPaid + amount("paidAmount"));
+    $("newBalance").textContent = money(
+      Math.max(oldBalance + todayWork + workTotal() - todayPaid - amount("paidAmount"), 0)
     );
   }
 

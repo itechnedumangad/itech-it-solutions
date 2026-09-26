@@ -962,6 +962,21 @@ body{
   });
 
 
+  /* ===== Instant WhatsApp Reminder Refresh ===== */
+  /*
+   * Keep Today's Customers in sync immediately after a payment is saved
+   * from this dashboard or from the Payments page. Realtime handles the
+   * fast path; this short fallback poll also works when Realtime is delayed.
+   */
+  if(!window.__itechWaInstantRefresh){
+    window.__itechWaInstantRefresh=true;
+    setInterval(()=>{
+      if(document.visibilityState === "visible" && typeof loadWhatsAppReminders === "function") {
+        loadWhatsAppReminders().catch(()=>{});
+      }
+    },3000);
+  }
+
   /* ===== WhatsApp Payment Reminders ===== */
   function normalizePhone(value){
     let p=String(value||"").replace(/\D/g,"");
@@ -980,15 +995,16 @@ body{
   }
 
   function buildPaymentMessage(c){
+    const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
     return `Hello ${c.full_name||"Customer"},
 
-iTech IT Solutions — Payment Reminder
+*iTech IT Solutions — Payment Reminder*
 
-Date: ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"})}
+*Date: ${reminderDate}*
 Old Balance: ${money(c.oldBalance)}
 Today's Work: ${money(c.todayWork)}
 Paid Today: ${money(c.todayPaid)}
-Total Balance: ${money(c.totalBalance)}
+*Total Balance: ${money(c.totalBalance)}*
 
 Please contact us for any clarification.
 

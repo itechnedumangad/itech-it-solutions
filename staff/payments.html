@@ -98,6 +98,14 @@
 .pay-update{background:#125b99;color:#fff}
 @media(max-width:600px){.pay-edit-grid{grid-template-columns:1fr}.pay-edit-grid .full{grid-column:auto}.payment-actions{flex-direction:column}.payment-actions button{width:100%}}
 
+
+.expense-tab-btn{background:#fff4e8!important;color:#b54708!important;border:1px solid #ffd7aa!important}
+.expense-panel{border-top:4px solid #f97316}
+.expense-panel .pay-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.expense-panel .pay-edit-grid .full{grid-column:1/-1}
+.expense-panel label{display:block;font-weight:800;font-size:13px;color:#294568}
+.expense-panel input,.expense-panel select{width:100%;box-sizing:border-box;margin-top:6px;padding:11px 12px;border:1px solid #d7e2ef;border-radius:10px;font:inherit}
+@media(max-width:600px){.expense-panel .pay-edit-grid{grid-template-columns:1fr}.expense-panel .pay-edit-grid .full{grid-column:auto}}
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
@@ -137,9 +145,10 @@
 <p class="eyebrow">LEDGER &amp; COLLECTION</p>
 <h1>Payments</h1>
 </div>
-<a class="btn secondary" href="reports.html">
-        Daily Report
-      </a>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<a class="btn secondary" href="reports.html">Daily Report</a>
+<button type="button" class="btn expense-tab-btn" id="expenseTabBtn">💸 Expense</button>
+</div>
 </div>
 <!-- PAYMENT FORM -->
 <section class="panel form">
@@ -186,6 +195,64 @@
       </button>
 <div class="status" data-status="" style="margin-top:12px"></div>
 </section>
+
+<!-- EXPENSE PANEL -->
+<section class="panel expense-panel" id="expensePanel" style="margin-top:20px;display:none">
+  <div class="toolbar">
+    <div>
+      <p class="eyebrow">BUSINESS EXPENSE</p>
+      <h2 style="margin:0">💸 Add Expense</h2>
+      <p class="muted" style="margin:5px 0 0">Expense is recorded separately and will not change any customer's balance.</p>
+    </div>
+    <button type="button" class="btn secondary" id="backToPaymentsBtn">← Payments</button>
+  </div>
+  <div class="pay-edit-grid" style="margin-top:16px">
+    <label>Date
+      <input type="date" id="expenseDate">
+    </label>
+    <label>Category
+      <select id="expenseCategory">
+        <option value="Office Expense">Office Expense</option>
+        <option value="Purchase">Purchase</option>
+        <option value="Electricity">Electricity</option>
+        <option value="Internet / Phone">Internet / Phone</option>
+        <option value="Salary / Wages">Salary / Wages</option>
+        <option value="Travel">Travel</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Rent">Rent</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+    <label>Amount
+      <input type="number" id="expenseAmount" min="0.01" step="0.01" placeholder="Enter expense amount">
+    </label>
+    <label>Payment Method
+      <select id="expenseMethod">
+        <option value="Cash">Cash</option>
+        <option value="UPI">UPI</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+        <option value="Card">Card</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+    <label class="full">Reference / Note
+      <input type="text" id="expenseReference" placeholder="Bill no / supplier / note">
+    </label>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px">
+    <button class="btn primary" id="saveExpense" type="button">Save Expense</button>
+    <strong id="todayExpenseTotal" style="font-size:18px;color:#b42318">Today Expense: ₹0.00</strong>
+  </div>
+  <div class="status" id="expenseStatus" style="margin-top:12px"></div>
+
+  <div class="table-scroll" style="margin-top:20px">
+    <table class="data-table">
+      <thead><tr><th>Date</th><th>Category</th><th>Method</th><th>Reference / Note</th><th>Amount</th><th>Action</th></tr></thead>
+      <tbody id="expenseRows"><tr><td colspan="6">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
 <!-- RECENT PAYMENTS -->
 <section class="panel" style="margin-top:20px">
 <div class="toolbar">
@@ -784,6 +851,119 @@
 
     }
   );
+
+
+  /* -----------------------------
+     EXPENSES
+  ----------------------------- */
+
+  const expensePanel = document.getElementById("expensePanel");
+  const expenseTabBtn = document.getElementById("expenseTabBtn");
+  const backToPaymentsBtn = document.getElementById("backToPaymentsBtn");
+  const expenseDate = document.getElementById("expenseDate");
+  const expenseCategory = document.getElementById("expenseCategory");
+  const expenseAmount = document.getElementById("expenseAmount");
+  const expenseMethod = document.getElementById("expenseMethod");
+  const expenseReference = document.getElementById("expenseReference");
+  const saveExpense = document.getElementById("saveExpense");
+  const expenseRows = document.getElementById("expenseRows");
+  const todayExpenseTotal = document.getElementById("todayExpenseTotal");
+  const expenseStatus = document.getElementById("expenseStatus");
+
+  const isoToday = () => {
+    const d = new Date();
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    return local.toISOString().slice(0,10);
+  };
+
+  expenseDate.value = isoToday();
+
+  function expenseMsg(message, error=false){
+    expenseStatus.textContent = message || "";
+    expenseStatus.style.color = error ? "#b42318" : "#087443";
+  }
+
+  function showExpensePanel(){
+    expensePanel.style.display = "block";
+    document.querySelectorAll("main.dash-main > section:not(.expense-panel)").forEach(el=>el.style.display="none");
+    window.scrollTo({top:0,behavior:"smooth"});
+    loadExpenses();
+  }
+
+  function showPaymentPanel(){
+    expensePanel.style.display = "none";
+    document.querySelectorAll("main.dash-main > section:not(.expense-panel)").forEach(el=>el.style.display="");
+  }
+
+  expenseTabBtn.addEventListener("click", showExpensePanel);
+  backToPaymentsBtn.addEventListener("click", showPaymentPanel);
+
+  async function loadExpenses(){
+    expenseRows.innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+    const {data,error} = await sb.from("expenses").select("id,expense_date,category,amount,payment_method,reference_number").order("expense_date",{ascending:false}).order("created_at",{ascending:false}).limit(50);
+    if(error){
+      expenseRows.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+      return;
+    }
+    const rowsData = data || [];
+    const today = isoToday();
+    const total = rowsData.filter(x=>x.expense_date===today).reduce((s,x)=>s+Number(x.amount||0),0);
+    todayExpenseTotal.textContent = "Today Expense: " + money(total);
+    if(!rowsData.length){
+      expenseRows.innerHTML = '<tr><td colspan="6">No expenses found.</td></tr>';
+      return;
+    }
+    expenseRows.innerHTML = rowsData.map(x=>`<tr>
+      <td>${x.expense_date || "—"}</td>
+      <td><strong>${x.category || "Other"}</strong></td>
+      <td>${x.payment_method || "Cash"}</td>
+      <td>${x.reference_number || "—"}</td>
+      <td><strong>${money(x.amount)}</strong></td>
+      <td><button type="button" class="pay-delete" data-expense-delete="${x.id}">🗑️ Delete</button></td>
+    </tr>`).join("");
+  }
+
+  saveExpense.addEventListener("click", async()=>{
+    const date = expenseDate.value || isoToday();
+    const category = expenseCategory.value;
+    const amount = Number(expenseAmount.value || 0);
+    const method = expenseMethod.value;
+    const reference = expenseReference.value.trim();
+    if(!amount || amount<=0){ expenseMsg("Please enter a valid expense amount.",true); return; }
+    saveExpense.disabled=true; saveExpense.textContent="Saving…";
+    try{
+      const authResult = await sb.auth.getUser();
+      const enteredBy = authResult?.data?.user?.id || null;
+      const {error} = await sb.from("expenses").insert({
+        expense_date:date,
+        category,
+        amount,
+        payment_method:method,
+        reference_number:reference || null,
+        entered_by:enteredBy
+      });
+      if(error) throw error;
+      expenseMsg("Expense saved successfully — " + money(amount));
+      expenseAmount.value="";
+      expenseReference.value="";
+      await loadExpenses();
+    }catch(error){
+      expenseMsg(error.message || "Unable to save expense.",true);
+    }finally{
+      saveExpense.disabled=false; saveExpense.textContent="Save Expense";
+    }
+  });
+
+  expenseRows.addEventListener("click", async e=>{
+    const btn=e.target.closest("[data-expense-delete]");
+    if(!btn) return;
+    if(!confirm("Delete this expense?")) return;
+    btn.disabled=true;
+    const {error}=await sb.from("expenses").delete().eq("id",btn.dataset.expenseDelete);
+    if(error){ btn.disabled=false; expenseMsg(error.message,true); return; }
+    expenseMsg("Expense deleted successfully.");
+    await loadExpenses();
+  });
 
 
   /* -----------------------------

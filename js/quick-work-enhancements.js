@@ -94,11 +94,13 @@
         cash.onclick=selectCashSale;
         box.prepend(cash);
       }
-      const empty=box.querySelector(".customer-empty");
-      if(empty && !box.querySelector(".qw-inline-add-customer")){
+      // Always keep an Add New Customer option available in Quick Daily Work,
+      // even when matching customers are already shown. This lets staff/admin
+      // add a new customer without leaving the dashboard.
+      if(!box.querySelector(".qw-inline-add-customer")){
         const btn=document.createElement("button");
         btn.type="button"; btn.className="qw-inline-add-customer";
-        btn.innerHTML=`＋ Add New Customer${q?`<small>“${esc(q)}” is not in the customer list</small>`:"<small>Add without leaving this screen</small>"}`;
+        btn.innerHTML=`＋ Add New Customer${q?`<small>Add “${esc(q)}” as a new customer</small>`:"<small>Add without leaving this screen</small>"}`;
         btn.onclick=()=>openAddCustomer(q);
         box.appendChild(btn);
       }

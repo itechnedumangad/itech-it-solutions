@@ -767,7 +767,7 @@ body{
           entered_by:enteredByForPayment,
           amount:paid,
           payment_date:entryDate,
-          payment_method:"Cash",
+          payment_method:(window.itechQuickPaymentMethod?window.itechQuickPaymentMethod():"Cash"),
           reference_note:"Dashboard Quick Entry"
         }).select("id").single();
         if(pr.error) throw pr.error;
@@ -1215,4 +1215,5 @@ Your Trust Our Service`;
   refresh();
 })();
 </script>
+<script src="../js/daily-cash-account-control.js?v=20260928-2"></script>
 </body></html>

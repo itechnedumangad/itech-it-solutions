@@ -1156,7 +1156,7 @@ body{
   /*
    * Keep Today's Customers in sync immediately after a payment is saved
    * from this dashboard or from the Payments page. Realtime handles the
-   * fast path; this short fallback poll also works when Realtime is delayed.
+   * fast path; this 20-second fallback poll also works when Realtime is delayed.
    */
   if(!window.__itechWaInstantRefresh){
     window.__itechWaInstantRefresh=true;
@@ -1164,7 +1164,7 @@ body{
       if(document.visibilityState === "visible" && typeof loadWhatsAppReminders === "function") {
         loadWhatsAppReminders().catch(()=>{});
       }
-    },3000);
+    },20000);
   }
 
   /* ===== WhatsApp Payment Reminders ===== */
@@ -1301,14 +1301,14 @@ Your Trust Our Service`;
 
   async function refreshDashboard(){
     const [work,pay,bal,enq]=await Promise.all([
-      sb.from("today_work_report").select("*"),
+      sb.from("daily_work_entries").select("e_filing,e_payment,print_amount,scanning,other_works,discount,work_date").eq("work_date",today),
       sb.from("payments").select("amount").eq("payment_date",today),
       sb.from("customer_balances").select("current_balance"),
       sb.from("enquiries").select("id",{count:"exact",head:true}).in("status",["New","Contacted","In Progress"])
     ]);
     if(work.error)return;
     const rows=work.data||[];
-    $("todayWork").textContent=money(rows.reduce((s,r)=>s+Number(r.total_amount||0),0));
+    $("todayWork").textContent=money(rows.reduce((s,r)=>s + Math.max(Number(r.e_filing||0)+Number(r.e_payment||0)+Number(r.print_amount||0)+Number(r.scanning||0)+Number(r.other_works||0)-Number(r.discount||0),0),0));
     $("todayEntries").textContent=rows.length+" entries";
     $("todayPayments").textContent=money((pay.data||[]).reduce((s,r)=>s+Number(r.amount||0),0));
     $("outstanding").textContent=money((bal.data||[]).reduce((s,r)=>s+Math.max(Number(r.current_balance||0),0),0));

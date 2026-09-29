@@ -1606,6 +1606,9 @@ Unable to load staff accounts.
 $("createBtn").onclick =
 async()=>{
 
+  const statusBox = $("status");
+  if(statusBox){ statusBox.className = "status"; statusBox.textContent = ""; }
+
   const fullName =
     $("fullName")
       .value

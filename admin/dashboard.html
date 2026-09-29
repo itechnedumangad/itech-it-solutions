@@ -595,11 +595,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
-<script>window.ITECH_DASHBOARD_BUILD="20260926-1200-rpc-balance";</script>
+<script>window.ITECH_DASHBOARD_BUILD="20260929-reminder-v4";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js?v=20260926-1200-rpc-balance"></script>
-<script src="../js/supabase.js?v=20260926-1200-rpc-balance"></script>
-<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script><script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script><script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/config.js?v=20260929-reminder-v4"></script>
+<script src="../js/supabase.js?v=20260929-reminder-v4"></script>
+<script src="../js/auth.js?v=20260929-reminder-v4"></script><script src="../js/global-search.js?v=20260929-reminder-v4"></script><script src="../js/quick-work-enhancements.js?v=20260929-reminder-v4"></script>
 <script>
 /* ===== iTech Admin Notification Center ===== */
 (async()=>{
@@ -1202,10 +1202,45 @@ Thank you for choosing iTech IT Solutions.
 Your Trust Our Service`;
   }
 
+  /* Reminder sent tracking:
+     A reminder stays hidden only until the customer's data changes.
+     So, after a WhatsApp reminder is opened, the same entry is not shown again.
+     If a NEW work/payment entry is added for that customer, the activity signature
+     changes and the customer becomes eligible for a fresh reminder. */
+  function reminderSentKey(customerId){
+    return "itech_wa_reminder_sent_v2_" + String(customerId||"");
+  }
+  function activitySignature(c){
+    const last = c && c.lastActivity ? new Date(c.lastActivity).getTime() : 0;
+    return [
+      Number(c?.todayWork||0).toFixed(2),
+      Number(c?.todayPaid||0).toFixed(2),
+      Number(c?.totalBalance||0).toFixed(2),
+      Number.isFinite(last) ? last : 0
+    ].join("|");
+  }
+  function isReminderSent(c){
+    try{
+      const raw=localStorage.getItem(reminderSentKey(c?.id));
+      if(!raw) return false;
+      const saved=JSON.parse(raw);
+      return saved && saved.signature === activitySignature(c);
+    }catch(e){ return false; }
+  }
+  function markReminderSent(c){
+    try{
+      localStorage.setItem(reminderSentKey(c?.id),JSON.stringify({
+        signature: activitySignature(c),
+        sentAt: new Date().toISOString()
+      }));
+    }catch(e){}
+  }
+
   function openWhatsApp(c){
     const phone=getValidWhatsAppNumber(c);
     if(!phone) return false;
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+    markReminderSent(c);
     return true;
   }
 
@@ -1220,7 +1255,16 @@ Your Trust Our Service`;
         </div>
         <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
       </div>`).join("");
-    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>{
+      const customer=rows[Number(b.dataset.waIndex)];
+      if(openWhatsApp(customer)){
+        const row=b.closest(".wa-customer");
+        if(row) row.remove();
+        const countEl=el===document.getElementById("waTodayList")?document.getElementById("waTodayCount"):document.getElementById("waOverdueCount");
+        if(countEl) countEl.textContent=Math.max(0,Number(countEl.textContent||0)-1);
+        if(!el.querySelector(".wa-customer")) el.innerHTML='<div class="wa-empty">No pending reminders.</div>';
+      }
+    }));
   }
 
   async function loadWhatsAppReminders(){
@@ -1260,12 +1304,14 @@ Your Trust Our Service`;
         return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
       });
 
-      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
-        .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
+      const todayRows=customersWithData.filter(c=>
+        (c.todayWork>0||c.todayPaid>0) && !isReminderSent(c)
+      ).sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
 
       const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
-      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
-        .sort((a,b)=>b.totalBalance-a.totalBalance);
+      const overdueRows=customersWithData.filter(c=>
+        c.totalBalance>0 && c.lastActivity && c.lastActivity<=cutoff && !isReminderSent(c)
+      ).sort((a,b)=>b.totalBalance-a.totalBalance);
 
       $("waTodayCount").textContent=todayRows.length;
       $("waOverdueCount").textContent=overdueRows.length;
@@ -1282,14 +1328,22 @@ Your Trust Our Service`;
         validCustomers.forEach((c,i)=>setTimeout(()=>{
           if(openWhatsApp(c)) processed++;
           if(i===validCustomers.length-1){
-            setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),300);
+            setTimeout(()=>{
+              loadWhatsAppReminders();
+              status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`);
+            },300);
           }
         },i*700));
         if(validCustomers.length===0){
           status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
         }
       };
-      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendOverdueAll").onclick=()=>{
+        overdueRows.forEach((c,i)=>setTimeout(()=>{
+          openWhatsApp(c);
+          if(i===overdueRows.length-1) setTimeout(loadWhatsAppReminders,400);
+        },i*450));
+      };
       $("waRefresh").onclick=loadWhatsAppReminders;
     }catch(err){
       console.error("WhatsApp reminder error:",err);

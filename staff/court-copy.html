@@ -13,7 +13,60 @@
 <section class="cc-box"><h2>1. Select Customer</h2><div class="cc-sub">Customer first. Advocate details and courts load automatically.</div><div class="cc-grid"><div class="cc-field cc-full cc-search"><span>⌕</span><input id="customerSearch" placeholder="Search customer name / mobile"><select id="customer" style="margin-top:8px"></select></div><div class="cc-field"><label>Advocate Mobile</label><input id="advocateMobile" readonly></div><div class="cc-field"><label>Advocate Name</label><input id="advocateName" readonly></div><div class="cc-field cc-full"><label>Court</label><select id="court"></select></div></div></section>
 <section class="cc-box"><h2>2. Add Case</h2><div class="cc-sub">One customer can have multiple courts and multiple cases.</div><div id="caseRows"></div><div class="cc-actions"><button class="cc-btn cc-soft" id="addCase" type="button">+ Add Another Case</button><button class="cc-btn cc-primary" id="saveCases" type="button">Save Cases</button><button class="cc-btn cc-soft" id="clearCases" type="button">Clear</button></div><div id="saveStatus" class="cc-status"></div></section>
 <section class="cc-box"><div class="cc-hero" style="margin:0"><div><h2>Today's Entries</h2><div class="cc-sub" style="margin:3px 0 0">Completed entries remain recorded.</div></div><div class="cc-toolbar" style="max-width:500px"><input id="day" type="date"><input id="search" placeholder="Search case / court"></div></div><div class="cc-statbar"><div class="cc-stat"><small>Cases</small><b id="count">0</b></div><div class="cc-stat"><small>Paid</small><b id="paidTotal">₹0</b></div><div class="cc-stat"><small>Pending</small><b id="pendingCount">0</b></div><div class="cc-stat"><small>Completed</small><b id="doneCount">0</b></div></div><div id="entries" class="cc-case-list"></div></section>
-</div></main><footer class="site-footer unified-site-footer"><div class="footer-brand"><img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"></div><p>Govt. Sub Treasury Road, Nedumangad</p><p>7736929233 · 8943165951</p><p>itnedumangad@gmail.com</p><p>@itechndd</p><p class="orange-text">Your Trust Our Service</p></footer>
+</div></main>
+
+<style id="itech-court-footer-fix">
+.site-footer,.unified-site-footer{
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:28px 18px 24px;
+  background:linear-gradient(135deg,#071a3a,#0d2f68);
+  color:#fff;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  overflow:hidden;
+}
+.site-footer .footer-brand,.unified-site-footer .footer-brand{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 5px;
+}
+.site-footer .footer-logo,.unified-site-footer .footer-logo{
+  display:block;
+  width:150px;
+  max-width:80vw;
+  height:auto;
+  max-height:68px;
+  object-fit:contain;
+  object-position:center;
+}
+.site-footer p,.unified-site-footer p,.site-footer span,.unified-site-footer span,.site-footer small,.unified-site-footer small{
+  margin:0;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+.site-footer .orange-text,.unified-site-footer .orange-text{color:#ff9a48;font-weight:800}
+.site-footer .footer-tagline,.unified-site-footer .footer-tagline{color:#ff9a48;font-weight:800}
+@media(max-width:600px){
+  .site-footer,.unified-site-footer{padding:24px 12px 20px;gap:6px}
+  .site-footer .footer-logo,.unified-site-footer .footer-logo{width:135px;max-height:62px}
+}
+</style>
+<footer class="site-footer unified-site-footer">
+  <div class="footer-brand"><img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></div>
+  <p>Govt. Sub Treasury Road, Nedumangad</p>
+  <p>7736929233 · 8943165951</p>
+  <p>itnedumangad@gmail.com</p>
+  <p>@itechndd</p>
+  <p class="orange-text">Your Trust, Our Service</p>
+</footer>
 <script>(async()=>{const auth=await requireStaff();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],updates=[],selectedCustomer='',editing=null;const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Staff';
 async function load(){let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');if(r.error)throw r.error;customers=r.data||[];r=await sb.from('court_copy_assignments').select('*').order('created_at');if(r.error)throw r.error;maps=r.data||[];renderCustomers();}
 function renderCustomers(filter=''){const q=filter.trim().toLowerCase();const list=customers.filter(c=>!q||[c.full_name,c.mobile].some(v=>String(v||'').toLowerCase().includes(q)));$('customer').innerHTML='<option value="">Select customer</option>'+list.map(c=>`<option value="${c.id}">${esc(c.full_name)}${c.mobile?' — '+esc(c.mobile):''}</option>`).join('')}

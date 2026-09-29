@@ -458,6 +458,9 @@ body{
 :root{--cc-navy:#071c3b;--cc-blue:#1f5ea8;--cc-orange:#f28a18;--cc-bg:#f4f7fb;--cc-card:#fff;--cc-line:#e1e8f1;--cc-muted:#71809a;--cc-green:#16834b;--cc-red:#c63b3b;--cc-shadow:0 10px 28px rgba(7,28,59,.07)}
 .cc-app{max-width:1180px;margin:0 auto}.cc-hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.cc-hero h1{margin:0;font-size:28px;color:var(--cc-navy)}.cc-hero p{margin:5px 0 0;color:var(--cc-muted);font-size:12px}.cc-pill{padding:8px 11px;border-radius:999px;background:#fff3e3;color:#b45a00;font-size:11px;font-weight:900;white-space:nowrap}.cc-box{background:var(--cc-card);border:1px solid var(--cc-line);border-radius:20px;box-shadow:var(--cc-shadow);padding:18px;margin-bottom:15px}.cc-box h2{font-size:16px;margin:0 0 4px;color:var(--cc-navy)}.cc-sub{font-size:11px;color:var(--cc-muted);margin-bottom:14px}.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cc-field label{display:block;font-size:11px;font-weight:850;color:#3c4b61;margin-bottom:6px}.cc-field input,.cc-field select,.cc-field textarea{width:100%;box-sizing:border-box;border:1px solid #d5dfeb;border-radius:12px;padding:12px;background:#fff;color:#15263f;outline:none}.cc-field input:focus,.cc-field select:focus,.cc-field textarea:focus{border-color:#75a6dc;box-shadow:0 0 0 3px rgba(31,94,168,.08)}.cc-full{grid-column:1/-1}.cc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cc-btn{border:0;border-radius:11px;padding:11px 14px;font-weight:850;cursor:pointer}.cc-primary{background:var(--cc-orange);color:#fff}.cc-blue{background:var(--cc-blue);color:#fff}.cc-soft{background:#edf3f9;color:#173d69}.cc-danger{background:#fff0f0;color:#b92f2f}.cc-status{font-size:12px;margin-top:9px;color:#31506f;min-height:16px}.cc-status.ok{color:var(--cc-green);font-weight:800}.cc-master-list{display:grid;gap:9px;margin-top:12px}.cc-master{border:1px solid var(--cc-line);border-radius:15px;padding:13px;background:#fbfdff}.cc-master-top{display:flex;justify-content:space-between;gap:10px}.cc-name{font-size:14px;font-weight:900;color:var(--cc-navy)}.cc-meta{font-size:11px;color:var(--cc-muted);margin-top:4px}.cc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.cc-chip{padding:6px 9px;border-radius:999px;background:#edf4ff;color:#245a9f;font-size:10px;font-weight:800}.cc-court-row{display:flex;align-items:center;gap:8px}.cc-court-row select{flex:1}.cc-add-court{white-space:nowrap}.cc-statbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.cc-stat{flex:1 1 110px;border:1px solid var(--cc-line);border-radius:13px;padding:10px;background:#fbfdff}.cc-stat small{display:block;color:var(--cc-muted);font-size:10px}.cc-stat b{display:block;margin-top:2px;font-size:18px;color:var(--cc-navy)}.cc-search{position:relative}.cc-search input{padding-left:38px!important}.cc-search span{position:absolute;left:13px;top:11px;color:#8a98aa}.cc-case-card{border:1px solid var(--cc-line);border-radius:17px;padding:14px;margin-top:10px;background:#fff}.cc-case-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.cc-case-title{font-weight:900;color:var(--cc-navy);font-size:13px}.cc-case-meta{font-size:11px;color:var(--cc-muted);margin-top:3px}.cc-case-grid{display:grid;grid-template-columns:1.2fr .7fr .8fr .9fr;gap:9px;margin-top:11px}.cc-status-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900}.cc-pending{background:#fff4d6;color:#916400}.cc-paid{background:#e8f7ee;color:#14753f}.cc-completed{background:#e8f1ff;color:#245a9f}.cc-empty{text-align:center;padding:25px;color:var(--cc-muted);font-size:12px}.cc-toolbar{display:flex;gap:8px;flex-wrap:wrap}.cc-toolbar>*{flex:1 1 180px}.cc-case-list{margin-top:12px}.cc-divider{height:1px;background:var(--cc-line);margin:15px 0}.cc-note{font-size:11px;color:var(--cc-muted)}
 @media(max-width:760px){.dash-main{padding:15px!important}.cc-hero{align-items:flex-start}.cc-hero h1{font-size:24px}.cc-pill{display:none}.cc-grid,.cc-case-grid{grid-template-columns:1fr}.cc-full{grid-column:auto}.cc-box{padding:15px;border-radius:17px}.cc-btn{flex:1 1 auto}.cc-court-row{align-items:stretch;flex-direction:column}.cc-add-court{width:100%}.cc-master-top{align-items:flex-start}.cc-stat{flex-basis:calc(50% - 9px)} }
+
+/* Court Copy page footer must sit below the full dashboard, not beside the sidebar. */
+footer.footer{margin-left:0!important;width:100%!important;box-sizing:border-box;position:relative!important;left:auto!important;right:auto!important;float:none!important;}
 </style></head><header class="dash-header">
 <a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
 <div class="header-actions">
@@ -494,8 +497,30 @@ body{
   <span>itnedumangad@gmail.com</span>
   <span>@itechndd</span>
   <small>Your Trust Our Service</small>
-</footer><script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
-async function load(){let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');if(r.error)throw r.error;customers=r.data||[];r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[];courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();renderCustomers();renderCourts();await loadUpdates()}
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
+async function load(){
+  let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');
+  if(r.error)throw r.error;
+  customers=r.data||[];
+  renderCustomers();
+  r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});
+  if(r.error){
+    maps=[];courts=[];renderCourts();
+    $('masterStatus').textContent='Customer list loaded, but Court master could not be loaded: '+r.error.message;
+    $('masterStatus').className='cc-status';
+    await loadUpdates();
+    return;
+  }
+  maps=r.data||[];
+  courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();
+  renderCourts();
+  await loadUpdates();
+}
 function renderCustomers(){ $('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)}${c.mobile?' — '+esc(c.mobile):''}</option>`).join('') }
 function renderCourts(){ $('court').innerHTML='<option value="">Select court</option>'+courts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('courtList').innerHTML=courts.map(c=>`<span class="cc-chip">${esc(c)}</span>`).join('')||'<span class="cc-note">No courts added yet.</span>' }
 $('addCourt').onclick=async()=>{const name=prompt('Enter new court name');if(!name||!name.trim())return;const n=name.trim();if(!courts.includes(n)){courts.push(n);courts.sort();renderCourts()}$('court').value=n};

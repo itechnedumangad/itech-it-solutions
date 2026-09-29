@@ -365,61 +365,6 @@ body{
 
 
 </style>
-<style id="dashboard-footer-style">
-
-.footer{
-  width:100%;
-  max-width:none;
-  min-height:180px;
-  padding:42px 20px 30px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  text-align:center;
-  overflow:hidden;
-}
-.footer-brand{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:75px;
-}
-.footer-logo-only{
-  display:block;
-  width:clamp(120px,16vw,190px);
-  height:auto;
-  max-width:190px;
-  max-height:75px;
-  object-fit:contain;
-  object-position:center;
-  margin:0 auto 14px;
-}
-.footer span,.footer small{
-  display:block;
-  max-width:100%;
-  overflow-wrap:anywhere;
-}
-@media(max-width:767px){
-  .footer{
-    padding-left:14px;
-    padding-right:14px;
-  }
-}
-@media(max-width:480px){
-  .footer{
-    min-height:170px;
-    padding:34px 12px 25px;
-  }
-  .footer-logo-only{
-    width:145px!important;
-    max-height:65px!important;
-  }
-}
-
-</style>
 <style id="court-copy-dashboard-overrides">
 /* Court Copy content uses the same dashboard card/form language */
 .cc-grid{display:grid;grid-template-columns:minmax(320px,.82fr) minmax(560px,1.65fr);gap:18px}
@@ -485,16 +430,60 @@ body{
 <div class="cc-actions"><button class="cc-btn cc-primary" id="saveMaster">Save Customer</button><button class="cc-btn cc-soft" id="clearMaster">Clear</button></div><div id="masterStatus" class="cc-status"></div></section>
 <section class="cc-box"><h2>Court List</h2><div class="cc-sub">These courts are available in the dropdown above.</div><div id="courtList" class="cc-chips"></div></section>
 <section class="cc-box"><div class="cc-hero" style="margin:0"><div><h2>Staff Updated Results</h2><div class="cc-sub" style="margin:3px 0 0">Only selected-day results are shown.</div></div><div class="cc-toolbar" style="max-width:520px"><input id="day" type="date"><input id="search" placeholder="Search customer / advocate / court / case"></div></div><div class="cc-statbar"><div class="cc-stat"><small>Cases</small><b id="count">0</b></div><div class="cc-stat"><small>Paid</small><b id="paidTotal">₹0</b></div><div class="cc-stat"><small>Pending</small><b id="pendingCount">0</b></div><div class="cc-stat"><small>Completed</small><b id="doneCount">0</b></div></div><div id="results" class="cc-case-list"></div></section>
-</div></main><footer class="footer">
-  <div class="footer-brand">
-    <img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech">
-  </div>
-  <span>Govt. Sub Treasury Road, Nedumangad</span>
-  <span>7736929233 · 8943165951</span>
-  <span>itnedumangad@gmail.com</span>
-  <span>@itechndd</span>
-  <small>Your Trust Our Service</small>
-</footer><script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
+</div></main>
+<style id="itech-court-footer-fix">
+.site-footer,.unified-site-footer{
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:28px 18px 24px;
+  background:linear-gradient(135deg,#071a3a,#0d2f68);
+  color:#fff;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  overflow:hidden;
+}
+.site-footer .footer-brand,.unified-site-footer .footer-brand{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 5px;
+}
+.site-footer .footer-logo,.unified-site-footer .footer-logo{
+  display:block;
+  width:150px;
+  max-width:80vw;
+  height:auto;
+  max-height:68px;
+  object-fit:contain;
+  object-position:center;
+}
+.site-footer p,.unified-site-footer p,.site-footer span,.unified-site-footer span,.site-footer small,.unified-site-footer small{
+  margin:0;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+.site-footer .orange-text,.unified-site-footer .orange-text{color:#ff9a48;font-weight:800}
+.site-footer .footer-tagline,.unified-site-footer .footer-tagline{color:#ff9a48;font-weight:800}
+@media(max-width:600px){
+  .site-footer,.unified-site-footer{padding:24px 12px 20px;gap:6px}
+  .site-footer .footer-logo,.unified-site-footer .footer-logo{width:135px;max-height:62px}
+}
+</style>
+<footer class="site-footer unified-site-footer">
+  <div class="footer-brand"><img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></div>
+  <p>Govt. Sub Treasury Road, Nedumangad</p>
+  <p>7736929233 · 8943165951</p>
+  <p>itnedumangad@gmail.com</p>
+  <p>@itechndd</p>
+  <p class="orange-text">Your Trust, Our Service</p>
+</footer>
+<script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
 async function load(){let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');if(r.error)throw r.error;customers=r.data||[];r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[];courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();renderCustomers();renderCourts();await loadUpdates()}
 function renderCustomers(){ $('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)}${c.mobile?' — '+esc(c.mobile):''}</option>`).join('') }
 function renderCourts(){ $('court').innerHTML='<option value="">Select court</option>'+courts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('courtList').innerHTML=courts.map(c=>`<span class="cc-chip">${esc(c)}</span>`).join('')||'<span class="cc-note">No courts added yet.</span>' }

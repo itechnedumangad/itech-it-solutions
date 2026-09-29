@@ -539,11 +539,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
-<script>window.ITECH_DASHBOARD_BUILD="20260926-1200-rpc-balance";</script>
+<script>window.ITECH_DASHBOARD_BUILD="20260929-reminder-v4";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js?v=20260926-1200-rpc-balance"></script>
-<script src="../js/supabase.js?v=20260926-1200-rpc-balance"></script>
-<script src="../js/auth.js?v=20260926-1200-rpc-balance"></script><script src="../js/global-search.js?v=20260926-1200-rpc-balance"></script><script>
+<script src="../js/config.js?v=20260929-reminder-v4"></script>
+<script src="../js/supabase.js?v=20260929-reminder-v4"></script>
+<script src="../js/auth.js?v=20260929-reminder-v4"></script><script src="../js/global-search.js?v=20260929-reminder-v4"></script><script>
 (async function(){
   try{
     const a=await requireStaff(); if(!a)return;
@@ -569,7 +569,7 @@ body{
   }catch(e){const n=document.getElementById('dashInsNote');if(n)n.textContent='Insurance overview unavailable right now.'}
 })();
 </script>
-<script src="../js/quick-work-enhancements.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/quick-work-enhancements.js?v=20260929-reminder-v4"></script>
 <script>
 (async()=>{
   const ok=await requireStaff(); if(!ok)return;
@@ -997,26 +997,50 @@ body{
 
   function buildPaymentMessage(c){
     const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
-    return `Hello ${c.full_name||"Customer"},
+    return `Hello ${c.full_name||"Customer"},\n\n*iTech IT Solutions — Payment Reminder*\n\n*Date: ${reminderDate}*\nOld Balance: ${money(c.oldBalance)}\nToday's Work: ${money(c.todayWork)}\nPaid Today: ${money(c.todayPaid)}\n*Total Balance: ${money(c.totalBalance)}*\n\nPlease contact us for any clarification.\n\nThank you for choosing iTech IT Solutions.\nYour Trust Our Service`;
+  }
 
-*iTech IT Solutions — Payment Reminder*
-
-*Date: ${reminderDate}*
-Old Balance: ${money(c.oldBalance)}
-Today's Work: ${money(c.todayWork)}
-Paid Today: ${money(c.todayPaid)}
-*Total Balance: ${money(c.totalBalance)}*
-
-Please contact us for any clarification.
-
-Thank you for choosing iTech IT Solutions.
-Your Trust Our Service`;
+  /*
+   * Reminder status belongs to the customer's CURRENT activity signature.
+   * Sending a reminder hides only that exact activity. When a new work/payment
+   * entry changes today's totals, balance, or latest activity timestamp, the
+   * signature changes and the customer becomes eligible again.
+   * localStorage keeps the state across page refreshes on this device.
+   */
+  function reminderSentKey(customerId){
+    return "itech_wa_reminder_sent_v3_" + String(customerId||"");
+  }
+  function activitySignature(c){
+    const last=c && c.lastActivity ? new Date(c.lastActivity).getTime() : 0;
+    return [
+      Number(c?.todayWork||0).toFixed(2),
+      Number(c?.todayPaid||0).toFixed(2),
+      Number(c?.totalBalance||0).toFixed(2),
+      Number.isFinite(last)?last:0
+    ].join("|");
+  }
+  function isReminderSent(c){
+    try{
+      const raw=localStorage.getItem(reminderSentKey(c?.id));
+      if(!raw) return false;
+      const saved=JSON.parse(raw);
+      return !!(saved && saved.signature===activitySignature(c));
+    }catch(e){ return false; }
+  }
+  function markReminderSent(c){
+    try{
+      localStorage.setItem(reminderSentKey(c?.id),JSON.stringify({
+        signature:activitySignature(c),
+        sentAt:new Date().toISOString()
+      }));
+    }catch(e){}
   }
 
   function openWhatsApp(c){
     const phone=getValidWhatsAppNumber(c);
     if(!phone) return false;
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
+    markReminderSent(c);
     return true;
   }
 
@@ -1025,13 +1049,24 @@ Your Trust Our Service`;
     el.innerHTML=rows.map((c,i)=>`
       <div class="wa-customer">
         <div class="wa-customer-main">
-          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}</div>
+          <div class="wa-customer-name">${String(c.full_name||"Customer").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}</div>
           <div class="wa-customer-meta">${String(c.mobile||c.whatsapp||"No mobile")}</div>
           <div class="wa-customer-balance">Balance: ${money(c.totalBalance)}</div>
         </div>
         <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
       </div>`).join("");
-    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>openWhatsApp(rows[Number(b.dataset.waIndex)])));
+
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>{
+      const customer=rows[Number(b.dataset.waIndex)];
+      if(!openWhatsApp(customer)) return;
+      const row=b.closest(".wa-customer");
+      if(row) row.remove();
+      const countEl=el===document.getElementById("waTodayList")
+        ?document.getElementById("waTodayCount")
+        :document.getElementById("waOverdueCount");
+      if(countEl) countEl.textContent=Math.max(0,Number(countEl.textContent||0)-1);
+      if(!el.querySelector(".wa-customer")) el.innerHTML='<div class="wa-empty">No pending reminders.</div>';
+    }));
   }
 
   async function refreshDashboard(){
@@ -1053,6 +1088,7 @@ Your Trust Our Service`;
     }catch(e){ console.error("Staff dashboard refresh:",e); }
   }
 
+
   async function loadWhatsAppReminders(){
     const todayList=$("waTodayList"), overdueList=$("waOverdueList");
     if(!todayList||!overdueList)return;
@@ -1072,29 +1108,20 @@ Your Trust Our Service`;
 
       const balances=new Map((ba.data||[]).map(x=>[String(x.id),Number(x.current_balance||0)]));
       const works=new Map(), paid=new Map(), last=new Map();
-
       (tw.data||[]).forEach(r=>{const id=String(r.customer_id);works.set(id,(works.get(id)||0)+Number(r.total_amount||0));});
       (tp.data||[]).forEach(r=>{const id=String(r.customer_id);paid.set(id,(paid.get(id)||0)+Number(r.amount||0));});
-      (wh.data||[]).forEach(r=>{
-        const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;
-        if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);
-      });
-      (ph.data||[]).forEach(r=>{
-        const id=String(r.customer_id); if(!r.payment_date)return;
-        const d=new Date(String(r.payment_date)+"T23:59:59");
-        if(!last.has(id)||d>last.get(id))last.set(id,d);
-      });
+      (wh.data||[]).forEach(r=>{const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);});
+      (ph.data||[]).forEach(r=>{const id=String(r.customer_id);if(!r.payment_date)return;const d=new Date(String(r.payment_date)+"T23:59:59");if(!last.has(id)||d>last.get(id))last.set(id,d);});
 
       const customersWithData=(cu.data||[]).map(c=>{
         const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
         return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
       });
 
-      const todayRows=customersWithData.filter(c=>c.todayWork>0||c.todayPaid>0)
+      const todayRows=customersWithData.filter(c=>(c.todayWork>0||c.todayPaid>0)&&!isReminderSent(c))
         .sort((a,b)=>(b.todayWork+b.todayPaid)-(a.todayWork+a.todayPaid));
-
       const cutoff=new Date();cutoff.setHours(0,0,0,0);cutoff.setDate(cutoff.getDate()-7);
-      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff)
+      const overdueRows=customersWithData.filter(c=>c.totalBalance>0&&c.lastActivity&&c.lastActivity<=cutoff&&!isReminderSent(c))
         .sort((a,b)=>b.totalBalance-a.totalBalance);
 
       $("waTodayCount").textContent=todayRows.length;
@@ -1103,23 +1130,23 @@ Your Trust Our Service`;
       renderWaList(overdueList,overdueRows,"No 7+ day outstanding customers found.");
 
       $("waSendTodayAll").onclick=()=>{
-        let processed=0, skipped=0;
-        const validCustomers=[];
-        todayRows.forEach(c=>{
-          if(getValidWhatsAppNumber(c)) validCustomers.push(c);
-          else skipped++;
-        });
-        validCustomers.forEach((c,i)=>setTimeout(()=>{
+        let processed=0,skipped=0;
+        const valid=todayRows.filter(c=>getValidWhatsAppNumber(c));
+        skipped=todayRows.length-valid.length;
+        valid.forEach((c,i)=>setTimeout(()=>{
           if(openWhatsApp(c)) processed++;
-          if(i===validCustomers.length-1){
-            setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),300);
-          }
+          if(i===valid.length-1)setTimeout(()=>loadWhatsAppReminders(),300);
         },i*700));
-        if(validCustomers.length===0){
-          status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
-        }
+        if(!valid.length) status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
+        else setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),Math.max(300,valid.length*700+300));
       };
-      $("waSendOverdueAll").onclick=()=>overdueRows.forEach((c,i)=>setTimeout(()=>openWhatsApp(c),i*450));
+      $("waSendOverdueAll").onclick=()=>{
+        const valid=overdueRows.filter(c=>getValidWhatsAppNumber(c));
+        valid.forEach((c,i)=>setTimeout(()=>{
+          openWhatsApp(c);
+          if(i===valid.length-1)setTimeout(loadWhatsAppReminders,400);
+        },i*450));
+      };
       $("waRefresh").onclick=loadWhatsAppReminders;
     }catch(err){
       console.error("WhatsApp reminder error:",err);
@@ -1127,8 +1154,6 @@ Your Trust Our Service`;
       overdueList.innerHTML='<div class="wa-empty">Unable to load reminders.</div>';
     }
   }
-
-
   if($("entryDate")) $("entryDate").value=today;
 
   const quickReminder=$("quickReminderOverlay");
@@ -1257,7 +1282,7 @@ Your Trust Our Service`;
   }catch(e){console.error(e);}
 })();
 </script>
-<script src="../js/points-reward-fullscreen.js?v=20260926-1200-rpc-balance"></script>
+<script src="../js/points-reward-fullscreen.js?v=20260929-reminder-v4"></script>
 <script id="itech-unified-live-data-fix">
 (async function(){
   try{

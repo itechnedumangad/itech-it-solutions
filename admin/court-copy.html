@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
@@ -457,7 +454,11 @@ body{
 @media(max-width:1100px){.cc-grid{grid-template-columns:1fr}.cc-toolbar{grid-template-columns:1fr 1fr}.cc-toolbar>*:last-child{grid-column:1/-1}}
 @media(max-width:850px){.cc-form{grid-template-columns:1fr}.cc-full{grid-column:auto}.cc-toolbar{grid-template-columns:1fr}.cc-card{padding:16px}.dash-main{padding:16px!important}}
 </style>
-</head><body><header class="dash-header">
+<style>
+:root{--cc-navy:#071c3b;--cc-blue:#1f5ea8;--cc-orange:#f28a18;--cc-bg:#f4f7fb;--cc-card:#fff;--cc-line:#e1e8f1;--cc-muted:#71809a;--cc-green:#16834b;--cc-red:#c63b3b;--cc-shadow:0 10px 28px rgba(7,28,59,.07)}
+.cc-app{max-width:1180px;margin:0 auto}.cc-hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.cc-hero h1{margin:0;font-size:28px;color:var(--cc-navy)}.cc-hero p{margin:5px 0 0;color:var(--cc-muted);font-size:12px}.cc-pill{padding:8px 11px;border-radius:999px;background:#fff3e3;color:#b45a00;font-size:11px;font-weight:900;white-space:nowrap}.cc-box{background:var(--cc-card);border:1px solid var(--cc-line);border-radius:20px;box-shadow:var(--cc-shadow);padding:18px;margin-bottom:15px}.cc-box h2{font-size:16px;margin:0 0 4px;color:var(--cc-navy)}.cc-sub{font-size:11px;color:var(--cc-muted);margin-bottom:14px}.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cc-field label{display:block;font-size:11px;font-weight:850;color:#3c4b61;margin-bottom:6px}.cc-field input,.cc-field select,.cc-field textarea{width:100%;box-sizing:border-box;border:1px solid #d5dfeb;border-radius:12px;padding:12px;background:#fff;color:#15263f;outline:none}.cc-field input:focus,.cc-field select:focus,.cc-field textarea:focus{border-color:#75a6dc;box-shadow:0 0 0 3px rgba(31,94,168,.08)}.cc-full{grid-column:1/-1}.cc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cc-btn{border:0;border-radius:11px;padding:11px 14px;font-weight:850;cursor:pointer}.cc-primary{background:var(--cc-orange);color:#fff}.cc-blue{background:var(--cc-blue);color:#fff}.cc-soft{background:#edf3f9;color:#173d69}.cc-danger{background:#fff0f0;color:#b92f2f}.cc-status{font-size:12px;margin-top:9px;color:#31506f;min-height:16px}.cc-status.ok{color:var(--cc-green);font-weight:800}.cc-master-list{display:grid;gap:9px;margin-top:12px}.cc-master{border:1px solid var(--cc-line);border-radius:15px;padding:13px;background:#fbfdff}.cc-master-top{display:flex;justify-content:space-between;gap:10px}.cc-name{font-size:14px;font-weight:900;color:var(--cc-navy)}.cc-meta{font-size:11px;color:var(--cc-muted);margin-top:4px}.cc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.cc-chip{padding:6px 9px;border-radius:999px;background:#edf4ff;color:#245a9f;font-size:10px;font-weight:800}.cc-court-row{display:flex;align-items:center;gap:8px}.cc-court-row select{flex:1}.cc-add-court{white-space:nowrap}.cc-statbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.cc-stat{flex:1 1 110px;border:1px solid var(--cc-line);border-radius:13px;padding:10px;background:#fbfdff}.cc-stat small{display:block;color:var(--cc-muted);font-size:10px}.cc-stat b{display:block;margin-top:2px;font-size:18px;color:var(--cc-navy)}.cc-search{position:relative}.cc-search input{padding-left:38px!important}.cc-search span{position:absolute;left:13px;top:11px;color:#8a98aa}.cc-case-card{border:1px solid var(--cc-line);border-radius:17px;padding:14px;margin-top:10px;background:#fff}.cc-case-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.cc-case-title{font-weight:900;color:var(--cc-navy);font-size:13px}.cc-case-meta{font-size:11px;color:var(--cc-muted);margin-top:3px}.cc-case-grid{display:grid;grid-template-columns:1.2fr .7fr .8fr .9fr;gap:9px;margin-top:11px}.cc-status-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900}.cc-pending{background:#fff4d6;color:#916400}.cc-paid{background:#e8f7ee;color:#14753f}.cc-completed{background:#e8f1ff;color:#245a9f}.cc-empty{text-align:center;padding:25px;color:var(--cc-muted);font-size:12px}.cc-toolbar{display:flex;gap:8px;flex-wrap:wrap}.cc-toolbar>*{flex:1 1 180px}.cc-case-list{margin-top:12px}.cc-divider{height:1px;background:var(--cc-line);margin:15px 0}.cc-note{font-size:11px;color:var(--cc-muted)}
+@media(max-width:760px){.dash-main{padding:15px!important}.cc-hero{align-items:flex-start}.cc-hero h1{font-size:24px}.cc-pill{display:none}.cc-grid,.cc-case-grid{grid-template-columns:1fr}.cc-full{grid-column:auto}.cc-box{padding:15px;border-radius:17px}.cc-btn{flex:1 1 auto}.cc-court-row{align-items:stretch;flex-direction:column}.cc-add-court{width:100%}.cc-master-top{align-items:flex-start}.cc-stat{flex-basis:calc(50% - 9px)} }
+</style></head><header class="dash-header">
 <a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a>
 <div class="header-actions">
 <span class="user-chip" data-admin-name="">Admin</span>
@@ -477,24 +478,14 @@ body{
 <a href="amc.html">AMC</a>
 <a href="offers.html">Offers</a>
 <a href="works.html">Our Works</a>
-<a href="messages.html">Messages</a></nav></aside><main class="dash-main">
-<div class="toolbar"><div><p class="eyebrow">COURT COPY</p><h1>Court Copy Management</h1><p class="muted">Add existing customers, sub customers and courts, then review only the selected day's staff updates.</p></div></div>
-<div class="cc-grid">
-<section>
-<div class="cc-card"><h2>Add Customer / Sub Customer</h2><div class="subhead">Use an existing customer. If the customer is not available, add a new customer first.</div>
-<div class="cc-form"><div class="cc-field cc-full"><label>Existing Customer / Add New *</label><select id="customer"></select></div>
-<div id="newCustomerBox" class="cc-full cc-hidden" style="padding:13px;border:1px dashed #d3ddea;border-radius:12px;background:#fafcff"><div class="cc-form"><div class="cc-field"><label>Customer Name *</label><input id="newCustomerName" placeholder="Customer name"></div><div class="cc-field"><label>Mobile Number *</label><input id="newCustomerMobile" inputmode="tel" maxlength="10" placeholder="10 digit mobile"></div></div><div class="cc-actions"><button class="cc-btn cc-primary" id="createCustomer" type="button">Add Customer</button><button class="cc-btn cc-secondary" id="cancelNewCustomer" type="button">Cancel</button></div><div id="newCustomerStatus" class="cc-status"></div></div>
-<div class="cc-field"><label>Advocate Mobile Number *</label><input id="advocateMobile" inputmode="tel" maxlength="10" placeholder="10 digit advocate mobile"></div><div class="cc-field"><label>Sub Customer / Advocate *</label><input id="subName" placeholder="Sub customer / advocate name"></div><div class="cc-field"><label>Court Name *</label><input id="courtName" placeholder="Court name"></div></div>
-<div class="cc-actions"><button class="cc-btn cc-primary" id="saveAssign">Add Customer</button><button class="cc-btn cc-secondary" id="clearAssign">Clear</button></div><div id="assignStatus" class="cc-status"></div></div>
-<div class="cc-card"><h2>Admin Added Customers</h2><div class="subhead">Advocate mobile number is shown first so staff can identify the correct contact quickly.</div><div id="assignments" class="cc-customer-list"></div></div>
-</section>
-<section>
-<div class="cc-card"><h2>Day-wise Staff Updated List</h2><div class="subhead">Only updates for the selected day are shown. Completed tasks stay hidden unless you enable the checkbox.</div>
-<div class="cc-toolbar"><input id="day" type="date"><select id="statusFilter"><option value="">All Updates</option><option value="pending">Pending</option><option value="completed">Completed</option></select><input id="search" placeholder="Search customer / advocate / court / case"><div></div></div>
-<label class="cc-check"><input id="showCompleted" type="checkbox"> Show completed tasks</label>
-<div class="cc-stats"><span class="cc-stat">Updates<b id="count">0</b></span><span class="cc-stat">Copy Payment<b id="copyCount">0</b></span><span class="cc-stat">Completed<b id="doneCount">0</b></span><span class="cc-stat">Stamp<b id="stampTotal">₹0</b></span><span class="cc-stat">Paid<b id="paidTotal">₹0</b></span></div>
-<div class="cc-table-wrap"><table class="cc-table"><thead><tr><th>Customer</th><th>Advocate Mobile</th><th>Advocate / Sub</th><th>Court</th><th>Case</th><th>Application</th><th>Stamp</th><th>Paid</th><th>Copy Payment Today</th><th>Task</th><th>Updated By</th><th>Updated</th></tr></thead><tbody id="rows"></tbody></table></div></div>
-</section></div></main></div><footer class="footer">
+<a href="messages.html">Messages</a></nav></aside><main class="dash-main"><div class="cc-app">
+<div class="cc-hero"><div><p class="eyebrow">COURT COPY</p><h1>Court Copy Quick Entry</h1><p>Admin setup: customer, advocate and court master. All staff can use the added customers.</p></div><span class="cc-pill">ADMIN</span></div>
+<section class="cc-box"><h2>Add / Update Court Copy Customer</h2><div class="cc-sub">Staff assignment is not required. Every staff login will see these customers.</div>
+<div class="cc-grid"><div class="cc-field cc-full"><label>Customer *</label><select id="customer"></select></div><div class="cc-field"><label>Advocate Mobile Number *</label><input id="advocateMobile" inputmode="tel" maxlength="15" placeholder="Advocate mobile"></div><div class="cc-field"><label>Advocate Name *</label><input id="advocateName" placeholder="Advocate name"></div><div class="cc-field cc-full"><label>Court *</label><div class="cc-court-row"><select id="court"></select><button class="cc-btn cc-blue cc-add-court" id="addCourt" type="button">+ Add Court</button></div></div></div>
+<div class="cc-actions"><button class="cc-btn cc-primary" id="saveMaster">Save Customer</button><button class="cc-btn cc-soft" id="clearMaster">Clear</button></div><div id="masterStatus" class="cc-status"></div></section>
+<section class="cc-box"><h2>Court List</h2><div class="cc-sub">These courts are available in the dropdown above.</div><div id="courtList" class="cc-chips"></div></section>
+<section class="cc-box"><div class="cc-hero" style="margin:0"><div><h2>Staff Updated Results</h2><div class="cc-sub" style="margin:3px 0 0">Only selected-day results are shown.</div></div><div class="cc-toolbar" style="max-width:520px"><input id="day" type="date"><input id="search" placeholder="Search customer / advocate / court / case"></div></div><div class="cc-statbar"><div class="cc-stat"><small>Cases</small><b id="count">0</b></div><div class="cc-stat"><small>Paid</small><b id="paidTotal">₹0</b></div><div class="cc-stat"><small>Pending</small><b id="pendingCount">0</b></div><div class="cc-stat"><small>Completed</small><b id="doneCount">0</b></div></div><div id="results" class="cc-case-list"></div></section>
+</div></main><footer class="footer">
   <div class="footer-brand">
     <img class="footer-logo-only" src="../assets/itech-logo.png" alt="iTech">
   </div>
@@ -503,212 +494,13 @@ body{
   <span>itnedumangad@gmail.com</span>
   <span>@itechndd</span>
   <small>Your Trust Our Service</small>
-</footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>(async()=>{
-  'use strict';
-  const auth = await requireAdmin();
-  if(!auth) return;
-
-  const $ = id => document.getElementById(id);
-  const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const money = n => '₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-
-  let customers=[];
-  let maps=[];
-  let updates=[];
-  let profiles=[];
-
-  const today = new Date().toISOString().slice(0,10);
-  $('day').value = today;
-
-  function setStatus(msg, ok=false){
-    const el=$('assignStatus');
-    if(el){ el.textContent=msg||''; el.style.color=ok?'#087a42':'#b42318'; }
-  }
-
-  async function loadCustomers(){
-    const select=$('customer');
-    if(select) select.innerHTML='<option value="">Loading existing customers...</option>';
-    setStatus('Loading existing customers...', true);
-
-    // Use the same Supabase client/authenticated admin session as the working dashboard.
-    // Do NOT depend on court-copy tables or profiles.email.
-    let r = await sb.from('customers')
-      .select('id,full_name,mobile')
-      .order('full_name',{ascending:true})
-      .limit(2000);
-
-    if(r.error){
-      console.error('Court Copy customer query failed:', r.error);
-      if(select) select.innerHTML='<option value="">Unable to load customers</option><option value="__new__">➕ Add New Customer</option>';
-      setStatus('Customer loading failed: '+r.error.message);
-      return false;
-    }
-
-    customers=(r.data||[]).filter(c=>c && c.id);
-    renderCustomerOptions();
-    setStatus(customers.length ? `${customers.length} existing customer(s) loaded.` : 'No existing customers found.', true);
-    return true;
-  }
-
-  async function loadMaps(){
-    const r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});
-    if(r.error) throw r.error;
-    maps=r.data||[];
-  }
-
-  async function loadDay(){
-    const r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',$('day').value).order('updated_at',{ascending:false});
-    if(r.error) throw r.error;
-    updates=r.data||[];
-    profiles=[];
-    const ids=[...new Set(updates.map(x=>x.updated_by).filter(Boolean))];
-    if(ids.length){
-      const p=await sb.from('profiles').select('id,full_name,role').in('id',ids);
-      if(!p.error) profiles=p.data||[];
-    }
-  }
-
-  function renderCustomerOptions(){
-    const select=$('customer');
-    if(!select) return;
-    const old=select.value;
-    select.innerHTML='<option value="">'+(customers.length?'Select existing customer':'No existing customers found')+'</option>'+
-      customers.map(c=>`<option value="${esc(c.id)}">${esc(c.full_name||'Customer')} — ${esc(c.mobile||'')}</option>`).join('')+
-      '<option value="__new__">➕ Add New Customer</option>';
-    if(customers.some(c=>String(c.id)===String(old))) select.value=old;
-  }
-
-  function renderMaps(){
-    const groups=new Map();
-    maps.forEach(m=>{if(!groups.has(m.customer_id))groups.set(m.customer_id,[]);groups.get(m.customer_id).push(m)});
-    $('assignments').innerHTML=[...groups.entries()].map(([cid,list])=>{
-      const c=customers.find(x=>String(x.id)===String(cid));
-      return `<div class="cc-customer"><div class="cc-customer-top"><div><div class="cc-name">${esc(c?.full_name||'Customer')}</div><div class="cc-mobile">Customer Mobile: ${esc(c?.mobile||'')}</div></div></div><div class="cc-meta">${list.map(m=>`<div style="width:100%;padding:9px 10px;border:1px solid #e5ebf3;border-radius:10px;background:#fff"><div style="font-size:12px;font-weight:850;color:#102a4c">📱 Advocate Mobile: ${esc(m.advocate_mobile||'Not set')}</div><div style="font-size:12px;color:#31506f;margin-top:3px">${esc(m.sub_name)} · ${esc(m.court_name)}</div><div style="margin-top:6px"><button class="cc-mini cc-danger" onclick="delMap('${m.id}')">Delete</button></div></div>`).join('')}</div></div>`;
-    }).join('') || '<div class="cc-empty">No customers added to Court Copy yet.</div>';
-  }
-
-  function renderRows(){
-    const q=$('search').value.trim().toLowerCase();
-    const f=$('statusFilter').value;
-    const show=$('showCompleted').checked;
-    const rows=updates.filter(a=>{
-      const c=customers.find(x=>String(x.id)===String(a.customer_id));
-      const txt=[c?.full_name,c?.mobile,a.advocate_mobile,a.case_number,a.application_number,a.court_name,a.sub_name].map(v=>String(v||'').toLowerCase()).join(' ');
-      return (show||!a.task_completed) && (!f||(f==='completed'?a.task_completed:!a.task_completed)) && (!q||txt.includes(q));
-    });
-    let stamp=0,paid=0,copy=0,done=0;
-    rows.forEach(a=>{stamp+=+a.stamp_amount||0;paid+=+a.paid_amount||0;copy+=a.copy_payment_today?1:0;done+=a.task_completed?1:0});
-    $('count').textContent=rows.length;
-    $('copyCount').textContent=copy;
-    $('doneCount').textContent=done;
-    $('stampTotal').textContent=money(stamp);
-    $('paidTotal').textContent=money(paid);
-    $('rows').innerHTML=rows.map(a=>{
-      const c=customers.find(x=>String(x.id)===String(a.customer_id));
-      const p=profiles.find(x=>String(x.id)===String(a.updated_by));
-      return `<tr><td><b>${esc(c?.full_name||'')}</b><br><small>${esc(c?.mobile||'')}</small></td><td><b>${esc(a.advocate_mobile||'')}</b></td><td>${esc(a.sub_name||'')}</td><td>${esc(a.court_name||'')}</td><td>${esc(a.case_number||'')}</td><td>${esc(a.application_number||'')}</td><td>${money(a.stamp_amount)}</td><td>${money(a.paid_amount)}</td><td><span class="cc-badge ${a.copy_payment_today?'cc-paid':'cc-no'}">${a.copy_payment_today?'YES':'NO'}</span></td><td><span class="cc-badge ${a.task_completed?'cc-done':'cc-pending'}">${a.task_completed?'✓ COMPLETED':'PENDING'}</span></td><td>${esc(p?.full_name||'')}</td><td>${esc(a.updated_at?new Date(a.updated_at).toLocaleString('en-IN'):'')}</td></tr>`;
-    }).join('') || '<tr><td colspan="12" class="cc-empty">No updates for this day.</td></tr>';
-  }
-
-  function render(){renderCustomerOptions();renderMaps();renderRows();$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');}
-
-  $('customer').onchange=()=>{$('newCustomerBox').classList.toggle('cc-hidden',$('customer').value!=='__new__');};
-  $('cancelNewCustomer').onclick=()=>{$('customer').value='';$('newCustomerBox').classList.add('cc-hidden');$('newCustomerName').value='';$('newCustomerMobile').value='';$('newCustomerStatus').textContent='';};
-
-  $('createCustomer').onclick=async()=>{
-    const name=$('newCustomerName').value.trim();
-    const mobile=$('newCustomerMobile').value.replace(/\D/g,'');
-    if(!name||mobile.length!==10)return $('newCustomerStatus').textContent='Enter customer name and valid 10 digit mobile number.';
-    let r=await sb.from('customers').select('id,full_name,mobile').eq('mobile',mobile).limit(1);
-    if(r.error)return $('newCustomerStatus').textContent=r.error.message;
-    if(r.data?.length)return $('newCustomerStatus').textContent='Customer with this mobile already exists. Select the existing customer.';
-    r=await sb.from('customers').insert({full_name:name,mobile:mobile}).select('id,full_name,mobile').single();
-    if(r.error)return $('newCustomerStatus').textContent=r.error.message;
-    customers.push(r.data);renderCustomerOptions();$('customer').value=r.data.id;$('newCustomerBox').classList.add('cc-hidden');setStatus('New customer added. Enter Sub Customer and Court Name.',true);
-  };
-
-  $('saveAssign').onclick=async()=>{
-    const cid=$('customer').value;
-    const advocateMobile=$('advocateMobile').value.replace(/\D/g,'');
-    const sub=$('subName').value.trim();
-    const court=$('courtName').value.trim();
-    if(cid==='__new__'||!cid||advocateMobile.length!==10||!sub||!court){setStatus('Select a customer and enter a valid 10 digit Advocate Mobile Number, Sub Customer and Court Name.');return;}
-    const c=customers.find(x=>String(x.id)===String(cid));
-    // Use the SECURITY DEFINER RPC so the add operation is not blocked by table INSERT RLS.
-    const r=await sb.rpc('court_copy_add_assignment',{p_customer_id:cid,p_advocate_mobile:advocateMobile,p_sub_name:sub,p_court_name:court});
-    if(r.error){console.error('Court Copy save error:',r.error);setStatus('Save failed: '+(r.error.message||'Unknown database error'));return;}
-    setStatus('Customer mapping added successfully.',true);$('advocateMobile').value='';$('subName').value='';$('courtName').value='';await loadMaps();render();
-  };
-
-  window.delMap=async id=>{if(!confirm('Delete this customer/sub customer mapping?'))return;const r=await sb.from('court_copy_assignments').delete().eq('id',id);if(r.error)alert(r.error.message);else{await loadMaps();render();}};
-
-  $('day').addEventListener('change',async()=>{try{await loadDay();renderRows();}catch(e){console.error(e);}});
-  $('statusFilter').addEventListener('change',renderRows);
-  $('search').addEventListener('input',renderRows);
-  $('showCompleted').addEventListener('change',renderRows);
-
-  const adminName=document.querySelector('[data-admin-name]');
-  if(adminName) adminName.textContent=auth.profile?.full_name||auth.user?.email||'Admin';
-
-  try{
-    await loadCustomers();
-    try{await loadMaps();}catch(e){console.error('Court Copy mapping load error:',e);setStatus('Customers loaded, but Court Copy mappings could not be loaded: '+e.message);}
-    try{await loadDay();}catch(e){console.error('Court Copy day load error:',e);}
-    render();
-  }catch(e){console.error('Court Copy startup error:',e);setStatus(e.message||'Unable to load Court Copy.');}
-})();</script></script><script data-dashboard-active-nav="">
-(() => {
-  const current = location.pathname.split('/').pop() || 'dashboard.html';
-  document.querySelectorAll('.sidebar nav a').forEach(a => {
-    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-    const file = href.split('/').pop();
-    if (file === current) a.classList.add('active');
-  });
-})();
-</script><script id="itech-mobile-navigation">
-(function(){
-  const header=document.querySelector(".dash-header");
-  const sidebar=document.querySelector(".sidebar");
-  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
-
-  const btn=document.createElement("button");
-  btn.id="uiMobileMenuBtn";
-  btn.className="ui-mobile-menu-btn";
-  btn.type="button";
-  btn.setAttribute("aria-label","Open menu");
-  btn.innerHTML="☰";
-
-  const overlay=document.createElement("div");
-  overlay.className="ui-mobile-overlay";
-
-  const close=document.createElement("button");
-  close.className="ui-mobile-close";
-  close.type="button";
-  close.setAttribute("aria-label","Close menu");
-  close.innerHTML="×";
-
-  sidebar.prepend(close);
-  document.body.appendChild(overlay);
-
-  const brand=header.querySelector(".brand");
-  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
-  else header.insertBefore(btn,header.firstChild);
-
-  function openMenu(){
-    sidebar.classList.add("ui-open");
-    overlay.classList.add("open");
-    document.body.style.overflow="hidden";
-  }
-  function closeMenu(){
-    sidebar.classList.remove("ui-open");
-    overlay.classList.remove("open");
-    document.body.style.overflow="";
-  }
-
-  btn.addEventListener("click",openMenu);
-  close.addEventListener("click",closeMenu);
-  overlay.addEventListener("click",closeMenu);
-  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
-})();
-</script></body></html>
+</footer><script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
+async function load(){let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');if(r.error)throw r.error;customers=r.data||[];r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;maps=r.data||[];courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();renderCustomers();renderCourts();await loadUpdates()}
+function renderCustomers(){ $('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)}${c.mobile?' — '+esc(c.mobile):''}</option>`).join('') }
+function renderCourts(){ $('court').innerHTML='<option value="">Select court</option>'+courts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('courtList').innerHTML=courts.map(c=>`<span class="cc-chip">${esc(c)}</span>`).join('')||'<span class="cc-note">No courts added yet.</span>' }
+$('addCourt').onclick=async()=>{const name=prompt('Enter new court name');if(!name||!name.trim())return;const n=name.trim();if(!courts.includes(n)){courts.push(n);courts.sort();renderCourts()}$('court').value=n};
+$('saveMaster').onclick=async()=>{const cid=$('customer').value,mob=$('advocateMobile').value.trim(),adv=$('advocateName').value.trim(),court=$('court').value;if(!cid||!mob||!adv||!court){$('masterStatus').textContent='Customer, Advocate Mobile, Advocate Name and Court are required.';return}const existing=maps.find(x=>x.customer_id===cid&&x.court_name===court);const p={customer_id:cid,advocate_mobile:mob,sub_name:adv,court_name:court,staff_id:null,created_by:auth.user.id};let r=existing?await sb.from('court_copy_assignments').update(p).eq('id',existing.id):await sb.from('court_copy_assignments').insert(p);if(r.error){$('masterStatus').textContent=r.error.message;return}$('masterStatus').textContent='Saved successfully.';$('masterStatus').className='cc-status ok';$('advocateMobile').value='';$('advocateName').value='';$('customer').value='';$('court').value='';await load()};
+$('clearMaster').onclick=()=>{$('customer').value='';$('advocateMobile').value='';$('advocateName').value='';$('court').value='';$('masterStatus').textContent=''};
+async function loadUpdates(){const d=$('day').value||today;let r=await sb.from('court_copy_daily_updates').select('*').eq('work_date',d).order('created_at',{ascending:false});if(r.error){console.error(r);return}updates=r.data||[];renderResults()}
+function renderResults(){const q=$('search').value.trim().toLowerCase();const rows=updates.filter(a=>{const c=customers.find(x=>x.id===a.customer_id);return !q||[c?.full_name,c?.mobile,a.sub_name,a.advocate_mobile,a.court_name,a.case_number,a.notes].some(v=>String(v||'').toLowerCase().includes(q))});let paid=0,done=0;rows.forEach(a=>{paid+=+a.paid_amount||0;done+=a.task_completed?1:0});$('count').textContent=rows.length;$('paidTotal').textContent=money(paid);$('pendingCount').textContent=rows.filter(a=>!a.task_completed).length;$('doneCount').textContent=done;$('results').innerHTML=rows.map(a=>{const c=customers.find(x=>x.id===a.customer_id);return `<div class="cc-case-card"><div class="cc-case-head"><div><div class="cc-case-title">${esc(c?.full_name||'Customer')} · ${esc(a.case_number||'No Case')}</div><div class="cc-case-meta">${esc(a.advocate_mobile||'')} · ${esc(a.sub_name||'')} · ${esc(a.court_name||'')}</div></div><span class="cc-status-badge ${a.task_completed?'cc-completed':a.paid_amount>0?'cc-paid':'cc-pending'}">${a.task_completed?'COMPLETED':a.paid_amount>0?'PAID':'NOT PAID'}</span></div><div class="cc-meta" style="margin-top:10px"><span class="cc-chip">Year: ${esc(a.case_year||'')}</span><span class="cc-chip">Amount: ${money(a.amount??a.stamp_amount)}</span><span class="cc-chip">Paid: ${money(a.paid_amount)}</span><span class="cc-chip">By: ${esc(a.updated_by_name||a.updated_by||'Staff')}</span></div><div class="cc-note" style="margin-top:8px">Notes: ${esc(a.notes||'')}</div></div>`}).join('')||'<div class="cc-empty">No entries for this day.</div>'}
+$('day').onchange=loadUpdates;$('search').oninput=renderResults;load().catch(e=>{$('masterStatus').textContent=e.message||'Unable to load Court Copy.'})})();</script></body></html>

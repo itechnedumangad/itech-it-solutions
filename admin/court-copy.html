@@ -73,6 +73,8 @@
     width:52px;height:52px;
   }
 }
+
+.cc-customer-list .cc-customer{border:1px solid #dbe5f2;border-radius:12px;padding:12px;background:#fff}.cc-customer-list .cc-customer-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.cc-customer-list .cc-update-btn{border:0;border-radius:8px;padding:7px 12px;background:#edf4ff;color:#1856a8;font-weight:700;cursor:pointer}@media(max-width:700px){.cc-customer-list .cc-customer>div:last-child{grid-template-columns:1fr!important}}
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
@@ -428,10 +430,9 @@ body{
 <section class="cc-box"><h2>Add / Update Court Copy Customer</h2><div class="cc-sub">Staff assignment is not required. Every staff login will see these customers.</div>
 <div class="cc-grid"><div class="cc-field cc-full"><label>Customer *</label><select id="customer"></select></div><div class="cc-field"><label>Advocate Mobile Number *</label><input id="advocateMobile" inputmode="tel" maxlength="15" placeholder="Advocate mobile"></div><div class="cc-field"><label>Advocate Name *</label><input id="advocateName" placeholder="Advocate name"></div><div class="cc-field cc-full"><label>Court *</label><div class="cc-court-row"><select id="court"></select><button class="cc-btn cc-blue cc-add-court" id="addCourt" type="button">+ Add Court</button></div></div></div>
 <div class="cc-actions"><button class="cc-btn cc-primary" id="saveMaster">Save Customer</button><button class="cc-btn cc-soft" id="clearMaster">Clear</button></div><div id="masterStatus" class="cc-status"></div></section>
-<section class="cc-box"><h2>Court List</h2><div class="cc-sub">These courts are available in the dropdown above.</div><div id="courtList" class="cc-chips"></div></section>
+<section class="cc-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h2>Court Copy Added Customers</h2><div class="cc-sub">Customers already added to Court Copy. Admin can identify customer, advocate, court and who added the entry.</div></div><button class="cc-btn cc-soft" id="refreshCustomers" type="button">↻ Refresh</button></div><div id="configuredList" class="cc-customer-list" style="margin-top:12px"></div></section>
 <section class="cc-box"><div class="cc-hero" style="margin:0"><div><h2>Staff Updated Results</h2><div class="cc-sub" style="margin:3px 0 0">Only selected-day results are shown.</div></div><div class="cc-toolbar" style="max-width:520px"><input id="day" type="date"><input id="search" placeholder="Search customer / advocate / court / case"></div></div><div class="cc-statbar"><div class="cc-stat"><small>Cases</small><b id="count">0</b></div><div class="cc-stat"><small>Paid</small><b id="paidTotal">₹0</b></div><div class="cc-stat"><small>Pending</small><b id="pendingCount">0</b></div><div class="cc-stat"><small>Completed</small><b id="doneCount">0</b></div></div><div id="results" class="cc-case-list"></div></section>
 </div></main>
-</div>
 <style id="itech-court-footer-fix">
 .site-footer,.unified-site-footer{
   width:100%;
@@ -476,29 +477,12 @@ body{
   .site-footer .footer-logo,.unified-site-footer .footer-logo{width:135px;max-height:62px}
 }
 </style>
-<style id="court-copy-footer-final-fix">
-html,body{width:100%;min-height:100%;margin:0;padding:0;}
-body{display:block!important;overflow-x:hidden;}
-.dash-header{width:100%;box-sizing:border-box;}
-.dash-layout{width:100%;box-sizing:border-box;display:flex;min-height:calc(100vh - 74px);}
-.dash-main{min-width:0;box-sizing:border-box;}
-.site-footer.unified-site-footer,.unified-site-footer.site-footer{
-  position:relative!important;
-  left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
-  float:none!important;
-  clear:both!important;
-  display:flex!important;
-  width:100%!important;
-  max-width:none!important;
-  min-width:0!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-  transform:none!important;
-  flex:none!important;
-}
-@media(max-width:720px){.site-footer.unified-site-footer,.unified-site-footer.site-footer{width:100%!important;}}
-</style>
 
+<style id="court-copy-footer-role-fix">
+html,body{width:100%;min-height:100%;}
+body{overflow-x:hidden;}
+.site-footer,.unified-site-footer{position:relative!important;left:auto!important;right:auto!important;float:none!important;clear:both!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;transform:none!important;box-sizing:border-box!important;display:flex!important;}
+</style>
 <footer class="site-footer unified-site-footer">
   <div class="footer-brand"><img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></div>
   <p>Govt. Sub Treasury Road, Nedumangad</p>
@@ -507,16 +491,25 @@ body{display:block!important;overflow-x:hidden;}
   <p>@itechndd</p>
   <p class="orange-text">Your Trust, Our Service</p>
 </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js"></script>
-<script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/global-search.js"></script>
 <script>(async()=>{const auth=await requireAdmin();if(!auth)return;const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});let customers=[],maps=[],courts=[],editing=null,updates=[];const today=new Date().toISOString().slice(0,10);$('day').value=today;document.querySelector('[data-admin-name]').textContent=auth.profile?.full_name||auth.user.email||'Admin';
-async function load(){let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');if(r.error)throw r.error;customers=r.data||[];renderCustomers();r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});if(r.error){console.error('Court assignments load error:',r.error);maps=[];courts=[];renderCourts();$('masterStatus').textContent='Customers loaded. Court master could not be loaded: '+r.error.message;return}maps=r.data||[];courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();renderCourts();await loadUpdates()}
+async function load(){
+  let r=await sb.from('customers').select('id,full_name,mobile').order('full_name');
+  if(r.error){$('masterStatus').textContent='Unable to load Admin customers: '+r.error.message;return}
+  customers=r.data||[];
+  renderCustomers();
+  r=await sb.from('court_copy_assignments').select('*').order('created_at',{ascending:false});
+  if(r.error){console.error('Court assignments load error:',r.error);maps=[];courts=[];renderCourts();$('masterStatus').textContent='Customers loaded. Court master could not be loaded: '+r.error.message;await loadUpdates();return}
+  maps=r.data||[];courts=[...new Set(maps.map(x=>x.court_name).filter(Boolean))].sort();renderCourts();await renderConfiguredList();await loadUpdates()
+}
 function renderCustomers(){ $('customer').innerHTML='<option value="">Select customer</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.full_name)}${c.mobile?' — '+esc(c.mobile):''}</option>`).join('') }
-function renderCourts(){ $('court').innerHTML='<option value="">Select court</option>'+courts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('courtList').innerHTML=courts.map(c=>`<span class="cc-chip">${esc(c)}</span>`).join('')||'<span class="cc-note">No courts added yet.</span>' }
+async function renderConfiguredList(){
+  const el=$('configuredList'); if(!el)return;
+  if(!maps.length){el.innerHTML='<div class="cc-empty">No Court Copy customers have been added yet.</div>';return}
+  el.innerHTML=maps.map(x=>{const c=customers.find(c=>c.id===x.customer_id)||{};const who='Admin';const when=x.created_at?new Date(x.created_at).toLocaleString('en-IN'):'';return `<div class="cc-customer" style="margin-bottom:10px"><div class="cc-customer-top"><div><div class="cc-name">${esc(c.full_name||x.customer_name||'Customer')}</div><div class="cc-mobile">${esc(c.mobile||'')}</div></div><button class="cc-update-btn" type="button" data-customer-id="${x.customer_id||''}" data-court="${esc(x.court_name||'')}">Select</button></div><div style="margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:12px"><div><strong>Advocate:</strong> ${esc(x.sub_name||'')}</div><div><strong>Court:</strong> ${esc(x.court_name||'')}</div><div><strong>Added by:</strong> ${esc(who)}${when?' · '+esc(when):''}</div></div></div>`}).join('');
+  el.querySelectorAll('[data-customer-id]').forEach(btn=>btn.onclick=()=>{$('customer').value=btn.dataset.customerId;$('customer').dispatchEvent(new Event('change'));$('court').value=btn.dataset.court||'';window.scrollTo({top:0,behavior:'smooth'});});
+}
+$('refreshCustomers')?.addEventListener('click',load);
+function renderCourts(){ $('court').innerHTML='<option value="">Select court</option>'+courts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('') }
 $('addCourt').onclick=async()=>{const name=prompt('Enter new court name');if(!name||!name.trim())return;const n=name.trim();if(!courts.includes(n)){courts.push(n);courts.sort();renderCourts()}$('court').value=n};
 $('saveMaster').onclick=async()=>{const cid=$('customer').value,mob=$('advocateMobile').value.trim(),adv=$('advocateName').value.trim(),court=$('court').value;if(!cid||!mob||!adv||!court){$('masterStatus').textContent='Customer, Advocate Mobile, Advocate Name and Court are required.';return}const existing=maps.find(x=>x.customer_id===cid&&x.court_name===court);const p={customer_id:cid,advocate_mobile:mob,sub_name:adv,court_name:court,staff_id:null,created_by:auth.user.id};let r=existing?await sb.from('court_copy_assignments').update(p).eq('id',existing.id):await sb.from('court_copy_assignments').insert(p);if(r.error){$('masterStatus').textContent=r.error.message;return}$('masterStatus').textContent='Saved successfully.';$('masterStatus').className='cc-status ok';$('advocateMobile').value='';$('advocateName').value='';$('customer').value='';$('court').value='';await load()};
 $('clearMaster').onclick=()=>{$('customer').value='';$('advocateMobile').value='';$('advocateName').value='';$('court').value='';$('masterStatus').textContent=''};

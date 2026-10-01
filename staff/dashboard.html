@@ -808,6 +808,7 @@ body{
     $("description").value="";
     if($("entryDate")) $("entryDate").value=today;
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
+    if(window.itechResetQuickPaymentMode) window.itechResetQuickPaymentMode();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
@@ -1317,6 +1318,6 @@ body{
 })();
 </script>
 
-<script src="../js/daily-cash-account-control.js?v=20260929-3"></script>
+<script src="../js/daily-cash-account-control.js?v=20261001-1"></script>
 </body>
 </html>

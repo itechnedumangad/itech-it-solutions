@@ -11,7 +11,22 @@
   // enforcement starts from 29-09-2026 (the next day after the current setup).
   const CONTROL_START_DATE = '2026-09-29';
   const isControlActive = (date=today()) => date >= CONTROL_START_DATE;
-  window.itechQuickPaymentMethod = () => document.querySelector('input[name="itechPaidMode"]:checked')?.value || document.getElementById('itechPaidToggle')?.dataset?.mode || 'Cash';
+  window.itechQuickPaymentMethod = () => document.querySelector('input[name="itechPaidMode"]:checked')?.value || document.getElementById('itechPaymentMode')?.dataset?.mode || document.getElementById('itechPaidToggle')?.dataset?.mode || 'Cash';
+  // Quick Daily Work Entry always starts the next entry in Cash mode.
+  // After a GPay entry is saved, clearForm() calls this so the next entry
+  // automatically returns to Cash without changing the saved transaction.
+  window.itechResetQuickPaymentMode = () => {
+    const m = document.getElementById('itechPaymentMode');
+    if (!m) return;
+    m.dataset.mode = 'Cash';
+    const cash = m.querySelector('input[name="itechPaidMode"][value="Cash"]');
+    const gpay = m.querySelector('input[name="itechPaidMode"][value="GPay"]');
+    if (cash) cash.checked = true;
+    if (gpay) gpay.checked = false;
+    m.querySelectorAll('button[data-mode]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === 'Cash');
+    });
+  };
   const userId = async()=>{ try{return (await sb.auth.getUser()).data?.user?.id||null}catch(_){return null} };
 
   async function rpcAutoClose(){ try{ await sb.rpc('itech_auto_close_stale_days'); }catch(e){ console.warn('Daily auto-close:',e?.message||e); } }

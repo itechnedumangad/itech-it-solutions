@@ -1018,7 +1018,33 @@ body{
 
   function buildPaymentMessage(c){
     const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
-    return `Hello ${c.full_name||"Customer"},\n\n*iTech IT Solutions — Payment Reminder*\n\n*Date: ${reminderDate}*\nOld Balance: ${money(c.oldBalance)}\nToday's Work: ${money(c.todayWork)}\nPaid Today: ${money(c.todayPaid)}\n*Total Balance: ${money(c.totalBalance)}*\n\nPlease contact us for any clarification.\n\nThank you for choosing iTech IT Solutions.\nYour Trust Our Service`;
+    const balance=Number(c.totalBalance||0);
+    const balanceText=money(balance);
+    // If a payment was entered today, send only the payment confirmation.
+    if(Number(c.todayPaid||0)>0){
+      return `Hello ${c.full_name||"Customer"},
+
+*iTech IT Solutions — Payment Received*
+
+*Date: ${reminderDate}*
+Paid Today: ${money(c.todayPaid)}
+Balance: ${balanceText}
+
+iTech IT Solutions
+Your Trust Our Service`;
+    }
+    // Otherwise send the work notification/reminder.
+    return `Hello ${c.full_name||"Customer"},
+
+*iTech IT Solutions — Today's Work*
+
+*Date: ${reminderDate}*
+Today's Work: ${money(c.todayWork)}
+Previous Balance: ${money(c.oldBalance)}
+*Balance: ${balanceText}*
+
+Thank you for choosing iTech IT Solutions.
+Your Trust Our Service`;
   }
 
   /*
@@ -1138,8 +1164,8 @@ body{
       (ph.data||[]).forEach(r=>{const id=String(r.customer_id);if(!r.payment_date)return;const d=new Date(String(r.payment_date)+"T23:59:59");if(!last.has(id)||d>last.get(id))last.set(id,d);});
 
       const customersWithData=(cu.data||[]).map(c=>{
-        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
-        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+        const id=String(c.id),balance=Number(balances.get(id)||0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:balance-w+p,todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
       });
 
       const todayRows=customersWithData.filter(c=>(c.todayWork>0||c.todayPaid>0)&&!isReminderSent(c))

@@ -2,7 +2,6 @@
 
 <html lang="en">
 <head>
-
 <link rel="stylesheet" href="/css/modern-v2-fullsite.css">
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
@@ -420,8 +419,7 @@ body{
 @media(max-width:850px) { .customer-paid { grid-template-columns:1fr; } }
 @media(max-width:620px) { .quick-entry { padding:18px; } .entry-main { padding:12px; } }
 </style>
-
-    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
@@ -1030,41 +1028,43 @@ body{
    * signature changes and the customer becomes eligible again.
    * localStorage keeps the state across page refreshes on this device.
    */
-  function reminderSentKey(customerId){
-    return "itech_wa_reminder_sent_v3_" + String(customerId||"");
+  let __itechWaSentMap = new Map();
+  async function loadSharedReminderStatus(){
+    __itechWaSentMap = new Map();
+    try{
+      const r = await sb.from("whatsapp_reminder_logs").select("customer_id,activity_signature");
+      if(r.error){ console.warn("Shared WhatsApp reminder status:", r.error.message); return; }
+      (r.data||[]).forEach(x=>__itechWaSentMap.set(String(x.customer_id), String(x.activity_signature||"")));
+    }catch(e){ console.warn("Shared WhatsApp reminder status:", e); }
   }
   function activitySignature(c){
-    const last=c && c.lastActivity ? new Date(c.lastActivity).getTime() : 0;
-    return [
-      Number(c?.todayWork||0).toFixed(2),
-      Number(c?.todayPaid||0).toFixed(2),
-      Number(c?.totalBalance||0).toFixed(2),
-      Number.isFinite(last)?last:0
-    ].join("|");
+    const last = c && c.lastActivity ? new Date(c.lastActivity).getTime() : 0;
+    return [Number(c?.todayWork||0).toFixed(2),Number(c?.todayPaid||0).toFixed(2),Number(c?.totalBalance||0).toFixed(2),Number.isFinite(last)?last:0].join("|");
   }
   function isReminderSent(c){
-    try{
-      const raw=localStorage.getItem(reminderSentKey(c?.id));
-      if(!raw) return false;
-      const saved=JSON.parse(raw);
-      return !!(saved && saved.signature===activitySignature(c));
-    }catch(e){ return false; }
+    return __itechWaSentMap.get(String(c?.id||"")) === activitySignature(c);
   }
-  function markReminderSent(c){
+  async function markReminderSent(c){
     try{
-      localStorage.setItem(reminderSentKey(c?.id),JSON.stringify({
-        signature:activitySignature(c),
-        sentAt:new Date().toISOString()
-      }));
-    }catch(e){}
+      const user = await sb.auth.getUser();
+      const sentBy = user?.data?.user?.id || null;
+      const signature = activitySignature(c);
+      const r = await sb.from("whatsapp_reminder_logs").upsert({
+        customer_id:c.id, activity_signature:signature, sent_at:new Date().toISOString(), sent_by:sentBy
+      },{onConflict:"customer_id"});
+      if(r.error) throw r.error;
+      __itechWaSentMap.set(String(c.id), signature);
+      return true;
+    }catch(e){
+      console.error("Unable to save shared WhatsApp reminder status:",e);
+      return false;
+    }
   }
-
-  function openWhatsApp(c){
+  async function openWhatsApp(c){
     const phone=getValidWhatsAppNumber(c);
     if(!phone) return false;
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
-    markReminderSent(c);
-    return true;
+    return await markReminderSent(c);
   }
 
   function renderWaList(el,rows,emptyText){
@@ -1079,9 +1079,9 @@ body{
         <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
       </div>`).join("");
 
-    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>{
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",async()=>{
       const customer=rows[Number(b.dataset.waIndex)];
-      if(!openWhatsApp(customer)) return;
+      if(!(await openWhatsApp(customer))) return;
       const row=b.closest(".wa-customer");
       if(row) row.remove();
       const countEl=el===document.getElementById("waTodayList")
@@ -1117,6 +1117,7 @@ body{
     if(!todayList||!overdueList)return;
     todayList.innerHTML='<div class="wa-empty">Loading…</div>';
     overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+    await loadSharedReminderStatus();
 
     try{
       const [cu,ba,tw,tp,wh,ph]=await Promise.all([
@@ -1156,8 +1157,8 @@ body{
         let processed=0,skipped=0;
         const valid=todayRows.filter(c=>getValidWhatsAppNumber(c));
         skipped=todayRows.length-valid.length;
-        valid.forEach((c,i)=>setTimeout(()=>{
-          if(openWhatsApp(c)) processed++;
+        valid.forEach((c,i)=>setTimeout(async()=>{
+          if(await openWhatsApp(c)) processed++;
           if(i===valid.length-1)setTimeout(()=>loadWhatsAppReminders(),300);
         },i*700));
         if(!valid.length) status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
@@ -1165,7 +1166,7 @@ body{
       };
       $("waSendOverdueAll").onclick=()=>{
         const valid=overdueRows.filter(c=>getValidWhatsAppNumber(c));
-        valid.forEach((c,i)=>setTimeout(()=>{
+        valid.forEach((c,i)=>setTimeout(async()=>{
           openWhatsApp(c);
           if(i===valid.length-1)setTimeout(loadWhatsAppReminders,400);
         },i*450));

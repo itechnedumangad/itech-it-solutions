@@ -528,11 +528,10 @@
 
         <div class="status-check">
           <div class="status-check-head"><div class="status-check-title">Service Status Check</div><div class="status-check-badge">ONLINE</div></div>
-          <div class="status-check-text">Service status, latest updates and job progress അറിയാൻ താഴെ നൽകിയിരിക്കുന്ന website സന്ദർശിക്കുക.</div>
-          <a class="status-check-link" href="https://itnedumangad.online">https://itnedumangad.online</a>
+          <div class="status-check-text">Service status, latest updates, and job progress അറിയാൻ website തുറന്ന് Service Status Check-ൽ താഴെ നൽകിയിരിക്കുന്ന Job ID നൽകുക. Login ID / Password ആവശ്യമില്ല.</div>
+          <a class="status-check-link" href="https://itnedumangad.online/#serviceTracking">https://itnedumangad.online/#serviceTracking</a>
           <div class="login-grid">
-            <div class="login-card"><div class="label">User ID</div><div class="login-value">${esc(c.mobile||'Customer Mobile Number')}</div></div>
-            <div class="login-card"><div class="label">Password</div><div class="login-value">________________</div></div>
+            <div class="login-card" style="grid-column:1/-1"><div class="label">Your Service Job ID</div><div class="login-value">${esc(j.job_number||'Job ID not available')}</div></div>
           </div>
         </div>
 
@@ -554,11 +553,10 @@
 
         <div class="status-check" style="margin-top:10px">
           <div class="status-check-head"><div class="status-check-title">Service Status Check</div><div class="status-check-badge">ONLINE</div></div>
-          <div class="status-check-text">Check your service/job status online using the website and login details provided by iTech IT Solutions.</div>
-          <a class="status-check-link" href="https://itnedumangad.online">https://itnedumangad.online</a>
+          <div class="status-check-text">To check your service status and latest updates, open the website and enter the Service Job ID shown below in Service Status Check. No login ID or password is required.</div>
+          <a class="status-check-link" href="https://itnedumangad.online/#serviceTracking">https://itnedumangad.online/#serviceTracking</a>
           <div class="login-grid">
-            <div class="login-card"><div class="label">User ID</div><div class="login-value">${esc(c.mobile||'Customer Mobile Number')}</div></div>
-            <div class="login-card"><div class="label">Password</div><div class="login-value">________________</div></div>
+            <div class="login-card" style="grid-column:1/-1"><div class="label">Your Service Job ID</div><div class="login-value">${esc(j.job_number||'Job ID not available')}</div></div>
           </div>
         </div>
 

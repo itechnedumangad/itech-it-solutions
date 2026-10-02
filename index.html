@@ -731,6 +731,28 @@ body{
 }
 </script>
 
+
+<style>
+#serviceTracking .service-track-card{background:#f4f8ff;border:1px solid #d8e3f2;border-radius:18px;padding:30px;text-align:center}
+#serviceTracking .service-track-card h2{color:#10284b;margin:8px 0}
+#serviceTracking .service-track-form{display:flex;gap:10px;max-width:760px;margin:18px auto 0}
+#serviceTracking .service-track-form input{flex:1;min-width:0;padding:15px;border:1px solid #b9c9df;border-radius:12px;background:#fff;color:#10284b;font:inherit}
+#serviceTracking .service-track-form input:focus{outline:2px solid #9bbcff;border-color:#1769ff}
+#serviceTracking .service-track-form button{border:0;cursor:pointer;white-space:nowrap}
+#serviceTracking .service-track-form button:disabled{opacity:.65;cursor:wait}
+#serviceTracking .service-track-message{min-height:22px;margin:12px 0 0;color:#64748b}
+#serviceTracking .service-track-message.error{color:#b42318}
+#serviceTracking .service-track-result{max-width:760px;margin:20px auto 0;padding:20px;text-align:left;background:#fff;border:1px solid #d8e3f2;border-radius:14px;color:#10284b;overflow-wrap:anywhere}
+.service-track-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.service-track-item{padding:12px;background:#f4f8ff;border-radius:10px}
+.service-track-item small{display:block;color:#64748b;margin-bottom:5px}
+.service-track-item strong{color:#10284b}
+.service-track-history{padding-left:20px}
+.service-track-history li{margin:10px 0;line-height:1.5}
+.service-track-status{display:inline-block;padding:6px 12px;border-radius:20px;background:#fff0dc;color:#9a4b00;font-weight:700}
+@media(max-width:600px){#serviceTracking .service-track-card{padding:20px 14px}#serviceTracking .service-track-form{flex-direction:column}#serviceTracking .service-track-form button{width:100%}.service-track-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -879,6 +901,22 @@ body{
 </article>
 </div>
 </section>
+
+<!-- iTech Service Tracking: results appear on this page -->
+<section class="container home-section" id="serviceTracking">
+  <div class="service-track-card">
+    <p class="eyebrow">iTECH SERVICE SUPPORT</p>
+    <h2>Track Your Service</h2>
+    <p class="muted">Enter your Service Job ID to view the latest status and service history.</p>
+    <form id="serviceTrackForm" class="service-track-form">
+      <input id="serviceTrackJobId" type="text" placeholder="Example: SRV-2026-965676" aria-label="Service Job ID" required>
+      <button class="btn primary" type="submit" id="serviceTrackButton">Track Service</button>
+    </form>
+    <p id="serviceTrackMessage" class="service-track-message" aria-live="polite"></p>
+    <div id="serviceTrackResult" class="service-track-result" hidden></div>
+  </div>
+</section>
+
 <section class="container home-section">
 <div class="home-heading">
 <p class="eyebrow">WHY CHOOSE ITECH</p>
@@ -956,6 +994,42 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/config.js"></script>
 <script src="js/site.js"></script>
+
+<script>
+(function(){
+  const form=document.getElementById('serviceTrackForm');
+  if(!form)return;
+  const input=document.getElementById('serviceTrackJobId');
+  const button=document.getElementById('serviceTrackButton');
+  const message=document.getElementById('serviceTrackMessage');
+  const result=document.getElementById('serviceTrackResult');
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function msg(text,error){message.textContent=text;message.classList.toggle('error',!!error);}
+  function date(v){if(!v)return 'Not available';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});}
+  function client(){
+    const configs=[window.APP_CONFIG,window.SUPABASE_CONFIG,window.supabaseConfig,window.config].filter(Boolean);
+    let url=window.SUPABASE_URL||'',key=window.SUPABASE_ANON_KEY||window.SUPABASE_PUBLISHABLE_KEY||window.SUPABASE_KEY||'';
+    configs.forEach(c=>{url=url||c.SUPABASE_URL||c.supabaseUrl||c.url||'';key=key||c.SUPABASE_PUBLISHABLE_KEY||c.SUPABASE_ANON_KEY||c.SUPABASE_KEY||c.supabaseKey||c.anonKey||'';});
+    if(!url||!key||!window.supabase)throw new Error('Supabase configuration missing');
+    return window.supabase.createClient(url,key);
+  }
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();const job=input.value.trim();if(!job){msg('Service Job ID നൽകുക.',true);return;}
+    button.disabled=true;button.textContent='Searching...';result.hidden=true;msg('Service details പരിശോധിക്കുന്നു...',false);
+    try{
+      const {data,error}=await client().rpc('public_track_service_job',{p_job_number:job});
+      if(error)throw error;
+      if(!data||!data.job_number){msg('ഈ Job ID കണ്ടെത്താനായില്ല. ID വീണ്ടും പരിശോധിക്കുക.',true);return;}
+      const history=Array.isArray(data.status_history)?data.status_history:[];
+      const historyHTML=history.length?history.map(x=>`<li><strong>${esc(x.status||x.new_status||'Update')}</strong>${(x.at||x.created_at||x.timestamp)?`<br><small>${esc(date(x.at||x.created_at||x.timestamp))}</small>`:''}${(x.note||x.notes)?`<p>${esc(x.note||x.notes)}</p>`:''}</li>`).join(''):'<li>No additional status history is available.</li>';
+      result.innerHTML=`<h3>Service Details</h3><p>Job ID: <strong>${esc(data.job_number)}</strong></p><p>Current Status: <span class="service-track-status">${esc(data.status||'Received')}</span></p><div class="service-track-grid"><div class="service-track-item"><small>Device</small><strong>${esc(data.device_type||'Not specified')}</strong></div><div class="service-track-item"><small>Brand / Model</small><strong>${esc([data.brand,data.model].filter(Boolean).join(' ')||'Not specified')}</strong></div><div class="service-track-item"><small>Job Received</small><strong>${esc(date(data.created_at))}</strong></div><div class="service-track-item"><small>Last Updated</small><strong>${esc(date(data.updated_at))}</strong></div></div><h3>Status History</h3><ol class="service-track-history">${historyHTML}</ol>`;
+      result.hidden=false;msg('Service details ലഭിച്ചു.',false);
+    }catch(err){console.error('Service tracking error:',err);msg('വിവരങ്ങൾ ലഭിച്ചില്ല. Supabase function, table columns, permissions എന്നിവ പരിശോധിക്കുക.',true);}
+    finally{button.disabled=false;button.textContent='Track Service';}
+  });
+})();
+</script>
+
 <script>
 (async function(){
 

@@ -308,7 +308,7 @@ body{
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-</head><body>
+<style id="daily-work-hide-entry-form">.quick-title:has(+ .quick-sub){} .entry-layout,.bottom-row,.status-box{display:none!important} body:has(#customerSearch) .dashboard-card:has(#customerSearch){display:none!important}</style></head><body>
 <header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></header>
 <div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
 <a href="customers.html">Customers</a>
@@ -389,15 +389,19 @@ body{
 <section class="dashboard-card daily-entries-card" style="margin-top:18px;padding:20px;">
 <div class="quick-title" style="justify-content:space-between;">
 <div style="display:flex;align-items:center;gap:10px;">
-<span class="bolt">📋</span><h2>Today's Entries</h2>
+<span class="bolt">📋</span><h2>All Daily Work Entries</h2>
 </div>
-<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="btn-clear" id="syncSheetEntries" type="button">📥 Sync Sheet</button><button class="btn-clear" id="refreshDailyEntries" type="button">↻ Refresh</button></div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+<label for="dailyEntriesDateFilter" style="font-size:13px;font-weight:700;color:#526783">Day-wise report</label>
+<input id="dailyEntriesDateFilter" type="date" aria-label="Filter entries by work date" style="padding:9px 10px;border:1px solid #ccd7e6;border-radius:9px;background:#fff;color:#12345b" />
+<button class="btn-clear" id="clearDailyEntriesDate" type="button">All Days</button>
+<button class="btn-clear" id="refreshDailyEntries" type="button">↻ Refresh</button></div>
 </div>
-<p class="quick-sub" style="margin-bottom:14px;">All Quick Work Entries for the selected date.</p>
+<p class="quick-sub" style="margin-bottom:14px;">Day-wise report of all saved entries. Staff can edit today’s entries; Admin can edit entries from any date. Every edit records who changed it and why.</p>
 <div class="table-scroll">
 <table class="data-table" id="dailyEntriesTable">
-<thead><tr><th>Time</th><th>Customer</th><th>E-Filing</th><th>E-Payment</th><th>Print</th><th>Scanning</th><th>Other Works</th><th>Total</th><th>Paid</th><th>Balance</th></tr></thead>
-<tbody id="dailyEntriesRows"><tr><td colspan="10">Loading…</td></tr></tbody>
+<thead><tr><th>Time</th><th>Customer</th><th>E-Filing</th><th>E-Payment</th><th>Print</th><th>Scanning</th><th>Other Works</th><th>Total</th><th>Paid</th><th>Balance</th><th>Last Edited</th><th>Actions</th></tr></thead>
+<tbody id="dailyEntriesRows"><tr><td colspan="12">Loading…</td></tr></tbody>
 </table>
 </div>
 </section></main></div>
@@ -1133,43 +1137,59 @@ Your Trust Our Service`;
 </script>
 <script id="daily-work-entries-loader">
 (async()=>{
-  const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[m]));
-  const $=id=>document.getElementById(id);
-  function dateValue(){ return $("entryDate")?.value || new Date().toISOString().slice(0,10); }
-  async function loadDailyEntries(){
-    const tbody=$("dailyEntriesRows"); if(!tbody||typeof sb==="undefined") return;
-    tbody.innerHTML='<tr><td colspan="10">Loading…</td></tr>';
-    try{
-      const d=dateValue();
-      const r=await sb.from("daily_work_entries")
-        .select("id,created_at,customer_id,e_filing,e_payment,print_amount,scanning,other_works,paid_amount,description,entered_by")
-        .eq("work_date",d)
-        .order("created_at",{ascending:false});
-      if(r.error) throw r.error;
-      const rows=r.data||[];
-      const ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean).map(String))];
-      const pids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean).map(String))];
-      let customers=[],profiles=[];
-      if(ids.length){ const c=await sb.from("customers").select("id,full_name,mobile").in("id",ids); if(c.error) throw c.error; customers=c.data||[]; }
-      if(pids.length){ const p=await sb.from("profiles").select("id,full_name,role").in("id",pids); if(!p.error) profiles=p.data||[]; }
-      const cm=new Map(customers.map(c=>[String(c.id),c]));
-      const pm=new Map(profiles.map(p=>[String(p.id),p]));
-      if(!rows.length){tbody.innerHTML='<tr><td colspan="10">No entries for this date.</td></tr>';return;}
-      tbody.innerHTML=rows.map(x=>{
-        const total=['e_filing','e_payment','print_amount','scanning','other_works'].reduce((s,k)=>s+Number(x[k]||0),0);
-        const paid=Number(x.paid_amount||0), bal=Math.max(total-paid,0);
-        const c=cm.get(String(x.customer_id));
-        const time=x.created_at?new Date(x.created_at).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}):"—";
-        return `<tr><td>${esc(time)}</td><td><b>${esc(c?.full_name||"Cash Sale")}</b><br><small>${esc(c?.mobile||"")}</small></td><td>${money(x.e_filing)}</td><td>${money(x.e_payment)}</td><td>${money(x.print_amount)}</td><td>${money(x.scanning)}</td><td>${money(x.other_works)}</td><td><b>${money(total)}</b></td><td>${money(paid)}</td><td><b>${money(bal)}</b></td></tr>`;
-      }).join("");
-    }catch(e){tbody.innerHTML=`<tr><td colspan="10">Unable to load entries: ${esc(e.message||e)}</td></tr>`;}
+ const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+ const $=id=>document.getElementById(id); const fields=['e_filing','e_payment','print_amount','scanning','other_works','paid_amount','description'];
+ let cache=new Map();
+ // Edit dialog
+ const dlg=document.createElement('dialog'); dlg.id='dailyWorkEditDialog'; dlg.style.cssText='border:0;border-radius:16px;padding:24px;max-width:620px;width:calc(100% - 32px);box-shadow:0 20px 70px #001b3b44';
+ dlg.innerHTML=`<form id="dailyWorkEditForm"><h2 style="margin-top:0;color:#12345b">Edit Daily Work Entry</h2><p id="dailyEditCustomer"></p><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">${fields.filter(k=>k!=='description').map(k=>`<label style="font-size:13px">${({'e_filing':'E-Filing','e_payment':'E-Payment','print_amount':'Print','scanning':'Scanning','other_works':'Other Works','paid_amount':'Paid Amount'})[k]}<input name="${k}" type="number" min="0" step="0.01" style="display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7e6;border-radius:8px"></label>`).join('')}</div><label style="display:block;margin-top:12px">Description / Notes<textarea name="description" rows="3" style="display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7e6;border-radius:8px"></textarea></label><label style="display:block;margin-top:12px">Reason for edit (required)<input name="edit_reason" required maxlength="500" placeholder="What did you change and why?" style="display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7e6;border-radius:8px"></label><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px"><button type="button" id="dailyEditCancel">Cancel</button><button type="submit" class="btn-save">Save Changes</button></div></form>`;
+ document.body.appendChild(dlg); $('dailyEditCancel').onclick=()=>dlg.close();
+ function actor(){return sb.auth.getUser().then(async({data})=>{const u=data?.user;if(!u)throw Error('Please log in again.');let name=u.email||u.id;try{const p=await sb.from('profiles').select('full_name,role').eq('id',u.id).maybeSingle();if(p.data?.full_name)name=p.data.full_name;return {id:u.id,name,role:p.data?.role||'staff'};}catch{return {id:u.id,name,role:'staff'};}})}
+ function localToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+ let allRows=[], currentActor=null;
+ async function loadDailyEntries(){
+  const tbody=$('dailyEntriesRows'); if(!tbody||typeof sb==='undefined')return; tbody.innerHTML='<tr><td colspan="12">Loading all entries…</td></tr>';
+  try{
+   currentActor=await actor();
+   let r=await sb.from('daily_work_entries').select('id,created_at,work_date,customer_id,e_filing,e_payment,print_amount,scanning,other_works,paid_amount,description,entered_by,updated_at,updated_by,updated_by_name,balance_amount').order('work_date',{ascending:false}).order('created_at',{ascending:false}).limit(1000);
+   // Keep the entries visible even if the audit migration has not been run yet.
+   if(r.error && /updated_at|updated_by|column .* does not exist/i.test(r.error.message||'')){
+    r=await sb.from('daily_work_entries').select('id,created_at,work_date,customer_id,e_filing,e_payment,print_amount,scanning,other_works,paid_amount,description,entered_by,balance_amount').order('work_date',{ascending:false}).order('created_at',{ascending:false}).limit(1000);
+   }
+   if(r.error)throw r.error;allRows=r.data||[];cache=new Map(allRows.map(x=>[String(x.id),x]));
+   const ids=[...new Set(allRows.map(x=>x.customer_id).filter(Boolean).map(String))],pids=[...new Set(allRows.map(x=>x.entered_by).filter(Boolean).map(String))];let customers=[],profiles=[];
+   if(ids.length){const c=await sb.from('customers').select('id,full_name,mobile').in('id',ids);if(c.error)throw c.error;customers=c.data||[];}
+   if(pids.length){const p=await sb.from('profiles').select('id,full_name,role').in('id',pids);if(!p.error)profiles=p.data||[];}
+   const cm=new Map(customers.map(c=>[String(c.id),c]));
+   renderDailyEntries(cm);
+  }catch(e){tbody.innerHTML=`<tr><td colspan="12">Unable to load entries: ${esc(e.message||e)}</td></tr>`;}
+ }
+ function renderDailyEntries(cm){
+  const tbody=$('dailyEntriesRows');const chosen=$('dailyEntriesDateFilter')?.value||'';
+  const rows=allRows.filter(x=>!chosen||String(x.work_date||'')===chosen);
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="12">No entries found for this date.</td></tr>';return;}
+  const admin=String(currentActor?.role||'').toLowerCase()==='admin';
+  let lastDay='';const out=[];
+  for(const x of rows){
+   const day=String(x.work_date||'Unknown date');
+   if(day!==lastDay){out.push(`<tr class="daily-date-group"><td colspan="12" style="background:#eaf1fb;color:#12345b;font-weight:800;padding:10px 12px">📅 ${esc(day)} — Daily Report</td></tr>`);lastDay=day;}
+   const total=['e_filing','e_payment','print_amount','scanning','other_works'].reduce((a,k)=>a+Number(x[k]||0),0),paid=Number(x.paid_amount||0),bal=Number(x.balance_amount??Math.max(total-paid,0)),c=cm.get(String(x.customer_id)),time=x.created_at?new Date(x.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
+   const edited=x.updated_by_name?`<b>Edited</b><br><small>${esc(x.updated_by_name)}<br>${esc(x.updated_at?new Date(x.updated_at).toLocaleString('en-IN'):'')}</small>`:'—';
+   const canEdit=admin||String(x.work_date||'')===localToday();
+   const actions=`${canEdit?`<button type="button" data-edit-id="${esc(x.id)}" class="btn-clear">✎ Edit</button>`:'<span title="Staff can edit only today’s entries" style="font-size:12px;color:#718096">View only</span>`}<button type="button" data-history-id="${esc(x.id)}" class="btn-clear" style="margin-left:4px">History</button>`;
+   out.push(`<tr><td>${esc(time)}<br><small>${esc(day)}</small></td><td><b>${esc(c?.full_name||'Cash Sale')}</b><br><small>${esc(c?.mobile||'')}</small></td><td>${money(x.e_filing)}</td><td>${money(x.e_payment)}</td><td>${money(x.print_amount)}</td><td>${money(x.scanning)}</td><td>${money(x.other_works)}</td><td><b>${money(total)}</b></td><td>${money(paid)}</td><td><b>${money(bal)}</b></td><td>${edited}</td><td>${actions}</td></tr>`);
   }
-  window.addEventListener("itech:work-saved",loadDailyEntries);
-  $("refreshDailyEntries")?.addEventListener("click",loadDailyEntries);
-  $("entryDate")?.addEventListener("change",loadDailyEntries);
-  await new Promise(r=>setTimeout(r,500));
-  loadDailyEntries();
+  tbody.innerHTML=out.join('');
+ }
+ $('dailyEntriesDateFilter')?.addEventListener('change',()=>{const ids=[...new Set(allRows.map(x=>x.customer_id).filter(Boolean).map(String))];sb.from('customers').select('id,full_name,mobile').in('id',ids.length?ids:['00000000-0000-0000-0000-000000000000']).then(c=>renderDailyEntries(new Map((c.data||[]).map(x=>[String(x.id),x]))));});
+ $('clearDailyEntriesDate')?.addEventListener('click',()=>{$('dailyEntriesDateFilter').value='';loadDailyEntries();});
+ $('dailyEntriesRows')?.addEventListener('click',async ev=>{const b=ev.target.closest('button');if(!b)return;const row=cache.get(String(b.dataset.editId||b.dataset.historyId));if(!row)return;
+  if(b.dataset.historyId){try{const h=await sb.from('daily_work_entry_audit').select('*').eq('entry_id',row.id).order('changed_at',{ascending:false});if(h.error)throw h.error;const text=(h.data||[]).map(x=>`${new Date(x.changed_at).toLocaleString('en-IN')} — ${x.changed_by_name}\nReason: ${x.reason||'—'}\nChanges: ${JSON.stringify(x.changes)}`).join('\n\n');alert(text||'No edit history recorded.');}catch(e){alert('History unavailable. Run the included SQL setup first. '+(e.message||''));}return;}
+  const admin=String(currentActor?.role||'').toLowerCase()==='admin';if(!admin&&String(row.work_date||'')!==localToday()){alert('Staff can edit only today’s entries.');return;}const f=$('dailyWorkEditForm');f.dataset.id=row.id;$('dailyEditCustomer').textContent=`Entry date: ${row.work_date||'—'} · ID: ${row.id}`;fields.forEach(k=>{if(f.elements[k])f.elements[k].value=row[k]??(k==='description'?'':0)});f.elements.edit_reason.value='';dlg.showModal();
+ });
+ $('dailyWorkEditForm').addEventListener('submit',async ev=>{ev.preventDefault();const f=ev.currentTarget,id=f.dataset.id,old=cache.get(String(id));if(!old)return;const fd=new FormData(f),reason=String(fd.get('edit_reason')||'').trim();if(!reason){alert('Please enter the reason for editing.');return;}const changes={},patch={};fields.forEach(k=>{const v=k==='description'?String(fd.get(k)||'').trim():(Number(fd.get(k)||0));if(String(old[k]??(k==='description'?'':0))!==String(v)){changes[k]={old:old[k]??null,new:v};patch[k]=v;}});if(!Object.keys(patch).length){dlg.close();return;}try{const a=await actor();patch.updated_at=new Date().toISOString();patch.updated_by=a.id;patch.updated_by_name=a.name;const up=await sb.from('daily_work_entries').update(patch).eq('id',id).select('id').single();if(up.error)throw up.error;const log=await sb.from('daily_work_entry_audit').insert({entry_id:id,changed_by:a.id,changed_by_name:a.name,changed_by_role:a.role,reason,changes});if(log.error)alert('Entry updated, but audit history failed to save. Run the included SQL setup and check RLS: '+log.error.message);dlg.close();await loadDailyEntries();alert('Entry updated.');}catch(e){alert('Update failed: '+(e.message||e));}});
+ $('refreshDailyEntries')?.addEventListener('click',loadDailyEntries);window.addEventListener('itech:work-saved',loadDailyEntries);await loadDailyEntries();
 })();
 </script><footer class="site-footer unified-site-footer">
 <div class="footer-brand">

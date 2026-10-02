@@ -2,7 +2,6 @@
 
 <html lang="en">
 <head>
-
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Dashboard | iTech Admin</title>
@@ -439,8 +438,7 @@ body{
 <!-- SEO: private application page -->
 <meta name="robots" content="noindex, nofollow">
 
-
-    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
@@ -1214,41 +1212,43 @@ Your Trust Our Service`;
      So, after a WhatsApp reminder is opened, the same entry is not shown again.
      If a NEW work/payment entry is added for that customer, the activity signature
      changes and the customer becomes eligible for a fresh reminder. */
-  function reminderSentKey(customerId){
-    return "itech_wa_reminder_sent_v2_" + String(customerId||"");
+  let __itechWaSentMap = new Map();
+  async function loadSharedReminderStatus(){
+    __itechWaSentMap = new Map();
+    try{
+      const r = await sb.from("whatsapp_reminder_logs").select("customer_id,activity_signature");
+      if(r.error){ console.warn("Shared WhatsApp reminder status:", r.error.message); return; }
+      (r.data||[]).forEach(x=>__itechWaSentMap.set(String(x.customer_id), String(x.activity_signature||"")));
+    }catch(e){ console.warn("Shared WhatsApp reminder status:", e); }
   }
   function activitySignature(c){
     const last = c && c.lastActivity ? new Date(c.lastActivity).getTime() : 0;
-    return [
-      Number(c?.todayWork||0).toFixed(2),
-      Number(c?.todayPaid||0).toFixed(2),
-      Number(c?.totalBalance||0).toFixed(2),
-      Number.isFinite(last) ? last : 0
-    ].join("|");
+    return [Number(c?.todayWork||0).toFixed(2),Number(c?.todayPaid||0).toFixed(2),Number(c?.totalBalance||0).toFixed(2),Number.isFinite(last)?last:0].join("|");
   }
   function isReminderSent(c){
-    try{
-      const raw=localStorage.getItem(reminderSentKey(c?.id));
-      if(!raw) return false;
-      const saved=JSON.parse(raw);
-      return saved && saved.signature === activitySignature(c);
-    }catch(e){ return false; }
+    return __itechWaSentMap.get(String(c?.id||"")) === activitySignature(c);
   }
-  function markReminderSent(c){
+  async function markReminderSent(c){
     try{
-      localStorage.setItem(reminderSentKey(c?.id),JSON.stringify({
-        signature: activitySignature(c),
-        sentAt: new Date().toISOString()
-      }));
-    }catch(e){}
+      const user = await sb.auth.getUser();
+      const sentBy = user?.data?.user?.id || null;
+      const signature = activitySignature(c);
+      const r = await sb.from("whatsapp_reminder_logs").upsert({
+        customer_id:c.id, activity_signature:signature, sent_at:new Date().toISOString(), sent_by:sentBy
+      },{onConflict:"customer_id"});
+      if(r.error) throw r.error;
+      __itechWaSentMap.set(String(c.id), signature);
+      return true;
+    }catch(e){
+      console.error("Unable to save shared WhatsApp reminder status:",e);
+      return false;
+    }
   }
-
-  function openWhatsApp(c){
+  async function openWhatsApp(c){
     const phone=getValidWhatsAppNumber(c);
     if(!phone) return false;
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(buildPaymentMessage(c)),"_blank","noopener,noreferrer");
-    markReminderSent(c);
-    return true;
+    return await markReminderSent(c);
   }
 
   function renderWaList(el,rows,emptyText){
@@ -1262,9 +1262,9 @@ Your Trust Our Service`;
         </div>
         <button type="button" class="wa-send" data-wa-index="${i}">WhatsApp</button>
       </div>`).join("");
-    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",()=>{
+    el.querySelectorAll(".wa-send").forEach(b=>b.addEventListener("click",async()=>{
       const customer=rows[Number(b.dataset.waIndex)];
-      if(openWhatsApp(customer)){
+      if(await openWhatsApp(customer)){
         const row=b.closest(".wa-customer");
         if(row) row.remove();
         const countEl=el===document.getElementById("waTodayList")?document.getElementById("waTodayCount"):document.getElementById("waOverdueCount");
@@ -1279,6 +1279,7 @@ Your Trust Our Service`;
     if(!todayList||!overdueList)return;
     todayList.innerHTML='<div class="wa-empty">Loading…</div>';
     overdueList.innerHTML='<div class="wa-empty">Loading…</div>';
+    await loadSharedReminderStatus();
 
     try{
       const [cu,ba,tw,tp,wh,ph]=await Promise.all([
@@ -1332,8 +1333,8 @@ Your Trust Our Service`;
           if(getValidWhatsAppNumber(c)) validCustomers.push(c);
           else skipped++;
         });
-        validCustomers.forEach((c,i)=>setTimeout(()=>{
-          if(openWhatsApp(c)) processed++;
+        validCustomers.forEach((c,i)=>setTimeout(async()=>{
+          if(await openWhatsApp(c)) processed++;
           if(i===validCustomers.length-1){
             setTimeout(()=>{
               loadWhatsAppReminders();
@@ -1346,8 +1347,8 @@ Your Trust Our Service`;
         }
       };
       $("waSendOverdueAll").onclick=()=>{
-        overdueRows.forEach((c,i)=>setTimeout(()=>{
-          openWhatsApp(c);
+        overdueRows.forEach((c,i)=>setTimeout(async()=>{
+          await openWhatsApp(c);
           if(i===overdueRows.length-1) setTimeout(loadWhatsAppReminders,400);
         },i*450));
       };

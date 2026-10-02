@@ -1,0 +1,15 @@
+{
+  "name": "iTech CCTV Control Centre",
+  "short_name": "iTech CCTV",
+  "description": "iTech IT Solutions CCTV service management app",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f7fc",
+  "theme_color": "#071a36",
+  "icons": [
+    {"src":"../assets/itech-logo-color.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"../assets/itech-logo-color.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

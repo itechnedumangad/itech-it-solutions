@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Customers | iTech Staff</title><link href="../css/style.css" rel="stylesheet"/><link href="../css/dashboard.css" rel="stylesheet"/><link href="../css/unified-dashboard.css" rel="stylesheet"/> <link href="../css/dashboard-shell.css" rel="stylesheet"/>
+<style>
+/* ===== Unified iTech Footer - ordered layout ===== */
+.unified-site-footer{
+  width:100%;
+  margin-top:32px;
+  padding:28px 20px 24px;
+  background:linear-gradient(135deg,#071c3b,#0d2d5a);
+  color:#fff;
+  border-radius:18px 18px 0 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:7px;
+  box-shadow:0 -6px 22px rgba(7,28,59,.10);
+}
+.unified-site-footer .footer-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 4px;
+}
+.unified-site-footer p{
+  margin:0;
+  line-height:1.45;
+}
+.unified-site-footer .footer-address{
+  font-size:12px;
+  font-weight:600;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-contact{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+}
+.unified-site-footer .footer-email{
+  font-size:12px;
+  color:#dce7f8;
+}
+.unified-site-footer .footer-social{
+  font-size:12px;
+  font-weight:800;
+  color:#ff9a25;
+}
+.unified-site-footer .footer-tagline{
+  margin-top:7px;
+  padding-top:9px;
+  width:min(360px,90%);
+  border-top:1px solid rgba(255,255,255,.16);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+}
+@media(max-width:620px){
+  .unified-site-footer{
+    margin-top:22px;
+    padding:24px 14px 20px;
+    border-radius:14px 14px 0 0;
+  }
+  .unified-site-footer .footer-logo{
+    width:52px;height:52px;
+  }
+}
+
+/* ===== Customer list: mobile cards + delete action ===== */
+.customer-action-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.delete-customer-btn{white-space:nowrap!important;border:1px solid #f4b4b4!important;color:#b42318!important;background:#fff5f5!important}
+.delete-customer-btn:hover{background:#fee2e2!important}
+@media(max-width:760px){
+  .dash-main{padding:14px!important}
+  .toolbar{gap:12px!important;align-items:flex-start!important;flex-wrap:wrap}
+  .toolbar h1{font-size:25px!important}
+  .toolbar .btn{width:100%;justify-content:center}
+  .panel{padding:14px!important;border-radius:16px!important}
+  .search-row{display:flex!important;flex-direction:column!important;gap:9px!important;align-items:stretch!important}
+  .search-row input{width:100%!important;box-sizing:border-box}
+  .table-scroll{overflow:visible!important}
+  .data-table{display:block!important;width:100%!important}
+  .data-table thead{display:none!important}
+  .data-table tbody,.data-table tr,.data-table td{display:block!important;width:100%!important;box-sizing:border-box}
+  .data-table tr{margin:0 0 12px!important;padding:13px!important;border:1px solid #dfe8f2!important;border-radius:15px!important;background:#fff!important;box-shadow:0 5px 18px rgba(15,35,65,.06)!important}
+  .data-table td{border:0!important;padding:7px 0!important;text-align:left!important;min-height:24px}
+  .data-table td:before{content:attr(data-label);display:block;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#71819b;margin-bottom:2px}
+  .data-table td:first-child{padding-top:0!important}
+  .data-table td:first-child:before{content:'Customer'}
+  .data-table td:last-child{padding-bottom:0!important}
+  .data-table td:last-child:before{content:'Actions'}
+  .customer-action-row .btn{flex:1 1 110px;justify-content:center;min-height:42px}
+}
+
+
+/* ===== Customer List Model 1: Responsive Table (final override) ===== */
+html,body{max-width:100%;overflow-x:hidden}
+.dash-layout{width:100%;min-width:0;box-sizing:border-box;align-items:flex-start}
+.dash-main{flex:1 1 auto;min-width:0;width:0;max-width:100%;box-sizing:border-box;padding:clamp(14px,2.2vw,30px)!important;}
+.dash-main .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.dash-main .toolbar h1{margin:0;font-size:clamp(24px,2.2vw,32px);line-height:1.2}
+.dash-main .toolbar .btn{white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.dash-main .panel{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:clamp(12px,1.6vw,22px)!important;border:1px solid #dbe6f4;border-radius:18px;background:#fff;box-shadow:0 8px 28px rgba(16,42,80,.06)}
+.dash-main .search-row{display:flex;align-items:center;gap:12px;width:100%;min-width:0;margin-bottom:16px}
+.dash-main .search-row input{flex:1 1 240px;width:100%;min-width:0;max-width:none;box-sizing:border-box;min-height:46px;border:1px solid #d4e0f0;border-radius:12px;padding:12px 15px;font-size:14px}
+.dash-main .search-row #count{flex:0 0 auto;white-space:nowrap;font-weight:700;color:#607493}
+.dash-main .table-scroll{width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:visible;border:1px solid #e0e9f5;border-radius:14px;-webkit-overflow-scrolling:touch}
+.dash-main .data-table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;margin:0;background:#fff;font-size:13px}
+.dash-main .data-table thead th{position:sticky;top:0;background:#f2f6fc;color:#19345a;font-size:12px;font-weight:800;text-align:left;padding:14px 12px;border-bottom:1px solid #dce6f3;white-space:nowrap}
+.dash-main .data-table tbody td{padding:14px 12px;border-bottom:1px solid #eaf0f7;color:#243b5d;vertical-align:middle;white-space:nowrap}
+.dash-main .data-table tbody tr:last-child td{border-bottom:0}
+.dash-main .data-table tbody tr:hover{background:#f8fbff}
+.dash-main .data-table td:first-child{min-width:180px;white-space:normal}
+.dash-main .data-table td:first-child b{display:block;color:#102b50;font-size:13px}
+.dash-main .data-table td:first-child small{display:block;margin-top:4px;color:#7a8ca6;font-size:11px}
+.dash-main .data-table td code{font-size:12px}
+.dash-main .customer-action-row{display:flex;align-items:center;gap:7px;flex-wrap:nowrap}
+.dash-main .customer-action-row .btn{min-height:36px;padding:8px 11px!important;font-size:12px;white-space:nowrap}
+.dash-main .status{overflow-wrap:anywhere}
+@media(max-width:900px){
+ .dash-main .data-table{min-width:850px}
+ .dash-main .data-table thead th,.dash-main .data-table tbody td{padding:12px 10px}
+}
+@media(max-width:760px){
+ html,body{overflow-x:hidden!important}
+ .dash-layout{display:block!important;width:100%!important;max-width:100%!important}
+ .dash-main{width:100%!important;max-width:100%!important;min-width:0!important;padding:14px!important;margin:0!important;box-sizing:border-box!important}
+ .dash-main .toolbar{align-items:stretch!important;gap:12px!important;margin-bottom:16px!important}
+ .dash-main .toolbar>div{min-width:0;flex:1 1 100%}
+ .dash-main .toolbar .btn{width:100%!important;box-sizing:border-box}
+ .dash-main .panel{padding:12px!important;border-radius:15px!important}
+ .dash-main .search-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}
+ .dash-main .search-row input{width:100%!important;flex:1 1 auto!important}
+ .dash-main .search-row #count{align-self:flex-start}
+ /* Mobile-friendly record cards: no page-level horizontal scrolling */
+ .dash-main .table-scroll{overflow:visible!important;border:0!important;border-radius:0!important}
+ .dash-main .data-table{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important}
+ .dash-main .data-table thead{display:none!important}
+ .dash-main .data-table tbody{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;width:100%!important}
+ .dash-main .data-table tbody tr{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 14px!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;margin:0!important;padding:14px!important;border:1px solid #dfe8f4!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 14px rgba(16,42,80,.05)!important}
+ .dash-main .data-table tbody td{display:block!important;width:auto!important;min-width:0!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:left!important;padding:9px 0!important;border:0!important;border-bottom:1px solid #eef2f8!important;font-size:13px!important}
+ .dash-main .data-table tbody td:before{content:attr(data-label);display:block!important;margin-bottom:4px!important;color:#7b8ca5!important;font-size:10px!important;line-height:1.3!important;font-weight:800!important;text-transform:uppercase!important;letter-spacing:.35px!important}
+ .dash-main .data-table tbody td:first-child{grid-column:1/-1!important;padding-top:0!important}
+ .dash-main .data-table tbody td:first-child:before{content:'CUSTOMER'!important}
+ .dash-main .data-table tbody td:last-child{grid-column:1/-1!important;border-bottom:0!important;padding-bottom:0!important}
+ .dash-main .data-table tbody td:last-child:before{content:'ACTIONS'!important}
+ .dash-main .customer-action-row{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+ .dash-main .customer-action-row .btn{flex:1 1 100px!important;min-width:0!important;min-height:40px!important;justify-content:center!important;white-space:normal!important}
+ .dash-main .data-table tbody td[colspan]{grid-column:1/-1!important}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .dash-main .data-table{min-width:820px}
+}
+@media print{
+ .dash-main{width:100%!important;padding:0!important}
+ .dash-main .table-scroll{overflow:visible!important}
+ .dash-main .data-table{min-width:0!important;font-size:10px!important}
+ .dash-main .data-table th,.dash-main .data-table td{padding:6px!important}
+}
+
+</style>
+<link href="../css/ui-enhancements.css" rel="stylesheet"/>
+<link href="../css/mobile-app-ready.css" rel="stylesheet"/>
+<link href="../css/itech-final-ui.css" rel="stylesheet"/>
+<!-- SEO: private application page -->
+<meta name="robots" content="noindex, nofollow">
+
+
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head><body>
+<header class="dash-header"><a class="brand" href="dashboard.html"><img alt="iTech IT Solutions" class="brand-logo" src="../assets/itech-logo.png"/> </a><div class="header-actions"><span class="user-chip" data-admin-name="">Admin</span><a class="btn secondary" data-logout="" href="../pages/login.html">Logout</a></div></header>
+<div class="dash-layout"><aside class="sidebar"><nav><a href="dashboard.html">Dashboard</a>
+<a href="customers.html" class="active">Customers</a>
+<a href="add-customer.html">+ Add Customer</a>
+<a href="daily-work.html">Daily Work</a>
+<a href="payments.html">Payments</a>
+<a href="reports.html">Reports</a>
+<a href="customer-bill.html">Customer Bill</a>
+<a href="services.html">Services</a>
+<a href="products.html">Products</a>
+<a href="vehicle-insurance.html">🚗 Vehicle Insurance</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="amc.html">AMC</a>
+<a href="offers.html">Offers</a>
+<a href="works.html">Our Works</a>
+<a href="messages.html">Messages</a></nav></aside><main class="dash-main"><div class="toolbar"><div><p class="eyebrow">CUSTOMER MANAGEMENT</p><h1>Customers</h1></div><a class="btn primary" href="add-customer.html">+ Add Customer</a></div>
+<section class="panel"><div class="search-row"><input id="search" placeholder="Search by customer name or mobile…"/><span class="muted" id="count"></span></div>
+<div class="table-scroll"><table class="data-table"><thead><tr><th>Customer</th><th>Mobile</th><th>Password</th><th>Opening</th><th>Total Work</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></section>
+<div class="status" data-status=""></div></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/global-search.js"></script>
+<script>
+(async()=>{
+ const ok=await requireStaff(); if(!ok)return;
+ const balanceResult=await sb.from("customer_balances").select("*").order("full_name");
+ if(balanceResult.error)return showStatus(balanceResult.error.message,true);
+ const customerResult=await sb.from("customers").select("id,password");
+ if(customerResult.error)return showStatus(customerResult.error.message,true);
+ const passwordMap=new Map((customerResult.data||[]).map(c=>[String(c.id),c.password||""]));
+ const data=(balanceResult.data||[]).map(c=>({...c,password:passwordMap.get(String(c.id))||""}));
+ const rows=document.getElementById("rows"), search=document.getElementById("search");
+ const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2});
+ const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+ function render(){
+  const q=search.value.toLowerCase();
+  const list=data.filter(c=>(c.full_name||"").toLowerCase().includes(q)||(c.mobile||"").includes(q));
+  document.getElementById("count").textContent=list.length+" customers";
+  rows.innerHTML=list.map(c=>`<tr>
+<td data-label="Customer"><b>${esc(c.full_name)}</b><small>${esc(c.customer_code||"")}</small></td>
+<td data-label="Mobile">${esc(c.mobile||"")}</td>
+<td data-label="Password"><code>${esc(c.password||"—")}</code></td>
+<td data-label="Opening">${money(c.opening_balance)}</td>
+<td data-label="Total Work">${money(c.total_work)}</td>
+<td data-label="Paid">${money(c.total_paid)}</td>
+<td data-label="Balance"><b>${money(c.current_balance)}</b></td>
+<td data-label="Actions"><div class="customer-action-row">
+<a class="btn primary" href="customer-profile.html?id=${encodeURIComponent(c.id)}">👤 View</a>
+<button type="button" class="btn secondary" data-edit-id="${esc(c.id)}">✏️ Edit</button>
+<button type="button" class="btn delete-customer-btn" data-delete-id="${esc(c.id)}" data-delete-name="${esc(c.full_name||'Customer')}">🗑️ Delete</button>
+</div></td>
+</tr>`).join("")||'<tr><td colspan="8">No customers found.</td></tr>';
+ }
+ search.addEventListener("input",render);
+ rows.addEventListener("click",async e=>{
+   const edit=e.target.closest("[data-edit-id]");
+   if(edit){ location.href="customer-profile.html?id="+encodeURIComponent(edit.dataset.editId); return; }
+   const del=e.target.closest(".delete-customer-btn");
+   if(!del)return;
+   const id=del.dataset.deleteId, name=del.dataset.deleteName||"Customer";
+   if(!id || !confirm(`Delete customer "${name}"?\n\nThis permanently removes the customer record. Linked transaction records may prevent deletion.`))return;
+   del.disabled=true; const old=del.textContent; del.textContent="Deleting…";
+   const r=await sb.from("customers").delete().eq("id",id);
+   if(r.error){del.disabled=false;del.textContent=old;showStatus("Unable to delete customer. "+r.error.message,true);return;}
+   const idx=data.findIndex(c=>String(c.id)===String(id)); if(idx>=0)data.splice(idx,1); render(); showStatus(`Customer "${name}" deleted successfully.`);
+ });
+ render();
+})();
+</script>
+<footer class="site-footer unified-site-footer">
+<div class="footer-brand">
+<img alt="iTech IT Solutions" class="footer-logo" src="../assets/itech-logo.png"/>
+</div>
+<p class="footer-address">Govt. Sub Treasury Road, Nedumangad</p>
+<p class="footer-contact">7736929233 · 8943165951</p>
+<p class="footer-email">itnedumangad@gmail.com</p>
+<p class="footer-social">@itechndd</p>
+<p class="footer-tagline">Your Trust Our Service</p>
+</footer>
+<script data-dashboard-active-nav="">
+(() => {
+  const current = location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    const href = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const file = href.split('/').pop();
+    if (file === current) a.classList.add('active');
+  });
+})();
+</script>
+<script id="itech-mobile-navigation">
+(function(){
+  const header=document.querySelector(".dash-header");
+  const sidebar=document.querySelector(".sidebar");
+  if(!header || !sidebar || document.getElementById("uiMobileMenuBtn")) return;
+
+  const btn=document.createElement("button");
+  btn.id="uiMobileMenuBtn";
+  btn.className="ui-mobile-menu-btn";
+  btn.type="button";
+  btn.setAttribute("aria-label","Open menu");
+  btn.innerHTML="☰";
+
+  const overlay=document.createElement("div");
+  overlay.className="ui-mobile-overlay";
+
+  const close=document.createElement("button");
+  close.className="ui-mobile-close";
+  close.type="button";
+  close.setAttribute("aria-label","Close menu");
+  close.innerHTML="×";
+
+  sidebar.prepend(close);
+  document.body.appendChild(overlay);
+
+  const brand=header.querySelector(".brand");
+  if(brand && brand.parentNode) brand.parentNode.insertBefore(btn,brand.nextSibling);
+  else header.insertBefore(btn,header.firstChild);
+
+  function openMenu(){
+    sidebar.classList.add("ui-open");
+    overlay.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function closeMenu(){
+    sidebar.classList.remove("ui-open");
+    overlay.classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  btn.addEventListener("click",openMenu);
+  close.addEventListener("click",closeMenu);
+  overlay.addEventListener("click",closeMenu);
+  sidebar.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+})();
+</script>
+</body></html>

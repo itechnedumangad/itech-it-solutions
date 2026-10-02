@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /staff/
+Disallow: /customer/
+Disallow: /pages/login.html
+
+Sitemap: https://itnedumangad.online/sitemap.xml

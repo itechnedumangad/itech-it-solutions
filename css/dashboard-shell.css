@@ -1,0 +1,351 @@
+
+/* =========================================================
+   iTech ADMIN-STYLE DASHBOARD SHELL
+   Shared by Admin / Staff / Customer dashboard pages
+   ========================================================= */
+:root{
+  --shell-navy:#071c3b;
+  --shell-navy2:#0d2d5a;
+  --shell-blue:#1769e0;
+  --shell-blue2:#3459ff;
+  --shell-orange:#ff8a16;
+  --shell-ink:#10284b;
+  --shell-muted:#71819b;
+  --shell-line:#dfe8f4;
+  --shell-bg:#f4f8fd;
+  --shell-shadow:0 10px 30px rgba(17,50,91,.08);
+}
+
+html,body{width:100%;max-width:100%;overflow-x:hidden;}
+body{
+  margin:0!important;
+  background:linear-gradient(135deg,#f6f9fd 0%,#eef4fb 100%)!important;
+  color:var(--shell-ink)!important;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+/* Header */
+.dash-header{
+  min-height:76px!important;
+  height:76px!important;
+  padding:0 44px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:20px;
+  background:linear-gradient(100deg,var(--shell-navy),var(--shell-navy2))!important;
+  box-shadow:0 5px 18px rgba(5,27,57,.18)!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:100!important;
+}
+.dash-header .brand{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
+.dash-header .brand-logo{
+  width:auto!important;
+  height:52px!important;
+  max-width:180px!important;
+  object-fit:contain!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:block!important;
+}
+.dash-header .logo{
+  width:48px!important;height:48px!important;border-radius:12px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  background:transparent!important;box-shadow:none!important;
+  overflow:hidden!important;
+}
+.dash-header .logo img{width:100%!important;height:100%!important;object-fit:contain!important;}
+.header-actions{display:flex!important;align-items:center!important;gap:10px!important;}
+.user-chip{
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  padding:10px 14px!important;
+  border-radius:22px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+.dash-header .btn.secondary{
+  background:#fff!important;color:#183252!important;border:1px solid #d7e1ed!important;
+  border-radius:11px!important;padding:12px 18px!important;font-weight:800!important;
+}
+
+/* Layout + sidebar */
+.dash-layout{
+  display:flex!important;
+  align-items:stretch!important;
+  min-height:calc(100vh - 76px)!important;
+  width:100%!important;
+}
+.sidebar{
+  width:246px!important;
+  min-width:246px!important;
+  flex:0 0 246px!important;
+  background:linear-gradient(180deg,var(--shell-navy),#09264d)!important;
+  border:0!important;
+  color:#fff!important;
+  padding:18px!important;
+  box-shadow:8px 0 25px rgba(6,29,59,.08)!important;
+  position:relative!important;
+  z-index:10!important;
+}
+.sidebar nav{display:flex!important;flex-direction:column!important;gap:4px!important;}
+.sidebar nav a{
+  color:#dce7f8!important;
+  text-decoration:none!important;
+  border-radius:11px!important;
+  padding:12px 14px!important;
+  font-weight:650!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+  transition:.2s ease!important;
+  display:block!important;
+}
+.sidebar nav a:hover,
+.sidebar nav a.active{
+  background:linear-gradient(90deg,var(--shell-blue),var(--shell-blue2))!important;
+  color:#fff!important;
+  transform:translateX(2px)!important;
+  box-shadow:0 7px 18px rgba(31,102,224,.25)!important;
+}
+
+/* Main area */
+.dash-main{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  max-width:none!important;
+  width:auto!important;
+  padding:28px 38px 42px!important;
+}
+.toolbar{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin-bottom:20px!important;
+}
+.toolbar h1{font-size:30px!important;line-height:1.2!important;margin:0 0 5px!important;color:var(--shell-ink)!important;}
+.toolbar .muted{margin:0!important;color:var(--shell-muted)!important;}
+.eyebrow{color:var(--shell-orange)!important;font-weight:850!important;letter-spacing:2px!important;margin:0 0 7px!important;}
+
+/* Common dashboard cards / panels */
+.panel,.dashboard-card,.customer-card,.card,.quick-card{
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid var(--shell-line)!important;
+  border-radius:18px!important;
+  box-shadow:var(--shell-shadow)!important;
+}
+.panel{padding:20px!important;}
+.card{padding:20px!important;}
+
+/* KPI/stat cards */
+.kpis,.stats-grid,.customer-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+.kpi,.stat-card,.customer-stat{
+  position:relative!important;
+  overflow:hidden!important;
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid #e3ebf5!important;
+  border-radius:18px!important;
+  padding:20px!important;
+  box-shadow:var(--shell-shadow)!important;
+}
+.kpi .value,.stat-card strong,.customer-stat strong{color:var(--shell-ink)!important;font-weight:850!important;}
+
+/* Forms and tables */
+input,select,textarea{
+  border:1px solid #d6e1ee!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--shell-ink)!important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:#4d83e7!important;
+  box-shadow:0 0 0 3px rgba(23,105,224,.09)!important;
+  outline:none!important;
+}
+.data-table{width:100%!important;border-collapse:separate!important;border-spacing:0!important;overflow:hidden!important;}
+.data-table th{background:#f5f8fc!important;color:#153052!important;font-weight:800!important;}
+.data-table td{border-bottom:1px solid #edf1f6!important;}
+.data-table tr:hover td{background:#f8fbff!important;}
+
+/* Buttons */
+.btn.primary{
+  background:linear-gradient(100deg,var(--shell-blue),var(--shell-blue2))!important;
+  border:0!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(23,105,224,.20)!important;
+}
+.btn.secondary{background:#fff!important;color:#183252!important;border:1px solid #d7e1ed!important;}
+
+/* Footer - one consistent dashboard footer */
+.unified-site-footer{
+  margin-left:246px!important;
+  background:linear-gradient(100deg,#04152d,#071f43)!important;
+  color:#dbe6f3!important;
+  text-align:center!important;
+  padding:38px 24px 30px!important;
+  border-top:3px solid transparent!important;
+  border-image:linear-gradient(90deg,#1769e0,#ff8a16) 1!important;
+}
+.unified-site-footer .footer-logo{width:180px!important;max-width:60vw!important;height:auto!important;object-fit:contain!important;margin:0 auto 12px!important;display:block!important;}
+.unified-site-footer p{margin:7px 0!important;}
+.unified-site-footer .footer-tagline{color:var(--shell-orange)!important;font-weight:850!important;margin-top:18px!important;padding-top:16px!important;border-top:1px solid rgba(255,255,255,.12)!important;}
+
+/* Prevent footer from appearing as a second stacked dashboard footer */
+footer.footer{margin-left:246px!important;}
+
+@media(max-width:1000px){
+  .dash-header{padding:0 24px!important;}
+  .dash-main{padding:24px!important;}
+  .kpis,.stats-grid,.customer-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+@media(max-width:760px){
+  .dash-header{height:68px!important;min-height:68px!important;padding:0 15px!important;}
+  .dash-header .brand-logo{height:42px!important;max-width:150px!important;}
+  .dash-header .brand{font-size:15px!important;}
+  .sidebar{width:220px!important;min-width:220px!important;flex-basis:220px!important;}
+  .dash-main{padding:18px 15px 28px!important;}
+  .toolbar{flex-direction:column!important;}
+  .toolbar h1{font-size:26px!important;}
+  .unified-site-footer{margin-left:220px!important;}
+  footer.footer{margin-left:220px!important;}
+}
+@media(max-width:620px){
+  .sidebar{display:none!important;}
+  .dash-layout{display:block!important;min-height:0!important;}
+  .dash-main{width:100%!important;padding:16px 13px 25px!important;}
+  .kpis,.stats-grid,.customer-grid{grid-template-columns:1fr!important;}
+  .unified-site-footer,footer.footer{margin-left:0!important;}
+  .unified-site-footer{padding:30px 18px 25px!important;}
+  .unified-site-footer .footer-logo{width:155px!important;}
+}
+
+/* =========================================================
+   FINAL RESPONSIVE FIT PASS
+   Admin / Staff / Customer dashboards and all sub-pages
+   ========================================================= */
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+img,video,svg{max-width:100%;height:auto}
+.dash-layout,.dash-main,.panel,.dashboard-card,.customer-card,.card,.quick-card{min-width:0}
+.dash-main{overflow:hidden}
+
+/* Tables stay inside the viewport instead of widening the page. */
+.data-table{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  white-space:nowrap;
+}
+.data-table thead,.data-table tbody{width:max-content;min-width:100%}
+.data-table th,.data-table td{white-space:nowrap}
+
+/* Common grids */
+.quick-grid,.modern-grid,.kpis,.stats-grid,.customer-grid{min-width:0}
+.quick-card,.modern-stat,.kpi,.stat-card,.customer-stat{min-width:0}
+
+/* Forms never exceed the available width. */
+form,.form-grid,.form-row,.field,.form-field,.search-row,.enquiry-head,.toolbar,
+.entry-layout,.customer-paid,.bottom-row,.amount-grid,.action-row{max-width:100%;min-width:0}
+input,select,textarea,button{max-width:100%;font:inherit}
+
+/* Wide quick-entry dashboard: gracefully collapse before content gets cramped. */
+@media(max-width:1180px){
+  .dash-main{padding-left:24px!important;padding-right:24px!important}
+  .entry-layout{grid-template-columns:minmax(0,1fr) 320px!important}
+  .bottom-row{grid-template-columns:minmax(0,1fr) 340px!important}
+  .customer-paid{grid-template-columns:minmax(0,1fr) 220px!important}
+}
+
+@media(max-width:1050px){
+  .dash-header{padding-left:22px!important;padding-right:22px!important}
+  .sidebar{width:220px!important;min-width:220px!important;flex-basis:220px!important}
+  .dash-main{padding:22px 20px 34px!important}
+  .entry-layout{grid-template-columns:1fr!important}
+  .summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .summary h3,.summary .formula{grid-column:1/-1}
+  .sum-card{margin:0}
+  .bottom-row{grid-template-columns:1fr!important}
+  .kpis,.stats-grid,.customer-grid,.modern-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(max-width:800px){
+  .dash-header{height:68px!important;min-height:68px!important;padding:0 14px!important;gap:10px!important}
+  .dash-header .brand-logo{height:43px!important;max-width:145px!important}
+  .dash-header .brand{font-size:15px!important}
+  .header-actions{gap:6px!important}
+  .user-chip{padding:8px 10px!important;font-size:11px!important;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dash-header .btn.secondary{padding:9px 12px!important}
+  .sidebar{width:200px!important;min-width:200px!important;flex-basis:200px!important;padding:14px!important}
+  .sidebar nav a{padding:10px 11px!important;font-size:13px!important}
+  .dash-main{padding:18px 15px 28px!important}
+  .toolbar{flex-wrap:wrap!important}
+  .toolbar h1{font-size:27px!important}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .amount-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .customer-paid{grid-template-columns:1fr!important}
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .total-strip{min-width:0}
+  .action-row{min-width:0}
+  .btn-save{min-height:45px}
+  .btn-clear{min-height:45px}
+}
+
+@media(max-width:620px){
+  .dash-layout{display:block!important;min-height:0!important}
+  .sidebar{display:none!important}
+  .dash-main{width:100%!important;padding:15px 12px 24px!important;overflow:visible!important}
+  .toolbar{margin-bottom:14px!important}
+  .toolbar h1{font-size:24px!important}
+  .eyebrow{font-size:11px!important;letter-spacing:1.5px!important}
+  .header-actions .user-chip{display:none!important}
+  .dash-header .brand-logo{height:40px!important;max-width:135px!important}
+  .dash-header .brand{font-size:14px!important}
+  .kpis,.stats-grid,.customer-grid,.modern-grid,.quick-grid{grid-template-columns:1fr!important}
+  .entry-layout{grid-template-columns:1fr!important}
+  .summary{display:grid!important;grid-template-columns:1fr!important}
+  .summary h3,.summary .formula{grid-column:auto!important}
+  .amount-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .amount-box{padding:8px!important}
+  .amount-box label{font-size:10px!important}
+  .service-row{align-items:flex-start!important}
+  .bottom-row{grid-template-columns:1fr!important}
+  .total-strip{grid-template-columns:1fr!important;text-align:center!important;gap:6px!important}
+  .total-strip .eq{display:none!important}
+  .action-row{flex-direction:column!important}
+  .btn-clear{width:100%!important}
+  .search-row{flex-direction:column!important;align-items:stretch!important}
+  .search-row>*{width:100%!important;max-width:100%!important}
+  .panel,.dashboard-card,.customer-card,.card,.quick-card,.modern-panel{padding:15px!important;border-radius:15px!important}
+  .modern-grid{gap:10px!important}
+  .modern-stat{padding:14px!important}
+  .data-table{font-size:12px!important}
+  .data-table th,.data-table td{padding:9px 10px!important}
+}
+
+@media(max-width:420px){
+  .dash-header{padding:0 10px!important}
+  .dash-header .brand-logo{height:37px!important;max-width:125px!important}
+  .dash-header .btn.secondary{padding:8px 10px!important;font-size:12px!important}
+  .dash-main{padding-left:9px!important;padding-right:9px!important}
+  .amount-grid{grid-template-columns:1fr!important}
+  .total-strip .num{font-size:18px!important}
+  .quick-title h2{font-size:20px!important}
+  .quick-sub{font-size:12px!important}
+}

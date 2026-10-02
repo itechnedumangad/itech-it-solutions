@@ -1178,7 +1178,7 @@ Your Trust Our Service`;
    const total=['e_filing','e_payment','print_amount','scanning','other_works'].reduce((a,k)=>a+Number(x[k]||0),0),paid=Number(x.paid_amount||0),bal=Number(x.balance_amount??Math.max(total-paid,0)),c=cm.get(String(x.customer_id)),time=x.created_at?new Date(x.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
    const edited=x.updated_by_name?`<b>Edited</b><br><small>${esc(x.updated_by_name)}<br>${esc(x.updated_at?new Date(x.updated_at).toLocaleString('en-IN'):'')}</small>`:'—';
    const canEdit=admin||String(x.work_date||'')===localToday();
-   const actions=`${canEdit?`<button type="button" data-edit-id="${esc(x.id)}" class="btn-clear">✎ Edit</button>`:'<span title="Staff can edit only today’s entries" style="font-size:12px;color:#718096">View only</span>`}<button type="button" data-history-id="${esc(x.id)}" class="btn-clear" style="margin-left:4px">History</button>`;
+   const actions=`${canEdit?`<button type="button" data-edit-id="${esc(x.id)}" class="btn-clear">✎ Edit</button>`:'<span title="Staff can edit only today’s entries" style="font-size:12px;color:#718096">View only</span>'}<button type="button" data-history-id="${esc(x.id)}" class="btn-clear" style="margin-left:4px">History</button>`;
    out.push(`<tr><td>${esc(time)}<br><small>${esc(day)}</small></td><td><b>${esc(c?.full_name||'Cash Sale')}</b><br><small>${esc(c?.mobile||'')}</small></td><td>${money(x.e_filing)}</td><td>${money(x.e_payment)}</td><td>${money(x.print_amount)}</td><td>${money(x.scanning)}</td><td>${money(x.other_works)}</td><td><b>${money(total)}</b></td><td>${money(paid)}</td><td><b>${money(bal)}</b></td><td>${edited}</td><td>${actions}</td></tr>`);
   }
   tbody.innerHTML=out.join('');

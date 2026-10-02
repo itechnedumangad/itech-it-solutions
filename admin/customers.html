@@ -1550,6 +1550,13 @@
 
   await loadCustomers();
 
+  // Open the existing Edit Customer modal when arriving from Customer Profile.
+  const requestedEditId = new URLSearchParams(window.location.search).get("edit");
+  if(requestedEditId){
+    await openEdit(requestedEditId);
+    // Remove the edit query parameter so refresh does not unexpectedly reopen the modal.
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 
 })();
 

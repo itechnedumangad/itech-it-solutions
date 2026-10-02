@@ -144,7 +144,7 @@ function applyCustomer(c){
  const opening=Number(val(c,'opening_balance')==='—'?0:c.opening_balance),work=Number(val(c,'total_work')==='—'?0:c.total_work),paid=Number(val(c,'total_paid')==='—'?0:c.total_paid),balance=Number(c.current_balance??c.balance??c.outstanding??(opening+work-paid));
  setText('customerName',name);setText('infoName',name);setText('customerMobile','📞 '+(mobile==='—'?'—':mobile));setText('infoMobile',mobile);setText('customerCode','Customer ID: '+(code==='—'?'—':code));setText('infoCode',code);setText('customerEmail',c.email?'✉ '+c.email:'');setText('infoEmail',c.email);setText('infoAddress',val(c,'address','customer_address'));
  setText('openingStat',money(opening));setText('workStat',money(work));setText('paidStat',money(paid));setText('balanceStat',money(balance));setText('balanceMain',money(balance));setText('infoBalance',money(balance));setText('avatar',String(name==='—'?'C':name).trim().charAt(0).toUpperCase());
- const edit=document.getElementById('editCustomerBtn');if(edit)edit.onclick=()=>location.href='add-customer.html?id='+encodeURIComponent(c.id||c.customer_id||'');
+ const edit=document.getElementById('editCustomerBtn');if(edit)edit.onclick=()=>{const id=c.id||c.customer_id||'';if(!id){notice('Customer ID is missing. Please return to Customer List and open the profile again.',true);return;}location.href='../admin/customers.html?edit='+encodeURIComponent(id);};
 }
 async function loadProfile(){
  if(!window.sb){notice('Supabase library/config did not load. Check internet access and js/config.js.',true);return;}

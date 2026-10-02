@@ -455,16 +455,12 @@ body{
 <div class="entry-main">
 <div class="customer-paid">
 <div class="field customer-picker">
-<label style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-  <span>Customer / Cash Sale <span style="color:#e33">*</span></span>
-  <span class="entry-date-inline">
-    <input id="entryDate" type="date" aria-label="Entry date">
-    <button type="button" id="entryDateBtn" aria-label="Select entry date" title="Select entry date">📅</button>
-  </span>
-</label>
+<label>Customer / Cash Sale <span style="color:#e33">*</span></label>
 <div class="customer-input-wrap">
+<button aria-label="Change entry date" class="entry-date-btn" id="entryDateBtn" title="Entry date" type="button">📅</button>
 <input aria-label="Search customer" autocomplete="off" id="customerSearch" placeholder="Type customer name or mobile…" type="text"/>
 <button aria-label="Clear customer" class="customer-clear" id="customerClear" type="button">×</button>
+<input aria-hidden="true" class="entry-date-hidden" id="entryDate" tabindex="-1" type="date"/>
 </div>
 <div aria-label="Customer suggestions" class="customer-suggestions" id="customerSuggestions" role="listbox"></div>
 <input id="customer" type="hidden" value=""/>
@@ -808,7 +804,6 @@ body{
     $("description").value="";
     if($("entryDate")) $("entryDate").value=today;
     if(window.itechClearExtraWorkEntries) window.itechClearExtraWorkEntries();
-    if(window.itechResetQuickPaymentMode) window.itechResetQuickPaymentMode();
     selectedBalance=selectedTodayWork=selectedTodayPaid=0;
     $("oldBalance").textContent=money(0);
     updateTotals();
@@ -1318,6 +1313,6 @@ body{
 })();
 </script>
 
-<script src="../js/daily-cash-account-control.js?v=20261001-1"></script>
+<script src="../js/daily-cash-account-control.js?v=20260929-3"></script>
 </body>
 </html>

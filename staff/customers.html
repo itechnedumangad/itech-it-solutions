@@ -96,6 +96,72 @@
   .customer-action-row .btn{flex:1 1 110px;justify-content:center;min-height:42px}
 }
 
+
+/* ===== Customer List Model 1: Responsive Table (final override) ===== */
+html,body{max-width:100%;overflow-x:hidden}
+.dash-layout{width:100%;min-width:0;box-sizing:border-box;align-items:flex-start}
+.dash-main{flex:1 1 auto;min-width:0;width:0;max-width:100%;box-sizing:border-box;padding:clamp(14px,2.2vw,30px)!important;}
+.dash-main .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.dash-main .toolbar h1{margin:0;font-size:clamp(24px,2.2vw,32px);line-height:1.2}
+.dash-main .toolbar .btn{white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.dash-main .panel{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:clamp(12px,1.6vw,22px)!important;border:1px solid #dbe6f4;border-radius:18px;background:#fff;box-shadow:0 8px 28px rgba(16,42,80,.06)}
+.dash-main .search-row{display:flex;align-items:center;gap:12px;width:100%;min-width:0;margin-bottom:16px}
+.dash-main .search-row input{flex:1 1 240px;width:100%;min-width:0;max-width:none;box-sizing:border-box;min-height:46px;border:1px solid #d4e0f0;border-radius:12px;padding:12px 15px;font-size:14px}
+.dash-main .search-row #count{flex:0 0 auto;white-space:nowrap;font-weight:700;color:#607493}
+.dash-main .table-scroll{width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:visible;border:1px solid #e0e9f5;border-radius:14px;-webkit-overflow-scrolling:touch}
+.dash-main .data-table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;margin:0;background:#fff;font-size:13px}
+.dash-main .data-table thead th{position:sticky;top:0;background:#f2f6fc;color:#19345a;font-size:12px;font-weight:800;text-align:left;padding:14px 12px;border-bottom:1px solid #dce6f3;white-space:nowrap}
+.dash-main .data-table tbody td{padding:14px 12px;border-bottom:1px solid #eaf0f7;color:#243b5d;vertical-align:middle;white-space:nowrap}
+.dash-main .data-table tbody tr:last-child td{border-bottom:0}
+.dash-main .data-table tbody tr:hover{background:#f8fbff}
+.dash-main .data-table td:first-child{min-width:180px;white-space:normal}
+.dash-main .data-table td:first-child b{display:block;color:#102b50;font-size:13px}
+.dash-main .data-table td:first-child small{display:block;margin-top:4px;color:#7a8ca6;font-size:11px}
+.dash-main .data-table td code{font-size:12px}
+.dash-main .customer-action-row{display:flex;align-items:center;gap:7px;flex-wrap:nowrap}
+.dash-main .customer-action-row .btn{min-height:36px;padding:8px 11px!important;font-size:12px;white-space:nowrap}
+.dash-main .status{overflow-wrap:anywhere}
+@media(max-width:900px){
+ .dash-main .data-table{min-width:850px}
+ .dash-main .data-table thead th,.dash-main .data-table tbody td{padding:12px 10px}
+}
+@media(max-width:760px){
+ html,body{overflow-x:hidden!important}
+ .dash-layout{display:block!important;width:100%!important;max-width:100%!important}
+ .dash-main{width:100%!important;max-width:100%!important;min-width:0!important;padding:14px!important;margin:0!important;box-sizing:border-box!important}
+ .dash-main .toolbar{align-items:stretch!important;gap:12px!important;margin-bottom:16px!important}
+ .dash-main .toolbar>div{min-width:0;flex:1 1 100%}
+ .dash-main .toolbar .btn{width:100%!important;box-sizing:border-box}
+ .dash-main .panel{padding:12px!important;border-radius:15px!important}
+ .dash-main .search-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}
+ .dash-main .search-row input{width:100%!important;flex:1 1 auto!important}
+ .dash-main .search-row #count{align-self:flex-start}
+ /* Mobile-friendly record cards: no page-level horizontal scrolling */
+ .dash-main .table-scroll{overflow:visible!important;border:0!important;border-radius:0!important}
+ .dash-main .data-table{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important}
+ .dash-main .data-table thead{display:none!important}
+ .dash-main .data-table tbody{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;width:100%!important}
+ .dash-main .data-table tbody tr{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 14px!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;margin:0!important;padding:14px!important;border:1px solid #dfe8f4!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 14px rgba(16,42,80,.05)!important}
+ .dash-main .data-table tbody td{display:block!important;width:auto!important;min-width:0!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:left!important;padding:9px 0!important;border:0!important;border-bottom:1px solid #eef2f8!important;font-size:13px!important}
+ .dash-main .data-table tbody td:before{content:attr(data-label);display:block!important;margin-bottom:4px!important;color:#7b8ca5!important;font-size:10px!important;line-height:1.3!important;font-weight:800!important;text-transform:uppercase!important;letter-spacing:.35px!important}
+ .dash-main .data-table tbody td:first-child{grid-column:1/-1!important;padding-top:0!important}
+ .dash-main .data-table tbody td:first-child:before{content:'CUSTOMER'!important}
+ .dash-main .data-table tbody td:last-child{grid-column:1/-1!important;border-bottom:0!important;padding-bottom:0!important}
+ .dash-main .data-table tbody td:last-child:before{content:'ACTIONS'!important}
+ .dash-main .customer-action-row{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+ .dash-main .customer-action-row .btn{flex:1 1 100px!important;min-width:0!important;min-height:40px!important;justify-content:center!important;white-space:normal!important}
+ .dash-main .data-table tbody td[colspan]{grid-column:1/-1!important}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .dash-main .data-table{min-width:820px}
+}
+@media print{
+ .dash-main{width:100%!important;padding:0!important}
+ .dash-main .table-scroll{overflow:visible!important}
+ .dash-main .data-table{min-width:0!important;font-size:10px!important}
+ .dash-main .data-table th,.dash-main .data-table td{padding:6px!important}
+}
+
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>

@@ -28,7 +28,7 @@ body.court-copy-page{display:block!important;overflow-x:hidden!important;}
 <section class="cc-box"><h2>1. Select Customer</h2><div class="cc-sub">Customer first. Advocate details and courts load automatically.</div><div class="cc-grid"><div class="cc-field cc-full cc-search"><span>⌕</span><input id="customerSearch" placeholder="Search customer name / mobile"><select id="customer" style="margin-top:8px"></select></div><div class="cc-field"><label>Advocate Mobile</label><input id="advocateMobile" readonly></div><div class="cc-field"><label>Advocate Name</label><input id="advocateName" readonly></div><div class="cc-field cc-full"><label>Court</label><select id="court"></select></div></div></section>
 <section class="cc-box"><h2>2. Add Case</h2><div class="cc-sub">One customer can have multiple courts and multiple cases.</div><div id="caseRows"></div><div class="cc-actions"><button class="cc-btn cc-soft" id="addCase" type="button">+ Add Another Case</button><button class="cc-btn cc-primary" id="saveCases" type="button">Save Cases</button><button class="cc-btn cc-soft" id="clearCases" type="button">Clear</button></div><div id="saveStatus" class="cc-status"></div></section>
 <section class="cc-box"><div class="cc-hero" style="margin:0"><div><h2>Today's Entries</h2><div class="cc-sub" style="margin:3px 0 0">Completed entries remain recorded.</div></div><div class="cc-toolbar" style="max-width:500px"><input id="day" type="date"><input id="search" placeholder="Search case / court"></div></div><div class="cc-statbar"><div class="cc-stat"><small>Cases</small><b id="count">0</b></div><div class="cc-stat"><small>Paid</small><b id="paidTotal">₹0</b></div><div class="cc-stat"><small>Pending</small><b id="pendingCount">0</b></div><div class="cc-stat"><small>Completed</small><b id="doneCount">0</b></div></div><div id="entries" class="cc-case-list"></div></section>
-</div></main>
+</div></main></div>
 
 <style id="itech-court-footer-fix">
 .site-footer,.unified-site-footer{
@@ -78,7 +78,7 @@ body.court-copy-page{display:block!important;overflow-x:hidden!important;}
 <style id="court-copy-footer-role-fix">
 html,body{width:100%;min-height:100%;}
 body{overflow-x:hidden;}
-.site-footer,.unified-site-footer{position:relative!important;left:auto!important;right:auto!important;float:none!important;clear:both!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;transform:none!important;box-sizing:border-box!important;display:flex!important;}
+.site-footer,.unified-site-footer{position:relative!important;left:auto!important;right:auto!important;float:none!important;clear:both!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;transform:none!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;}
 </style>
 <footer class="site-footer unified-site-footer">
   <div class="footer-brand"><img class="footer-logo" src="../assets/itech-logo.png" alt="iTech IT Solutions"></div>

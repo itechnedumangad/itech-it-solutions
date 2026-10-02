@@ -1191,17 +1191,30 @@ body{
 
   function buildPaymentMessage(c){
     const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
-    return `Hello ${c.full_name||"Customer"},
+    const balance=Number(c.totalBalance||0);
+    const balanceText=money(balance);
+    // If a payment was entered today, send only the payment confirmation.
+    if(Number(c.todayPaid||0)>0){
+      return `Hello ${c.full_name||"Customer"},
 
-*iTech IT Solutions — Payment Reminder*
+*iTech IT Solutions — Payment Received*
 
 *Date: ${reminderDate}*
-Old Balance: ${money(c.oldBalance)}
-Today's Work: ${money(c.todayWork)}
 Paid Today: ${money(c.todayPaid)}
-*Total Balance: ${money(c.totalBalance)}*
+Balance: ${balanceText}
 
-Please contact us for any clarification.
+iTech IT Solutions
+Your Trust Our Service`;
+    }
+    // Otherwise send the work notification/reminder.
+    return `Hello ${c.full_name||"Customer"},
+
+*iTech IT Solutions — Today's Work*
+
+*Date: ${reminderDate}*
+Today's Work: ${money(c.todayWork)}
+Previous Balance: ${money(c.oldBalance)}
+*Balance: ${balanceText}*
 
 Thank you for choosing iTech IT Solutions.
 Your Trust Our Service`;
@@ -1308,8 +1321,8 @@ Your Trust Our Service`;
       });
 
       const customersWithData=(cu.data||[]).map(c=>{
-        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
-        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+        const id=String(c.id),balance=Number(balances.get(id)||0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:balance-w+p,todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
       });
 
       const todayRows=customersWithData.filter(c=>

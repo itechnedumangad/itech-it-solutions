@@ -2,7 +2,6 @@
 
 <html lang="en">
 <head>
-
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>iTech IT Solutions | Computer Service, CCTV &amp; Vehicle Insurance in Nedumangad</title>
@@ -732,8 +731,8 @@ body{
 }
 </script>
 
-
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/service-tracking.css">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -885,6 +884,22 @@ body{
 </article>
 </div>
 </section>
+
+<!-- iTech Service Tracking: displayed below Services / Enquiry -->
+<section class="container home-section" id="serviceTracking">
+  <div class="service-track-card">
+    <p class="service-track-eyebrow">ITECH SERVICE SUPPORT</p>
+    <h2>Track Your Service</h2>
+    <p class="service-track-muted">Enter your Service Job ID to view the latest status and service history.</p>
+    <form id="serviceTrackForm" class="service-track-form">
+      <input id="serviceTrackJobId" type="text" placeholder="Example: SRV-2026-965676" aria-label="Service Job ID" required>
+      <button type="submit" id="serviceTrackButton">Track Service</button>
+    </form>
+    <p id="serviceTrackMessage" class="service-track-message" aria-live="polite"></p>
+    <div id="serviceTrackResult" class="service-track-result" hidden></div>
+  </div>
+</section>
+
 <section class="container home-section">
 <div class="home-heading">
 <p class="eyebrow">WHY CHOOSE ITECH</p>
@@ -961,6 +976,7 @@ body{
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/config.js"></script>
+<script src="js/service-tracking.js"></script>
 <script src="js/site.js"></script>
 <script>
 (async function(){

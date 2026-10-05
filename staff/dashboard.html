@@ -1026,7 +1026,7 @@ body{
     const lines=[
       `👤 ${c.full_name||"Customer"}`,
       ``,
-      `✨ *iTech IT Solutions — Today's Work* ✨`,
+      ` *iTech IT Solutions — Today's Work* `,
       ``,
       `📅 *Date: ${reminderDate}*`,
       `💰 *Previous Balance: ${money(c.oldBalance)}*`
@@ -1040,7 +1040,7 @@ body{
       lines.push(`💵 *Paid: ${money(todayPaid)}*`);
     }
 
-    lines.push(``, `💳 *Balance: ${money(balance)}*`);
+    lines.push(``, `💳 *Total Balance: ${money(balance)}*`);
     return lines.join("\n");
   }
   /*

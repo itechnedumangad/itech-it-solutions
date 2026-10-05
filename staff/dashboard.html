@@ -1019,9 +1019,30 @@ body{
 
   function buildPaymentMessage(c){
     const reminderDate=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
-    return `Hello ${c.full_name||"Customer"},\n\n*iTech IT Solutions — Payment Reminder*\n\n*Date: ${reminderDate}*\nOld Balance: ${money(c.oldBalance)}\nToday's Work: ${money(c.todayWork)}\nPaid Today: ${money(c.todayPaid)}\n*Total Balance: ${money(c.totalBalance)}*\n\nPlease contact us for any clarification.\n\nThank you for choosing iTech IT Solutions.\nYour Trust Our Service`;
-  }
+    const balance=Number(c.totalBalance||0);
+    const todayWork=Number(c.todayWork||0);
+    const todayPaid=Number(c.todayPaid||0);
 
+    const lines=[
+      `👤 ${c.full_name||"Customer"}`,
+      ``,
+      `✨ *iTech IT Solutions — Today's Work* ✨`,
+      ``,
+      `📅 *Date: ${reminderDate}*`,
+      `💰 *Previous Balance: ${money(c.oldBalance)}*`
+    ];
+
+    if(todayWork>0){
+      lines.push(`🛠️ *Today's Work: ${money(todayWork)}*`);
+    }
+
+    if(todayPaid>0){
+      lines.push(`💵 *Paid: ${money(todayPaid)}*`);
+    }
+
+    lines.push(``, `💳 *Balance: ${money(balance)}*`);
+    return lines.join("\n");
+  }
   /*
    * Reminder status belongs to the customer's CURRENT activity signature.
    * Sending a reminder hides only that exact activity. When a new work/payment

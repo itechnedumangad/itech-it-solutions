@@ -118,8 +118,8 @@ footer{margin-top:26px;background:var(--navy);color:#fff;text-align:center;paddi
           <div class="info-item"><div class="label">Account Balance</div><div class="value" id="infoBalance">₹0.00</div></div>
         </div>
       </div>
-      <div id="tab-work" class="hidden"><div class="section-title"><h3>Daily Work History</h3><span class="hint">Customer-linked entries</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Description</th><th>Work Amount</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="workRows"><tr><td colspan="5" class="empty">Daily work history will appear here when connected to the site's existing work table.</td></tr></tbody></table></div></div>
-      <div id="tab-payments" class="hidden"><div class="section-title"><h3>Payment History</h3><span class="hint">Cash / GPay transactions</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Payment Method</th><th>Reference / Note</th><th>Amount</th></tr></thead><tbody id="paymentRows"><tr><td colspan="4" class="empty">Payment history will appear here when connected to the site's existing payments table.</td></tr></tbody></table></div></div>
+      <div id="tab-work" class="hidden"><div class="section-title"><h3>Daily Work History</h3><span class="hint">Customer-linked entries</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Work Amount</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="workRows"><tr><td colspan="6" class="empty">Daily work history will appear here when connected to the site's existing work table.</td></tr></tbody></table></div></div>
+      <div id="tab-payments" class="hidden"><div class="section-title"><h3>Payment History</h3><span class="hint">Cash / GPay transactions</span></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Time</th><th>Payment Method</th><th>Reference / Note</th><th>Amount</th></tr></thead><tbody id="paymentRows"><tr><td colspan="5" class="empty">Payment history will appear here when connected to the site's existing payments table.</td></tr></tbody></table></div></div>
       <div id="tab-services" class="hidden"><div class="section-title"><h3>Services</h3></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Service</th><th>Status</th><th>Amount</th></tr></thead><tbody id="serviceRows"><tr><td colspan="4" class="empty">No service records loaded yet.</td></tr></tbody></table></div></div>
       <div id="tab-insurance" class="hidden"><div class="section-title"><h3>Vehicle Insurance</h3></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Policy</th><th>Status</th></tr></thead><tbody id="insuranceRows"><tr><td colspan="4" class="empty">No insurance records loaded yet.</td></tr></tbody></table></div></div>
       <div id="tab-court" class="hidden"><div class="section-title"><h3>Court Copy</h3></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Advocate</th><th>Court</th><th>Status</th></tr></thead><tbody id="courtRows"><tr><td colspan="4" class="empty">No court-copy records loaded yet.</td></tr></tbody></table></div></div>
@@ -176,12 +176,14 @@ async function loadProfile(){
   const [wr,pr,sr,ir,cor]=queries;
   setRows('workRows',wr.error?[]:(wr.data||[]),[
    {get:r=>val(r,'work_date','created_at')==='—'?'—':new Date(val(r,'work_date','created_at')).toLocaleDateString('en-IN')},
+   {get:r=>val(r,'created_at')==='—'?'—':new Date(val(r,'created_at')).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true})},
    {get:r=>{const parts=[r.description,r.e_filing?`E-Filing ${money(r.e_filing)}`:'',r.e_payment?`E-Payment ${money(r.e_payment)}`:'',r.print_amount?`Print ${money(r.print_amount)}`:'',r.scanning?`Scanning ${money(r.scanning)}`:'',r.other_works?`Other Works ${money(r.other_works)}`:''];return parts.filter(Boolean).join(' · ')||val(r,'work_type','entry_type','notes');}},
    {get:r=>money(r.work_amount??r.total_amount??['e_filing','e_payment','print_amount','scanning','other_works'].reduce((s,k)=>s+(Number(r[k])||0),0))},
    {get:r=>money(r.paid_amount)}, {get:r=>money(r.balance_amount)}
   ],'No daily work entries found.');
   setRows('paymentRows',pr.error?[]:(pr.data||[]),[
    {get:r=>val(r,'payment_date','created_at')==='—'?'—':new Date(val(r,'payment_date','created_at')).toLocaleDateString('en-IN')},
+   {get:r=>val(r,'created_at')==='—'?'—':new Date(val(r,'created_at')).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true})},
    {get:r=>val(r,'payment_method')}, {get:r=>val(r,'reference_number','description','notes')}, {get:r=>money(r.amount)}
   ],'No payment records found.');
   setRows('serviceRows',sr.error?[]:(sr.data||[]),[

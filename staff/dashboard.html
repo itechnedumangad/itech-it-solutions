@@ -561,11 +561,11 @@ body{
 </section>
 <div class="info-bar">ⓘ Select a customer to view their current balance and today's summary.</div>
 </main></div>
-<script>window.ITECH_DASHBOARD_BUILD="20260929-reminder-v4";</script>
+<script>window.ITECH_DASHBOARD_BUILD="20261009-balance-fallback-v1";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/config.js?v=20260929-reminder-v4"></script>
-<script src="../js/supabase.js?v=20260929-reminder-v4"></script>
-<script src="../js/auth.js?v=20260929-reminder-v4"></script><script src="../js/global-search.js?v=20260929-reminder-v4"></script><script>
+<script src="../js/config.js?v=20261009-balance-fallback-v1"></script>
+<script src="../js/supabase.js?v=20261009-balance-fallback-v1"></script>
+<script src="../js/auth.js?v=20261009-balance-fallback-v1"></script><script src="../js/global-search.js?v=20261009-balance-fallback-v1"></script><script>
 (async function(){
   try{
     const a=await requireStaff(); if(!a)return;
@@ -591,7 +591,7 @@ body{
   }catch(e){const n=document.getElementById('dashInsNote');if(n)n.textContent='Insurance overview unavailable right now.'}
 })();
 </script>
-<script src="../js/quick-work-enhancements.js?v=20260929-reminder-v4"></script>
+<script src="../js/quick-work-enhancements.js?v=20261009-balance-fallback-v1"></script>
 <script>
 (async()=>{
   const ok=await requireStaff(); if(!ok)return;
@@ -794,21 +794,57 @@ body{
     }
 
     const b = Array.isArray(balanceRow) ? balanceRow[0] : balanceRow;
-    const oldBalance = Number(b?.old_balance || 0);
     const todayWork = Number(b?.today_work || 0);
     const todayPaid = Number(b?.today_paid || 0);
-    const currentBalance = Number(b?.current_balance || 0);
+    let currentBalance = Number(b?.current_balance || 0);
+    let oldBalance = Number(b?.old_balance || 0);
+
+    // Fallback to the same balance source used by Customer Profile.
+    // The RPC's old_balance can be 0 for a customer with a historical
+    // negative balance, while customer_balances.current_balance is correct.
+    try {
+      const { data: profileBalance, error: profileBalanceError } = await sb
+        .from("customer_balances")
+        .select("id,current_balance,balance,outstanding,total_work,total_paid,opening_balance")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (!profileBalanceError && profileBalance) {
+        const profileCurrent = Number(
+          profileBalance.current_balance ??
+          profileBalance.balance ??
+          profileBalance.outstanding ??
+          0
+        );
+        // Reverse today's existing work/payment from the current balance
+        // to reconstruct the balance before today's transactions.
+        const derivedOld = profileCurrent - todayWork + todayPaid;
+        currentBalance = profileCurrent;
+        oldBalance = derivedOld;
+      }
+    } catch (fallbackError) {
+      console.warn("Customer Profile balance fallback failed:", fallbackError);
+    }
+
+
+    // Final fallback: some newly added/customer-specific records may return
+    // a valid current_balance from the balance RPC but a zero old_balance.
+    // Reconstruct the pre-today balance from the current balance and today's
+    // already-recorded work/payments. This preserves negative balances.
+    if (Math.abs(oldBalance) < 0.005 && Math.abs(currentBalance) > 0.005) {
+      const derivedOldFromRpc = currentBalance - todayWork + todayPaid;
+      if (Math.abs(derivedOldFromRpc) > 0.005) oldBalance = derivedOldFromRpc;
+    }
 
     selectedBalance = currentBalance;
     selectedTodayWork = todayWork;
     selectedTodayPaid = todayPaid;
 
-    // Both dashboards now render exactly the same database result.
     $("oldBalance").textContent = money(oldBalance);
     $("customerTodayWork").textContent = money(todayWork + workTotal());
     $("customerTodayPaid").textContent = money(todayPaid + amount("paidAmount"));
     $("newBalance").textContent = money(
-      Math.max(oldBalance + todayWork + workTotal() - todayPaid - amount("paidAmount"), 0)
+      oldBalance + todayWork + workTotal() - todayPaid - amount("paidAmount")
     );
   }
 
@@ -1328,7 +1364,7 @@ body{
   }catch(e){console.error(e);}
 })();
 </script>
-<script src="../js/points-reward-fullscreen.js?v=20260929-reminder-v4"></script>
+<script src="../js/points-reward-fullscreen.js?v=20261009-balance-fallback-v1"></script>
 <script id="itech-unified-live-data-fix">
 (async function(){
   try{

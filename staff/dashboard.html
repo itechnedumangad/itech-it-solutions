@@ -1077,6 +1077,18 @@ body{
     }
 
     lines.push(``, `💳 *Total Balance: ${money(balance)}*`);
+
+    // Add a UPI payment link only when the customer has a positive amount due.
+    if(balance > 0){
+      const upiId = "itnedumangad@oksbi";
+      const payeeName = "iTech IT Solutions";
+      const upiLink = "upi://pay?pa=" + encodeURIComponent(upiId)
+        + "&pn=" + encodeURIComponent(payeeName)
+        + "&am=" + encodeURIComponent(balance.toFixed(2))
+        + "&cu=INR";
+      lines.push(``, `🔗 *Pay Online:*`, upiLink);
+    }
+
     return lines.join("\n");
   }
   /*

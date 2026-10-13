@@ -68,7 +68,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script>
 (async()=>{const auth=await requireStaff();if(!auth)return;const $=id=>document.getElementById(id),money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2}),esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])),iso=d=>{const x=new Date(d);return new Date(x.getTime()-x.getTimezoneOffset()*60000).toISOString().slice(0,10)},todayDate=iso(new Date());
 let mode='today',workRows=[],expenseRows=[],paymentRows=[];$('reportDate').value=todayDate;$('weekDate').value=todayDate;$('expenseFrom').value=todayDate;$('expenseTo').value=todayDate;$('todayPrintDate').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
-async function loadWork(from,to){const q=await sb.from('daily_work_entries').select('id,customer_id,work_date,created_at,entered_by,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount').gte('work_date',from).lte('work_date',to).order('work_date',{ascending:true}).order('created_at',{ascending:true});if(q.error)throw q.error;const rows=q.data||[],ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean))],uids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean))];let cs=[],ps=[];if(ids.length){const c=await sb.from('customers').select('id,full_name,mobile').in('id',ids);if(c.error)throw c.error;cs=c.data||[]}if(uids.length){const p=await sb.from('profiles').select('id,full_name,role').in('id',uids);if(p.error)throw p.error;ps=p.data||[]}const cm=new Map(cs.map(x=>[String(x.id),x])),pm=new Map(ps.map(x=>[String(x.id),x]));return rows.map(r=>({...r,customer_name:cm.get(String(r.customer_id))?.full_name||'Customer',mobile:cm.get(String(r.customer_id))?.mobile||'',staff:pm.get(String(r.entered_by))?.full_name||((pm.get(String(r.entered_by))?.role)||'User')}));}
+async function loadWork(from,to){const q=await sb.from('daily_work_entries').select('id,customer_id,work_date,created_at,entered_by,e_filing,e_payment,print_amount,scanning,other_works,discount,paid_amount,entry_type').gte('work_date',from).lte('work_date',to).order('work_date',{ascending:true}).order('created_at',{ascending:true});if(q.error)throw q.error;const rows=q.data||[],ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean))],uids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean))];let cs=[],ps=[];if(ids.length){const c=await sb.from('customers').select('id,full_name,mobile').in('id',ids);if(c.error)throw c.error;cs=c.data||[]}if(uids.length){const p=await sb.from('profiles').select('id,full_name,role').in('id',uids);if(p.error)throw p.error;ps=p.data||[]}const cm=new Map(cs.map(x=>[String(x.id),x])),pm=new Map(ps.map(x=>[String(x.id),x]));return rows.map(r=>({...r,customer_name:r.entry_type==='cash_sale'?'Cash Sale':(cm.get(String(r.customer_id))?.full_name||'Customer'),mobile:cm.get(String(r.customer_id))?.mobile||'',staff:pm.get(String(r.entered_by))?.full_name||((pm.get(String(r.entered_by))?.role)||'User')}));}
 async function loadExpenses(from,to){const q=await sb.from('expenses').select('id,expense_date,category,amount,payment_method,reference_number,created_at').gte('expense_date',from).lte('expense_date',to).order('expense_date',{ascending:true}).order('created_at',{ascending:true});if(q.error)throw q.error;return q.data||[]}
 async function loadPayments(from,to){const q=await sb.from('payments').select('id,customer_id,payment_date,amount,payment_method,reference_number,reference_note,created_at,entered_by').gte('payment_date',from).lte('payment_date',to).order('payment_date',{ascending:true}).order('created_at',{ascending:true});if(q.error)throw q.error;const rows=q.data||[],ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean))],uids=[...new Set(rows.map(x=>x.entered_by).filter(Boolean))];let cs=[],ps=[];if(ids.length){const c=await sb.from('customers').select('id,full_name,mobile').in('id',ids);if(c.error)throw c.error;cs=c.data||[]}if(uids.length){const p=await sb.from('profiles').select('id,full_name,role').in('id',uids);if(p.error)throw p.error;ps=p.data||[]}const cm=new Map(cs.map(x=>[String(x.id),x])),pm=new Map(ps.map(x=>[String(x.id),x]));return rows.map(r=>({...r,customer_name:r.customer_id?(cm.get(String(r.customer_id))?.full_name||'Customer'):'Cash Sale',staff:pm.get(String(r.entered_by))?.full_name||pm.get(String(r.entered_by))?.role||'User',reference:r.reference_number||r.reference_note||''}))}
 const wt=r=>Math.max(0,Number(r.e_filing||0)+Number(r.e_payment||0)+Number(r.print_amount||0)+Number(r.scanning||0)+Number(r.other_works||0)-Number(r.discount||0));
@@ -76,11 +76,11 @@ function expenseHtml(rows,includeDate=true){return rows.length?rows.map(r=>`<tr>
 function aggregateReportRows(work,payments){
   const map=new Map();
   const makeKey=(customerId,customerName,date)=>String(customerId||customerName||'')+'|'+String(date||'');
-  const makeRow=(r,date)=>({customer_id:r.customer_id||null,customer_name:r.customer_name||'Customer',mobile:r.mobile||'',work_date:date,staffs:new Set(),e_filing:0,e_payment:0,print_amount:0,scanning:0,other_works:0,discount:0,paid:0,paid_cash:0,paid_gpay:0,lastTime:r.created_at||date});
+  const makeRow=(r,date)=>({customer_id:r.customer_id||null,customer_name:r.customer_name||'Customer',entry_type:r.entry_type||null,is_cash_sale:r.entry_type==='cash_sale'||r.customer_name==='Cash Sale',mobile:r.mobile||'',work_date:date,staffs:new Set(),e_filing:0,e_payment:0,print_amount:0,scanning:0,other_works:0,discount:0,paid:0,paid_cash:0,paid_gpay:0,lastTime:r.created_at||date});
 
   // Work rows: one customer/date row, all work types combined.
   for(const r of work){
-    const key=makeKey(r.customer_id,r.customer_name,r.work_date);
+    const key=r.entry_type==='cash_sale'?'Cash Sale|'+String(r.work_date)+'|'+String(r.id):makeKey(r.customer_id,r.customer_name,r.work_date);
     if(!map.has(key)) map.set(key,makeRow(r,r.work_date));
     const x=map.get(key);
     if(r.staff) x.staffs.add(r.staff);
@@ -105,13 +105,21 @@ function aggregateReportRows(work,payments){
 
     if(!p.customer_id){
       const amount=Number(p.amount||0);
-      const candidates=[...map.values()].filter(x=>
-        !x.customer_id ? false :
-        String(x.work_date)===String(p.payment_date) &&
-        Math.abs(wt(x)-amount)<0.005
+      // Cash Sale is already a paid work entry. Attach its matching payment
+      // to that same row first, rather than creating a second Cash Sale row
+      // or incorrectly assigning the work to a generic Customer row.
+      const cashSales=[...map.entries()].filter(([k,x])=>
+        x.is_cash_sale && String(x.work_date)===String(p.payment_date) && Math.abs(wt(x)-amount)<0.005
       );
-      if(candidates.length===1){
-        key=makeKey(candidates[0].customer_id,candidates[0].customer_name,candidates[0].work_date);
+      if(cashSales.length===1){
+        key=cashSales[0][0];
+      } else if(cashSales.length===0){
+        const candidates=[...map.entries()].filter(([k,x])=>
+          !x.is_cash_sale && !!x.customer_id &&
+          String(x.work_date)===String(p.payment_date) &&
+          Math.abs(wt(x)-amount)<0.005
+        );
+        if(candidates.length===1) key=candidates[0][0];
       }
     }
 
@@ -131,7 +139,7 @@ function aggregateReportRows(work,payments){
   );
 }
 function workRowHtml(r){
-  const total=wt(r), paid=Number(r.paid||0), credit=Math.max(0,total-paid);
+  const total=wt(r), paid=Number(r.paid||0), credit=r.is_cash_sale?0:Math.max(0,total-paid);
   const paymentOnly=total===0 && paid!==0;
   return `<tr class="${paymentOnly?'payment-only-row':''}">
     <td><b>${esc(r.customer_name)}</b><small>${esc(r.mobile)}${paymentOnly?'<br><em>Payment only</em>':''}</small></td>
@@ -155,7 +163,7 @@ function creditTotalForReport(work,payments){
     // Credit is only the unpaid portion of an actual Daily Work entry.
     // Payment-only rows (Cash Sale / standalone payment) must never create
     // negative credit or reduce another customer's outstanding amount.
-    if(workTotal<=0) return sum;
+    if(workTotal<=0 || r.is_cash_sale) return sum;
     return sum + Math.max(0, workTotal - Number(r.paid||0));
   },0);
 }

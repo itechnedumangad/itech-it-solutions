@@ -96,3 +96,18 @@ document.addEventListener("click", e => {
     logout();
   }
 });
+
+
+/* iTech idle PIN lock: centrally loaded for admin/staff pages. */
+(function loadItechIdlePinLockOnce() {
+  if (window.__itechIdlePinLockLoaderStarted) return;
+  window.__itechIdlePinLockLoaderStarted = true;
+  const path = window.location.pathname || '';
+  if (!/(^|\/)\b(admin|staff)\//i.test(path)) return;
+  const current = document.currentScript;
+  const base = current && current.src ? new URL('.', current.src).href : new URL('../js/', window.location.href).href;
+  const script = document.createElement('script');
+  script.src = new URL('idle-pin-lock.js?v=20261013-2', base).href;
+  script.defer = true;
+  document.head.appendChild(script);
+})();

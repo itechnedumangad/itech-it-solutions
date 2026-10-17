@@ -1,0 +1,13 @@
+iTech Computer Sales + CCTV integration notes
+
+This package adds a Computer Sales dashboard with Supabase-backed customer/product masters, invoice, purchase, barcode, stock movement, payments and summary reports. It includes the current CCTV module from the supplied job-card-save-fix ZIP.
+
+Shared master migration: cs_customers and cs_products are intended as the common source for both CCTV and Computer Sales. The current CCTV pages in the source ZIP still use the existing CCTV-specific workflow/tables. Before production, the CCTV customer selector and product selector must be explicitly migrated to cs_customers/cs_products, preserving old CCTV IDs and jobs via mapping. This is not silently done because schema/foreign keys and existing production data need verification.
+
+Apply supabase/migrations/20261017_computer_sales_shared_masters.sql in Supabase SQL Editor. The RLS policy is a permissive authenticated-user baseline for initial testing, not a final role separation policy. Adjust according to admin/staff permissions before production.
+
+Important implementation limitation: invoice creation currently uses sequential client writes (invoice, lines, stock movements, product stock, payment); for production, replace with a PostgreSQL RPC transaction so partial failures cannot leave stock/ledger inconsistent. Trial Balance/P&L/Balance Sheet are intentionally not represented as final accounting statements; full double-entry journal posting is required.
+
+Use website hosted over HTTPS or local web server; do not open HTML by file:// because Supabase auth/session and relative assets may fail.
+
+Latest shared items update: computer-sales/items.html provides category + subcategory management for shared cs_products. Computer Sales Quick Invoice and quotation builder use that list. CCTV sidebar has a link to the same Items master. CCTV quotation/invoice line-item selectors and legacy iTech customer picker still need a final schema-aware integration pass before production.

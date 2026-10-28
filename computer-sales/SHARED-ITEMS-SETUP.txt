@@ -1,8 +1,0 @@
-SHARED ITEMS UPDATE
-1. Run the updated migration supabase/migrations/20261017_computer_sales_shared_masters.sql in Supabase SQL Editor. It adds category and subcategory columns to cs_products.
-2. Use computer-sales/items.html as the shared item master for both CCTV and Computer Sales. Product records are stored in cs_products.
-3. Category is one of Computer, CCTV, Both, Networking, Accessories, Services, Other. Subcategory is free text with suggested values; you can create new subcategories by typing them.
-4. Computer Sales Quick Invoice and the new Computer Sales Quotation page read the same cs_products list. Creating a quotation does not reduce stock.
-5. CCTV sidebar includes a Shared Items link to the same Items master. Existing CCTV quotation/invoice screens in this source archive are currently register/demo workflow pages and have not yet been wired to add line items from cs_products; do not assume their item dropdown is live until that integration is completed.
-6. Existing iTech customer table is public.customers with id, full_name, mobile. This ZIP keeps the customer list separate from new cs_customers; existing invoice/customer selectors still require a follow-up integration to read the legacy customers table consistently.
-7. Hosting/auth and Supabase RLS must be tested in the actual site. Do not open pages with file://.

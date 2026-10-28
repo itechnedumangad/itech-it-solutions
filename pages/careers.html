@@ -3,11 +3,34 @@
 </style><link rel="stylesheet" href="../css/unified-dashboard.css"><link rel="stylesheet" href="../css/public-polish.css"><link rel="stylesheet" href="../css/mobile-app-ready.css"><link rel="stylesheet" href="../css/itech-final-ui.css"><link rel="stylesheet" href="../css/itech-redesign.css"><script src="../js/itech-redesign.js"></script>
 <link rel="stylesheet" href="../css/site-consistency-pass.css">
 
-<style id="itech-careers-footer-match-public">
+<style id="itech-careers-public-layout-fix">
 html, body { min-height: 100%; }
-body { min-height: 100vh; display: flex; flex-direction: column; }
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
 body > header.site-header { flex: 0 0 auto; width: 100%; }
-body > main.wrap { flex: 1 0 auto; width: 100%; box-sizing: border-box; }
+body > main.wrap {
+  flex: 1 0 auto;
+  width: min(1000px, calc(100% - 32px)) !important;
+  max-width: 1000px;
+  margin: 28px auto 42px !important;
+  padding: 0;
+  box-sizing: border-box;
+}
+body > main.wrap .top { width: 100%; margin: 0; }
+body > main.wrap .card {
+  width: 100%;
+  margin: 20px 0 0;
+  padding: 24px;
+  background: var(--career-card-bg, #fff);
+  color: var(--career-text, #10284b);
+  border: 1px solid var(--career-line, #dfe8f4);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(22,56,91,.08);
+}
 body > footer.site-footer.unified-site-footer {
   flex: 0 0 auto;
   position: relative !important;
@@ -19,9 +42,40 @@ body > footer.site-footer.unified-site-footer {
 }
 .unified-site-footer .footer-brand { display: flex; justify-content: center; align-items: center; }
 .unified-site-footer .footer-logo { display: block; max-width: 150px; height: auto; object-fit: contain; }
-@media (max-width: 600px) {
-  body > main.wrap { padding-bottom: 24px; }
-  body > footer.site-footer.unified-site-footer { padding-left: 14px; padding-right: 14px; }
+html[data-theme="dark"] body,
+body[data-theme="dark"] {
+  background: #0b1424 !important;
+  color: #e8eef8 !important;
+  --career-card-bg: #111d30;
+  --career-text: #e8eef8;
+  --career-line: #2a3b55;
+}
+html[data-theme="dark"] body > main.wrap .card,
+body[data-theme="dark"] > main.wrap .card {
+  background: #111d30 !important;
+  color: #e8eef8 !important;
+  border-color: #2a3b55 !important;
+}
+html[data-theme="dark"] .field label,
+html[data-theme="dark"] .privacy,
+html[data-theme="dark"] .hint,
+body[data-theme="dark"] .field label,
+body[data-theme="dark"] .privacy,
+body[data-theme="dark"] .hint { color: #c5d1e2; }
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+body[data-theme="dark"] input,
+body[data-theme="dark"] select,
+body[data-theme="dark"] textarea {
+  background: #0b1424 !important;
+  color: #e8eef8 !important;
+  border-color: #354760 !important;
+}
+@media (max-width: 650px) {
+  body > main.wrap { width: calc(100% - 24px) !important; margin: 18px auto 28px !important; }
+  body > main.wrap .card { padding: 17px; }
+  body > main.wrap .top { padding: 20px; }
 }
 </style>
 
@@ -35,7 +89,7 @@ body > footer.site-footer.unified-site-footer {
 <a href="careers.html" aria-current="page"><span class="nav-icon" aria-hidden="true">👥</span><span>Join Our Team</span></a>
 <a href="service-register.html"><span class="nav-icon" aria-hidden="true">🧰</span><span>Service</span></a>
 <a href="login.html"><span class="nav-icon" aria-hidden="true">🔐</span><span>Login</span></a></nav></div></header><main class="wrap">
-<header class="top"><div class="eyebrow">JOIN OUR TEAM</div><h1>Join Our Team at iTech IT Solutions</h1><p>Interested in working with us? Submit your details and upload your resume. Our team will contact suitable applicants when an opportunity is available.</p></header><form class="career-form" id="careerForm" class="card"><h2>Job Application</h2><p class="hint">Fields marked <span class="required">*</span> are required.</p><div class="grid">
+<header class="top"><div class="eyebrow">JOIN OUR TEAM</div><h1>Join Our Team at iTech IT Solutions</h1><p>Interested in working with us? Submit your details and upload your resume. Our team will contact suitable applicants when an opportunity is available.</p></header><form class="career-form card" id="careerForm"><h2>Job Application</h2><p class="hint">Fields marked <span class="required">*</span> are required.</p><div class="grid">
 <div class="field"><label for="name">Full name <span class="required">*</span></label><input id="name" name="name" required maxlength="120" autocomplete="name"></div>
 <div class="field"><label for="mobile">Mobile number <span class="required">*</span></label><input id="mobile" name="mobile" required maxlength="20" inputmode="tel" autocomplete="tel"></div>
 <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" maxlength="180" autocomplete="email"></div>

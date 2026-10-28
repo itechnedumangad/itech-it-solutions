@@ -1,0 +1,19 @@
+/* iTech Reporting Centre - mobile-first */
+.report-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.report-tab{border:1px solid #d7e2ef;background:#fff;color:#16345a;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer;transition:.2s}
+.report-tab:hover,.report-tab.active{background:linear-gradient(100deg,#1769e0,#3459ff);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(31,102,224,.18)}
+.report-panel{background:#fff;border:1px solid #e0e8f2;border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(17,50,91,.07);margin-bottom:18px}
+.report-panel h2{margin:0 0 5px;font-size:20px}.report-panel p{margin:0 0 14px}
+.filter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.filter-field label{display:block;font-size:11px;font-weight:800;color:#61738b;margin:0 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.filter-field input,.filter-field select{width:100%;height:44px;border:1px solid #d8e3ef;border-radius:10px;padding:0 11px;background:#fff;color:#132e51;font:inherit;outline:none}
+.filter-field input:focus,.filter-field select:focus{border-color:#2874e8;box-shadow:0 0 0 3px rgba(40,116,232,.1)}
+.report-actions{display:flex;gap:8px;flex-wrap:wrap}.report-actions .btn{min-height:44px}
+.summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+.summary-box{padding:15px;border-radius:14px;border:1px solid #e0e8f2;background:linear-gradient(180deg,#fff,#f8fbff)}
+.summary-box .label{font-size:11px;font-weight:800;color:#667991;text-transform:uppercase;letter-spacing:.5px}.summary-box .num{font-size:23px;font-weight:900;color:#102e55;margin-top:6px}.summary-box.orange{border-top:3px solid #ff8a16}.summary-box.blue{border-top:3px solid #1769e0}.summary-box.green{border-top:3px solid #16a05d}.summary-box.purple{border-top:3px solid #7048e8}
+.report-note{padding:11px 13px;border-radius:11px;background:#eef6ff;color:#185fae;font-size:13px;border:1px solid #d7e9ff;margin-bottom:14px}
+.bill-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;padding-bottom:15px;border-bottom:1px solid #e2e9f2}.bill-brand img{width:64px;height:64px;object-fit:contain}.bill-meta{text-align:right}.bill-meta h2{font-size:22px}.bill-meta small{color:#71839a}.customer-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.customer-summary .item{padding:12px;border-radius:11px;background:#f7faff;border:1px solid #e2eaf4}.customer-summary b{display:block;color:#16345a;margin-bottom:3px}.bill-total{display:flex;justify-content:flex-end;margin-top:14px}.bill-total .total-card{min-width:250px;padding:15px;border-radius:14px;background:#09264d;color:#fff}.bill-total .total-card div{display:flex;justify-content:space-between;gap:20px;padding:4px 0}.bill-total .grand{font-size:18px;font-weight:900;border-top:1px solid rgba(255,255,255,.18);margin-top:6px;padding-top:9px}.empty-state{text-align:center;padding:30px;color:#71839a}
+@media(max-width:900px){.filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.filter-grid,.summary-grid,.customer-summary{grid-template-columns:1fr}.report-panel{padding:14px;border-radius:14px}.report-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.report-tab{white-space:nowrap}.bill-head{flex-direction:column}.bill-meta{text-align:left}.bill-total{justify-content:stretch}.bill-total .total-card{width:100%;min-width:0}.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.data-table{min-width:700px}}
+@media print{body{background:#fff!important}.dash-header,.sidebar,.toolbar .report-actions,.report-tabs,.no-print,.unified-site-footer{display:none!important}.dash-layout{display:block!important}.dash-main{padding:0!important;max-width:none!important}.report-panel{box-shadow:none;border:0}.bill-only-hide{display:none!important}}

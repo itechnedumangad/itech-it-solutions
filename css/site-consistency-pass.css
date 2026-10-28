@@ -1,0 +1,149 @@
+/* iTech site consistency pass: shared footer sizing, theme-safe surfaces, and reduced-motion support. */
+html { min-height: 100%; }
+body { max-width: 100%; overflow-x: clip; }
+.site-footer, .unified-site-footer, footer.footer {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+body:has(> header.site-header > .nav-wrap) {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body:has(> header.site-header > .nav-wrap) > main {
+  flex: 1 0 auto;
+}
+body:has(> header.site-header > .nav-wrap) > footer.site-footer,
+body:has(> header.site-header > .nav-wrap) > footer.unified-site-footer {
+  flex-shrink: 0;
+  margin-top: auto !important;
+}
+@supports not selector(body:has(> header)) {
+  body { min-height: 100vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Join Our Team pages: readable fields and panels in both themes. */
+html[data-theme="dark"] body:has(.career-form),
+html[data-theme="dark"] body:has(#applicationsTable) {
+  background: #101827 !important;
+  color: #e7edf7 !important;
+}
+html[data-theme="dark"] .career-form,
+html[data-theme="dark"] .career-panel,
+html[data-theme="dark"] .panel:has(.tools),
+html[data-theme="dark"] .panel:has(.tablewrap) {
+  background: #111827 !important;
+  color: #e7edf7 !important;
+  border-color: #26364b !important;
+}
+html[data-theme="dark"] .career-form input,
+html[data-theme="dark"] .career-form select,
+html[data-theme="dark"] .career-form textarea,
+html[data-theme="dark"] .tools input,
+html[data-theme="dark"] .tools select,
+html[data-theme="dark"] .actions select {
+  background: #0b1220 !important;
+  color: #e7edf7 !important;
+  border-color: #34445b !important;
+}
+html[data-theme="dark"] .career-form label,
+html[data-theme="dark"] .career-form .hint,
+html[data-theme="dark"] .page-heading p,
+html[data-theme="dark"] .muted {
+  color: #b9c6d8 !important;
+}
+html[data-theme="dark"] .tablewrap th {
+  background: #202b3e !important;
+  color: #d5deec !important;
+}
+html[data-theme="dark"] .tablewrap td {
+  color: #e7edf7 !important;
+  border-color: #26364b !important;
+}
+
+/* Consistent navigation labels/icons across admin, staff, and public pages. */
+.sidebar nav a { display: flex; align-items: center; gap: 9px; }
+.sidebar nav a .menu-icon { display: inline-flex; width: 1.35rem; min-width: 1.35rem; justify-content: center; align-items: center; font-size: .95rem; line-height: 1; }
+.site-header .nav a { display: inline-flex; align-items: center; gap: 6px; }
+.site-header .nav .nav-icon { display: inline-flex; align-items: center; justify-content: center; font-size: .92em; }
+.sidebar nav a span:last-child { min-width: 0; }
+.sidebar nav a:focus-visible, .site-header .nav a:focus-visible { outline: 2px solid #f58220; outline-offset: 3px; border-radius: 6px; }
+@media (max-width: 760px) {
+  .sidebar nav a { gap: 8px; }
+  .site-header .nav a { padding-top: 10px; padding-bottom: 10px; }
+}
+
+/* Dashboard sidebar layout repair: keep admin/staff menus vertical, not in the header row. */
+.dash-layout { display: flex !important; align-items: stretch; min-height: calc(100vh - 76px); }
+.dash-layout > .sidebar { flex: 0 0 246px; width: 246px; align-self: stretch; }
+.dash-layout > .sidebar > nav { display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
+.dash-layout > .sidebar > nav > a { width: 100%; box-sizing: border-box; white-space: normal; }
+.dash-layout > .dash-main, .dash-layout > main { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 850px) {
+  .dash-layout { display: block !important; }
+  .dash-layout > .sidebar { width: 100%; }
+  .dash-layout > .sidebar > nav { display: flex; flex-direction: row; flex-wrap: wrap; }
+  .dash-layout > .sidebar > nav > a { width: auto; flex: 1 1 140px; }
+}
+
+/* Page-specific header and navigation repairs */
+header.dash-header {
+  width: 100%;
+  min-height: 76px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+  gap: 18px;
+  padding: 12px 24px !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header.dash-header .brand { margin: 0 !important; flex: 0 0 auto; }
+header.dash-header .brand-logo { display: block; max-width: 150px; max-height: 52px; object-fit: contain; }
+header.dash-header .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-left: auto; }
+header.dash-header .dash-header-inner { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.career-admin-sidebar {
+  position: fixed !important;
+  top: 76px;
+  left: 0;
+  bottom: 0;
+  width: 232px !important;
+  overflow-y: auto;
+  z-index: 80;
+  padding: 18px 12px !important;
+  background: linear-gradient(180deg,#071c3b,#09264d) !important;
+  box-sizing: border-box;
+}
+.career-admin-sidebar nav { display: flex; flex-direction: column; gap: 4px; }
+.career-admin-sidebar nav a {
+  display: flex; align-items: center; gap: 9px; width: 100%; box-sizing: border-box;
+  padding: 10px 12px; border-radius: 10px; color: #dce7f8; font-weight: 700;
+  font-size: 13px; line-height: 1.3; text-decoration: none;
+}
+.career-admin-sidebar nav a:hover { background: rgba(255,255,255,.09); }
+.career-admin-sidebar nav a.active { background: linear-gradient(90deg,#1769e0,#3459ff); color: #fff; }
+body:has(.career-admin-sidebar) .page-heading,
+body:has(.career-admin-sidebar) main.wrap,
+body:has(.career-admin-sidebar) footer { margin-left: 252px !important; }
+body:has(.career-admin-sidebar) .page-heading { max-width: none !important; }
+body:has(.career-admin-sidebar) main.wrap { width: auto; max-width: none; margin-right: 22px; }
+body:has(.career-admin-sidebar) footer { width: auto; }
+@media (max-width: 900px) {
+  .career-admin-sidebar { position: static !important; width: 100% !important; max-height: none; }
+  .career-admin-sidebar nav { flex-direction: row; flex-wrap: wrap; }
+  .career-admin-sidebar nav a { width: auto; flex: 1 1 145px; }
+  body:has(.career-admin-sidebar) .page-heading,
+  body:has(.career-admin-sidebar) main.wrap,
+  body:has(.career-admin-sidebar) footer { margin-left: 0 !important; margin-right: 0 !important; }
+}

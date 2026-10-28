@@ -2,7 +2,6 @@
 
 <html lang="en">
 <head>
-<link rel="stylesheet" href="/css/modern-v2-fullsite.css">
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Dashboard | iTech Staff</title>
@@ -423,6 +422,8 @@ body{
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/itech-redesign.css">
+<script src="../js/itech-redesign.js"></script>
 </head>
 <body>
 <header class="dash-header">
@@ -1195,9 +1196,10 @@ body{
       (wh.data||[]).forEach(r=>{const id=String(r.customer_id),d=r.created_at?new Date(r.created_at):null;if(d&&!Number.isNaN(d.getTime())&&(!last.has(id)||d>last.get(id)))last.set(id,d);});
       (ph.data||[]).forEach(r=>{const id=String(r.customer_id);if(!r.payment_date)return;const d=new Date(String(r.payment_date)+"T23:59:59");if(!last.has(id)||d>last.get(id))last.set(id,d);});
 
+      // Match Admin dashboard's exact balance calculation for WhatsApp messages.
       const customersWithData=(cu.data||[]).map(c=>{
-        const id=String(c.id),balance=Math.max(balances.get(id)||0,0),w=works.get(id)||0,p=paid.get(id)||0;
-        return {...c,oldBalance:Math.max(balance-w+p,0),todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
+        const id=String(c.id),balance=Number(balances.get(id)||0),w=works.get(id)||0,p=paid.get(id)||0;
+        return {...c,oldBalance:balance-w+p,todayWork:w,todayPaid:p,totalBalance:balance,lastActivity:last.get(id)||null};
       });
 
       const todayRows=customersWithData.filter(c=>(c.todayWork>0||c.todayPaid>0)&&!isReminderSent(c))
@@ -1223,11 +1225,19 @@ body{
         else setTimeout(()=>status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`),Math.max(300,valid.length*700+300));
       };
       $("waSendOverdueAll").onclick=()=>{
+        let processed=0, skipped=0;
         const valid=overdueRows.filter(c=>getValidWhatsAppNumber(c));
+        skipped=overdueRows.length-valid.length;
         valid.forEach((c,i)=>setTimeout(async()=>{
-          openWhatsApp(c);
-          if(i===valid.length-1)setTimeout(loadWhatsAppReminders,400);
+          if(await openWhatsApp(c)) processed++;
+          if(i===valid.length-1){
+            setTimeout(()=>{
+              loadWhatsAppReminders();
+              status(`✅ ${processed} reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
+            },400);
+          }
         },i*450));
+        if(!valid.length) status(`✅ 0 reminders processed\n⚠️ ${skipped} invalid numbers skipped`,skipped>0);
       };
       $("waRefresh").onclick=loadWhatsAppReminders;
     }catch(err){

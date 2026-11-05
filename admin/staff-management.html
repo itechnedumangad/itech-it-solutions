@@ -786,6 +786,25 @@ tbody tr:hover{
 
 }
 
+
+/* Permission level editor */
+.permission-level-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.permission.permission-level{display:flex;flex-direction:column;align-items:stretch;gap:7px;cursor:default;padding:11px}
+.permission-level strong{font-size:12px;color:#183555}
+.permission-level select,.staff-permission-editor select{width:100%;height:38px;border:1px solid #d8e2ef;border-radius:8px;padding:0 9px;background:#fff;color:#17345b;font-weight:700}
+.staff-permission-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(4,18,40,.62);padding:18px;align-items:center;justify-content:center}
+.staff-permission-modal.open{display:flex}
+.staff-permission-dialog{width:min(900px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 25px 80px rgba(0,0,0,.25)}
+.staff-permission-head,.staff-permission-actions,.staff-permission-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.staff-permission-head h2{margin:0}.staff-permission-head p{margin:4px 0 0}
+.staff-permission-tools{justify-content:flex-start;margin:15px 0}
+.staff-permission-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.staff-permission-editor .permission{display:flex;flex-direction:column;align-items:stretch;gap:7px;cursor:default}
+.staff-permission-actions{justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid #e7edf5}
+.staff-permission-actions #permissionSaveStatus{margin-right:auto;font-size:12px}
+@media(max-width:900px){.permission-level-grid,.staff-permission-editor{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.permission-level-grid,.staff-permission-editor{grid-template-columns:1fr}.staff-permission-dialog{padding:14px}.staff-permission-actions{flex-direction:column;align-items:stretch}.staff-permission-actions button{width:100%}}
+
 </style>
 <link href="../css/ui-enhancements.css" rel="stylesheet"/>
 <link href="../css/mobile-app-ready.css" rel="stylesheet"/>
@@ -903,8 +922,8 @@ Module Permissions
 
 </div>
 <!-- PERMISSIONS -->
-<div class="permissions" id="permissions">
-</div>
+<div class="permissions permission-level-grid" id="permissions"></div>
+<p class="muted" style="font-size:12px;margin:9px 0 0">Choose Full Access, View Only or No Access separately for every module.</p>
 <!-- NOTICE -->
 <div class="note">
 <b>Default Password: 123456</b>
@@ -999,7 +1018,27 @@ Loading...
 <section class="card isp-wrap">
   <div class="isp-head"><div><h2>🛠️ Service Job Points</h2><p class="muted">Admin can award or update points for an assigned service job.</p></div></div>
   <div id="ispJobsBody"><div class="isp-empty">Loading service jobs…</div></div>
-</section></main>
+</section>
+<div class="staff-permission-modal" id="staffPermissionModal" aria-hidden="true">
+  <div class="staff-permission-dialog" role="dialog" aria-modal="true" aria-labelledby="staffPermissionTitle">
+    <div class="staff-permission-head">
+      <div><h2 id="staffPermissionTitle">Edit Staff Permissions</h2><p id="staffPermissionSubtitle" class="muted"></p></div>
+      <button type="button" class="btn-secondary" id="closePermissionModal" aria-label="Close">✕</button>
+    </div>
+    <div class="staff-permission-tools">
+      <button type="button" class="btn-secondary" id="allFullAccess">All Full Access</button>
+      <button type="button" class="btn-secondary" id="allViewOnly">All View Only</button>
+      <button type="button" class="btn-secondary" id="allNoAccess">All No Access</button>
+    </div>
+    <div class="staff-permission-editor" id="staffPermissionEditor"></div>
+    <div class="staff-permission-actions">
+      <span class="muted" id="permissionSaveStatus"></span>
+      <button type="button" class="btn-secondary" id="cancelPermissionEdit">Cancel</button>
+      <button type="button" class="btn-primary" id="saveStaffPermissions">Save Permissions</button>
+    </div>
+  </div>
+</div>
+</main>
 </div>
 <!-- =========================================================
      SUPABASE
@@ -1007,7 +1046,7 @@ Loading...
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
-<script src="../js/auth.js"></script>
+<script src="../js/auth.js?v=20261105-staff-permissions"></script>
 <!-- =========================================================
      STAFF MANAGEMENT JAVASCRIPT
      ========================================================= -->
@@ -1041,61 +1080,56 @@ const $ = id =>
    --------------------------------------------------------- */
 
 const modules = [
-
   ["dashboard","Dashboard"],
-
   ["customers","Customers"],
-
   ["add-customer","Add Customer"],
-
   ["daily-work","Daily Work"],
-
+  ["court-copy","Court Copy"],
   ["payments","Payments"],
-
+  ["cctv","CCTV"],
   ["reports","Reports"],
-
+  ["customer-bill","Customer Bill"],
   ["services","Services"],
-
   ["products","Products"],
-
   ["vehicle-insurance","Vehicle Insurance"],
-
   ["enquiries","Enquiries"],
-
   ["amc","AMC"],
-
   ["offers","Offers"],
-
   ["works","Our Works"],
-
-  ["messages","Messages"]
-
+  ["messages","Messages"],
+  ["points","My Points"]
 ];
-
-
-/* ---------------------------------------------------------
-   CREATE PERMISSION CHECKBOXES
-   --------------------------------------------------------- */
-
-$("permissions").innerHTML =
-
-modules.map(([key,label]) => `
-
-<label class="permission">
-
-<input
-  type="checkbox"
-  value="${key}"
-  checked>
-
-<span>
-${label}
-</span>
-
-</label>
-
-`).join("");
-
+const permissionLevels = [
+  ["full_access","Full Access"],
+  ["view_only","View Only"],
+  ["no_access","No Access"]
+];
+const defaultPermissions = Object.fromEntries(modules.map(([key]) => [key,"full_access"]));
+Object.assign(defaultPermissions, {
+  dashboard: "full_access",
+  customers: "full_access",
+  "daily-work": "full_access",
+  payments: "view_only",
+  reports: "no_access",
+  cctv: "no_access",
+  amc: "view_only"
+});
+function normalizePermissions(value) {
+  const result = {...defaultPermissions};
+  if (Array.isArray(value)) {
+    modules.forEach(([key]) => result[key] = value.includes(key) ? "full_access" : "no_access");
+    return result;
+  }
+  modules.forEach(([key]) => {
+    const level = value && value[key];
+    result[key] = permissionLevels.some(([v]) => v === level) ? level : "no_access";
+  });
+  return result;
+}
+function permissionSelect(key, value, prefix="create") {
+  return `<label class="permission permission-level"><strong>${escapeHTML(modules.find(x=>x[0]===key)?.[1]||key)}</strong><select data-permission-key="${escapeHTML(key)}" data-permission-scope="${prefix}">${permissionLevels.map(([v,label])=>`<option value="${v}" ${value===v?"selected":""}>${label}</option>`).join("")}</select></label>`;
+}
+$("permissions").innerHTML = modules.map(([key]) => permissionSelect(key,defaultPermissions[key])).join("");
 
 /* ---------------------------------------------------------
    STATUS MESSAGE
@@ -1232,7 +1266,7 @@ async function callStaffFunction(
             "application/json",
 
           "apikey":
-            window.APP_CONFIG.SUPABASE_ANON_KEY || ""
+            window.APP_CONFIG.SUPABASE_ANON_KEY || window.APP_CONFIG.SUPABASE_PUBLISHABLE_KEY || ""
 
         },
 
@@ -1340,12 +1374,8 @@ No staff accounts found.
 
     staff.map(staffMember => {
 
-      const permissions =
-        Array.isArray(
-          staffMember.permissions
-        )
-        ? staffMember.permissions.length
-        : 0;
+      const permissionMap = normalizePermissions(staffMember.permissions);
+      const permissions = Object.values(permissionMap).filter(v => v !== "no_access").length;
 
 
       const status =
@@ -1417,6 +1447,9 @@ modules
 
 <div class="controls">
 
+<button class="btn-secondary" type="button"
+  data-edit-permissions="${escapeHTML(staffMember.id)}"
+  data-staff-name="${escapeHTML(staffMember.full_name || "Staff")}">Edit Permissions</button>
 
 <button
   class="btn-secondary"
@@ -1479,7 +1512,7 @@ Delete
             await callStaffFunction(
               "toggle",
               {
-                user_id:
+                staff_id:
                   button.dataset.toggle
               }
             );
@@ -1548,7 +1581,7 @@ Delete
             await callStaffFunction(
               "delete",
               {
-                user_id:
+                staff_id:
                   button.dataset.delete
               }
             );
@@ -1581,6 +1614,12 @@ Delete
 
       });
 
+    document.querySelectorAll("[data-edit-permissions]").forEach(button => {
+      button.onclick = () => {
+        const member = staff.find(x => x.id === button.dataset.editPermissions);
+        if (member) openPermissionEditor(member);
+      };
+    });
 
   }
   catch(error){
@@ -1612,6 +1651,58 @@ Unable to load staff accounts.
 
 
 /* ---------------------------------------------------------
+   STAFF PERMISSION EDITOR
+   --------------------------------------------------------- */
+let editingStaffId = null;
+function openPermissionEditor(member) {
+  editingStaffId = member.id;
+  $("staffPermissionSubtitle").textContent = `${member.full_name || "Staff"} · ${member.email || ""}`;
+  const values = normalizePermissions(member.permissions);
+  $("staffPermissionEditor").innerHTML = modules.map(([key]) => permissionSelect(key, values[key], "edit")).join("");
+  $("permissionSaveStatus").textContent = "";
+  $("permissionSaveStatus").style.color = "";
+  $("staffPermissionModal").classList.add("open");
+  $("staffPermissionModal").setAttribute("aria-hidden","false");
+}
+function closePermissionEditor() {
+  $("staffPermissionModal").classList.remove("open");
+  $("staffPermissionModal").setAttribute("aria-hidden","true");
+  editingStaffId = null;
+}
+$("closePermissionModal").onclick = closePermissionEditor;
+$("cancelPermissionEdit").onclick = closePermissionEditor;
+$("staffPermissionModal").addEventListener("click", e => { if (e.target === $("staffPermissionModal")) closePermissionEditor(); });
+function setAllEditPermissions(level) {
+  $("staffPermissionEditor").querySelectorAll("[data-permission-key]").forEach(el => el.value = level);
+}
+$("allFullAccess").onclick = () => setAllEditPermissions("full_access");
+$("allViewOnly").onclick = () => setAllEditPermissions("view_only");
+$("allNoAccess").onclick = () => setAllEditPermissions("no_access");
+$("saveStaffPermissions").onclick = async () => {
+  if (!editingStaffId) return;
+  const button = $("saveStaffPermissions");
+  const permissions = Object.fromEntries(
+    [...$("staffPermissionEditor").querySelectorAll("[data-permission-key]")]
+      .map(el => [el.dataset.permissionKey, el.value])
+  );
+  button.disabled = true;
+  button.textContent = "Saving…";
+  $("permissionSaveStatus").textContent = "";
+  try {
+    await callStaffFunction("update_permissions", { staff_id: editingStaffId, permissions });
+    closePermissionEditor();
+    showMessage("Staff permissions updated successfully.");
+    await loadStaff();
+  } catch (error) {
+    $("permissionSaveStatus").textContent = error.message || "Unable to save permissions.";
+    $("permissionSaveStatus").style.color = "#b42318";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Permissions";
+  }
+};
+
+/* ---------------------------------------------------------
    CREATE STAFF
    --------------------------------------------------------- */
 
@@ -1640,18 +1731,10 @@ async()=>{
       .toLowerCase();
 
 
-  const permissions =
-
-    [
-      ...document.querySelectorAll(
-        "#permissions input:checked"
-      )
-    ]
-
-    .map(
-      checkbox =>
-        checkbox.value
-    );
+  const permissions = Object.fromEntries(
+    [...document.querySelectorAll('#permissions [data-permission-key]')]
+      .map(select => [select.dataset.permissionKey, select.value])
+  );
 
 
   /* Validation */
@@ -1808,14 +1891,8 @@ async()=>{
 
     /* Reset permissions */
 
-    document
-      .querySelectorAll(
-        "#permissions input"
-      )
-      .forEach(
-        checkbox =>
-          checkbox.checked = true
-      );
+    document.querySelectorAll('#permissions [data-permission-key]')
+      .forEach(select => select.value = defaultPermissions[select.dataset.permissionKey] || "no_access");
 
 
     /* Reload staff list */
@@ -1862,14 +1939,8 @@ $("resetBtn").onclick =
     "";
 
 
-  document
-    .querySelectorAll(
-      "#permissions input"
-    )
-    .forEach(
-      checkbox =>
-        checkbox.checked = true
-    );
+  document.querySelectorAll('#permissions [data-permission-key]')
+    .forEach(select => select.value = defaultPermissions[select.dataset.permissionKey] || "no_access");
 
 
   $("status")

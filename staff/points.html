@@ -56,9 +56,12 @@ body{background:#f6f9fc;color:#183555}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
 <script src="../js/supabase.js"></script>
+<script src="../js/auth.js?v=20261105-staff-permissions"></script>
 <script>
 (async function(){
  try{
+   const auth = await requireStaff();
+   if (!auth) return;
    const u=await sb.auth.getUser(), uid=u.data?.user?.id;
    if(!uid){location.href="../pages/login.html";return;}
    const {data,error}=await sb.from('staff_points')

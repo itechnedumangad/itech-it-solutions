@@ -19,7 +19,64 @@ body.dark{--admin-bg:#081626;--admin-card:#10243b;--admin-ink:#e7f0fa;--admin-mu
 @media(max-width:420px){.main>.top h1{font-size:20px!important}.stats{gap:8px}.stat{padding:12px}.stat b{font-size:22px}.side nav a{font-size:11px;padding:8px 10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-</style></head><body><div class="layout"><aside class="side"><h2>iTech IT Solutions</h2><nav><a href="dashboard.html">Admin Dashboard</a><a href="../pages/techshore.html" target="_blank">Public Practice Page</a><a href="techshore-admin.html">PSC Dental Hygienist</a></nav></aside><main class="main"><div class="top"><div><h1 style="margin:0;color:#08264b">PSC Dental Hygienist Admin</h1><p class="muted">Question sets, publishing and student-wise progress</p></div><div class="top-actions"><button class="btn theme-toggle" id="themeToggle" onclick="toggleTheme()" type="button">☾ Dark mode</button><button class="btn btn2" onclick="location.href='dashboard.html'">← Dashboard</button></div></div><div id="auth" class="status">Checking admin session…</div>
+
+/* Premium admin visual system */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--admin-bg:#f2f6fc;--admin-card:#fff;--admin-ink:#132d49;--admin-muted:#6b7f95;--admin-border:#dce7f2;--admin-accent:#176fbd;--admin-orange:#f28b22}
+body{font-family:'DM Sans',sans-serif!important;background:radial-gradient(ellipse at 85% 0%,rgba(242,139,34,.11),transparent 27%),radial-gradient(ellipse at 15% 35%,rgba(23,111,189,.08),transparent 28%),#f2f6fc!important;color:var(--admin-ink);letter-spacing:.005em}
+.layout{min-height:100vh}
+.side{width:258px!important;padding:25px 17px!important;background:linear-gradient(160deg,#061a34 0%,#0a315b 58%,#10538a 100%)!important;box-shadow:12px 0 38px rgba(5,26,51,.13);position:relative;isolation:isolate}
+.side:before{content:"";position:absolute;z-index:-1;width:280px;height:280px;right:-180px;top:140px;border:1px solid #ffffff20;border-radius:50%;box-shadow:0 0 0 34px #ffffff08,0 0 0 70px #ffffff05}
+.psc-admin-brand{display:flex!important;justify-content:center;align-items:center;padding:14px 10px 20px!important;background:#ffffff0d;border:1px solid #ffffff1a;border-radius:18px;margin-bottom:12px}
+.psc-admin-brand img{width:170px;height:54px;object-fit:contain}
+.psc-side-caption{font-size:10px;letter-spacing:.18em;font-weight:800;color:#ffbd70;text-align:center;margin:0 0 24px}
+.side nav{display:flex;flex-direction:column;gap:7px}
+.side nav a{padding:13px 14px!important;border:1px solid transparent;border-radius:12px!important;color:#dcecff!important;font-weight:700;font-size:13px;transition:all .2s}
+.side nav a:hover,.side nav a:focus{background:linear-gradient(100deg,#ffffff20,#ffffff0b)!important;border-color:#ffffff1b;transform:translateX(4px)}
+.main{padding:30px clamp(16px,3vw,38px)!important}
+.main h1,.main h2,.main h3{font-family:'Manrope',sans-serif;letter-spacing:-.025em}
+.main h1{font-size:clamp(24px,3vw,34px)!important;font-weight:800!important}
+.main> .top{padding:7px 2px 20px;border-bottom:1px solid var(--admin-border);margin-bottom:8px}
+.muted,.stat small{color:var(--admin-muted)!important}
+.card,.stat,.subject,.detail-subject{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:19px!important;box-shadow:0 12px 32px rgba(11,45,79,.065)!important}
+.card{padding:22px!important}
+.stat{padding:20px!important;position:relative;overflow:hidden}
+.stat:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-40px;background:linear-gradient(135deg,#176fbd18,#f28b2218)}
+.stat b{font-family:'Manrope',sans-serif;font-size:30px!important;font-weight:800}
+.subject{padding:17px!important;transition:transform .22s,box-shadow .22s}
+.subject:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(11,45,79,.11)!important}
+.btn,.btn2,.theme-toggle{border-radius:12px!important;padding:11px 16px!important;font-family:'DM Sans',sans-serif!important;font-weight:800!important;cursor:pointer;transition:transform .18s,box-shadow .18s,filter .18s}
+.btn{background:linear-gradient(115deg,#1264a6,#1e83ca)!important;box-shadow:0 7px 17px rgba(23,105,170,.18)}
+.btn2,.theme-toggle{background:#edf4fb!important;color:#17466f!important;border:1px solid #d7e5f1!important}
+.btn:hover,.btn2:hover,.theme-toggle:hover{transform:translateY(-2px);filter:brightness(1.03);box-shadow:0 10px 20px rgba(14,65,108,.15)}
+.toolbar{gap:11px}
+.toolbar input,.toolbar select,textarea{border-radius:12px!important;border:1px solid #cfdeeb!important;background:#fbfdff;font:inherit;padding:12px!important}
+.status{border-radius:13px!important}
+.pill{border-radius:999px!important;padding:6px 11px!important}
+.tablewrap{border:1px solid var(--admin-border);border-radius:14px;overflow:auto}
+table{min-width:720px}
+th{background:#f4f8fc;padding:14px!important;letter-spacing:.08em}
+td{padding:14px!important}
+tbody tr:hover{background:#f2f8fe}
+.preview{border-radius:14px;line-height:1.65}
+@keyframes pscFloatIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.main .card,.main .stat{animation:pscFloatIn .48s both}
+.main .card:nth-of-type(2){animation-delay:.04s}.main .card:nth-of-type(3){animation-delay:.08s}
+body.dark{--admin-bg:#071626;--admin-card:#10243a;--admin-ink:#e7f0fa;--admin-muted:#a9bed2;--admin-border:#29445f;background:radial-gradient(ellipse at 85% 0%,#1a3b58,transparent 30%),#071626!important;color:#e7f0fa}
+body.dark .side{background:linear-gradient(160deg,#030d1b,#092542 65%,#0c365d)!important}
+body.dark .card,body.dark .stat,body.dark .subject,body.dark .detail-subject{background:#10243a!important;border-color:#29445f!important;color:#e7f0fa}
+body.dark .main h1,body.dark .main h2,body.dark .main h3,body.dark td{color:#e7f0fa!important}
+body.dark .muted,body.dark .stat small{color:#a9bed2!important}
+body.dark th{background:#172e47;color:#bcd0e2;border-color:#29445f}
+body.dark td{border-color:#29445f}
+body.dark tbody tr:hover{background:#18344f}
+body.dark .toolbar input,body.dark .toolbar select,body.dark textarea{background:#142b43;color:#e7f0fa;border-color:#35516d}
+body.dark .btn2,body.dark .theme-toggle{background:#203b58!important;color:#e2effc!important;border-color:#36516c!important}
+body.dark .preview{background:#0b1c30;color:#dceafa;border-color:#29445f}
+@media(max-width:800px){.layout{display:flex;flex-direction:column}.side{width:100%!important;padding:12px 14px!important}.psc-admin-brand{display:none!important}.psc-side-caption{margin:2px 0 10px}.side nav{display:flex;flex-direction:row;overflow-x:auto;gap:7px;padding-bottom:3px}.side nav a{white-space:nowrap;flex:none;padding:10px 12px!important}.main{padding:17px 13px!important}.main>.top{align-items:flex-start}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:450px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat b{font-size:24px!important}.card{padding:16px!important}.top-actions{width:100%}.top-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style></head><body><div class="layout"><aside class="side"><a class="psc-admin-brand" href="../index.html"><img src="../assets/itech-logo.png" alt="iTech logo"></a><div class="psc-side-caption">PSC DENTAL HYGIENIST</div><nav><a href="dashboard.html">Admin Dashboard</a><a href="../pages/techshore.html" target="_blank">Public Practice Page</a><a href="techshore-admin.html">PSC Dental Hygienist</a></nav></aside><main class="main"><div class="top"><div><h1 style="margin:0;color:#08264b">PSC Dental Hygienist Admin</h1><p class="muted">Question sets, publishing and student-wise progress</p></div><div class="top-actions"><button class="btn theme-toggle" id="themeToggle" onclick="toggleTheme()" type="button">☾ Dark mode</button><button class="btn btn2" onclick="location.href='dashboard.html'">← Dashboard</button></div></div><div id="auth" class="status">Checking admin session…</div>
 <div class="stats"><div class="stat"><small>Students</small><b id="studentCount">0</b></div><div class="stat"><small>Published Sets</small><b id="publishedCount">0</b></div><div class="stat"><small>Questions Uploaded</small><b id="questionCount">0</b></div><div class="stat"><small>Completed Attempts</small><b id="attemptCount">0</b></div></div>
 <section class="card"><h2 style="margin-top:0">Subject-wise Upload Progress</h2><div id="subjectProgress" class="grid"></div></section>
 <section class="card"><h2 style="margin-top:0">Upload New JSON Set</h2><div class="toolbar"><select id="subjectSelect" onchange="updateNextSet()"></select><div><b>Next Set:</b> <span id="nextSet">—</span></div><input id="setTitle" placeholder="Optional set title"></div><p class="muted">Select a subject. The next Set Number is calculated automatically. JSON must contain exactly 50 questions.</p><div class="toolbar"><input id="jsonFile" type="file" accept=".json,application/json"><button class="btn" onclick="readJSON()">Preview & Validate</button></div><div id="uploadStatus" class="status">No file selected.</div><div id="previewWrap" class="hidden"><h3>Preview</h3><div id="preview" class="preview"></div><div class="toolbar" style="margin-top:12px"><button class="btn" onclick="saveSet()">Save as Draft</button><button class="btn btn2" onclick="clearPreview()">Cancel</button></div></div></section>
